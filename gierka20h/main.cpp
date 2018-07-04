@@ -387,15 +387,24 @@ int main(void)
 									position = atoi(buffer);
 									Racers[i].AssignAction(position, value);
 									Racers[i].EstimateScore(TourArr, CurrentPosition + 1, color, color2);
-									//sprawdzic czy zyje
 								});
 							}
+							
 							if (!(host.Action(start, color, color2)))
 								break;
 
 							for (int i = 0; i < PlayersAlive; i++)
 								CommunicationThreads[i].join();
 
+							for (int i = 0; i < PlayersAlive; i++)
+							{
+								if (!Racers[i].Alive())
+								{
+									Racers[i] = Racers[PlayersAlive];
+									Clients[i] = Clients[PlayersAlive];
+									PlayersAlive--;
+								}
+							}
 							CommunicationThreads.clear();
 
 							host.EstimateScore(TourArr, CurrentPosition + 1, color, color2);
@@ -420,7 +429,15 @@ int main(void)
 							}
 							for (int i = 0; i < PlayersAlive; i++)
 								CommunicationThreads[i].join();
-
+							for (int i = 0; i < PlayersAlive; i++)
+							{
+								if (!Racers[i].Alive())
+								{
+									Racers[i] = Racers[PlayersAlive];
+									Clients[i] = Clients[PlayersAlive];
+									PlayersAlive--;
+								}
+							}
 							CommunicationThreads.clear();
 
 							for (int i = 0; i < NumberOfPlayers; i++)
@@ -455,8 +472,15 @@ int main(void)
 							for (int i = 0; i < NumberOfPlayers; i++)
 								CommunicationThreads[i].join();
 							for (int i = 0; i < NumberOfPlayers; i++)
+							{
 								Racers[i].SendData(Clients[i], PlayersAlive);
-								
+								if (!Racers[i].Alive())
+								{
+									Racers[i] = Racers[PlayersAlive];
+									Clients[i] = Clients[PlayersAlive];
+									PlayersAlive--;
+								}
+							}
 
 							CommunicationThreads.clear();
 							
@@ -517,6 +541,7 @@ int main(void)
 			{
 				SOCKET HostSocket = INVALID_SOCKET;
 				MultiPlayer I;
+				bool quit = false;
 				do
 				{
 					HostDataBase HostsRegistred(10);
@@ -533,10 +558,16 @@ int main(void)
 						I.Init(HostSocket, width, color, color2);
 					}
 					else
+					{
+						quit = true;
 						break;
+					}
+						
 
 				} while (HostSocket == INVALID_SOCKET);
 
+				if (quit)
+					break;
 				I.Interface(color, color2, width * 2);
 				I.VisionBox(HostSocket, color, color2);
 
@@ -569,7 +600,8 @@ int main(void)
 					}
 					send(HostSocket, NumberToString(value).c_str(), 254, 0);
 					send(HostSocket, NumberToString(position).c_str(), 254, 0);
-
+					if (value == 4)
+						break;
 					recv(HostSocket, buffer, 254, 0);
 
 					NumberOfRivals = atoi(buffer);
@@ -582,12 +614,16 @@ int main(void)
 						RacersNames[i] = buffer;
 					}
 					I.RecvData(HostSocket, color, color2);
+					if (!I.Alive())
+						break;
 					I.VisionBox(HostSocket, color, color2);
 					
 					int target = I.Attack(RacersScores, RacersNames, NumberOfRivals, width, color, color2);
 
 					send(HostSocket, NumberToString(target).c_str(), 254, 0);
 					I.RecvData(HostSocket, color, color2);
+					if (!I.Alive())
+						break;
 					
 				}
 				system("cls");

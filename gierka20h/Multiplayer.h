@@ -20,6 +20,7 @@ public:
 	bool Test(std::string field, bool show, int color, int color2);
 	void SendData(SOCKET client, int PlayersAlive);
 	void RecvData(SOCKET host, int color, int color2);
+	bool Alive();
 };
 
 struct HostDataBase

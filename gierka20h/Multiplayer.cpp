@@ -362,11 +362,6 @@ int ClientsLobby(HostDataBase &HDB, short width, int color, int color2)
 	closesocket(sock);
 	return CursorPosition;
 }
-void MultiPlayer::SendArr(SOCKET Client, std::vector<std::string> Tour, int position)
-{
-	for (int i = 0; i < Atrib[Visibility]; i++)
-		send(Client, Tour[i+position].c_str(), 254, 0);
-}
 
 int HostDataBase::AddNewHost(std::string Name, std::string IP)
 {
@@ -414,7 +409,11 @@ HostDataBase::HostDataBase(int HowMany)
 	Hosts = new std::string[HowMany];
 	Addresses = new std::string[HowMany];
 }
-
+void MultiPlayer::SendArr(SOCKET Client, std::vector<std::string> Tour, int position)
+{
+	for (int i = 0; i < Atrib[Visibility]; i++)
+		send(Client, Tour[i + position].c_str(), 254, 0);
+}
 void MultiPlayer::VisionBox(SOCKET host, int color, int color2)
 {
 	std::string *TourArr = new std::string[Atrib[Visibility]];
@@ -1005,4 +1004,10 @@ void MultiPlayer::RecvData(SOCKET host, int color, int color2)
 	std::cout << " Your vehice has ";
 	SetConsoleTextAttribute(window, color2);
 	std::cout << Atrib[Durability] << " durability   ";
+}
+bool MultiPlayer::Alive()
+{
+	if (Atrib[Durability] <= 0)
+		return false;
+	return true;
 }
