@@ -241,6 +241,7 @@ int main(void)
 				int CurrentPosition = 0;
 				memset(Clients, -1, sizeof(Clients));
 				std::string Name = "Racer";
+				bool quit = false;
 
 				while (1)
 				{
@@ -352,11 +353,11 @@ int main(void)
 							}
 
 
-							for (int i = 0; i < NumberOfPlayers; i++)
+							for (int i = 0; i < PlayersAlive; i++)
 							{
 								CommunicationThreads.emplace_back([=]() {
 
-									send(Clients[i], NumberToString(NumberOfPlayers).c_str(), 254, 0);
+									send(Clients[i], NumberToString(PlayersAlive).c_str(), 254, 0);
 									send(Clients[i], NumberToString(host.Score).c_str(), 254, 0);
 									send(Clients[i], host.name.c_str(), 254, 0);
 									RacersScores[i] = RacersScores[PlayersAlive - 1];
@@ -370,7 +371,7 @@ int main(void)
 
 							host.Ranking(RacersScores, RacersNames, PlayersAlive, width * 2, color, color2);
 
-							for (int i = 0; i < NumberOfPlayers; i++)
+							for (int i = 0; i < PlayersAlive; i++)
 								CommunicationThreads[i].join();
 
 							CommunicationThreads.clear();
@@ -391,11 +392,13 @@ int main(void)
 							}
 							
 							if (!(host.Action(start, color, color2)))
-								break;
+								quit = true;
 
 							for (int i = 0; i < PlayersAlive; i++)
 								CommunicationThreads[i].join();
 
+							if (quit == true)
+								break;
 							for (int i = 0; i < PlayersAlive; i++)
 							{
 								if (!Racers[i].Alive())
@@ -410,11 +413,11 @@ int main(void)
 							host.EstimateScore(TourArr, CurrentPosition + 1, color, color2);
 							host.VisionBox(TourArr, CurrentPosition + 1, color, color2);
 
-							for (int i = 0; i < NumberOfPlayers; i++)
+							for (int i = 0; i < PlayersAlive; i++)
 							{
 								CommunicationThreads.emplace_back([=]() {
 
-									send(Clients[i], NumberToString(NumberOfPlayers).c_str(), 254, 0);
+									send(Clients[i], NumberToString(PlayersAlive).c_str(), 254, 0);
 									send(Clients[i], NumberToString(host.Score).c_str(), 254, 0);
 									send(Clients[i], host.name.c_str(), 254, 0);
 									RacersScores[i] = RacersScores[PlayersAlive - 1];
@@ -440,10 +443,10 @@ int main(void)
 							}
 							CommunicationThreads.clear();
 
-							for (int i = 0; i < NumberOfPlayers; i++)
+							for (int i = 0; i < PlayersAlive; i++)
 								CommunicationThreads.emplace_back(&MultiPlayer::SendArr, Racers[i], Clients[i], TourArr, CurrentPosition+1);
 
-							for (int i = 0; i < NumberOfPlayers; i++)
+							for (int i = 0; i < PlayersAlive; i++)
 								CommunicationThreads[i].join();
 
 							CommunicationThreads.clear();
@@ -469,9 +472,9 @@ int main(void)
 								});
 							}
 
-							for (int i = 0; i < NumberOfPlayers; i++)
+							for (int i = 0; i < PlayersAlive; i++)
 								CommunicationThreads[i].join();
-							for (int i = 0; i < NumberOfPlayers; i++)
+							for (int i = 0; i < PlayersAlive; i++)
 							{
 								Racers[i].SendData(Clients[i], PlayersAlive);
 								if (!Racers[i].Alive())
@@ -487,6 +490,11 @@ int main(void)
 							start = false;
 							CurrentPosition++;
 						}
+						delete [] RacersNames;
+						delete [] RacersScores;
+						delete[] Racers;
+						for (int i = 0; Clients[i] != INVALID_SOCKET; i++)
+							closesocket(Clients[i]);
 						break;
 					}
 					else if (LobbyOption == 1)//Kicking players
@@ -628,7 +636,7 @@ int main(void)
 				}
 				system("cls");
 				Title(width, color, color2);
-				WSACleanup();
+				
 			}
 			else
 				break;
