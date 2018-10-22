@@ -123,7 +123,8 @@ void  Race::Lobby(SinglePlayer *network_role)
 		}
 	}
 
-	participants.emplace_back(new Participant(network_role->GetCarParameters(car_path), network_role->GetTireParameters(tire_path)));
+	participants.emplace_back(new Participant(car_path, tire_path, *network_role));
+	network_role->GetOtherParticipants(participants, ais_pos);
 	network_role->GetTourParameters(tour_path);
 }
 void Race::Game()

@@ -23,6 +23,10 @@ void Host::GetTourParameters(std::string path)
 {
 
 }
+void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais)
+{
+
+}
 void Host::GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores)
 {
 

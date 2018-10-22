@@ -34,6 +34,10 @@ void Client::GetTourParameters(std::string path)
 {
 
 }
+void Client::GetOtherParticipants(std::vector<Participant*> &participants, int ais)
+{
+
+}
 void Client::GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores)
 {
 

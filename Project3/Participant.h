@@ -1,4 +1,8 @@
+#pragma once
 #include <vector>
+
+class SinglePlayer;
+
 
 enum CarModifiers
 {
@@ -30,6 +34,8 @@ public:
 	float score;
 	float current_speed;
 	float current_durability;
+	SinglePlayer *network_role;
+	std::string car_path;
 
-	Participant(std::vector<int>car_modifiers, std::vector<std::string> tire_modifiers);
+	Participant(std::string car_path, std::string tire_path, SinglePlayer &network_role);
 };
