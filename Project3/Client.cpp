@@ -58,7 +58,7 @@ void Client::SendInfo(std::string special_text, std::string text)
 {
 
 }
-void Client::SendCurrentAction(int action, int value)
+std::pair<int, int> Client::TakeAction()
 {
 
 }

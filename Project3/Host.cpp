@@ -47,7 +47,7 @@ void Host::SendInfo(std::string special_text, std::string text)
 {
 
 }
-void Host::SendCurrentAction(int action, int value)
+std::pair<int, int> Host::TakeAction()
 {
 
 }

@@ -129,9 +129,39 @@ void  Race::Lobby(SinglePlayer *network_role)
 }
 void Race::Game()
 {
+	int current_pos = 0;
+
+
+	//Players.Interface(color, color2, width * 2);
+	//Players.VisionBox(TourArr, CurrentPosition, color, color2);
+
+	//while (static_cast<int>(TourArr.size()) > current_pos) //main game loop
+	//{
+		//Players.Ranking(RacersScores, RacersNames, AliveAIs, width * 2, color, color2);
+
+		for (int i = 0; i < static_cast<int>(participants.size()); i++)
+		{
+			if (participants[i]->network_role->id < 2 || i == 0) //single player, ai or current user
+				//participants[i].assign_action = participants[i]->network_role->TakeAction();
+			if (participants[i]->current_durability <= 0)
+			{
+				//erase connection
+				//erase player from vector
+			}
+		}
+		//tests, scores
+		//Players.VisionBox(TourArr, CurrentPosition, color, color2);
+		//attacks		
+
+		current_pos++;
+	//}
 	
 }
 void Race::Ending()
 {
-
+	//save scores
 }
+
+//to do
+	//network device
+	//ai as singleplayer child

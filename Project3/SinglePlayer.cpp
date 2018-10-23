@@ -80,7 +80,7 @@ void SinglePlayer::SendInfo(std::string special_text, std::string text)
 {
 
 }
-void SinglePlayer::SendCurrentAction(int action, int value)
+std::pair<int, int> SinglePlayer::TakeAction()
 {
 
 }

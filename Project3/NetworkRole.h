@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <utility>
 #include "Infobox.h"
 #include "Participant.h"
 
@@ -10,6 +11,7 @@ protected:
 	Window *main_window;
 
 public:
+	int id;
 
 	SinglePlayer(Window &main_window);
 	virtual void GetTourNames(std::vector<std::string>&tours);
@@ -26,7 +28,7 @@ public:
 	virtual void GetTargetList(std::vector<std::string>&names);
 
 	virtual void SendInfo(std::string special_text, std::string text);
-	virtual void SendCurrentAction(int action, int value);
+	virtual std::pair<int, int> TakeAction();
 	virtual void SendTarget(int ranking_position);
 
 	virtual int Possible_AIs();
@@ -51,7 +53,7 @@ public:
 	void GetTargetList(std::vector<std::string>&names);
 
 	void SendInfo(std::string special_text, std::string text);
-	void SendCurrentAction(int action, int value);
+	std::pair<int, int> TakeAction();
 	void SendTarget(int ranking_position);
 
 	int Possible_AIs();
@@ -79,7 +81,7 @@ public:
 	void GetTargetList(std::vector<std::string>&names);
 
 	void SendInfo(std::string special_text, std::string text);
-	void SendCurrentAction(int action, int value);
+	std::pair<int, int> TakeAction();
 	void SendTarget(int ranking_position);
 
 	int Possible_AIs();
