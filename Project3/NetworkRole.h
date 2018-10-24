@@ -1,4 +1,5 @@
 #pragma once
+#include "MultiplayerDevice.h"
 #include <fstream>
 #include <utility>
 #include "Infobox.h"
@@ -37,14 +38,12 @@ public:
 class Host : public SinglePlayer {
 
 	std::vector<SOCKET> clients;
+	MultiplayerDevice *network_device;
 	void StartNetwork();
 
 public:
 
 	Host(Window &main_window);
-	std::vector<int> GetCarParameters(std::string path);
-	std::vector<std::string> GetTireParameters(std::string path);
-	void GetTourParameters(std::string path);
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais);
 
 	void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);

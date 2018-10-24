@@ -9,20 +9,6 @@ void Host::StartNetwork()
 {
 
 }
-std::vector<int> Host::GetCarParameters(std::string path)
-{
-	std::vector<int> temp;
-	return temp;
-}
-std::vector<std::string> Host::GetTireParameters(std::string path)
-{
-	std::vector<std::string> temp;
-	return temp;
-}
-void Host::GetTourParameters(std::string path)
-{
-
-}
 void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais)
 {
 
@@ -49,7 +35,7 @@ void Host::SendInfo(std::string special_text, std::string text)
 }
 std::pair<int, int> Host::TakeAction()
 {
-
+	return std::make_pair(1, 4);
 }
 void Host::SendTarget(int ranking_position)
 {

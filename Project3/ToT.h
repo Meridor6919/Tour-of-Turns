@@ -1,10 +1,11 @@
 #pragma once
 #include <fstream>
+#include "Race.h"
 #include "TextLib.h"
 #include "Window.h"
-#include "Race.h"
 
-namespace GameMode_
+
+namespace GameMode
 {
 	void Game(bool multiplayer, Window &main_window);
 	void Credits(Window &main_window);

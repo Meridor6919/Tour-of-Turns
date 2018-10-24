@@ -54,7 +54,7 @@ std::vector<std::string> SinglePlayer::GetTireParameters(std::string path)
 }
 void SinglePlayer::GetOtherParticipants(std::vector<Participant*> &participants, int ais)
 {
-
+	
 }
 void SinglePlayer::GetTourParameters(std::string path)
 {
@@ -82,7 +82,7 @@ void SinglePlayer::SendInfo(std::string special_text, std::string text)
 }
 std::pair<int, int> SinglePlayer::TakeAction()
 {
-
+	return std::make_pair(1, 4);
 }
 void SinglePlayer::SendTarget(int ranking_position)
 {

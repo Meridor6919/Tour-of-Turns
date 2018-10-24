@@ -9,5 +9,5 @@ Participant::Participant(std::string car_path, std::string tire_path, SinglePlay
 	this->tire_modifiers = network_role.GetTireParameters(tire_path);
 	this->current_speed = 0.0f;
 	this->score = 0.0f;
-	this->current_durability = car_modifiers[CarModifiers::durability];
+	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 }

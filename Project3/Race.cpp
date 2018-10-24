@@ -54,7 +54,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 			{
 				char button;
 				std::cout << " < "<< name<<" >";
-				int size = name.size();
+				int size = static_cast<int>(name.size());
 
 				do
 				{
