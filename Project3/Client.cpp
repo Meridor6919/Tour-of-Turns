@@ -1,12 +1,14 @@
 #include "NetworkRole.h"
+#include <set>
 
 Client::Client(Window &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
+	StartNetwork();
 }
 void Client::StartNetwork()
 {
-	std::vector<std::pair<std::string, std::string>> name_ip;
+	std::set<std::pair<std::string, std::string>> name_ip;
 
 	//recv hosts from local network
 	std::thread thread([&]() {
@@ -19,7 +21,7 @@ void Client::StartNetwork()
 			closesocket(sock);
 			exit(0);
 		}
-		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(100), sizeof(100)) < 0)	//reciving time = 100ms
+		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, "100", sizeof(int)) < 0)	//reciving time = 100ms
 		{
 			MessageBox(0, "Socket option error", "Error", 0);
 			WSACleanup();
@@ -53,19 +55,21 @@ void Client::StartNetwork()
 			if (hostent != nullptr)
 			{
 				for (int i = 0; hostent->h_addr_list[i] != 0; ++i)
-				{
 					memcpy(&addr2, hostent->h_addr_list[i], sizeof(struct in_addr));
-				}
 				
+				name_ip.insert(std::make_pair(recv_buffer, inet_ntoa(addr2)));
 			}
+			std::chrono::milliseconds ms(100);
+			std::this_thread::sleep_for(ms);
 		}
-
-
-
-
-
 	});
+	std::cin.get();
 
+
+
+
+	thread.detach();
+	thread.~thread();
 }
 void Client::GetTourNames(std::vector<std::string>&tours)
 {
