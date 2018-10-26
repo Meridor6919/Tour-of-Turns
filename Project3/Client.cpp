@@ -8,12 +8,16 @@ Client::Client(Window &main_window) : SinglePlayer(main_window)
 }
 void Client::StartNetwork()
 {
-	std::set<std::pair<std::string, std::string>> name_ip;
+	std::set<std::string> name_ip;
+	std::chrono::milliseconds ms(100);
+	bool thread_active = true;
 
 	//recv hosts from local network
 	std::thread thread([&]() {
 
+		int recv_time = 100;
 		SOCKET sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
 		if (sock == INVALID_SOCKET)
 		{
 			MessageBox(0, "Socket error", "Error", 0);
@@ -21,7 +25,7 @@ void Client::StartNetwork()
 			closesocket(sock);
 			exit(0);
 		}
-		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, "100", sizeof(int)) < 0)	//reciving time = 100ms
+		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&recv_time), sizeof(recv_time)) < 0)
 		{
 			MessageBox(0, "Socket option error", "Error", 0);
 			WSACleanup();
@@ -46,8 +50,9 @@ void Client::StartNetwork()
 
 		char recv_buffer[50];
 
-		while (true)
+		while (thread_active)
 		{
+
 			recvfrom(sock, recv_buffer, 50, 0, (sockaddr *)&addr, &addr_size);
 
 			in_addr addr2;
@@ -56,20 +61,19 @@ void Client::StartNetwork()
 			{
 				for (int i = 0; hostent->h_addr_list[i] != 0; ++i)
 					memcpy(&addr2, hostent->h_addr_list[i], sizeof(struct in_addr));
-				
-				name_ip.insert(std::make_pair(recv_buffer, inet_ntoa(addr2)));
-			}
-			std::chrono::milliseconds ms(100);
+			
+				name_ip.insert((std::string)recv_buffer + (std::string)inet_ntoa(addr2));
+			}			
 			std::this_thread::sleep_for(ms);
 		}
 	});
 	std::cin.get();
 
 
+	//changed local vertical choose
 
-
-	thread.detach();
-	thread.~thread();
+	thread_active = false;
+	thread.join();
 }
 void Client::GetTourNames(std::vector<std::string>&tours)
 {
