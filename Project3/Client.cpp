@@ -64,11 +64,11 @@ bool Client::StartNetwork()
 		while (thread_active)
 		{
 
-			recvfrom(sock, recv_buffer, 50, 0, (sockaddr *)&addr, &addr_size);
+			int recived = recvfrom(sock, recv_buffer, 50, 0, (sockaddr *)&addr, &addr_size);
 
 			in_addr addr2;
 			hostent *hostent = gethostbyname(recv_buffer);
-			if (hostent != nullptr)
+			if (hostent != nullptr && recived != -1)
 			{
 				for (int i = 0; hostent->h_addr_list[i] != 0; ++i)
 					memcpy(&addr2, hostent->h_addr_list[i], sizeof(struct in_addr));
@@ -88,8 +88,8 @@ bool Client::StartNetwork()
 
 					if (!(finded))
 						name_ip.insert(std::make_pair(name_ip.size(), value));
-
 				}
+				
 			}
 			std::this_thread::sleep_for(ms);
 		}
@@ -137,8 +137,16 @@ bool Client::StartNetwork()
 		{
 			if (it->first == 20)//refresh
 			{
+				it = name_ip.begin();
+				for (short i = 0; it != name_ip.end(); ++it, i++)
+				{
+					SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + i * 2 });
+					for (int j = 0; j < it->second.size(); j++)
+						std::cout << ' ';
+				}
 				name_ip.clear();
-				//clear text
+				name_ip.insert(std::make_pair(20, "refresh"));
+				name_ip.insert(std::make_pair(21, "back"));
 			}
 			else if (it->first == 21)
 			{
