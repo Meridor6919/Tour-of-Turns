@@ -2,6 +2,7 @@
 #include "MultiplayerDevice.h"
 #include <fstream>
 #include <utility>
+#include <exception>
 #include "Infobox.h"
 #include "Participant.h"
 
@@ -61,7 +62,7 @@ public:
 class Client : public SinglePlayer {
 
 	SOCKET host;
-	void StartNetwork();
+	bool StartNetwork();
 
 public:
 

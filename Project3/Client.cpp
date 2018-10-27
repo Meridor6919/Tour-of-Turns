@@ -1,16 +1,27 @@
 #include "NetworkRole.h"
-#include <set>
+#include <map>
 
 Client::Client(Window &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
-	StartNetwork();
+	if (!StartNetwork())
+		throw 1;
 }
-void Client::StartNetwork()
+bool Client::StartNetwork()
 {
-	std::set<std::string> name_ip;
+	std::map<int, std::string> name_ip;
 	std::chrono::milliseconds ms(100);
 	bool thread_active = true;
+	HANDLE handle = main_window->GetHandle();
+	int color1 = main_window->color1;
+	int color2 = main_window->color2;
+	char button;
+	short pos = 0;
+	COORD starting_point = { (short)main_window->GetWidth() / 2, 15 };
+	std::map<int, std::string>::iterator  it;
+
+	name_ip.insert(std::make_pair(20, "refresh"));
+	name_ip.insert(std::make_pair(21, "back"));
 
 	//recv hosts from local network
 	std::thread thread([&]() {
@@ -61,16 +72,88 @@ void Client::StartNetwork()
 			{
 				for (int i = 0; hostent->h_addr_list[i] != 0; ++i)
 					memcpy(&addr2, hostent->h_addr_list[i], sizeof(struct in_addr));
-			
-				name_ip.insert((std::string)recv_buffer + (std::string)inet_ntoa(addr2));
-			}			
+
+				if (name_ip.size() < 10)
+				{
+					std::string value = (std::string)recv_buffer + " - " + (std::string)inet_ntoa(addr2);
+					bool finded = false;
+					for (int i = 2; i < static_cast<int>(name_ip.size()); i++)
+					{
+						if (name_ip.find(i)->second == value)
+						{
+							finded = true;
+							break;
+						}
+					}
+
+					if (!(finded))
+						name_ip.insert(std::make_pair(name_ip.size(), value));
+
+				}
+			}
 			std::this_thread::sleep_for(ms);
 		}
 	});
-	std::cin.get();
+	auto show_options = [&]() {
+		it = name_ip.begin();
+		SetConsoleTextAttribute(handle, color1);
+		for (short i = 0; it != name_ip.end(); ++it, i++)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + i * 2 });
+			std::cout << it->second;
+		}
+		it = name_ip.begin();
+		std::advance(it, pos);
+		SetConsoleTextAttribute(handle, color2);
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + pos * 2 });
+		std::cout << it->second;
+	};
+	
 
+	show_options();
+	do
+	{
+		if (_kbhit())
+		{
+			button = _getch();
 
-	//changed local vertical choose
+			if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 80)
+			{
+
+				pos += 1;
+				if (pos == name_ip.size())
+					pos = 0;
+			}
+			else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 72)
+			{
+				pos -= 1;
+				if (pos < 0)
+					pos = name_ip.size() - 1;
+			}
+		}
+		show_options();
+		Sleep(60);
+		if (button == 13)
+		{
+			if (it->first == 20)//refresh
+			{
+				name_ip.clear();
+				//clear text
+			}
+			else if (it->first == 21)
+			{
+				thread_active = false;
+				thread.join();
+				return false;
+			}
+			else
+			{
+				thread_active = false;
+				thread.join();
+				return true;
+			}
+		}
+	} while (true);
 
 	thread_active = false;
 	thread.join();

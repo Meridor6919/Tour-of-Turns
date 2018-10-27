@@ -170,7 +170,15 @@ void GameMode::Game(bool multiplayer, Window &main_window)
 		}
 		case 1:
 		{
-			network_role = new Client(main_window);
+			try
+			{
+				network_role = new Client(main_window);
+			}
+			catch (int err)
+			{
+				return;
+			}
+
 			break;
 		}
 		case 2:
