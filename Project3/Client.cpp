@@ -5,7 +5,10 @@ Client::Client(Window &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	if (!StartNetwork())
+	{
+		closesocket(host);
 		throw 1;
+	}
 }
 bool Client::StartNetwork()
 {
@@ -27,20 +30,20 @@ bool Client::StartNetwork()
 	std::thread thread([&]() {
 
 		int recv_time = 100;
-		SOCKET sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		host = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-		if (sock == INVALID_SOCKET)
+		if (host == INVALID_SOCKET)
 		{
 			MessageBox(0, "Socket error", "Error", 0);
 			WSACleanup();
-			closesocket(sock);
+			closesocket(host);
 			exit(0);
 		}
-		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&recv_time), sizeof(recv_time)) < 0)
+		if (setsockopt(host, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&recv_time), sizeof(recv_time)) < 0)
 		{
 			MessageBox(0, "Socket option error", "Error", 0);
 			WSACleanup();
-			closesocket(sock);
+			closesocket(host);
 			exit(0);
 		}
 
@@ -51,11 +54,11 @@ bool Client::StartNetwork()
 		addr.sin_port = htons(6919);	//port number
 		addr.sin_addr.s_addr = INADDR_ANY;
 
-		if (bind(sock, (sockaddr*)&addr, addr_size))
+		if (bind(host, (sockaddr*)&addr, addr_size))
 		{
 			MessageBox(0, "binding error", "Error", 0);
 			WSACleanup();
-			closesocket(sock);
+			closesocket(host);
 			exit(0);
 		}
 
@@ -64,7 +67,7 @@ bool Client::StartNetwork()
 		while (thread_active)
 		{
 
-			int recived = recvfrom(sock, recv_buffer, 50, 0, (sockaddr *)&addr, &addr_size);
+			int recived = recvfrom(host, recv_buffer, 50, 0, (sockaddr *)&addr, &addr_size);
 
 			in_addr addr2;
 			hostent *hostent = gethostbyname(recv_buffer);
@@ -135,15 +138,16 @@ bool Client::StartNetwork()
 		Sleep(60);
 		if (button == 13)
 		{
+			short i = 0;
+			for (std::map<int, std::string>::iterator it2 = name_ip.begin(); it2 != name_ip.end(); ++it2, i++)
+			{
+				SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it2->second.size()), starting_point.Y + i * 2 });
+				for (int j = 0; j < it2->second.size(); j++)
+					std::cout << ' ';
+			}
+
 			if (it->first == 20)//refresh
 			{
-				it = name_ip.begin();
-				for (short i = 0; it != name_ip.end(); ++it, i++)
-				{
-					SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + i * 2 });
-					for (int j = 0; j < it->second.size(); j++)
-						std::cout << ' ';
-				}
 				name_ip.clear();
 				name_ip.insert(std::make_pair(20, "refresh"));
 				name_ip.insert(std::make_pair(21, "back"));
