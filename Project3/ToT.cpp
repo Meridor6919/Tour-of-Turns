@@ -91,7 +91,7 @@ void GameMode::Options(Window &main_window)
 				std::vector<std::string> local_text = { "on", "off" };
 				COORD local_starting_point = { starting_point.X + options_text[main_menu_position].size()/2 + 3 , starting_point.Y + main_menu_position * spacing };
 
-				main_window.SetHamachiConectionFlag(!(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
+				main_window.SetHamachiConnectionFlag(!(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
 			case 4:

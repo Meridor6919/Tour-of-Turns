@@ -77,7 +77,7 @@ void Window::Pause(int miliseconds)
 	FlushConsoleInputBuffer(window_handle);
 	SetConsoleMode(window_handle, consolesettings);
 }
-void Window::SetHamachiConectionFlag(bool flag)
+void Window::SetHamachiConnectionFlag(bool flag)
 {
 	hamachi_enabled = flag;
 }

@@ -28,7 +28,8 @@ public:
 
 	void SetCursor(bool visible);
 	void SetMusic(bool playing);
-	void SetHamachiConectionFlag(bool flag);
+	void SetHamachiConnectionFlag(bool flag);
+	bool GetHamachiConnectionFlag() { return hamachi_enabled; };
 	void Pause(int miliseconds);
 	
 };
