@@ -3,11 +3,16 @@
 Host::Host(Window &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
-	StartNetwork();
+	if(!StartNetwork())
+	{
+		for(int i = 0; i < clients.size(); i++)
+			closesocket(clients[i]);
+		throw 1;
+	}
 }
-void Host::StartNetwork()
+bool Host::StartNetwork()
 {
-	bool broadcasting = true;
+	bool threads_active = true;
 
 	std::thread broadcast([&]() {
 
@@ -28,15 +33,14 @@ void Host::StartNetwork()
 			WSACleanup();
 			exit(0);
 		}
-		sockaddr_in SocketAddress;
-		memset(&SocketAddress, 0, sizeof(SocketAddress));
-		SocketAddress.sin_family = AF_INET;
-		SocketAddress.sin_port = htons(6919);
-		SocketAddress.sin_addr.s_addr = inet_addr("192.168.x.x");
+		sockaddr_in sock_addr;
+		memset(&sock_addr, 0, sizeof(sock_addr));
+		sock_addr.sin_family = AF_INET;
+		sock_addr.sin_port = htons(6919);
+		sock_addr.sin_addr.s_addr = inet_addr("192.168.x.x");
 		if (main_window->GetHamachiConnectionFlag())
-			SocketAddress.sin_addr.s_addr |= inet_addr("25.x.x.x");
+			sock_addr.sin_addr.s_addr |= inet_addr("25.x.x.x");
 		
-		//---------------------------------------------------------------------------Getting Host name -----------------------------------------------------------------------//
 		char HostName[50];
 
 		if (gethostname(HostName, sizeof(HostName)) == SOCKET_ERROR)
@@ -46,10 +50,9 @@ void Host::StartNetwork()
 			closesocket(sock);
 			exit(0);
 		}
-		//-------------------------------------------------------------------------------Broadcasting----------------------------------------------------------------------//
-		while (broadcasting)
+		while (threads_active)
 		{
-			if (sendto(sock, HostName, sizeof(HostName), 0, (sockaddr *)&SocketAddress, sizeof(SocketAddress)) < 0)
+			if (sendto(sock, HostName, sizeof(HostName), 0, (sockaddr *)&sock_addr, sizeof(sock_addr)) < 0)
 			{
 				MessageBox(0, "Socket send error", "Error", 0);
 				WSACleanup();
@@ -59,11 +62,63 @@ void Host::StartNetwork()
 			std::this_thread::sleep_for(s);
 		}
 	});
-	std::cin.get();
-	broadcasting = false;
-	broadcast.join();
+	std::thread accepting_clients([&]() {
+	
+		std::chrono::milliseconds ms(100);
+		SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+		if (sock == INVALID_SOCKET)
+		{
+			MessageBox(0, "Socket error", "Error", 0);
+			WSACleanup();
+			exit(0);
+		}
 
+		sockaddr_in sock_addr;
+			memset(&sock_addr, 0, sizeof(sock_addr));
+			sock_addr.sin_family = AF_INET;
+			sock_addr.sin_port = htons(6919);
+			sock_addr.sin_addr.s_addr = INADDR_ANY;
 
+		int addr_size = sizeof(struct sockaddr_in);
+
+		if (bind(sock, (sockaddr *)& sock, sizeof(sockaddr)))
+		{
+			MessageBox(0, "Binding error", "Error", 0);
+			WSACleanup();
+			exit(0);
+		}
+		while (threads_active)
+		{
+			clients.push_back(accept(sock, (struct sockaddr *) & sock_addr, &addr_size));
+			std::this_thread::sleep_for(ms);
+		}
+		closesocket(sock);
+			
+	
+	});
+	std::vector<std::string> lobby_options = { "Start game", "Kick player", "Back" };
+	int pos = 0;
+
+	pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 15 }, 3, Text::center, true, *main_window);
+	switch (pos)
+	{
+		case 0: // start game
+		{
+			threads_active = false;
+			broadcast.join();
+			return true;
+		}
+		case 1: // kick players
+		{
+
+		}
+		case 2: //back
+		{
+			threads_active = false;
+			broadcast.join();
+			return false;
+		}
+	}
 }
 void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais)
 {

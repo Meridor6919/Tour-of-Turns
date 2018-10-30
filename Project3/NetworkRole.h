@@ -40,7 +40,7 @@ class Host : public SinglePlayer {
 
 	std::vector<SOCKET> clients;
 	MultiplayerDevice *network_device;
-	void StartNetwork();
+	bool StartNetwork();
 
 public:
 
