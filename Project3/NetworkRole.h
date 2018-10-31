@@ -2,6 +2,7 @@
 #include "MultiplayerDevice.h"
 #include <fstream>
 #include <utility>
+#include <set>
 #include <exception>
 #include "Infobox.h"
 #include "Participant.h"
@@ -38,7 +39,7 @@ public:
 
 class Host : public SinglePlayer {
 
-	std::vector<SOCKET> clients;
+	std::set<SOCKET> clients;
 	MultiplayerDevice *network_device;
 	bool StartNetwork();
 

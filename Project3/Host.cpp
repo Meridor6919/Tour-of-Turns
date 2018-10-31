@@ -5,8 +5,8 @@ Host::Host(Window &main_window) : SinglePlayer(main_window)
 	this->main_window = &main_window;
 	if(!StartNetwork())
 	{
-		for(int i = 0; i < clients.size(); i++)
-			closesocket(clients[i]);
+		for(auto it = clients.begin(); it != clients.end(); ++it)
+			closesocket(*it);
 		throw 1;
 	}
 }
@@ -81,15 +81,20 @@ bool Host::StartNetwork()
 
 		int addr_size = sizeof(struct sockaddr_in);
 
-		if (bind(sock, (sockaddr *)& sock, sizeof(sockaddr)))
+		if (bind(sock, (sockaddr *)& sock_addr, sizeof(sockaddr)))
 		{
 			MessageBox(0, "Binding error", "Error", 0);
 			WSACleanup();
 			exit(0);
 		}
+		listen(sock, 7);
 		while (threads_active)
 		{
-			clients.push_back(accept(sock, (struct sockaddr *) & sock_addr, &addr_size));
+
+			SOCKET temp = accept(sock, (struct sockaddr *) & sock_addr, &addr_size);
+			if(temp != INVALID_SOCKET)
+				clients.insert(temp);
+
 			std::this_thread::sleep_for(ms);
 		}
 		closesocket(sock);
@@ -106,6 +111,7 @@ bool Host::StartNetwork()
 		{
 			threads_active = false;
 			broadcast.join();
+			accepting_clients.join();
 			return true;
 		}
 		case 1: // kick players
@@ -114,8 +120,10 @@ bool Host::StartNetwork()
 		}
 		case 2: //back
 		{
+
 			threads_active = false;
 			broadcast.join();
+			accepting_clients.join();
 			return false;
 		}
 	}
