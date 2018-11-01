@@ -13,6 +13,7 @@ Host::Host(Window &main_window) : SinglePlayer(main_window)
 bool Host::StartNetwork()
 {
 	bool threads_active = true;
+	HANDLE handle = main_window->GetHandle();
 
 	std::thread broadcast([&]() {
 
@@ -72,6 +73,13 @@ bool Host::StartNetwork()
 			WSACleanup();
 			exit(0);
 		}
+		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&ms), sizeof(ms)) < 0)
+		{
+			MessageBox(0, "Socket option error", "Error", 0);
+			WSACleanup();
+			closesocket(sock);
+			exit(0);
+		}
 
 		sockaddr_in sock_addr;
 			memset(&sock_addr, 0, sizeof(sock_addr));
@@ -92,8 +100,18 @@ bool Host::StartNetwork()
 		{
 
 			SOCKET temp = accept(sock, (struct sockaddr *) & sock_addr, &addr_size);
-			if(temp != INVALID_SOCKET)
+			
+			if (temp != INVALID_SOCKET)
+			{
+				int i = clients.size();
 				clients.insert(temp);
+				if (i != clients.size())
+				{
+					SetConsoleCursorPosition(handle, { 0, 18 + 2*(short)clients.size() });
+					SetConsoleTextAttribute(handle, main_window->color2);
+					std::cout << clients.size();
+				}
+			}
 
 			std::this_thread::sleep_for(ms);
 		}
@@ -101,6 +119,11 @@ bool Host::StartNetwork()
 			
 	
 	});
+	
+	SetConsoleCursorPosition(handle, { 0, 18 });
+	SetConsoleTextAttribute(handle, main_window->color1);
+	std::cout << "Players in lobby";
+
 	std::vector<std::string> lobby_options = { "Start game", "Kick player", "Back" };
 	int pos = 0;
 
