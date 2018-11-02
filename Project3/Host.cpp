@@ -73,14 +73,6 @@ bool Host::StartNetwork()
 			WSACleanup();
 			exit(0);
 		}
-		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&ms), sizeof(ms)) < 0)
-		{
-			MessageBox(0, "Socket option error", "Error", 0);
-			WSACleanup();
-			closesocket(sock);
-			exit(0);
-		}
-
 		sockaddr_in sock_addr;
 			memset(&sock_addr, 0, sizeof(sock_addr));
 			sock_addr.sin_family = AF_INET;
@@ -101,7 +93,7 @@ bool Host::StartNetwork()
 
 			SOCKET temp = accept(sock, (struct sockaddr *) & sock_addr, &addr_size);
 			
-			if (temp != INVALID_SOCKET)
+			if (temp != INVALID_SOCKET && threads_active)
 			{
 				int i = clients.size();
 				clients.insert(temp);
@@ -143,7 +135,33 @@ bool Host::StartNetwork()
 		}
 		case 2: //back
 		{
+			SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
+			if (temp == INVALID_SOCKET)
+			{
+				std::cout << "error: " << WSAGetLastError();
+				MessageBox(0, "Socket error", "Error", 0);
+				WSACleanup();
+				threads_active = false;
+				broadcast.join();
+				accepting_clients.join();
+				exit(0);
+			}
+			sockaddr_in SocketAddress;
+			memset(&SocketAddress, 0, sizeof(SocketAddress));
+			SocketAddress.sin_family = AF_INET;
+			SocketAddress.sin_port = htons(6919);
+			SocketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
+			if (connect(temp, (sockaddr *)&SocketAddress, sizeof(SocketAddress)))
+			{
+				MessageBox(0, "Chosen user stopped hosting", "Error", 0);
+				WSACleanup();
+				threads_active = false;
+				broadcast.join();
+				accepting_clients.join();
+				exit(0);
+			}
+			closesocket(temp);
 			threads_active = false;
 			broadcast.join();
 			accepting_clients.join();

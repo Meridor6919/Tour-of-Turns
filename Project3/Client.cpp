@@ -1,5 +1,6 @@
 #include "NetworkRole.h"
 #include <map>
+#include <string>
 
 Client::Client(Window &main_window) : SinglePlayer(main_window)
 {
@@ -22,6 +23,7 @@ bool Client::StartNetwork()
 	short pos = 0;
 	COORD starting_point = { (short)main_window->GetWidth() / 2, 15 };
 	std::map<int, std::string>::iterator  it;
+	SOCKET intercept_brodcast_socket;
 
 	name_ip.insert(std::make_pair(20, "refresh"));
 	name_ip.insert(std::make_pair(21, "back"));
@@ -30,20 +32,20 @@ bool Client::StartNetwork()
 	std::thread thread([&]() {
 
 		int recv_time = 100;
-		host = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		intercept_brodcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-		if (host == INVALID_SOCKET)
+		if (intercept_brodcast_socket == INVALID_SOCKET)
 		{
 			MessageBox(0, "Socket error", "Error", 0);
 			WSACleanup();
-			closesocket(host);
+			closesocket(intercept_brodcast_socket);
 			exit(0);
 		}
-		if (setsockopt(host, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&recv_time), sizeof(recv_time)) < 0)
+		if (setsockopt(intercept_brodcast_socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&recv_time), sizeof(recv_time)) < 0)
 		{
 			MessageBox(0, "Socket option error", "Error", 0);
 			WSACleanup();
-			closesocket(host);
+			closesocket(intercept_brodcast_socket);
 			exit(0);
 		}
 
@@ -54,11 +56,11 @@ bool Client::StartNetwork()
 		addr.sin_port = htons(6919);	//port number
 		addr.sin_addr.s_addr = INADDR_ANY;
 
-		if (bind(host, (sockaddr*)&addr, addr_size))
+		if (bind(intercept_brodcast_socket, (sockaddr*)&addr, addr_size))
 		{
 			MessageBox(0, "binding error", "Error", 0);
 			WSACleanup();
-			closesocket(host);
+			closesocket(intercept_brodcast_socket);
 			exit(0);
 		}
 
@@ -67,7 +69,7 @@ bool Client::StartNetwork()
 		while (thread_active)
 		{
 
-			int recived = recvfrom(host, recv_buffer, 50, 0, (sockaddr *)&addr, &addr_size);
+			int recived = recvfrom(intercept_brodcast_socket, recv_buffer, 50, 0, (sockaddr *)&addr, &addr_size);
 
 			in_addr addr2;
 			hostent *hostent = gethostbyname(recv_buffer);
@@ -160,15 +162,38 @@ bool Client::StartNetwork()
 			}
 			else
 			{
+				it = name_ip.begin();
+				std::advance(it, pos);
+				host = socket(AF_INET, SOCK_STREAM, 0);
+				if (host == INVALID_SOCKET)
+				{
+					std::cout << "error: " << WSAGetLastError();
+					MessageBox(0, "Socket error", "Error", 0);
+					thread_active = false;
+					thread.join();
+					WSACleanup();
+					exit(0);
+				}
+				sockaddr_in SocketAddress;
+				memset(&SocketAddress, 0, sizeof(SocketAddress));
+				SocketAddress.sin_family = AF_INET;
+				SocketAddress.sin_port = htons(6919);
+				SocketAddress.sin_addr.s_addr = inet_addr(it->second.substr(it->second.find_last_of('-') + 2, it->second.size() - it->second.find_last_of('-') - 2).c_str());
+
+				if (connect(host, (sockaddr *)&SocketAddress, sizeof(SocketAddress)))
+				{
+					MessageBox(0, "Chosen user stopped hosting", "Error", 0);
+					thread_active = false;
+					thread.join();
+					WSACleanup();
+					exit(0);
+				}
 				thread_active = false;
 				thread.join();
 				return true;
 			}
 		}
 	} while (true);
-
-	thread_active = false;
-	thread.join();
 }
 void Client::GetTourNames(std::vector<std::string>&tours)
 {
