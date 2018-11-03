@@ -3,6 +3,7 @@
 #include <fstream>
 #include <utility>
 #include <set>
+#include <vector>
 #include <exception>
 #include "Infobox.h"
 #include "Participant.h"

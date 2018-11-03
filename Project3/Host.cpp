@@ -14,6 +14,7 @@ bool Host::StartNetwork()
 {
 	bool threads_active = true;
 	HANDLE handle = main_window->GetHandle();
+	std::vector<std::pair<SOCKET, sockaddr_in>> clients_in_queue;
 
 	std::thread broadcast([&]() {
 
@@ -79,7 +80,7 @@ bool Host::StartNetwork()
 			sock_addr.sin_port = htons(6919);
 			sock_addr.sin_addr.s_addr = INADDR_ANY;
 
-		int addr_size = sizeof(struct sockaddr_in);
+		int addr_size = sizeof(sockaddr_in);
 
 		if (bind(sock, (sockaddr *)& sock_addr, sizeof(sockaddr)))
 		{
@@ -91,8 +92,7 @@ bool Host::StartNetwork()
 		while (threads_active)
 		{
 
-			SOCKET temp = accept(sock, (struct sockaddr *) & sock_addr, &addr_size);
-			
+			SOCKET temp = accept(sock, (sockaddr *) & sock_addr, &addr_size);
 			if (temp != INVALID_SOCKET && threads_active)
 			{
 				int i = clients.size();
@@ -101,7 +101,11 @@ bool Host::StartNetwork()
 				{
 					SetConsoleCursorPosition(handle, { 0, 18 + 2*(short)clients.size() });
 					SetConsoleTextAttribute(handle, main_window->color2);
-					std::cout << clients.size();
+
+					in_addr ip_addr = sock_addr.sin_addr;
+					char helper[INET_ADDRSTRLEN];
+					inet_ntop(AF_INET, &ip_addr, helper, INET_ADDRSTRLEN);
+					std::cout << helper;
 				}
 			}
 
@@ -118,54 +122,81 @@ bool Host::StartNetwork()
 
 	std::vector<std::string> lobby_options = { "Start game", "Kick player", "Back" };
 	int pos = 0;
-
-	pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 15 }, 3, Text::center, true, *main_window);
-	switch (pos)
+	while (true)
 	{
-		case 0: // start game
-		{
-			threads_active = false;
-			broadcast.join();
-			accepting_clients.join();
-			return true;
-		}
-		case 1: // kick players
-		{
+		pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 15 }, 3, Text::center, true, *main_window);
 
-		}
-		case 2: //back
+		switch (pos)
 		{
-			SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
-			if (temp == INVALID_SOCKET)
+			case 0: // start game
 			{
-				std::cout << "error: " << WSAGetLastError();
-				MessageBox(0, "Socket error", "Error", 0);
-				WSACleanup();
 				threads_active = false;
 				broadcast.join();
 				accepting_clients.join();
-				exit(0);
+				return true;
 			}
-			sockaddr_in SocketAddress;
-			memset(&SocketAddress, 0, sizeof(SocketAddress));
-			SocketAddress.sin_family = AF_INET;
-			SocketAddress.sin_port = htons(6919);
-			SocketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-			if (connect(temp, (sockaddr *)&SocketAddress, sizeof(SocketAddress)))
+			case 1: // kick players
 			{
-				MessageBox(0, "Chosen user stopped hosting", "Error", 0);
-				WSACleanup();
+				std::vector<std::string> text;
+				for (int i = 0; i < clients_in_queue.size(); i++)
+				{
+					in_addr ip_addr = clients_in_queue[i].second.sin_addr;
+					char helper[INET_ADDRSTRLEN];
+					inet_ntop(AF_INET, &ip_addr, helper, INET_ADDRSTRLEN);
+					std::cout << helper;
+					text.push_back(helper);
+				}
+				text.push_back("back");
+
+				int kicked_player;
+				while (true)
+				{
+					kicked_player = Text::Choose::Veritcal(text, 0, { (short)main_window->GetWidth() / 2, 15 }, 3, Text::center, true, *main_window);
+					if (kicked_player != text.size() - 1)
+					{
+						clients.erase(clients_in_queue[kicked_player].first);
+						text.erase(text.begin() + kicked_player);
+						clients_in_queue.erase(clients_in_queue.begin() + kicked_player);
+					}
+					else
+						break;
+				}
+				break;
+			}
+			case 2: //back
+			{
+				SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
+				if (temp == INVALID_SOCKET)
+				{
+					std::cout << "error: " << WSAGetLastError();
+					MessageBox(0, "Socket error", "Error", 0);
+					WSACleanup();
+					threads_active = false;
+					broadcast.join();
+					accepting_clients.join();
+					exit(0);
+				}
+				sockaddr_in SocketAddress;
+				memset(&SocketAddress, 0, sizeof(SocketAddress));
+				SocketAddress.sin_family = AF_INET;
+				SocketAddress.sin_port = htons(6919);
+				SocketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+				if (connect(temp, (sockaddr *)&SocketAddress, sizeof(SocketAddress)))
+				{
+					MessageBox(0, "Chosen user stopped hosting", "Error", 0);
+					WSACleanup();
+					threads_active = false;
+					broadcast.join();
+					accepting_clients.join();
+					exit(0);
+				}
+				closesocket(temp);
 				threads_active = false;
 				broadcast.join();
 				accepting_clients.join();
-				exit(0);
+				return false;
 			}
-			closesocket(temp);
-			threads_active = false;
-			broadcast.join();
-			accepting_clients.join();
-			return false;
 		}
 	}
 }
