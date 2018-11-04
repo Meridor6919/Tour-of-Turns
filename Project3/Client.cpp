@@ -183,10 +183,8 @@ bool Client::StartNetwork()
 				if (connect(host, (sockaddr *)&SocketAddress, sizeof(SocketAddress)))
 				{
 					MessageBox(0, "Chosen user stopped hosting", "Error", 0);
-					thread_active = false;
-					thread.join();
-					WSACleanup();
-					exit(0);
+					closesocket(host);
+					continue;
 				}
 				thread_active = false;
 				thread.join();

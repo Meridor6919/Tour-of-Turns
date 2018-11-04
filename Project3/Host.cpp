@@ -97,6 +97,7 @@ bool Host::StartNetwork()
 			{
 				int i = clients.size();
 				clients.insert(temp);
+				clients_in_queue.push_back(std::make_pair(temp, sock_addr));
 				if (i != clients.size())
 				{
 					SetConsoleCursorPosition(handle, { 0, 18 + 2*(short)clients.size() });
@@ -143,7 +144,6 @@ bool Host::StartNetwork()
 					in_addr ip_addr = clients_in_queue[i].second.sin_addr;
 					char helper[INET_ADDRSTRLEN];
 					inet_ntop(AF_INET, &ip_addr, helper, INET_ADDRSTRLEN);
-					std::cout << helper;
 					text.push_back(helper);
 				}
 				text.push_back("back");
@@ -154,24 +154,41 @@ bool Host::StartNetwork()
 					kicked_player = Text::Choose::Veritcal(text, 0, { (short)main_window->GetWidth() / 2, 15 }, 3, Text::center, true, *main_window);
 					if (kicked_player != text.size() - 1)
 					{
+						for (auto it = clients.begin(); it != clients.end(); ++it)
+						{
+							SetConsoleCursorPosition(handle, { 0, 18 + 2 * (short)clients.size() });
+							std::cout << "                ";
+						}
+
 						clients.erase(clients_in_queue[kicked_player].first);
 						text.erase(text.begin() + kicked_player);
 						clients_in_queue.erase(clients_in_queue.begin() + kicked_player);
+
+						for (int i = 0; i < static_cast<int>(text.size()) - 1; i++)
+						{
+							SetConsoleCursorPosition(handle, { 0, 18 + 2 * (short)clients.size() });
+							SetConsoleTextAttribute(handle, main_window->color2);
+							std::cout << text[i];
+						}
 					}
 					else
 						break;
 				}
+
+				
+
+
 				break;
 			}
 			case 2: //back
 			{
 				SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
+				threads_active = false;
 				if (temp == INVALID_SOCKET)
 				{
 					std::cout << "error: " << WSAGetLastError();
 					MessageBox(0, "Socket error", "Error", 0);
 					WSACleanup();
-					threads_active = false;
 					broadcast.join();
 					accepting_clients.join();
 					exit(0);
@@ -192,7 +209,6 @@ bool Host::StartNetwork()
 					exit(0);
 				}
 				closesocket(temp);
-				threads_active = false;
 				broadcast.join();
 				accepting_clients.join();
 				return false;
