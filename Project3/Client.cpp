@@ -13,18 +13,15 @@ Client::Client(Window &main_window) : SinglePlayer(main_window)
 }
 bool Client::StartNetwork()
 {
-	std::map<int, std::string> name_ip;
-	std::chrono::milliseconds ms(100);
 	bool thread_active = true;
+
+	short cursor_pos = 0;
 	HANDLE handle = main_window->GetHandle();
-	int color1 = main_window->color1;
-	int color2 = main_window->color2;
-	char button;
-	short pos = 0;
 	COORD starting_point = { (short)main_window->GetWidth() / 2, 15 };
 	std::map<int, std::string>::iterator  it;
 	SOCKET intercept_brodcast_socket;
 
+	std::map<int, std::string> name_ip;
 	name_ip.insert(std::make_pair(20, "refresh"));
 	name_ip.insert(std::make_pair(21, "back"));
 
@@ -34,18 +31,16 @@ bool Client::StartNetwork()
 		int recv_time = 100;
 		intercept_brodcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-		if (intercept_brodcast_socket == INVALID_SOCKET)
+		if (intercept_brodcast_socket < 0)
 		{
 			MessageBox(0, "Socket error", "Error", 0);
 			WSACleanup();
-			closesocket(intercept_brodcast_socket);
 			exit(0);
 		}
 		if (setsockopt(intercept_brodcast_socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&recv_time), sizeof(recv_time)) < 0)
 		{
 			MessageBox(0, "Socket option error", "Error", 0);
 			WSACleanup();
-			closesocket(intercept_brodcast_socket);
 			exit(0);
 		}
 
@@ -58,9 +53,8 @@ bool Client::StartNetwork()
 
 		if (bind(intercept_brodcast_socket, (sockaddr*)&addr, addr_size))
 		{
-			MessageBox(0, "binding error", "Error", 0);
+			MessageBox(0, ("Binding error"+ std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 			WSACleanup();
-			closesocket(intercept_brodcast_socket);
 			exit(0);
 		}
 
@@ -68,7 +62,6 @@ bool Client::StartNetwork()
 
 		while (thread_active)
 		{
-
 			int recived = recvfrom(intercept_brodcast_socket, recv_buffer, 50, 0, (sockaddr *)&addr, &addr_size);
 
 			in_addr addr2;
@@ -94,27 +87,28 @@ bool Client::StartNetwork()
 					if (!(finded))
 						name_ip.insert(std::make_pair(name_ip.size(), value));
 				}
-				
 			}
+			std::chrono::milliseconds ms(100);
 			std::this_thread::sleep_for(ms);
 		}
+		closesocket(intercept_brodcast_socket);
 	});
 	auto show_options = [&]() {
 		it = name_ip.begin();
-		SetConsoleTextAttribute(handle, color1);
+		SetConsoleTextAttribute(handle, main_window->color1);
 		for (short i = 0; it != name_ip.end(); ++it, i++)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + i * 2 });
 			std::cout << it->second;
 		}
 		it = name_ip.begin();
-		std::advance(it, pos);
-		SetConsoleTextAttribute(handle, color2);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + pos * 2 });
+		std::advance(it, cursor_pos);
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + cursor_pos * 2 });
 		std::cout << it->second;
 	};
 	
-
+	char button;
 	show_options();
 	do
 	{
@@ -125,15 +119,15 @@ bool Client::StartNetwork()
 			if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 80)
 			{
 
-				pos += 1;
-				if (pos == name_ip.size())
-					pos = 0;
+				cursor_pos += 1;
+				if (cursor_pos == name_ip.size())
+					cursor_pos = 0;
 			}
 			else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 72)
 			{
-				pos -= 1;
-				if (pos < 0)
-					pos = name_ip.size() - 1;
+				cursor_pos -= 1;
+				if (cursor_pos < 0)
+					cursor_pos = name_ip.size() - 1;
 			}
 		}
 		show_options();
@@ -163,11 +157,10 @@ bool Client::StartNetwork()
 			else
 			{
 				it = name_ip.begin();
-				std::advance(it, pos);
+				std::advance(it, cursor_pos);
 				host = socket(AF_INET, SOCK_STREAM, 0);
 				if (host == INVALID_SOCKET)
 				{
-					std::cout << "error: " << WSAGetLastError();
 					MessageBox(0, "Socket error", "Error", 0);
 					thread_active = false;
 					thread.join();

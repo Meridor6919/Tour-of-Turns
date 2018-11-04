@@ -43,6 +43,7 @@ int main()
 			}
 			case 5:
 			{
+				WSACleanup();
 				exit(0);
 			}
 		}

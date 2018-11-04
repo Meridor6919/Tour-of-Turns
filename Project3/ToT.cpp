@@ -173,6 +173,7 @@ void GameMode_::Game(bool multiplayer, Window &main_window)
 			{
 				return;
 			}
+			break;
 		}
 		case 1:
 		{
