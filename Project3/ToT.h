@@ -5,7 +5,7 @@
 #include "Window.h"
 
 
-namespace GameMode_
+namespace GameMode
 {
 	void Game(bool multiplayer, Window &main_window);
 	void Credits(Window &main_window);

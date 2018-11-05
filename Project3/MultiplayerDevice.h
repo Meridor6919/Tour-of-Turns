@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "Participant.h"
 #include <WinSock2.h>
 #include <ws2tcpip.h>
 #include <thread>
@@ -7,26 +8,22 @@
 
 #pragma comment(lib,"ws2_32.lib")
 
+class Host;
+
 class MultiplayerDevice
 {
-	std::vector<SOCKET> ClientSockets;
-	//std::vector<Player*> players;
-
+	std::vector<SOCKET> *clients_sockets;
+	std::vector<Participant> *clients;
+	std::vector<int> client_current_game_stage;
+	int *current_stage;
 	std::string tour;
+	Host *host;
 
-	virtual void SendTourNames(int client);
-	virtual void SendCarNames(int client, std::string tour_path);
-	virtual void SendTireNames(int client);
-	virtual void SendCarParameters(int client, std::string car_path);
-	virtual void SendTireParameters(int client, std::string tire_path);
-	virtual void SendTourParameters(int client, std::string tour_path);
-
-	virtual void SendRankingInfo(int client);
-	virtual void SendInfobox(int client);
-	virtual void SendCurrentAtribs(int client);
-	virtual void SendTargetList(int client);
+	bool ValidateClientAction(std::string message, int client_id);
 
 public:
 
-	MultiplayerDevice(std::vector<SOCKET> &ClientSockets);
+	MultiplayerDevice(std::vector<Participant> *clients, std::vector<SOCKET> *clients_sockets, Host *host, int *current_stage);
+	void HandleClientConnection();
+	bool ClientsReadyForNewStage();
 };
