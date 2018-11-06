@@ -24,7 +24,7 @@ bool Host::StartNetwork()
 
 		if (sock < 0)
 		{
-			MessageBox(0, "Socket hostname error", "Error", 0);
+			MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 			WSACleanup();
 			exit(0);
 		}
@@ -32,7 +32,7 @@ bool Host::StartNetwork()
 		char broadcast = 'a';
 		if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(int)) < 0)
 		{
-			MessageBox(0, "Socket broadcast error", "Error", 0);
+			MessageBox(0, ("Socket option error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 			WSACleanup();
 			exit(0);
 		}
@@ -48,7 +48,7 @@ bool Host::StartNetwork()
 
 		if (gethostname(host_name, sizeof(host_name)) < 0)
 		{
-			MessageBox(0, "Socket hostname error", "Error", 0);
+			MessageBox(0, ("Gethostname error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 			WSACleanup();
 			exit(0);
 		}
@@ -56,7 +56,7 @@ bool Host::StartNetwork()
 		{
 			if (sendto(sock, host_name, sizeof(host_name), 0, (sockaddr *)&sock_addr, sizeof(sock_addr)) < 0)
 			{
-				MessageBox(0, "Socket send error", "Error", 0);
+				MessageBox(0, ("Sending error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 				WSACleanup();
 				exit(0);
 			}
@@ -71,7 +71,7 @@ bool Host::StartNetwork()
 
 		if (sock < 0)
 		{
-			MessageBox(0, "Socket error", "Error", 0);
+			MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 			WSACleanup();
 			exit(0);
 		}
@@ -85,7 +85,7 @@ bool Host::StartNetwork()
 
 		if (bind(sock, (sockaddr *)& sock_addr, sizeof(sockaddr)) < 0)
 		{
-			MessageBox(0, "Binding error", "Error", 0);
+			MessageBox(0, ("Binding error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 			WSACleanup();
 			exit(0);
 		}
@@ -148,7 +148,7 @@ bool Host::StartNetwork()
 
 				if (temp < 0)
 				{
-					MessageBox(0, "Socket error", "Error", 0);
+					MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 					broadcast.join();
 					accepting_clients.join();
 					WSACleanup();
@@ -213,7 +213,7 @@ bool Host::StartNetwork()
 
 				if (temp < 0)
 				{
-					MessageBox(0, "Socket error", "Error", 0);
+					MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 					broadcast.join();
 					accepting_clients.join();
 					WSACleanup();

@@ -33,13 +33,13 @@ bool Client::StartNetwork()
 
 		if (intercept_brodcast_socket < 0)
 		{
-			MessageBox(0, "Socket error", "Error", 0);
+			MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 			WSACleanup();
 			exit(0);
 		}
 		if (setsockopt(intercept_brodcast_socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&recv_time), sizeof(recv_time)) < 0)
 		{
-			MessageBox(0, "Socket option error", "Error", 0);
+			MessageBox(0, ("Socket option error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 			WSACleanup();
 			exit(0);
 		}
@@ -161,7 +161,7 @@ bool Client::StartNetwork()
 				host = socket(AF_INET, SOCK_STREAM, 0);
 				if (host == INVALID_SOCKET)
 				{
-					MessageBox(0, "Socket error", "Error", 0);
+					MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 					thread_active = false;
 					thread.join();
 					WSACleanup();
@@ -175,7 +175,7 @@ bool Client::StartNetwork()
 
 				if (connect(host, (sockaddr *)&SocketAddress, sizeof(SocketAddress)))
 				{
-					MessageBox(0, "Chosen user stopped hosting", "Error", 0);
+					MessageBox(0, ("Connection error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 					closesocket(host);
 					continue;
 				}
