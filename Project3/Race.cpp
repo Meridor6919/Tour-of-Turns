@@ -1,8 +1,9 @@
 #include "Race.h"
 
-Race::Race(Window &window)
+Race::Race(Window &window, std::vector<Participant*> *participants)
 {
 	main_window = &window;
+	this->participants = participants;
 }
 void  Race::Lobby(SinglePlayer *network_role)
 {
@@ -123,8 +124,8 @@ void  Race::Lobby(SinglePlayer *network_role)
 		}
 	}
 
-	participants.emplace_back(new Participant(car_path, tire_path, *network_role));
-	network_role->GetOtherParticipants(participants, ais_pos);
+	participants->emplace_back(new Participant(car_path, tire_path, *network_role));
+	network_role->GetOtherParticipants(*participants, ais_pos);
 	network_role->GetTourParameters(tour_path);
 }
 void Race::Game()
@@ -139,11 +140,11 @@ void Race::Game()
 	//{
 		//Players.Ranking(RacersScores, RacersNames, AliveAIs, width * 2, color, color2);
 
-		for (int i = 0; i < static_cast<int>(participants.size()); i++)
+		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
 		{
-			if (participants[i]->network_role->id < 2 || i == 0) //single player, ai or current user
+			if ((*participants)[i]->network_role->id < 2 || i == 0) //single player, ai or current user
 				//participants[i].assign_action = participants[i]->network_role->TakeAction();
-			if (participants[i]->current_durability <= 0)
+			if ((*participants)[i]->current_durability <= 0)
 			{
 				//erase connection
 				//erase player from vector

@@ -188,15 +188,45 @@ bool Client::StartNetwork()
 }
 void Client::GetTourNames(std::vector<std::string>&tours)
 {
+	std::string get_tour_name_code = "50";
+	char temp[255];
 
+	send(host, get_tour_name_code.c_str(), 4, 0);
+
+	while (true)
+	{
+		recv(host, temp, 255, 0);
+		if (temp != "exit" && temp != tours[tours.size()-1])
+			tours.push_back(temp);
+		else
+			break;
+	} 
 }
 void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 {
+	std::string get_tour_name_code = "51";
+	char temp[255];
 
+	send(host, get_tour_name_code.c_str(), 4, 0);
+
+	if (recv(host, temp, 255, 0) < 0)
+		tour = temp;
 }
 void Client::GetTireNames(std::vector<std::string>&tires)
 {
+	std::string get_tour_name_code = "52";
+	char temp[255];
 
+	send(host, get_tour_name_code.c_str(), 4, 0);
+
+	while (true)
+	{
+		recv(host, temp, 255, 0);
+		if (temp != "exit" && temp != tires[tires.size() - 1])
+			tires.push_back(temp);
+		else
+			break;
+	}
 }
 std::vector<int> Client::GetCarParameters(std::string path)
 {

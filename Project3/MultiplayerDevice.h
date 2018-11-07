@@ -12,10 +12,10 @@ class Host;
 
 class MultiplayerDevice
 {
-	std::vector<SOCKET> *clients_sockets;
-	std::vector<Participant> *clients;
+	std::vector<std::pair<SOCKET, sockaddr_in>> *clients_sockets;
+	std::vector<Participant*> *clients;
 	std::vector<int> client_current_game_stage;
-	int *current_stage;
+	int current_stage;
 	std::string tour;
 	Host *host;
 
@@ -23,7 +23,8 @@ class MultiplayerDevice
 
 public:
 
-	MultiplayerDevice(std::vector<Participant> *clients, std::vector<SOCKET> *clients_sockets, Host *host, int *current_stage);
+	MultiplayerDevice(std::vector<Participant*> *clients, std::vector<std::pair<SOCKET, sockaddr_in>> *clients_sockets, Host *host, int current_stage);
+	void NextStage() { current_stage++; }
 	void HandleClientConnection();
 	bool ClientsReadyForNewStage();
 };

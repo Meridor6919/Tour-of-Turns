@@ -156,6 +156,7 @@ void GameMode::Game(bool multiplayer, Window &main_window)
 {
 
 	SinglePlayer *network_role = nullptr;
+	std::vector<Participant*> participants;
 
 	if (multiplayer)
 	{
@@ -167,7 +168,7 @@ void GameMode::Game(bool multiplayer, Window &main_window)
 		{
 			try
 			{
-				network_role = new Host(main_window);
+				network_role = new Host(main_window, &participants);
 			}
 			catch (int err)
 			{
@@ -195,7 +196,7 @@ void GameMode::Game(bool multiplayer, Window &main_window)
 	else
 		network_role = new SinglePlayer(main_window);
 	
-	Race race(main_window);
+	Race race(main_window, &participants);
 	race.Lobby(network_role);
 	race.Game();
 	race.Ending();

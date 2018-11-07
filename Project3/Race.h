@@ -4,13 +4,13 @@
 
 
 class Race {
-	std::vector<Participant*> participants;
+	std::vector<Participant*> *participants;
 	std::vector<float> scores;
 	std::string tour_path;
 	Window *main_window;
 
 public:
-	Race(Window &window);
+	Race(Window &window, std::vector<Participant*> *participants);
 	void Lobby(SinglePlayer *network_role);
 	void Game();
 	void Ending();

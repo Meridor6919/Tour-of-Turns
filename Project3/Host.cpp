@@ -1,9 +1,9 @@
 #include "NetworkRole.h"
 
-Host::Host(Window &main_window) : SinglePlayer(main_window)
+Host::Host(Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
-	if(!StartNetwork()) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
+	if(!StartNetwork(participants)) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
 	{
 		for (int i =0; i < clients.size(); i++)
 		{
@@ -12,7 +12,7 @@ Host::Host(Window &main_window) : SinglePlayer(main_window)
 		throw 1;
 	}
 }
-bool Host::StartNetwork()
+bool Host::StartNetwork(std::vector<Participant*> *participants)
 {
 	bool threads_active = true;
 	HANDLE handle = main_window->GetHandle();
@@ -165,6 +165,7 @@ bool Host::StartNetwork()
 
 				broadcast.join();
 				accepting_clients.join();
+				network_device = new MultiplayerDevice(participants, &clients, this, 0);
 				return true;
 			}
 			case 1: // kick players

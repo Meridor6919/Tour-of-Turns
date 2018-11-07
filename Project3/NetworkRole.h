@@ -42,11 +42,11 @@ class Host : public SinglePlayer {
 
 	std::vector<std::pair<SOCKET, sockaddr_in>> clients;
 	MultiplayerDevice *network_device;
-	bool StartNetwork();
+	bool StartNetwork(std::vector<Participant*> *participants);
 
 public:
 
-	Host(Window &main_window);
+	Host(Window &main_window, std::vector<Participant*> *participants);
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais);
 
 	void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
