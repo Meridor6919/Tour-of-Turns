@@ -10,7 +10,21 @@ MultiplayerDevice::MultiplayerDevice(std::vector<Participant*> *clients, std::ve
 }
 void MultiplayerDevice::HandleClientConnection()
 {
-	//all things that will be working inside a thread for managing clients
+	char buffer[254];
+	std::thread *recv_threads;
+	recv_threads = new std::thread[clients->size()];
+	
+	auto recv_function = [&](int i) {
+
+		while (true)
+		{
+			recv((*clients_sockets)[i].first, buffer, 254, 0);
+			ValidateClientAction(buffer, i);
+		}
+	};
+
+	for (int i = 0; i < clients->size(); i++)
+		recv_threads[i] = std::thread(recv_function, i);
 }
 bool MultiplayerDevice::ClientsReadyForNewStage()
 {
