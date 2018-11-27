@@ -191,11 +191,12 @@ void Client::GetTourNames(std::vector<std::string>&tours)
 	std::string get_tour_name_code = "50";
 	char temp[255];
 
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	
 
 	while (true)
 	{
-		recv(host, temp, 255, 0);
+		send(host, get_tour_name_code.c_str(), 4, 0);
+		auto h = recv(host, temp, 255, 0);
 		if (temp != "exit" && temp != tours[tours.size()-1])
 			tours.push_back(temp);
 		else
@@ -204,6 +205,7 @@ void Client::GetTourNames(std::vector<std::string>&tours)
 }
 void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 {
+
 	std::string get_tour_name_code = "51";
 	char temp[255];
 
@@ -214,13 +216,15 @@ void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 }
 void Client::GetTireNames(std::vector<std::string>&tires)
 {
+
 	std::string get_tour_name_code = "52";
 	char temp[255];
 
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	
 
 	while (true)
 	{
+		send(host, get_tour_name_code.c_str(), 4, 0);
 		recv(host, temp, 255, 0);
 		if (temp != "exit" && temp != tires[tires.size() - 1])
 			tires.push_back(temp);
@@ -231,11 +235,24 @@ void Client::GetTireNames(std::vector<std::string>&tires)
 std::vector<int> Client::GetCarParameters(std::string path)
 {
 	std::vector<int> temp;
+	temp.push_back(1);
+	temp.push_back(1);
+	temp.push_back(1);
+	temp.push_back(1);
+	temp.push_back(1);
+	temp.push_back(1);
+	temp.push_back(1);
 	return temp;
 }
 std::vector<std::string> Client::GetTireParameters(std::string path)
 {
 	std::vector<std::string> temp;
+	temp.push_back("1x1");
+	temp.push_back("1x1");
+	temp.push_back("1x1");
+	temp.push_back("1x1");
+	temp.push_back("1x1");
+	temp.push_back("1x1");
 	return temp;
 }
 void Client::GetTourParameters(std::string path)
