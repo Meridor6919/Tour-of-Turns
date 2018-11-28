@@ -77,7 +77,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		default:
 		{
-			MessageBox(0, "msg", "xd", 0);
+			MessageBox(0, "msg", message.c_str(), 0);
 			return false;
 		}
 

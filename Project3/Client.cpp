@@ -197,7 +197,7 @@ void Client::GetTourNames(std::vector<std::string>&tours)
 	{
 		send(host, get_tour_name_code.c_str(), 4, 0);
 		auto h = recv(host, temp, 255, 0);
-		if (temp != "exit" && temp != tours[tours.size()-1])
+		if (temp != "exit" && h)
 			tours.push_back(temp);
 		else
 			break;
