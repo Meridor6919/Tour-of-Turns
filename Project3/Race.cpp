@@ -23,9 +23,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 	int ais_pos = 0;
 	
 	network_role->GetTourNames(tours);
-	//MessageBox(0, "done1", "done", 0);
 	network_role->GetTireNames(tires);
-	//MessageBox(0, "done2", "done", 0);
 
 	if (tours.size() == 0)
 	{
@@ -43,7 +41,6 @@ void  Race::Lobby(SinglePlayer *network_role)
 	std::string car_path;
 
 	network_role->GetCarNames(cars, tour_path);
-	//MessageBox(0, "done3", "done", 0);
 
 	if (cars.size() == 0)
 		MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
@@ -128,9 +125,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 	}
 
 	participants->emplace_back(new Participant(car_path, tire_path, *network_role));
-	//network_role->GetOtherParticipants(*participants, ais_pos);
 	network_role->GetTourParameters(tour_path);
-	//MessageBox(0, "done4", "done", 0);
 }
 void Race::Game()
 {

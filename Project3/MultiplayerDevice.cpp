@@ -15,11 +15,16 @@ void MultiplayerDevice::HandleClientConnection()
 	std::thread *recv_threads;
 	recv_threads = new std::thread[(int)(*clients_sockets).size()];
 
+	for (int i = 0; i < (int)(*clients_sockets).size(); i++)
+		send((*clients_sockets)[i].first, "start", 255, 0);
+
+	MessageBox(0, std::to_string((int)(*clients_sockets).size()).c_str(), "xd", 0);
+	
+
 	auto recv_function = [&](int i) {
 
 		while (true)
 		{
-
 			auto h = recv((*clients_sockets)[i].first, buffer, 254, 0);
 			ValidateClientAction(buffer, i);
 
@@ -49,13 +54,11 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 	{
 		case 50://get tour
 		{
-			MessageBox(0, "msg", "50", 0);
 			send((*clients_sockets)[client_id].first, tour.c_str(), 255, 0);
 			break;
 		}
 		case 51://get cars
 		{
-			MessageBox(0, "msg", "51", 0);
 			std::vector<std::string> cars;
 			host->GetCarNames(cars, tour);
 
@@ -66,7 +69,6 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		case 52://get tire
 		{
-			MessageBox(0, "msg", "52", 0);
 			std::vector<std::string> tires;
 			host->GetTireNames(tires);
 
@@ -77,7 +79,6 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		default:
 		{
-			MessageBox(0, "msg", message.c_str(), 0);
 			return false;
 		}
 
