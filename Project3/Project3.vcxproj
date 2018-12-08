@@ -127,6 +127,8 @@
     <ClCompile Include="TextLib.cpp" />
     <ClCompile Include="ToT.cpp" />
     <ClCompile Include="ToT.h" />
+    <ClCompile Include="ToT_Window.cpp" />
+    <ClCompile Include="ToT_Window.h" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>

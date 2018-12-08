@@ -1,5 +1,6 @@
 #pragma once
 #include "MultiplayerDevice.h"
+#include "ToT_Window.h"
 #include <fstream>
 #include <utility>
 #include <set>
@@ -12,12 +13,12 @@ class SinglePlayer {
 
 protected:
 
-	Window *main_window;
+	ToT_Window *main_window;
 
 public:
 	int id;
 
-	SinglePlayer(Window &main_window);
+	SinglePlayer(ToT_Window &main_window);
 	virtual void GetTourNames(std::vector<std::string>&tours);
 	virtual void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	virtual void GetTireNames(std::vector<std::string>&tires);
@@ -46,7 +47,7 @@ class Host : public SinglePlayer {
 
 public:
 
-	Host(Window &main_window, std::vector<Participant*> *participants);
+	Host(ToT_Window &main_window, std::vector<Participant*> *participants);
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais);
 
 	void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
@@ -68,7 +69,7 @@ class Client : public SinglePlayer {
 
 public:
 
-	Client(Window &main_window);
+	Client(ToT_Window &main_window);
 	void GetTourNames(std::vector<std::string>&tours);
 	void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	void GetTireNames(std::vector<std::string>&tires);

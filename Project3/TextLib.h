@@ -23,7 +23,7 @@ namespace Text
 	{
 		int Horizontal(std::vector<std::string> text, int starting_position, COORD starting_point, TextAlign text_align, bool clear_after, Window &main_window);
 		int Veritcal(std::vector<std::string> text, int starting_position, COORD starting_posint, int spacing, TextAlign text_align, bool clear_after, Window &main_window);
-		int Numeric(int min, int max, COORD starting_point, TextAlign text_align, Window &main_window);
+		int Numeric(int max, COORD starting_point, bool zero_allowed, Window &main_window);
 	}
 	
 	void OrdinaryText(std::vector<std::string> text, std::vector<Atributes> atribute, const TextAlign text_align, const short spacing, const short position, Window &main_window);

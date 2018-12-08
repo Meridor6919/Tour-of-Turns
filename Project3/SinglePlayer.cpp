@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-SinglePlayer::SinglePlayer(Window &main_window)
+SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
 }

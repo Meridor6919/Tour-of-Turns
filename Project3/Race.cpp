@@ -1,6 +1,6 @@
 #include "Race.h"
 
-Race::Race(Window &window, std::vector<Participant*> *participants)
+Race::Race(ToT_Window &window, std::vector<Participant*> *participants)
 {
 	main_window = &window;
 	this->participants = participants;

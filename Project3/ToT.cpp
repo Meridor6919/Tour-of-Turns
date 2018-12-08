@@ -1,7 +1,7 @@
 #include "ToT.h"
 
 
-void GameMode::Credits(Window &main_window)
+void GameMode_::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
 
@@ -26,7 +26,7 @@ void GameMode::Credits(Window &main_window)
 
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window);
 }
-void GameMode::Options(Window &main_window)
+void GameMode_::Options(ToT_Window &main_window)
 {
 	std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
@@ -82,7 +82,7 @@ void GameMode::Options(Window &main_window)
 				std::vector<std::string> local_text = { "on", "off" };
 				COORD local_starting_point = { starting_point.X + options_text[main_menu_position].size()/2 +3 , starting_point.Y + main_menu_position * spacing };
 				
-				main_window.SetMusic(!(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
+				main_window.SetMusic("test.wav", !(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
 			case 3:
@@ -110,7 +110,7 @@ void GameMode::Options(Window &main_window)
 		}
 	}
 }
-void GameMode::Ranking(Window &main_window)
+void GameMode_::Ranking(ToT_Window &main_window)
 {
 	
 	HANDLE handle = main_window.GetHandle();
@@ -152,7 +152,7 @@ void GameMode::Ranking(Window &main_window)
 	Text::TableText(map_information, 1, 7, 2, 20, main_window, true);
 	map_information.clear();
 }
-void GameMode::Game(bool multiplayer, Window &main_window)
+void GameMode_::Game(bool multiplayer, ToT_Window &main_window)
 {
 
 	SinglePlayer *network_role = nullptr;

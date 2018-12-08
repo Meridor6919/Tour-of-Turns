@@ -1,6 +1,6 @@
 #include <WinSock2.h>
 #include "ToT.h"
-#include "Window.h"
+#include "ToT_Window.h"
 
 
 #pragma comment(lib, "Ws2_32.lib")
@@ -8,7 +8,7 @@
 int main()
 {
 	char title[] = "Tour of Turns";
-	Window GameWindow(title, 15, 10, false, 14, true); //window settings
+	ToT_Window GameWindow(title, 15, 10, 14, true); //window settings
 	std::vector<std::string> text = { "New Game ", "Multiplayer ", "Ranking ", "Options ", "Credits ", "Exit" };
 	int main_menu_position = 0;
 
@@ -23,22 +23,22 @@ int main()
 			case 0:
 			case 1:
 			{
-				GameMode::Game(main_menu_position, GameWindow);
+				GameMode_::Game(main_menu_position, GameWindow);
 				break;
 			}
 			case 2:
 			{
-				GameMode::Ranking(GameWindow);
+				GameMode_::Ranking(GameWindow);
 				break;
 			}
 			case 3:
 			{
-				GameMode::Options(GameWindow);
+				GameMode_::Options(GameWindow);
 				break;
 			}
 			case 4:
 			{
-				GameMode::Credits(GameWindow);
+				GameMode_::Credits(GameWindow);
 				break;
 			}
 			case 5:

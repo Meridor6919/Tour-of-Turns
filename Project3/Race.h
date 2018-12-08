@@ -7,10 +7,10 @@ class Race {
 	std::vector<Participant*> *participants;
 	std::vector<float> scores;
 	std::string tour_path;
-	Window *main_window;
+	ToT_Window *main_window;
 
 public:
-	Race(Window &window, std::vector<Participant*> *participants);
+	Race(ToT_Window &window, std::vector<Participant*> *participants);
 	void Lobby(SinglePlayer *network_role);
 	void Game();
 	void Ending();

@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-Host::Host(Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
+Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	if(!StartNetwork(participants)) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 

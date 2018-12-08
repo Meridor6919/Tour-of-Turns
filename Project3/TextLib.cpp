@@ -130,19 +130,50 @@ int Text::Choose::Veritcal(std::vector<std::string> text, int starting_position,
 
 	return starting_position;
 }
-int Text::Choose::Numeric(int min, int max, COORD starting_point, Text::TextAlign text_align, Window &main_window)
+int Text::Choose::Numeric(int max, COORD starting_point, bool zero_allowed, Window &main_window)
 {
-	return 1;
+	char button;
+	int number = 0;
+	int pos = 0;
+	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
+	while (true)//while player presses enter
+	{
+		button = _getch();
+		if (button >= '0' && button <= '9')
+		{
+			if (button == '0' && pos == 0)
+				continue;
+			else if (number * 10 + button - 48 > max)
+				continue;
+
+			std::cout << button;
+			number = number * 10 + button - 48;
+			pos++;
+		}
+		if (button == '\b' && pos != 0)
+		{
+			std::cout << "\b \b";
+			number /= 10;
+			pos--;
+		}
+		if (button == 13)
+		{
+			if (pos == 0 && !zero_allowed)
+				continue;
+			break;
+		}
+	}
+	return number;
 }
 
 void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Atributes> atribute, const Text::TextAlign text_align, const short spacing, const short position, Window &MainWindow)
 {
 #ifdef DEBUG
-		if (text.size() != atribute.size())
-		{
-			MessageBox(0, "Diffrent vector sizes", "Error", 0);
-			return;
-		}
+	if (text.size() != atribute.size())
+	{
+		MessageBox(0, "Diffrent vector sizes", "Error", 0);
+		return;
+	}
 #endif // DEBUG
 
 	HANDLE handle = MainWindow.GetHandle();
@@ -207,7 +238,7 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 	HANDLE handle = main_window.GetHandle();
 	short vertical_spacing = main_window.GetWidth() / texts_per_row;
 	std::vector<std::string>::iterator it = text.begin();
-	
+
 	for (short i = 0; i*texts_per_row < text.size(); i++)
 	{
 		if (i < painted_rows)
@@ -217,7 +248,7 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 
 		for (short j = 0; j < texts_per_row && i*texts_per_row + j < text.size(); j++)
 		{
-			
+
 			SetConsoleCursorPosition(handle, { vertical_spacing* j + vertical_spacing / 2 - static_cast<short>((float)Text::TextAlign::center / 2 * (float)it->size()), starting_line + i * (short)spacing });
 			if (clearing)
 			{

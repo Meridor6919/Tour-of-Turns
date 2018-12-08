@@ -54,6 +54,12 @@
     <ClCompile Include="Participant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ToT_Window.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToT_Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

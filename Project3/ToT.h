@@ -2,13 +2,13 @@
 #include <fstream>
 #include "Race.h"
 #include "TextLib.h"
-#include "Window.h"
+#include "ToT_Window.h"
 
 
-namespace GameMode
+namespace GameMode_
 {
-	void Game(bool multiplayer, Window &main_window);
-	void Credits(Window &main_window);
-	void Options(Window &main_window);
-	void Ranking(Window &main_window);
+	void Game(bool multiplayer, ToT_Window &main_window);
+	void Credits(ToT_Window &main_window);
+	void Options(ToT_Window &main_window);
+	void Ranking(ToT_Window &main_window);
 }
