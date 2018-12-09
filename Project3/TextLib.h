@@ -28,4 +28,5 @@ namespace Text
 	
 	void OrdinaryText(std::vector<std::string> text, std::vector<Atributes> atribute, const TextAlign text_align, const short spacing, const short position, Window &main_window);
 	void TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short starting_line, Window &main_window, bool clearing = false);
+	void Spaces(int i);
 }

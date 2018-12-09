@@ -14,31 +14,33 @@ int main()
 
 	WSAData wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
+	GameWindow.Title();
+
 
 	while (true) //game loop
 	{
 
-		switch (main_menu_position = Text::Choose::Veritcal(text, main_menu_position, { (short)GameWindow.GetWidth() / 2, 15 }, 3, Text::TextAlign::center, true, GameWindow))
+		switch (main_menu_position = Text::Choose::Veritcal(text, main_menu_position, { (short)GameWindow.GetWidth() / 2, 20 }, 3, Text::TextAlign::center, true, GameWindow))
 		{
 			case 0:
 			case 1:
 			{
-				GameMode::Game(main_menu_position, GameWindow);
+				GameMode_::Game(main_menu_position, GameWindow);
 				break;
 			}
 			case 2:
 			{
-				GameMode::Ranking(GameWindow);
+				GameMode_::Ranking(GameWindow);
 				break;
 			}
 			case 3:
 			{
-				GameMode::Options(GameWindow);
+				GameMode_::Options(GameWindow);
 				break;
 			}
 			case 4:
 			{
-				GameMode::Credits(GameWindow);
+				GameMode_::Credits(GameWindow);
 				break;
 			}
 			case 5:

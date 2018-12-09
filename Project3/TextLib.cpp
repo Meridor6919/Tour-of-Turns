@@ -262,3 +262,8 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 		}
 	}
 }
+void Text::Spaces(int i)
+{
+	for (int j = 0; j < i; j++)
+		std::cout << " ";
+}

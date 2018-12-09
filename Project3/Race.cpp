@@ -8,7 +8,7 @@ Race::Race(ToT_Window &window, std::vector<Participant*> *participants)
 void  Race::Lobby(SinglePlayer *network_role)
 {
 	std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
-	COORD starting_point = { (short)main_window->GetWidth() / 2, 15 };
+	COORD starting_point = { (short)main_window->GetWidth() / 2, 20 };
 	const short spacing = 3;
 	short main_menu_position = 0;
 	const int max_name_size = 14;

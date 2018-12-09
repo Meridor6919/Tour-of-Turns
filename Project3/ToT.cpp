@@ -1,7 +1,7 @@
 #include "ToT.h"
 
 
-void GameMode::Credits(ToT_Window &main_window)
+void GameMode_::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
 
@@ -26,11 +26,11 @@ void GameMode::Credits(ToT_Window &main_window)
 
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window);
 }
-void GameMode::Options(ToT_Window &main_window)
+void GameMode_::Options(ToT_Window &main_window)
 {
 	std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
-	COORD starting_point = { (short)main_window.GetWidth() / 2, 15 };
+	COORD starting_point = { (short)main_window.GetWidth() / 2, 20 };
 	const short spacing = 3;
 	bool loop = true;
 
@@ -56,6 +56,7 @@ void GameMode::Options(ToT_Window &main_window)
 				main_window.color1 = Text::Choose::Horizontal(local_text, main_window.color1 - 2 - (main_window.color1 > main_window.color2), local_starting_point, Text::TextAlign::left, true, main_window) + 2;
 				if (main_window.color1 >= main_window.color2)
 					main_window.color1++;
+				main_window.Title();
 				break;
 			}
 			case 1:
@@ -74,6 +75,7 @@ void GameMode::Options(ToT_Window &main_window)
 				main_window.color2 = Text::Choose::Horizontal(local_text, main_window.color2 - 2 - (main_window.color2 > main_window.color1), local_starting_point, Text::TextAlign::left, true, main_window) + 2;
 				if (main_window.color2 >= main_window.color1)
 					main_window.color2++;
+				main_window.Title();
 				break;
 			}
 			case 2:
@@ -110,7 +112,7 @@ void GameMode::Options(ToT_Window &main_window)
 		}
 	}
 }
-void GameMode::Ranking(ToT_Window &main_window)
+void GameMode_::Ranking(ToT_Window &main_window)
 {
 	
 	HANDLE handle = main_window.GetHandle();
@@ -152,7 +154,7 @@ void GameMode::Ranking(ToT_Window &main_window)
 	Text::TableText(map_information, 1, 7, 2, 20, main_window, true);
 	map_information.clear();
 }
-void GameMode::Game(bool multiplayer, ToT_Window &main_window)
+void GameMode_::Game(bool multiplayer, ToT_Window &main_window)
 {
 
 	SinglePlayer *network_role = nullptr;
