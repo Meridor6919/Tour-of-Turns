@@ -7,6 +7,7 @@ Race::Race(ToT_Window &window, std::vector<Participant*> *participants)
 }
 void  Race::Lobby(SinglePlayer *network_role)
 {
+
 	std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
 	COORD starting_point = { (short)main_window->GetWidth() / 2, 20 };
 	const short spacing = 3;
@@ -28,12 +29,12 @@ void  Race::Lobby(SinglePlayer *network_role)
 
 	if (tours.size() == 0)
 	{
-		MessageBoxA(0, "Cannot load any map files", "error", 0);
+		MessageBox(0, "Cannot load any map files", "error", 0);
 		return;
 	}
 	else if (tires.size() == 0)
 	{
-		MessageBoxA(0, "Cannot load any tire files", "error", 0);
+		MessageBox(0, "Cannot load any tire files", "error", 0);
 		return;
 	}
 
@@ -44,7 +45,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 	network_role->GetCarNames(cars, tour_path);
 
 	if (cars.size() == 0)
-		MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
+		MessageBox(0, "Cannot load any car from selected tour", "error", 0);
 	else
 		car_path = cars[0];
 
@@ -200,7 +201,12 @@ void  Race::Lobby(SinglePlayer *network_role)
 	}
 	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window, true);
 	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window, true);
+
+	//AIs
+
 	participants->emplace_back(new Participant(car_path, tire_path, *network_role));
+	std::vector<Participant*> xd;
+	network_role->GetOtherParticipants(xd, 8, tour_path);
 	network_role->GetTourParameters(tour_path);
 
 }
@@ -223,7 +229,7 @@ void Race::Game()
 			if ((*participants)[i]->current_durability <= 0)
 			{
 				//erase connection
-				//erase player from vector
+				//make sure that he is dead
 			}
 		}
 		//tests, scores
@@ -236,6 +242,11 @@ void Race::Game()
 }
 void Race::Ending()
 {
+	while (true)
+	{
+		//to do - > deal with threads and leaking memory :/
+		_getch();
+	}
 	//save scores
 }
 

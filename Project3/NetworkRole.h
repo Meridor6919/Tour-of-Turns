@@ -25,7 +25,7 @@ public:
 	virtual std::vector<int> GetCarParameters(std::string path);
 	virtual std::vector<std::string> GetTireParameters(std::string path);
 	virtual void GetTourParameters(std::string path);
-	virtual void GetOtherParticipants(std::vector<Participant*> &participants, int ais);
+	virtual void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	virtual void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
 	virtual void GetInfobox(InfoBox *infobox);
@@ -48,7 +48,7 @@ class Host : public SinglePlayer {
 public:
 
 	Host(ToT_Window &main_window, std::vector<Participant*> *participants);
-	void GetOtherParticipants(std::vector<Participant*> &participants, int ais);
+	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
 	void GetInfobox(InfoBox *infobox);
@@ -76,7 +76,7 @@ public:
 	std::vector<int> GetCarParameters(std::string path);
 	std::vector<std::string> GetTireParameters(std::string path);
 	void GetTourParameters(std::string path);
-	void GetOtherParticipants(std::vector<Participant*> &participants, int ais);
+	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
 	void GetInfobox(InfoBox *infobox);

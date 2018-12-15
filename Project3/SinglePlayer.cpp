@@ -52,7 +52,7 @@ std::vector<std::string> SinglePlayer::GetTireParameters(std::string path)
 
 	return tire_parameters;
 }
-void SinglePlayer::GetOtherParticipants(std::vector<Participant*> &participants, int ais)
+void SinglePlayer::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {
 	
 }

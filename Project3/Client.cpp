@@ -194,68 +194,84 @@ bool Client::StartNetwork()
 void Client::GetTourNames(std::vector<std::string>&tours)
 {
 	std::string get_tour_name_code = "50";
+	send(host, get_tour_name_code.c_str(), 4, 0);
 	char temp[255];
 
-	send(host, get_tour_name_code.c_str(), 4, 0);
-	auto h = recv(host, temp, 255, 0);
+	if (recv(host, temp, 255, 0) < 0)
+		MessageBox(0, "GetTourNames method failed", "Error", 0);
+
+	tours.push_back(temp);//host will always send only one tour (the tour that he choosed)
 }
 void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 {
 	std::string get_tour_name_code = "51";
+	send(host, get_tour_name_code.c_str(), 4, 0);
 	char temp[255];
 
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	do
+	{
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetCarNames method failed", "Error", 0);
 
+		cars.push_back(temp);
 
-	if (recv(host, temp, 255, 0) < 0)
-		tour = temp;
+	} while ((std::string)temp != "exit");
+	
 }
 void Client::GetTireNames(std::vector<std::string>&tires)
 {
-
 	std::string get_tour_name_code = "52";
+	send(host, get_tour_name_code.c_str(), 4, 0);
 	char temp[255];
 
-	
-
-	while (true)
+	do
 	{
-		send(host, get_tour_name_code.c_str(), 4, 0);
-		recv(host, temp, 255, 0);
-		if ((std::string)temp != "exit" && temp != tires[tires.size() - 1])
-			tires.push_back(temp);
-		else
-			break;
-	}
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetTireNames method failed", "Error", 0);
+
+		tires.push_back(temp);
+
+	} while ((std::string)temp != "exit");
 }
 std::vector<int> Client::GetCarParameters(std::string path)
 {
-	std::vector<int> temp;
-	temp.push_back(1);
-	temp.push_back(1);
-	temp.push_back(1);
-	temp.push_back(1);
-	temp.push_back(1);
-	temp.push_back(1);
-	temp.push_back(1);
-	return temp;
+	std::string get_tour_name_code = "54"+path;
+	send(host, get_tour_name_code.c_str(), 256, 0);
+	char temp[255];
+
+	std::vector<int> ret;
+	for (int i = 0; i < 8; ++i)
+	{
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetTireNames method failed", "Error", 0);
+
+		ret.push_back(std::atoi(((std::string)temp).c_str()));
+	}
+
+	return ret;
 }
 std::vector<std::string> Client::GetTireParameters(std::string path)
 {
-	std::vector<std::string> temp;
-	temp.push_back("1x1");
-	temp.push_back("1x1");
-	temp.push_back("1x1");
-	temp.push_back("1x1");
-	temp.push_back("1x1");
-	temp.push_back("1x1");
-	return temp;
+	std::string get_tour_name_code = "55"+path;
+	send(host, get_tour_name_code.c_str(), 256, 0);
+	char temp[255];
+
+	std::vector<std::string> ret;
+
+	for (int i = 0; i < 6; i++)
+	{
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetTireNames method failed", "Error", 0);
+
+		ret.push_back(temp);
+	}
+	return ret;
 }
 void Client::GetTourParameters(std::string path)
 {
-
+	std::string get_tour_name_code = "53";
 }
-void Client::GetOtherParticipants(std::vector<Participant*> &participants, int ais)
+void Client::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {
 
 }

@@ -235,9 +235,10 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 		}
 	}
 }
-void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais)
+void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {
-
+	if(network_device != nullptr)
+		network_device->HandleClientConnection(tour);
 }
 void Host::GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores)
 {
