@@ -25,6 +25,8 @@ void GameMode_::Credits(ToT_Window &main_window)
 												Text::endl, Text::color2, Text::endl };
 
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window);
+	_getch(); _getch();
+	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window, true);
 }
 void GameMode_::Options(ToT_Window &main_window)
 {

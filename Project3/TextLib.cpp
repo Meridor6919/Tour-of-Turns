@@ -166,7 +166,7 @@ int Text::Choose::Numeric(int max, COORD starting_point, bool zero_allowed, Wind
 	return number;
 }
 
-void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Atributes> atribute, const Text::TextAlign text_align, const short spacing, const short position, Window &MainWindow)
+void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Atributes> atribute, const Text::TextAlign text_align, const short spacing, const short position, Window &MainWindow, bool clearing)
 {
 #ifdef DEBUG
 	if (text.size() != atribute.size())
@@ -178,52 +178,76 @@ void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Atribut
 
 	HANDLE handle = MainWindow.GetHandle();
 	const int records = text.size();
+	short current_position;
+	short starting_pos;
 
-	SetConsoleCursorPosition(handle, { (short)MainWindow.GetWidth() / 2 - static_cast<short>((float)text_align / 2 * (float)text[0].size()), position });
-
-	short current_position = position;
-	for (int i = 0; i < records; i++)
+	switch (text_align)
 	{
-		if (atribute[i] == color2)
-			SetConsoleTextAttribute(handle, MainWindow.color2);
-		else
-			SetConsoleTextAttribute(handle, MainWindow.color1);
-
-		std::cout << text[i];
-
-		if (atribute[i] == endl && i < records - 1)
+		case Text::TextAlign::left:
 		{
-			float next_line_size = text[i + 1].size();
-
-			for (int j = 1; atribute[i + j] != endl; j++)
-				next_line_size += text[i + j + 1].size();
-
-			current_position += spacing;
-
-			SetConsoleCursorPosition(handle, { (short)MainWindow.GetWidth() / 2 - static_cast<short>((float)text_align / 2 * next_line_size), current_position });
+			starting_pos = 0;
+			break;
+		}
+		case Text::TextAlign::right:
+		{
+			starting_pos = static_cast<short>(MainWindow.GetWidth());
+			break;
+		}
+		case Text::TextAlign::center:
+		{
+			starting_pos = static_cast<short>(MainWindow.GetWidth()/2);
+			break;
 		}
 	}
-	_getch(); _getch();
 
-
-	SetConsoleCursorPosition(handle, { (short)MainWindow.GetWidth() / 2 - static_cast<short>((float)text_align / 2 * (float)text[0].size()), position });
-
-	current_position = position;
-	for (int i = 0; i < records; i++)
+	if (!clearing)
 	{
-		for (int j = 0; j < text[i].size(); j++)
-			std::cout << " ";
+		SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>((float)text_align / 2 * (float)text[0].size()), position });
 
-		if (atribute[i] == endl && i < records - 1)
+		current_position = position;
+		for (int i = 0; i < records; i++)
 		{
-			float next_line_size = text[i + 1].size();
+			if (atribute[i] == color2)
+				SetConsoleTextAttribute(handle, MainWindow.color2);
+			else
+				SetConsoleTextAttribute(handle, MainWindow.color1);
 
-			for (int j = 1; atribute[i + j] != endl; j++)
-				next_line_size += text[i + j + 1].size();
+			std::cout << text[i];
 
-			current_position += spacing;
+			if (atribute[i] == endl && i < records - 1)
+			{
+				float next_line_size = text[i + 1].size();
 
-			SetConsoleCursorPosition(handle, { (short)MainWindow.GetWidth() / 2 - static_cast<short>((float)text_align / 2 * next_line_size), current_position });
+				for (int j = 1; atribute[i + j] != endl; j++)
+					next_line_size += text[i + j + 1].size();
+
+				current_position += spacing;
+
+				SetConsoleCursorPosition(handle, { starting_pos  - static_cast<short>((float)text_align / 2 * next_line_size), current_position });
+			}
+		}
+	}
+	else
+	{
+		SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>((float)text_align / 2 * (float)text[0].size()), position });
+
+		current_position = position;
+		for (int i = 0; i < records; i++)
+		{
+			for (int j = 0; j < text[i].size(); j++)
+				std::cout << " ";
+
+			if (atribute[i] == endl && i < records - 1)
+			{
+				float next_line_size = text[i + 1].size();
+
+				for (int j = 1; atribute[i + j] != endl; j++)
+					next_line_size += text[i + j + 1].size();
+
+				current_position += spacing;
+
+				SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>((float)text_align / 2 * next_line_size), current_position });
+			}
 		}
 	}
 }

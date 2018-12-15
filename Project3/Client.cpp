@@ -198,20 +198,17 @@ void Client::GetTourNames(std::vector<std::string>&tours)
 
 	send(host, get_tour_name_code.c_str(), 4, 0);
 	auto h = recv(host, temp, 255, 0);
-	MessageBox(0, temp, "tour", 0);
-	tours.push_back(temp);
 }
 void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 {
-
 	std::string get_tour_name_code = "51";
 	char temp[255];
 
 	send(host, get_tour_name_code.c_str(), 4, 0);
 
+
 	if (recv(host, temp, 255, 0) < 0)
 		tour = temp;
-	MessageBox(0, temp, "car", 0);
 }
 void Client::GetTireNames(std::vector<std::string>&tires)
 {
@@ -225,7 +222,6 @@ void Client::GetTireNames(std::vector<std::string>&tires)
 	{
 		send(host, get_tour_name_code.c_str(), 4, 0);
 		recv(host, temp, 255, 0);
-		MessageBox(0, temp, "car", 0);
 		if ((std::string)temp != "exit" && temp != tires[tires.size() - 1])
 			tires.push_back(temp);
 		else

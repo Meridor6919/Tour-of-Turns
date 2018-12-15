@@ -12,6 +12,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 	const short spacing = 3;
 	short main_menu_position = 0;
 	const int max_name_size = 14;
+	HANDLE handle = main_window->GetHandle();
 	
 	std::string name = "Racer";
 	std::vector<std::string> tours;
@@ -46,15 +47,50 @@ void  Race::Lobby(SinglePlayer *network_role)
 		MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
 	else
 		car_path = cars[0];
-	
+
+
+	std::vector<std::string> car_parameters;
+	std::vector<std::string> tire_parameters;
+	std::vector<Text::Atributes> text_atributes;
+
+	for (int i = 0; i < Modifiers::car_modifiers->size(); i++)
+	{
+		text_atributes.push_back(Text::Atributes::color2);
+		text_atributes.push_back(Text::Atributes::endl);
+	}
+
+	auto params1 = network_role->GetCarParameters(car_path);
+	for (int i = 0; i < params1.size(); i++)
+	{
+		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");//atrib names:
+		car_parameters.push_back(std::to_string(params1[i]));
+	}
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);
+
+	auto params2 = network_role->GetTireParameters(tire_path);
+	for (int i = 0; i < params2.size(); i++)
+	{
+		tire_parameters.push_back(Modifiers::tire_modifiers[i]+ ": ");//atrib names:
+		tire_parameters.push_back(params2[i]);
+	}
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);
+
+
 	while (main_menu_position != 5 || cars.size() == 0)
 	{
 		switch (main_menu_position = Text::Choose::Veritcal(options, main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window))
 		{
-			case 0:
+			case 0://choosing name
 			{
 				char button;
-				std::cout << " < "<< name<<" >";
+				SetConsoleTextAttribute(handle, main_window->color1);
+				std::cout << " < ";
+				SetConsoleTextAttribute(handle, main_window->color2);
+				std::cout << name;
+				SetConsoleTextAttribute(handle, main_window->color1);
+				std::cout<< " >";
+
+				SetConsoleTextAttribute(handle, main_window->color2);
 				int size = static_cast<int>(name.size());
 
 				do
@@ -64,18 +100,25 @@ void  Race::Lobby(SinglePlayer *network_role)
 					if (size < max_name_size && ((button >= 48 && button <= 57) || (button >= 65 && button <= 90 && GetKeyState(VK_SHIFT) != 1 && GetKeyState(VK_SHIFT) != 0) || (button >= 97 && button <= 122)))
 					{
 						name += button;
-						std::cout <<"\b\b"<< button << " >";
+						SetConsoleTextAttribute(handle, main_window->color2);
+						std::cout << "\b\b" << button;
+						SetConsoleTextAttribute(handle, main_window->color1);
+						std::cout<< " >";
 						size++;
 					}
 					else if (size < max_name_size && button == 32 && size != 0 && name[size - 1] != 32)
 					{
 						name += ' ';
-						std::cout << "\b\b" << "  >";
+						SetConsoleTextAttribute(handle, main_window->color2);
+						std::cout << "\b\b";
+						SetConsoleTextAttribute(handle, main_window->color1);
+						std::cout<< " >";
 						size++;
 					}
 					else if (button == 8 && size > 0)
 					{
 						name.erase(size - 1, 1);
+						SetConsoleTextAttribute(handle, main_window->color1);
 						std::cout << "\b\b\b   \b\b>";
 						size--;
 					}
@@ -89,7 +132,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 					name = "Racer";
 				break;
 			}
-			case 1:
+			case 1://Number of ais
 			{
 				std::vector<std::string> ais;
 
@@ -99,7 +142,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 				ais_pos = Text::Choose::Horizontal(ais, ais_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 				break;
 			}
-			case 2:
+			case 2://choosing tour
 			{
 				int i = tours_pos;
 				tour_path = tours[tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
@@ -107,7 +150,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 					cars_pos = 0;
 				break;
 			}
-			case 3:
+			case 3://choosing car
 			{
 				network_role->GetCarNames(cars, tour_path);
 				if (cars.size() == 0)
@@ -116,7 +159,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 					car_path = cars[cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
 				break;
 			}
-			case 4:
+			case 4://choosing tires
 			{
 				tire_path = tires[tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
 				break;
@@ -126,6 +169,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 
 	participants->emplace_back(new Participant(car_path, tire_path, *network_role));
 	network_role->GetTourParameters(tour_path);
+
 }
 void Race::Game()
 {
