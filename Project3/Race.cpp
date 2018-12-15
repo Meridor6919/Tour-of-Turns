@@ -48,33 +48,34 @@ void  Race::Lobby(SinglePlayer *network_role)
 	else
 		car_path = cars[0];
 
-
-	std::vector<std::string> car_parameters;
-	std::vector<std::string> tire_parameters;
-	std::vector<Text::Atributes> text_atributes;
-
-	for (int i = 0; i < Modifiers::car_modifiers->size(); i++)
-	{
-		text_atributes.push_back(Text::Atributes::color2);
-		text_atributes.push_back(Text::Atributes::endl);
-	}
-
-	auto params1 = network_role->GetCarParameters(car_path);
-	for (int i = 0; i < params1.size(); i++)
-	{
-		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");//atrib names:
-		car_parameters.push_back(std::to_string(params1[i]));
-	}
-	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);
-
-	auto params2 = network_role->GetTireParameters(tire_path);
-	for (int i = 0; i < params2.size(); i++)
-	{
-		tire_parameters.push_back(Modifiers::tire_modifiers[i]+ ": ");//atrib names:
-		tire_parameters.push_back(params2[i]);
-	}
-	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);
-
+	//showing params
+	//-----------------------------------------------------------------------------------------------------------
+	std::vector<std::string> car_parameters;																	//
+	std::vector<std::string> tire_parameters;																	//
+	std::vector<Text::Atributes> text_atributes;																//
+																												//
+	for (int i = 0; i < Modifiers::car_modifiers->size(); i++)													//
+	{																											//
+		text_atributes.push_back(Text::Atributes::color2);														//
+		text_atributes.push_back(Text::Atributes::endl);														//
+	}																											//
+																												//
+	auto params1 = network_role->GetCarParameters(car_path);													//
+	for (int i = 0; i < params1.size(); i++)																	//
+	{																											//
+		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");//atrib names:								//
+		car_parameters.push_back(std::to_string(params1[i]));													//
+	}																											//
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);				//
+																												//
+	auto params2 = network_role->GetTireParameters(tire_path);													//
+	for (int i = 0; i < params2.size(); i++)																	//
+	{																											//
+		tire_parameters.push_back(Modifiers::tire_modifiers[i]+ ": ");//atrib names:							//
+		tire_parameters.push_back(params2[i]);																	//
+	}																											//
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);			//
+	//-----------------------------------------------------------------------------------------------------------
 
 	while (main_menu_position != 5 || cars.size() == 0)
 	{
@@ -147,7 +148,20 @@ void  Race::Lobby(SinglePlayer *network_role)
 				int i = tours_pos;
 				tour_path = tours[tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
 				if (i != tours_pos)
+				{
+					network_role->GetCarNames(cars, tour_path);
 					cars_pos = 0;
+					car_path = cars[cars_pos];
+					car_parameters.clear();
+					params1 = network_role->GetCarParameters(car_path);
+					for (int i = 0; i < params1.size(); i++)
+					{
+						car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
+						car_parameters.push_back(std::to_string(params1[i]) + "   ");
+					}
+					Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);
+					break;
+				}
 				break;
 			}
 			case 3://choosing car
@@ -156,17 +170,36 @@ void  Race::Lobby(SinglePlayer *network_role)
 				if (cars.size() == 0)
 					MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
 				else
+				{
 					car_path = cars[cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
-				break;
+					car_parameters.clear();
+					params1 = network_role->GetCarParameters(car_path);													
+					for (int i = 0; i < params1.size(); i++)																	
+					{																											
+						car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");							
+						car_parameters.push_back(std::to_string(params1[i])+"   ");													
+					}																											
+					Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);
+					break;
+				}
 			}
 			case 4://choosing tires
 			{
 				tire_path = tires[tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
+				tire_parameters.clear();
+				params2 = network_role->GetTireParameters(tire_path);													
+				for (int i = 0; i < params2.size(); i++)																
+				{																										
+					tire_parameters.push_back(Modifiers::tire_modifiers[i] + ": ");						
+					tire_parameters.push_back(params2[i] + "   ");
+				}																										
+				Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);
 				break;
 			}
 		}
 	}
-
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window, true);
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window, true);
 	participants->emplace_back(new Participant(car_path, tire_path, *network_role));
 	network_role->GetTourParameters(tour_path);
 
