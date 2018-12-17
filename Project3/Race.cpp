@@ -204,7 +204,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 
 	//AIs
 
-	participants->emplace_back(new Participant(car_path, tire_path, *network_role));
+	participants->emplace_back(new Participant(name, car_path, tire_path, *network_role));
 	
 	network_role->GetOtherParticipants(*participants, 8, tour_path);
 	network_role->GetTourParameters(tour_path);

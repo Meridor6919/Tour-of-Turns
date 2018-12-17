@@ -31,16 +31,22 @@ enum TireModifiers
 
 class Participant 
 {
+private:
+	int ai_type;
+	int CarPoints(std::string car_path);
+	int TiresPoints(std::string tires_path);
+
 public:
 
+	std::string name;
 	std::vector<int>car_modifiers;
 	std::vector<std::string>tire_modifiers;
 	float score;
 	float current_speed;
 	float current_durability;
 	SinglePlayer *network_role;
-	std::string car_path;
+	std::string car_path;	//for ranking
 
-	Participant(std::string car_path, std::string tire_path, SinglePlayer &network_role);//Creating human player
-	Participant(SinglePlayer *network_role);//creating AI
+	Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role);//Creating human player
+	Participant(SinglePlayer *network_role, std::string tour_path);//creating AI
 };

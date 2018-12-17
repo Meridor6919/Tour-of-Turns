@@ -1,9 +1,10 @@
 #include "Participant.h"
 #include "NetworkRole.h"
 
-Participant::Participant(std::string car_path, std::string tire_path, SinglePlayer &network_role)
+
+Participant::Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role)
 {
-	//add name
+	this->name = name;
 	this->car_path = car_path;
 	this->network_role = &network_role;
 	this->car_modifiers = network_role.GetCarParameters(car_path);
@@ -13,25 +14,23 @@ Participant::Participant(std::string car_path, std::string tire_path, SinglePlay
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 }
 
-Participant::Participant(SinglePlayer * network_role)
+Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 {
-	//AI loading
-	/*
-	#include "Enemy.h"
-
-Enemy::Enemy(std::string tour)
-{
-	std::fstream fvar;
-	std::string BestCarPath;
-	std::string BestTirePath;
-	std::string helper;
-	AI = rand() % 3;
-	name = NumberToString(AI);
+	this->network_role = network_role;
+	this->current_speed = 0.0f;
+	this->score = 0.0f;
+	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 
 	static std::string names[] =
 	{ "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
 	"John Hill", "Andrew Anderson", "Jane Turning", "Lester King", "Drew McNeil", "Sam Samson","Gaston Reveneu", "Roman Torbon",
 	"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic" };
+	std::string BestCarPath;
+	std::string BestTirePath;
+	std::string helper;
+
+	ai_type = rand() % 3;
+
 	static int used_names = 0;
 	int RandomName = rand() % (23 - used_names);
 
@@ -39,53 +38,71 @@ Enemy::Enemy(std::string tour)
 	names[RandomName] = names[23 - used_names];
 	name = helper;
 	used_names++;
+	
+	std::vector<std::string> cars;
+	network_role->GetCarNames(cars, tour_path);
 
-
-	fvar.open(tour.c_str());
-	for(int CurrentBest = 0, helperint;std::getline(fvar, helper);)
+	int current_best = 0;
+	for (int best_points = 0, int i = 0; i < cars.size(); i++)
 	{
-		if (helper == "")
-			break;
-
-		helperint = CarPoints(helper);
-
-		if (helperint > CurrentBest)
+		int j = CarPoints(cars[i]);
+		if (j > best_points)
 		{
-			CurrentBest = helperint;
-			BestCarPath = helper;
+			best_points = j;
+			current_best = i;
 		}
 	}
-	fvar.close();
+	this->car_modifiers = network_role->GetCarParameters(cars[current_best]);
 
-	int Arr[6] = { 0,0,0,0,0,0 };
-	fvar.open(tour.c_str());
-
-	while (std::getline(fvar, helper))
+	std::vector<std::string> tires;
+	network_role->GetTireNames(tires);
+	
+	current_best = 0;
+	for (int i = 0, int best_points = 0; i < tires.size(); i++)
 	{
-		if (helper == "")
-			break;
-	}
-	while (std::getline(fvar, helper))
-	{
-		Arr[static_cast<int>(helper[0]) - 48] += 1;
-	}
-	fvar.close();
-
-	fvar.open("Tire.txt");
-	for (float CurrentBest = 0, helperfloat; std::getline(fvar, helper);)
-	{
-		helperfloat = TirePoints(Arr, helper);
-		if (helperfloat > CurrentBest)
+		int j = TiresPoints(tires[i]);
+		if (j > best_points)
 		{
-			CurrentBest = helperfloat;
-			BestTirePath = helper;
+			best_points = j;
+			current_best = i;
 		}
 	}
-	LoadParam(BestCarPath, BestTirePath);
-	fvar.close();
+	this->car_modifiers = network_role->GetCarParameters(cars[current_best]);
 }
-int Enemy::CarPoints(std::string car)
+int Participant::TiresPoints(std::string tires_path)
 {
+	float total_points = 0.0f;
+	float x, y;
+	std::string helper;
+
+	std::vector<std::string>tires_atrib = network_role->GetTireParameters(tires_path);
+	for (int i = 0; i < tires_atrib.size(); i++)
+	{
+
+		for (int j = 0; j < tires_atrib[i].size(); j++)
+		{
+			if (tires_atrib[i][j] == 'x')
+			{
+				x = static_cast<float>(atof(tires_atrib[i].substr(0, j).c_str()));
+				y = static_cast<float>(atof(tires_atrib[i].substr(j, tires_atrib[i].size() - j).c_str()));
+			}
+		}
+	}
+	//need to validate
+
+	/*
+		for (int i2 = 0; i2 <= y - x; x++)
+		{
+			total_points += (factorial(y)/(factorial(y-x)*factorial(x)) * Power(0.5f, x) * Power(0.5f, y-x)) * arr[i];
+		}
+	}
+	return total_points;
+	*/
+	return 0;
+}
+int Participant::CarPoints(std::string cars_path)
+{
+	/*
 	std::fstream fvar;
 	std::string helper;
 	int total_points = 0;
@@ -177,33 +194,6 @@ int Enemy::CarPoints(std::string car)
 	}
 	fvar.close();
 	return total_points;
-}
-float Enemy::TirePoints(int arr[], std::string tire)
-{
-	float total_points = 0.0f;
-	float x, y;
-	std::string helper;
-	std::fstream fvar;
-
-	fvar.open(tire.c_str());
-	for (int i = 0;std::getline(fvar, helper);i++)
-	{
-		for (int i = 0; i < static_cast<int>(helper.size()); i++)
-		{
-			if (helper[i] == 'x')
-			{
-				tire = helper;
-				x = static_cast<float>(atof(helper.erase(i, helper.size() - i).c_str()));
-				y = static_cast<float>(atof(tire.erase(0,i+1).c_str()));
-				break;
-			}
-		}
-		for (int i2 = 0; i2 <= y - x; x++)
-		{
-			total_points += (factorial(y)/(factorial(y-x)*factorial(x)) * Power(0.5f, x) * Power(0.5f, y-x)) * arr[i];
-		}
-	}
-	return total_points;
-}
 	*/
+	return 0;
 }
