@@ -1,7 +1,7 @@
 #include "ToT.h"
 
 
-void GameMode::Credits(ToT_Window &main_window)
+void _GameMode::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
 
@@ -28,7 +28,7 @@ void GameMode::Credits(ToT_Window &main_window)
 	_getch(); _getch();
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window, true);
 }
-void GameMode::Options(ToT_Window &main_window)
+void _GameMode::Options(ToT_Window &main_window)
 {
 	std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
@@ -114,7 +114,7 @@ void GameMode::Options(ToT_Window &main_window)
 		}
 	}
 }
-void GameMode::Ranking(ToT_Window &main_window)
+void _GameMode::Ranking(ToT_Window &main_window)
 {
 	
 	HANDLE handle = main_window.GetHandle();
@@ -156,7 +156,7 @@ void GameMode::Ranking(ToT_Window &main_window)
 	Text::TableText(map_information, 1, 7, 2, 20, main_window, true);
 	map_information.clear();
 }
-void GameMode::Game(bool multiplayer, ToT_Window &main_window)
+void _GameMode::Game(bool multiplayer, ToT_Window &main_window)
 {
 
 	SinglePlayer *network_role = nullptr;

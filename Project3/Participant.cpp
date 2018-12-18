@@ -43,7 +43,8 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	network_role->GetCarNames(cars, tour_path);
 
 	int current_best = 0;
-	for (int best_points = 0, int i = 0; i < cars.size(); i++)
+	int best_points = 0;
+	for (int i = 0; i < cars.size(); i++)
 	{
 		int j = CarPoints(cars[i]);
 		if (j > best_points)
@@ -58,7 +59,8 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	network_role->GetTireNames(tires);
 	
 	current_best = 0;
-	for (int i = 0, int best_points = 0; i < tires.size(); i++)
+	best_points = 0;
+	for (int i = 0; i < tires.size(); i++)
 	{
 		int j = TiresPoints(tires[i]);
 		if (j > best_points)
@@ -71,8 +73,24 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 }
 int Participant::TiresPoints(std::string tires_path)
 {
+	std::function <int(int)> factorial;
+	factorial = [&factorial](int i) -> int {
+		if (i > 1)
+			return i * factorial(i - 1);
+		else
+			return 1;
+	};
+	auto power = [](float number, int power) {
+		int ret = 1;
+
+		for (int i = 0; i < power; i++)
+			ret *= number;
+
+		return ret;
+	};
+
 	float total_points = 0.0f;
-	float x, y;
+	int x, y;
 	std::string helper;
 
 	std::vector<std::string>tires_atrib = network_role->GetTireParameters(tires_path);
@@ -83,117 +101,100 @@ int Participant::TiresPoints(std::string tires_path)
 		{
 			if (tires_atrib[i][j] == 'x')
 			{
-				x = static_cast<float>(atof(tires_atrib[i].substr(0, j).c_str()));
-				y = static_cast<float>(atof(tires_atrib[i].substr(j, tires_atrib[i].size() - j).c_str()));
+				x = static_cast<int>(atoi(tires_atrib[i].substr(0, j).c_str()));
+				y = static_cast<int>(atoi(tires_atrib[i].substr(j, tires_atrib[i].size() - j).c_str()));
 			}
-		}
-	}
-	//need to validate
 
-	/*
-		for (int i2 = 0; i2 <= y - x; x++)
-		{
-			total_points += (factorial(y)/(factorial(y-x)*factorial(x)) * Power(0.5f, x) * Power(0.5f, y-x)) * arr[i];
+			for (int i2 = 0; i2 <= y - x; x++)
+			{
+				total_points += (factorial(y) / (factorial(y - x)*factorial(x)) * power(0.5f, x) * power(0.5f, y - x));
+			}
 		}
 	}
 	return total_points;
-	*/
-	return 0;
 }
 int Participant::CarPoints(std::string cars_path)
 {
-	/*
-	std::fstream fvar;
-	std::string helper;
+	std::vector<int> car_params;
 	int total_points = 0;
-	int i;
-
-	fvar.open(car.c_str());
-	for (i = 0; std::getline(fvar, helper); i++)
+	car_params = network_role->GetCarParameters(cars_path);
+	for (int i = 0; i < car_params.size(); i++)
 	{
 		switch (i)
 		{
-			case Acceleration:
+			case CarModifiers::max_accelerating:
 			{
-				if (AI == 2)
-					total_points += atoi(helper.c_str()) * 10;
+				if (ai_type == 2)
+					total_points += car_params[i] * 10;
 				else
-					total_points += atoi(helper.c_str()) * 5;
+					total_points += car_params[i] * 5;
 				break;
 			}
-			case MaxSpeed:
+			case CarModifiers::max_speed:
 			{
-				if (AI == 0 && atoi(helper.c_str()) > 200)
-					total_points += 200 + (atoi(helper.c_str()) - 200) / 5;
-				else if (AI == 1 && atoi(helper.c_str()) > 150)
-					total_points += 150 + (atoi(helper.c_str()) - 150) / 5;
+				if (ai_type == 0 && car_params[i] > 200)
+					total_points += 200 + car_params[i] - 200 / 5;
+				else if (ai_type == 1 && car_params[i] > 150)
+					total_points += 150 + car_params[i] - 150 / 5;
 				else
-					total_points += atoi(helper.c_str());
+					total_points += car_params[i];
 				break;
 			}
-			case MaxBraking:
+			case CarModifiers::max_braking:
 			{
-				if (AI == 0 && atoi(helper.c_str()) > 50)
+				if (ai_type == 0 && car_params[i] > 50)
 					total_points += 50;
-				else if (AI == 1 && atoi(helper.c_str()) > 30)
+				else if (ai_type == 1 && car_params[i] > 30)
 					total_points += 30;
-				else if (AI != 2)
-					total_points += atoi(helper.c_str());
+				else if (ai_type != 2)
+					total_points += car_params[i];
 				break;
 			}
-			case HandBrake:
+			case CarModifiers::hand_brake_value:
 			{
-				if (AI == 0 && atoi(helper.c_str()) > 50)
+				if (ai_type == 0 && car_params[i] > 50)
 					total_points += 50;
-				else if (AI == 1)
-					total_points -= atoi(helper.c_str()) * 5;
-				else if (AI != 2)
-					total_points += atoi(helper.c_str());
+				else if (ai_type == 1)
+					total_points -= car_params[i] * 5;
+				else if (ai_type != 2)
+					total_points += car_params[i];
 				break;
 			}
-			case Durability:
+			case CarModifiers::durability:
 			{
-				if (atoi(helper.c_str()) < 100)
-					total_points += atoi(helper.c_str());
-				else if (atoi(helper.c_str()) < 200)
-					total_points += 100 + (atoi(helper.c_str()) - 100) / 2;
-				else if (atoi(helper.c_str()) < 400)
-					total_points += 150 + (atoi(helper.c_str()) - 200) / 10;
+				if (car_params[i] < 100)
+					total_points += car_params[i];
+				else if (car_params[i] < 200)
+					total_points += 100 + (car_params[i] - 100) / 2;
+				else if (car_params[i] < 400)
+					total_points += 150 + (car_params[i] - 200) / 10;
 				else
 					total_points += 175;
 				break;
 			}
-			case Visibility:
+			case CarModifiers::visibility:
 			{
-				total_points += atoi(helper.c_str()) * 10;
+				total_points += car_params[i] * 10;
 				break;
 			}
-			case TurnEffectivnes:
+			case CarModifiers::turn_mod:
 			{
-				if (AI == 0 || AI == 2)
-					total_points += (atoi(helper.c_str()) - 100) * 3;
+				if (ai_type == 0 || ai_type == 2)
+					total_points += (car_params[i] - 100) * 3;
 				else
-					total_points += (atoi(helper.c_str()) - 100) / 2;
+					total_points += (car_params[i] - 100) / 2;
 				break;
 			}
-			case DriftEffectivnes:
+			case CarModifiers::drift_mod:
 			{
-				if (AI == 1)
-					total_points += (atoi(helper.c_str()) - 100) * 5;
+				if (ai_type == 1)
+					total_points += (car_params[i] - 100) * 5;
 				else
-					total_points += (atoi(helper.c_str()) - 100);
+					total_points += (car_params[i] - 100);
 				break;
 			}
 		}
 	}
-	if (i < 7)
-	{
-		helper = "Car file " + car + " is corrupted. Please repair file before you will launch a game again";
-		MessageBox(0, helper.c_str(), ERROR, 0);
-		exit(0);
-	}
-	fvar.close();
 	return total_points;
-	*/
 	return 0;
 }
