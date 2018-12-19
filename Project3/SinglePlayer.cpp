@@ -54,8 +54,8 @@ std::vector<std::string> SinglePlayer::GetTireParameters(std::string path)
 }
 void SinglePlayer::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {
-	for (int i = 0; i < ais; i++);
-		participants.emplace_back(new Participant(participants[0]->network_role, tour));
+	for (int i = 0; i < ais; i++)
+		participants.emplace_back(new Participant(participants[i]->network_role, tour));
 }
 void SinglePlayer::GetTourParameters(std::string path)
 {

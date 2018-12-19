@@ -16,10 +16,10 @@ Participant::Participant(std::string name, std::string car_path, std::string tir
 
 Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 {
+
 	this->network_role = network_role;
 	this->current_speed = 0.0f;
 	this->score = 0.0f;
-	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 
 	static std::string names[] =
 	{ "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
@@ -53,7 +53,9 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 			current_best = i;
 		}
 	}
+	this->car_path = cars[current_best];
 	this->car_modifiers = network_role->GetCarParameters(cars[current_best]);
+	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 
 	std::vector<std::string> tires;
 	network_role->GetTireNames(tires);
@@ -69,7 +71,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 			current_best = i;
 		}
 	}
-	this->car_modifiers = network_role->GetCarParameters(cars[current_best]);
+	this->tire_modifiers = network_role->GetTireParameters(tires[current_best]);
 }
 int Participant::TiresPoints(std::string tires_path)
 {
@@ -104,11 +106,10 @@ int Participant::TiresPoints(std::string tires_path)
 				x = static_cast<int>(atoi(tires_atrib[i].substr(0, j).c_str()));
 				y = static_cast<int>(atoi(tires_atrib[i].substr(j, tires_atrib[i].size() - j).c_str()));
 			}
-
-			for (int i2 = 0; i2 <= y - x; x++)
-			{
-				total_points += (factorial(y) / (factorial(y - x)*factorial(x)) * power(0.5f, x) * power(0.5f, y - x));
-			}
+		}
+		for (int i2 = 0; i2 <= y - x; x++)
+		{
+			total_points += (factorial(y) / (factorial(y - x)*factorial(x)) * power(0.5f, x) * power(0.5f, y - x));
 		}
 	}
 	return total_points;
@@ -170,6 +171,7 @@ int Participant::CarPoints(std::string cars_path)
 					total_points += 150 + (car_params[i] - 200) / 10;
 				else
 					total_points += 175;
+
 				break;
 			}
 			case CarModifiers::visibility:
