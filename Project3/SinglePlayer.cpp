@@ -57,9 +57,10 @@ void SinglePlayer::GetOtherParticipants(std::vector<Participant*> &participants,
 	for (int i = 0; i < ais; i++)
 		participants.emplace_back(new Participant(participants[i]->network_role, tour));
 }
-void SinglePlayer::GetTourParameters(std::string path)
+std::vector<std::string> SinglePlayer::GetTourParameters(std::string path)
 {
-	return;
+	std::vector<std::string>x = { "" };
+	return x;
 }
 void SinglePlayer::GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores)
 {

@@ -267,9 +267,12 @@ std::vector<std::string> Client::GetTireParameters(std::string path)
 	}
 	return ret;
 }
-void Client::GetTourParameters(std::string path)
+std::vector<std::string> Client::GetTourParameters(std::string path)
 {
 	std::string get_tour_name_code = "53";
+
+	std::vector<std::string>x = {""};
+	return x;
 }
 void Client::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {

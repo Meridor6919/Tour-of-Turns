@@ -16,15 +16,13 @@ protected:
 	ToT_Window *main_window;
 
 public:
-	int id;
-
 	SinglePlayer(ToT_Window &main_window);
 	virtual void GetTourNames(std::vector<std::string>&tours);
 	virtual void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	virtual void GetTireNames(std::vector<std::string>&tires);
 	virtual std::vector<int> GetCarParameters(std::string path);
 	virtual std::vector<std::string> GetTireParameters(std::string path);
-	virtual void GetTourParameters(std::string path);
+	virtual std::vector<std::string> GetTourParameters(std::string path);
 	virtual void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	virtual void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
@@ -75,7 +73,7 @@ public:
 	void GetTireNames(std::vector<std::string>&tires);
 	std::vector<int> GetCarParameters(std::string path);
 	std::vector<std::string> GetTireParameters(std::string path);
-	void GetTourParameters(std::string path);
+	std::vector<std::string> GetTourParameters(std::string path);
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
