@@ -10,7 +10,7 @@ class Race {
 	ToT_Window *main_window;
 
 	void Interface();
-	//void VisionBox(std::vector<std::string> visible_tour, int color1,  int color2);
+	void VisionBox(std::vector<std::string> visible_tour);
 	int Ranking();
 
 public:

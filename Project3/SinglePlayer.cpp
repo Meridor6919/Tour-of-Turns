@@ -59,8 +59,23 @@ void SinglePlayer::GetOtherParticipants(std::vector<Participant*> &participants,
 }
 std::vector<std::string> SinglePlayer::GetTourParameters(std::string path)
 {
-	std::vector<std::string>x = { "" };
-	return x;
+	std::vector<std::string> ret;
+	std::fstream fvar;
+	std::string helper;
+
+	fvar.open(path.c_str());
+	do
+	{ 
+		std::getline(fvar, helper);
+	}
+	while (helper != "");
+	while (std::getline(fvar, helper))
+	{
+		ret.push_back(helper);
+	}
+	fvar.close();
+
+	return ret;
 }
 void SinglePlayer::GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores)
 {

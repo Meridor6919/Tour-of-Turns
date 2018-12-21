@@ -212,12 +212,28 @@ void Race::Game()
 {
 	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
 
-	for(int turn = 0; turn < tour.size(); turn++) //main game loop
+	for(int turn = 0; turn < tour.size()+1; turn++) //main game loop
 	{
 		Interface();
-		//VisionBox(subArr(tour, turn, (*participants)[0]->car_modifiers[CarModifiers::visibility]), color, color2);
+		std::vector<std::string>::const_iterator first = tour.begin() + turn;
+		std::vector<std::string>::const_iterator last;
+		if (tour.size() < turn + (*participants)[0]->car_modifiers[CarModifiers::visibility])
+		{
+			last = tour.begin() + tour.size();
+		}
+		else
+		{
+			last = tour.begin() + turn + (*participants)[0]->car_modifiers[CarModifiers::visibility];
+		}
+		std::vector<std::string> visible_tour(first, last);
+
+		VisionBox(visible_tour);
 		Ranking();
 
+		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
+		{
+			//participants[i]->PerformAttack();
+		}
 		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
 		{
 			//participants[i]->TakeAction();
@@ -234,16 +250,9 @@ void Race::Game()
 				}
 			}
 		}
+		_getch();
+		_getch();
 		//tests, scores
-
-		Interface();
-		//VisionBox(subArr(tour, turn, (*participants)[0]->car_modifiers[CarModifiers::visibility]), color, color2);
-		Ranking();
-
-		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
-		{
-			//participants[i]->PerformAttack();
-		}
 	}
 }
 void Race::Ending()
@@ -312,7 +321,7 @@ int Race::Ranking()
 	for (int i = (*participants).size(); i < 9; i++)
 	{
 		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), static_cast<short>(19 + i) });
-		std::cout << "                                  ";
+		std::cout << "                           ";
 	}
 	return ret;
 }
@@ -342,4 +351,87 @@ void Race::Interface()
 	std::cout << " Your vehice has ";
 	SetConsoleTextAttribute(window, main_window->color2);
 	std::cout << (*participants)[0]->current_durability << " durability   ";
+}
+
+void Race::VisionBox(std::vector<std::string> visible_tour)
+{
+
+	HANDLE window = main_window->GetHandle();
+	std::string helper;
+	std::string Distance[] = { "In front of you: ", "Close to you: ", "At some distance: ", "A little further: ",
+								"At a considerable distance: ", "Far ahead: ", "Barely noticeable: " };
+
+	for (int i = 0; i < (*participants)[0]->car_modifiers[CarModifiers::visibility]; i++)
+	{
+		if (visible_tour.size() == i)
+		{
+			SetConsoleCursorPosition(window, { 1,static_cast<short>(25 + 2 * i) });
+			SetConsoleTextAttribute(window, main_window->color1);
+			std::cout << Distance[i];
+			SetConsoleTextAttribute(window, main_window->color2);
+			std::cout << "META                                              ";
+			SetConsoleCursorPosition(window, { 1,static_cast<short>(27 + 2 * i) });
+			std::cout << "                                                   ";
+			break;
+		}
+
+		helper = visible_tour[i];
+
+		SetConsoleTextAttribute(window, main_window->color1);
+		SetConsoleCursorPosition(window, { 1,static_cast<short>(25 + 2 * i) });
+		std::cout << Distance[i];
+		SetConsoleTextAttribute(window, main_window->color2);
+
+		switch (visible_tour[i][0])
+		{
+		case '0':
+		{
+			if (visible_tour[i].size() > 1)
+				std::cout << "Turn on asphalt - safe speed is around " << helper.erase(0, 1) << "          ";
+			else
+				std::cout << "Straight road, terrain is asphalt" << "                    ";
+			break;
+		}
+		case '1':
+		{
+			if (visible_tour[i].size() > 1)
+				std::cout << "Turn on grass - safe speed is around " << helper.erase(0, 1) << "          ";
+			else
+				std::cout << "Straight grassy road" << "                    ";
+			break;
+		}
+		case '2':
+		{
+			if (visible_tour[i].size() > 1)
+				std::cout << "Turn on gravel - safe speed is around " << helper.erase(0, 1) << "          ";
+			else
+				std::cout << "Straight road, gravel" << "                    ";
+			break;
+		}
+		case '3':
+		{
+			if (visible_tour[i].size() > 1)
+				std::cout << "Turn on sand - safe speed is around " << helper.erase(0, 1) << "          ";
+			else
+				std::cout << "Linear part of tour, but sandy" << "                    ";
+			break;
+		}
+		case '4':
+		{
+			if (visible_tour[i].size() > 1)
+				std::cout << "Turn on mud - safe speed is around " << helper.erase(0, 1) << "          ";
+			else
+				std::cout << "Muddy road, without turn" << "                    ";
+			break;
+		}
+		case '5':
+		{
+			if (visible_tour[i].size() > 1)
+				std::cout << "Turn on ice - safe speed is around " << helper.erase(0, 1) << "          ";
+			else
+				std::cout << "Slippery road with ice" << "                    ";
+			break;
+		}
+		}
+	}
 }
