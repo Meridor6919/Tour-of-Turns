@@ -278,9 +278,10 @@ void Client::GetOtherParticipants(std::vector<Participant*> &participants, int a
 {
 
 }
-void Client::GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores)
+std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Participant*> &participants)
 {
-
+	std::vector<std::pair<float, std::string>> temp = {};
+	return temp;
 }
 void Client::GetInfobox(InfoBox *infobox)
 {
@@ -290,9 +291,9 @@ void Client::GetCurrentAtribs(float &durability, float current_speed)
 {
 
 }
-void Client::GetTargetList(std::vector<std::string>&names)
+void Client::Attack(std::vector<Participant*> &participants)
 {
-
+	
 }
 void Client::SendInfo(std::string special_text, std::string text)
 {

@@ -232,11 +232,11 @@ void Race::Game()
 
 		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
 		{
-			//participants[i]->PerformAttack();
+			Attack();
 		}
 		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
 		{
-			//participants[i]->TakeAction();
+			//(*participants)[i]->TakeAction();
 			if ((*participants)[i]->current_durability <= 0)
 			{
 				if (i == 0)
@@ -270,37 +270,8 @@ void Race::Ending()
 	//ai as singleplayer child
 int Race::Ranking()
 {
-	std::vector<float> scores;
-	std::vector<std::string> names;
+	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
 	int ret;
-
-	for (int i = 0; i < (*participants).size(); i++)
-	{
-		scores.push_back((*participants)[i]->score);
-		names.push_back((*participants)[i]->name);
-	}
-
-	bool flag = true;
-	float fhelper;
-	std::string shelper;
-
-	while (flag)
-	{
-		flag = false;
-		for (int i = 0; i < (*participants).size()-1; i++)
-		{
-			if (scores[i] > scores[i + 1])
-			{
-				flag = true;
-				fhelper = scores[i];
-				shelper = names[i];
-				scores[i] = scores[i + 1];
-				names[i] = names[i + 1];
-				scores[i + 1] = fhelper;
-				names[i + 1] = shelper;
-			}
-		}
-	}
 
 	SetConsoleTextAttribute(main_window->GetHandle(), main_window->color1);
 	SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), 17 });
@@ -311,16 +282,16 @@ int Race::Ranking()
 
 	for (int i = 0; i < (*participants).size(); i++)
 	{
-		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), static_cast<short>(19 + i) });
-		std::cout << i + 1 << ". " << names[i] << "                ";
-		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 12), static_cast<short>(19 + i) });
-		std::cout << static_cast<float>(static_cast<int>(scores[i] * 10.0f)) / 10.0f << "  ";
-		if (names[i] == (*participants)[0]->name)
+		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), static_cast<short>(19 + i*2) });
+		std::cout << i + 1 << ". " << ranking_info[i].second << "                ";
+		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 12), static_cast<short>(19 + i*2) });
+		std::cout << static_cast<float>(static_cast<int>(ranking_info[i].first * 10.0f)) / 10.0f << "  ";
+		if (ranking_info[i].second == (*participants)[0]->name)
 			ret = i + 1;
 	}
 	for (int i = (*participants).size(); i < 9; i++)
 	{
-		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), static_cast<short>(19 + i) });
+		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), static_cast<short>(19 + i*2) });
 		std::cout << "                           ";
 	}
 	return ret;
@@ -434,4 +405,10 @@ void Race::VisionBox(std::vector<std::string> visible_tour)
 		}
 		}
 	}
+}
+void Race::Attack()
+{
+	(*participants)[0]->network_role->Attack(*participants);
+	//AI attack
+
 }

@@ -11,6 +11,7 @@ class Race {
 
 	void Interface();
 	void VisionBox(std::vector<std::string> visible_tour);
+	void Attack();
 	int Ranking();
 
 public:

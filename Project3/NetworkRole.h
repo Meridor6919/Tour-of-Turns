@@ -25,10 +25,10 @@ public:
 	virtual std::vector<std::string> GetTourParameters(std::string path);
 	virtual void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
-	virtual void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
+	virtual std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	virtual void GetInfobox(InfoBox *infobox);
 	virtual void GetCurrentAtribs(float &durability, float current_speed);
-	virtual void GetTargetList(std::vector<std::string>&names);
+	virtual void Attack(std::vector<Participant*> &participants);
 
 	virtual void SendInfo(std::string special_text, std::string text);
 	virtual std::pair<int, int> TakeAction();
@@ -48,10 +48,10 @@ public:
 	Host(ToT_Window &main_window, std::vector<Participant*> *participants);
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
-	void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
+	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	void GetInfobox(InfoBox *infobox);
 	void GetCurrentAtribs(float &durability, float current_speed);
-	void GetTargetList(std::vector<std::string>&names);
+	void Attack(std::vector<Participant*> &participants);
 
 	void SendInfo(std::string special_text, std::string text);
 	std::pair<int, int> TakeAction();
@@ -76,10 +76,10 @@ public:
 	std::vector<std::string> GetTourParameters(std::string path);
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
-	void GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores);
+	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	void GetInfobox(InfoBox *infobox);
 	void GetCurrentAtribs(float &durability, float current_speed);
-	void GetTargetList(std::vector<std::string>&names);
+	void Attack(std::vector<Participant*> &participants);
 
 	void SendInfo(std::string special_text, std::string text);
 	std::pair<int, int> TakeAction();

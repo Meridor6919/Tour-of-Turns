@@ -4,6 +4,7 @@
 
 Participant::Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role)
 {
+	ai_type = 0;
 	this->name = name;
 	this->car_path = car_path;
 	this->network_role = &network_role;
@@ -12,6 +13,7 @@ Participant::Participant(std::string name, std::string car_path, std::string tir
 	this->current_speed = 0.0f;
 	this->score = 0.0f;
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
+	this->attacked = 0;
 }
 
 Participant::Participant(SinglePlayer * network_role, std::string tour_path)
@@ -20,6 +22,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	this->network_role = network_role;
 	this->current_speed = 0.0f;
 	this->score = 0.0f;
+	this->attacked = 0;
 
 	static std::string names[] =
 	{ "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
@@ -29,7 +32,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	std::string BestTirePath;
 	std::string helper;
 
-	ai_type = rand() % 3;
+	ai_type = rand() % 3+1;
 
 	static int used_names = 0;
 	int RandomName = rand() % (23 - used_names);
@@ -125,7 +128,7 @@ int Participant::CarPoints(std::string cars_path)
 		{
 			case CarModifiers::max_accelerating:
 			{
-				if (ai_type == 2)
+				if (ai_type == 3)
 					total_points += car_params[i] * 10;
 				else
 					total_points += car_params[i] * 5;
@@ -133,9 +136,9 @@ int Participant::CarPoints(std::string cars_path)
 			}
 			case CarModifiers::max_speed:
 			{
-				if (ai_type == 0 && car_params[i] > 200)
+				if (ai_type == 1 && car_params[i] > 200)
 					total_points += 200 + car_params[i] - 200 / 5;
-				else if (ai_type == 1 && car_params[i] > 150)
+				else if (ai_type == 2 && car_params[i] > 150)
 					total_points += 150 + car_params[i] - 150 / 5;
 				else
 					total_points += car_params[i];
@@ -143,21 +146,21 @@ int Participant::CarPoints(std::string cars_path)
 			}
 			case CarModifiers::max_braking:
 			{
-				if (ai_type == 0 && car_params[i] > 50)
+				if (ai_type == 1 && car_params[i] > 50)
 					total_points += 50;
-				else if (ai_type == 1 && car_params[i] > 30)
+				else if (ai_type == 2 && car_params[i] > 30)
 					total_points += 30;
-				else if (ai_type != 2)
+				else if (ai_type != 3)
 					total_points += car_params[i];
 				break;
 			}
 			case CarModifiers::hand_brake_value:
 			{
-				if (ai_type == 0 && car_params[i] > 50)
+				if (ai_type == 1 && car_params[i] > 50)
 					total_points += 50;
-				else if (ai_type == 1)
+				else if (ai_type == 2)
 					total_points -= car_params[i] * 5;
-				else if (ai_type != 2)
+				else if (ai_type != 3)
 					total_points += car_params[i];
 				break;
 			}
@@ -181,7 +184,7 @@ int Participant::CarPoints(std::string cars_path)
 			}
 			case CarModifiers::turn_mod:
 			{
-				if (ai_type == 0 || ai_type == 2)
+				if (ai_type == 1 || ai_type == 3)
 					total_points += (car_params[i] - 100) * 3;
 				else
 					total_points += (car_params[i] - 100) / 2;
@@ -189,7 +192,7 @@ int Participant::CarPoints(std::string cars_path)
 			}
 			case CarModifiers::drift_mod:
 			{
-				if (ai_type == 1)
+				if (ai_type == 2)
 					total_points += (car_params[i] - 100) * 5;
 				else
 					total_points += (car_params[i] - 100);

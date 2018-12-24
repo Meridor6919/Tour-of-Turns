@@ -240,9 +240,11 @@ void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais
 	if(network_device != nullptr)
 		network_device->HandleClientConnection(tour);
 }
-void Host::GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores)
-{
 
+std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Participant*> &participants)
+{
+	std::vector<std::pair<float, std::string>> temp = {};
+	return temp;
 }
 void Host::GetInfobox(InfoBox *infobox)
 {
@@ -252,7 +254,7 @@ void Host::GetCurrentAtribs(float &durability, float current_speed)
 {
 
 }
-void Host::GetTargetList(std::vector<std::string>&names)
+void Host::Attack(std::vector<Participant*> &participants)
 {
 
 }

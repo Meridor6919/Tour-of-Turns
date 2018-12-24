@@ -77,9 +77,38 @@ std::vector<std::string> SinglePlayer::GetTourParameters(std::string path)
 
 	return ret;
 }
-void SinglePlayer::GetRankingInfo(std::vector<std::string>&names, std::vector<int>&scores)
+std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo(std::vector<Participant*> &participants)
 {
+	std::vector<std::pair<float, std::string>> ret;
 
+	std::vector<float> scores;
+	std::vector<std::string> names;
+
+	for (int i = 0; i < participants.size(); i++)
+		ret.push_back(std::make_pair(participants[i]->score, participants[i]->name));
+
+	bool flag = true;
+	float fhelper;
+	std::string shelper;
+
+	while (flag)
+	{
+		flag = false;
+		for (int i = 0; i < participants.size() - 1; i++)
+		{
+			if (ret[i].first > ret[i+1].first)
+			{
+				flag = true;
+				fhelper = ret[i].first;
+				shelper = ret[i].second;
+				ret[i].first = ret[i+1].first;
+				ret[i].second = ret[i+1].second;
+				ret[i+1].first = fhelper;
+				ret[i+1].second = shelper;
+			}
+		}
+	}
+	return ret;
 }
 void SinglePlayer::GetInfobox(InfoBox *infobox)
 {
@@ -89,9 +118,28 @@ void SinglePlayer::GetCurrentAtribs(float &durability, float current_speed)
 {
 
 }
-void SinglePlayer::GetTargetList(std::vector<std::string>&names)
+void SinglePlayer::Attack(std::vector<Participant*> &participants)
 {
+	std::vector<std::string> rival_name;
+	std::vector<int> rival_id;
+	HANDLE handle = main_window->GetHandle();
 
+	rival_name.push_back("Don't attack");
+	rival_id.push_back(10);
+	for (int i = 1; i < participants.size(); i++)
+	{
+		if (participants[i]->score < participants[0]->score + 5 && participants[i]->score > participants[0]->score - 5)
+		{
+			rival_name.push_back(participants[i]->name);
+			rival_id.push_back(i);
+		}
+	}
+	if (rival_id.size() == 1)
+		return;
+
+	int i = Text::Choose::Veritcal(rival_name, 0, {static_cast<short>(main_window->GetWidth() - 22), 48 }, 2, Text::TextAlign::center, true, *main_window);
+	if (rival_id[i] != 10)
+		participants[rival_id[i]]->attacked++;
 }
 void SinglePlayer::SendInfo(std::string special_text, std::string text)
 {
