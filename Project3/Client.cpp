@@ -299,9 +299,9 @@ void Client::SendInfo(std::string special_text, std::string text)
 {
 
 }
-std::pair<int, int> Client::TakeAction()
+void Client::TakeAction(std::vector<Participant*> &participants, int ais)
 {
-	return std::make_pair(1, 4);
+
 }
 void Client::SendTarget(int ranking_position)
 {

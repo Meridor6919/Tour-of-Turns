@@ -165,9 +165,109 @@ void SinglePlayer::SendInfo(std::string special_text, std::string text)
 {
 	
 }
-std::pair<int, int> SinglePlayer::TakeAction()
+void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 {
-	return std::make_pair(1, 4);
+	std::vector<std::string> actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
+	static int position = 0;
+	HANDLE window = main_window->GetHandle();
+	char button;
+	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
+	
+
+	while (true)
+	{
+		int value = 0;
+		switch (position = Text::Choose::Veritcal(actions, position, { 0,39 }, 2, Text::TextAlign::left, false, *main_window))
+		{
+			case 0:
+			case 1:
+			{
+				if (participants[0]->current_speed == 0 && position == 1)
+				{
+					std::cout << " - You can't do this because you aren't moving...";
+					main_window->Pause(1500);
+					GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+					SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 49,console_screen_buffer_info.dwCursorPosition.Y });
+					std::cout << "                                                 ";
+					break;
+				}
+				
+				std::cout << ": ";
+				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+				value = Text::Choose::Numeric(participants[0]->car_modifiers[CarModifiers::max_accelerating + position], {console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y}, true, *main_window);
+				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
+				std::cout << "  ";
+				if (value == 0)
+					break;
+				
+				if (position)
+				{
+					participants[0]->current_speed -= value;
+					if (participants[0]->current_speed < 0)
+						participants[0]->current_speed = 0;
+				}
+				else
+				{
+					participants[0]->current_speed += value;
+					if (participants[0]->current_speed > participants[0]->car_modifiers[CarModifiers::max_speed])
+						participants[0]->current_speed > participants[0]->car_modifiers[CarModifiers::max_speed];
+				}
+				return;		
+			}
+		case 2:
+		case 3:
+		case 4:
+		{
+			while (true)
+			{
+				std::cout << " - Do you really want to do this ? (Y/N) ";
+				button = _getch();
+				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 41,console_screen_buffer_info.dwCursorPosition.Y });
+				std::cout << "                                         ";
+				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 41,console_screen_buffer_info.dwCursorPosition.Y });
+				if (button == 'y' || button == 'Y')
+				{
+					if (position == 4)
+					{
+						participants[0]->car_modifiers[CarModifiers::durability] = 0;
+						return;
+					}
+
+
+					if (participants[0]->current_speed > 0)
+					{
+						if (position == 2)
+						{
+							participants[0]->current_speed -= participants[0]->car_modifiers[CarModifiers::hand_brake_value];
+							if (participants[0]->current_speed > 40)
+								participants[0]->drift = true;
+							if (participants[0]->current_speed < 0)
+								participants[0]->current_speed = 0;
+						}
+						participants[0]->current_speed = participants[0]->current_speed*0.9f;
+						return;
+					}
+					else
+					{
+						std::cout << " - You can't do this because you aren't moving...";
+						main_window->Pause(1500);
+						GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+						SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 49,console_screen_buffer_info.dwCursorPosition.Y });
+						std::cout << "                                                 ";
+						break;
+					}
+				}
+				else if (button == 13 || button == 27 || button == 'n' || button == 'N')
+				{
+					break;
+				}
+			}
+		}
+		}
+	}
+
+
 }
 void SinglePlayer::SendTarget(int ranking_position)
 {

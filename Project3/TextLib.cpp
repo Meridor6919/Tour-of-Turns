@@ -163,6 +163,9 @@ int Text::Choose::Numeric(int max, COORD starting_point, bool zero_allowed, Wind
 			break;
 		}
 	}
+	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
+	for (int i = 1; i <= number; i *= 10)
+		std::cout << " ";
 	return number;
 }
 

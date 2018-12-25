@@ -233,7 +233,7 @@ void Race::Game()
 		(*participants)[0]->network_role->Attack(*participants, ais);
 		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
 		{
-			//(*participants)[i]->TakeAction();
+			(*participants)[0]->network_role->TakeAction(*participants, ais);
 			if ((*participants)[i]->current_durability <= 0)
 			{
 				if (i == 0)
