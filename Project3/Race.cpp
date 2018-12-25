@@ -22,7 +22,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 	int tires_pos = 0;
 	int cars_pos = 0;
 	int tours_pos = 0;
-	int ais_pos = 0;
+	ais = 0;
 	
 	network_role->GetTourNames(tours);
 	network_role->GetTireNames(tires);
@@ -136,12 +136,12 @@ void  Race::Lobby(SinglePlayer *network_role)
 			}
 			case 1://Number of ais
 			{
-				std::vector<std::string> ais;
+				std::vector<std::string> text;
 
 				for (int i = 0; i <= network_role->Possible_AIs(); i++)
-					ais.push_back(std::to_string(i));
+					text.push_back(std::to_string(i));
 
-				ais_pos = Text::Choose::Horizontal(ais, ais_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+				ais = Text::Choose::Horizontal(text, ais, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 				break;
 			}
 			case 2://choosing tour
@@ -206,7 +206,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 
 	participants->emplace_back(new Participant(name, car_path, tire_path, *network_role));
 	
-	network_role->GetOtherParticipants(*participants, ais_pos, tour_path);
+	network_role->GetOtherParticipants(*participants, ais, tour_path);
 }
 void Race::Game()
 {
@@ -230,10 +230,7 @@ void Race::Game()
 		VisionBox(visible_tour);
 		Ranking();
 
-		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
-		{
-			Attack();
-		}
+		(*participants)[0]->network_role->Attack(*participants, ais);
 		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
 		{
 			//(*participants)[i]->TakeAction();
@@ -406,9 +403,4 @@ void Race::VisionBox(std::vector<std::string> visible_tour)
 		}
 	}
 }
-void Race::Attack()
-{
-	(*participants)[0]->network_role->Attack(*participants);
-	//AI attack
 
-}

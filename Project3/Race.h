@@ -8,10 +8,10 @@ class Race {
 	std::vector<float> scores;
 	std::string tour_path;
 	ToT_Window *main_window;
+	int ais;
 
 	void Interface();
 	void VisionBox(std::vector<std::string> visible_tour);
-	void Attack();
 	int Ranking();
 
 public:

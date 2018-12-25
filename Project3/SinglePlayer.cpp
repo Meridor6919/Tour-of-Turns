@@ -118,7 +118,7 @@ void SinglePlayer::GetCurrentAtribs(float &durability, float current_speed)
 {
 
 }
-void SinglePlayer::Attack(std::vector<Participant*> &participants)
+void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
 {
 	std::vector<std::string> rival_name;
 	std::vector<int> rival_id;
@@ -126,6 +126,7 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants)
 
 	rival_name.push_back("Don't attack");
 	rival_id.push_back(10);
+	participants[0]->attacked = 0;
 	for (int i = 1; i < participants.size(); i++)
 	{
 		if (participants[i]->score < participants[0]->score + 5 && participants[i]->score > participants[0]->score - 5)
@@ -133,17 +134,36 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants)
 			rival_name.push_back(participants[i]->name);
 			rival_id.push_back(i);
 		}
+		participants[i]->attacked = 0;
 	}
-	if (rival_id.size() == 1)
-		return;
+	if (rival_id.size() != 1)
+	{
+		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 22), 48 }, 2, Text::TextAlign::center, true, *main_window);
+		if (rival_id[i] != 10)
+			participants[rival_id[i]]->attacked++;
+	}
+	for (int i = participants.size() - ais; i < participants.size() && participants.size() != 1; i++)
+	{
 
-	int i = Text::Choose::Veritcal(rival_name, 0, {static_cast<short>(main_window->GetWidth() - 22), 48 }, 2, Text::TextAlign::center, true, *main_window);
-	if (rival_id[i] != 10)
-		participants[rival_id[i]]->attacked++;
+		rival_id.clear();
+		rival_id.push_back(10);
+		for (int j = 0; j < participants.size(); j++)
+		{
+			if (participants[j]->score < participants[i]->score + 5 && participants[j]->score > participants[i]->score - 5)
+			{
+				if (participants[i] != participants[j])
+					rival_id.push_back(j);
+			}
+		}
+		int random = rand() % rival_id.size();
+		if(rival_id[random] != 10)
+			participants[rival_id[random]]->attacked++;
+
+	}
 }
 void SinglePlayer::SendInfo(std::string special_text, std::string text)
 {
-
+	
 }
 std::pair<int, int> SinglePlayer::TakeAction()
 {

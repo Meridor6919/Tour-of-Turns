@@ -291,7 +291,7 @@ void Client::GetCurrentAtribs(float &durability, float current_speed)
 {
 
 }
-void Client::Attack(std::vector<Participant*> &participants)
+void Client::Attack(std::vector<Participant*> &participants, int ais)
 {
 	
 }
