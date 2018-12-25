@@ -1,7 +1,7 @@
 #include "ToT.h"
 
 
-void GameMode_::Credits(ToT_Window &main_window)
+void GameMode::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
 
@@ -28,7 +28,7 @@ void GameMode_::Credits(ToT_Window &main_window)
 	_getch(); _getch();
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window, true);
 }
-void GameMode_::Options(ToT_Window &main_window)
+void GameMode::Options(ToT_Window &main_window)
 {
 	std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
@@ -114,7 +114,7 @@ void GameMode_::Options(ToT_Window &main_window)
 		}
 	}
 }
-void GameMode_::Ranking(ToT_Window &main_window)
+void GameMode::Ranking(ToT_Window &main_window)
 {
 	
 	HANDLE handle = main_window.GetHandle();
@@ -137,7 +137,7 @@ void GameMode_::Ranking(ToT_Window &main_window)
 	{
 		tmp_int = position;
 
-		Text::TableText(map_information, 1, 7, 2, 20, main_window, true);
+		Text::TableText(map_information, 1, 7, 3, main_window.GetWidth() / 7, { 0,23 }, main_window, true);
 		map_information.clear();
 
 		map_information = { "Name", "Car", "Tires", "AI","Time","Place","Points" };
@@ -147,16 +147,16 @@ void GameMode_::Ranking(ToT_Window &main_window)
 		while (std::getline(fvar, tmp_string))
 			map_information.push_back(tmp_string);
 
-		Text::TableText(map_information, 1, 7, 2, 20, main_window);
+		Text::TableText(map_information, 1, 7, 3, main_window.GetWidth() / 7, { 0,23 }, main_window);
 		fvar.close();
 
 		position = Text::Choose::Horizontal(maps_rankings, position, { (short)main_window.GetWidth() / 2, 18 }, Text::TextAlign::center, true, main_window);
 	} while (tmp_int != position);
 
-	Text::TableText(map_information, 1, 7, 2, 20, main_window, true);
+	Text::TableText(map_information, 1, 7, 3, main_window.GetWidth() / 7, { 0,23 }, main_window, true);
 	map_information.clear();
 }
-void GameMode_::Game(bool multiplayer, ToT_Window &main_window)
+void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 {
 
 	SinglePlayer *network_role = nullptr;

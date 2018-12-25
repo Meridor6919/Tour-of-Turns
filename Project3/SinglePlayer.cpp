@@ -4,7 +4,6 @@ SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
 }
-
 void SinglePlayer::GetTourNames(std::vector<std::string>&tours)
 {
 	std::fstream fvar;
@@ -138,7 +137,7 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
 	}
 	if (rival_id.size() != 1)
 	{
-		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 22), 48 }, 2, Text::TextAlign::center, true, *main_window);
+		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);
 		if (rival_id[i] != 10)
 			participants[rival_id[i]]->attacked++;
 	}
@@ -173,11 +172,10 @@ void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 	char button;
 	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
 	
-
 	while (true)
 	{
 		int value = 0;
-		switch (position = Text::Choose::Veritcal(actions, position, { 0,39 }, 2, Text::TextAlign::left, false, *main_window))
+		switch (position = Text::Choose::Veritcal(actions, position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window))
 		{
 			case 0:
 			case 1:
@@ -210,7 +208,7 @@ void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 				{
 					participants[0]->current_speed += value;
 					if (participants[0]->current_speed > participants[0]->car_modifiers[CarModifiers::max_speed])
-						participants[0]->current_speed > participants[0]->car_modifiers[CarModifiers::max_speed];
+						participants[0]->current_speed = participants[0]->car_modifiers[CarModifiers::max_speed];
 				}
 				return;		
 			}
@@ -266,8 +264,6 @@ void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 		}
 		}
 	}
-
-
 }
 void SinglePlayer::SendTarget(int ranking_position)
 {

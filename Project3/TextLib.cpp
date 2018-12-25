@@ -254,7 +254,7 @@ void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Atribut
 		}
 	}
 }
-void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short starting_line, Window &main_window, bool clearing)
+void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, short vertical_spacing, const COORD starting_point, Window &main_window, bool clearing)
 {
 #ifdef DEBUG
 	if (texts_per_row == 0)
@@ -263,7 +263,6 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 #endif 
 
 	HANDLE handle = main_window.GetHandle();
-	short vertical_spacing = main_window.GetWidth() / texts_per_row;
 	std::vector<std::string>::iterator it = text.begin();
 
 	for (short i = 0; i*texts_per_row < text.size(); i++)
@@ -276,7 +275,7 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 		for (short j = 0; j < texts_per_row && i*texts_per_row + j < text.size(); j++)
 		{
 
-			SetConsoleCursorPosition(handle, { vertical_spacing* j + vertical_spacing / 2 - static_cast<short>((float)Text::TextAlign::center / 2 * (float)it->size()), starting_line + i * (short)spacing });
+			SetConsoleCursorPosition(handle, { starting_point.X + vertical_spacing* j + vertical_spacing / 2 - static_cast<short>((float)Text::TextAlign::center / 2 * (float)it->size()), starting_point.Y + i * (short)spacing });
 			if (clearing)
 			{
 				for (int k = 0; k < it->size(); k++)

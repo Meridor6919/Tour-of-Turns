@@ -199,6 +199,13 @@ void  Race::Lobby(SinglePlayer *network_role)
 			}
 		}
 	}
+	for (short i = 0; i < options.size(); i++)
+	{
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::TextAlign::center / 2 * (float)options[i].size()), starting_point.Y + i * (short)spacing });
+		for (int j = 0; j < options[i].size(); j++)
+			std::cout << " ";
+	}
+
 	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window, true);
 	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window, true);
 
@@ -230,25 +237,10 @@ void Race::Game()
 		VisionBox(visible_tour);
 		Ranking();
 
-		(*participants)[0]->network_role->Attack(*participants, ais);
-		for (int i = 0; i < static_cast<int>((*participants).size()); i++)
-		{
-			(*participants)[0]->network_role->TakeAction(*participants, ais);
-			if ((*participants)[i]->current_durability <= 0)
-			{
-				if (i == 0)
-				{
-					//host just died RIP
-				}
-				else
-				{
-					//erase connection
-					//make sure that he is dead
-				}
-			}
-		}
-		_getch();
-		_getch();
+		if(turn > 0)
+			(*participants)[0]->network_role->Attack(*participants, ais);
+
+		(*participants)[0]->network_role->TakeAction(*participants, ais);
 		//tests, scores
 	}
 }
@@ -267,31 +259,24 @@ void Race::Ending()
 	//ai as singleplayer child
 int Race::Ranking()
 {
+	//ranking clear after rip
+	std::vector<std::string> text;
+	text.push_back("PLACE");
+	text.push_back("RACER");
+	text.push_back("SCORE");
 	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
 	int ret;
-
-	SetConsoleTextAttribute(main_window->GetHandle(), main_window->color1);
-	SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), 17 });
-	std::cout << "RACER";
-	SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 12), 17 });
-	std::cout << "SCORE";
-	SetConsoleTextAttribute(main_window->GetHandle(), main_window->color2);
-
+	
 	for (int i = 0; i < (*participants).size(); i++)
 	{
-		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), static_cast<short>(19 + i*2) });
-		std::cout << i + 1 << ". " << ranking_info[i].second << "                ";
-		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 12), static_cast<short>(19 + i*2) });
-		std::cout << static_cast<float>(static_cast<int>(ranking_info[i].first * 10.0f)) / 10.0f << "  ";
-		if (ranking_info[i].second == (*participants)[0]->name)
+		text.push_back(std::to_string(i + 1));
+		text.push_back(ranking_info[i].second);
+		text.push_back(std::to_string(static_cast<int>(ranking_info[i].first)));
+		if (ranking_info[i].second == (*participants)[0]->name && ranking_info[i].first == (*participants)[0]->score)
 			ret = i + 1;
 	}
-	for (int i = (*participants).size(); i < 9; i++)
-	{
-		SetConsoleCursorPosition(main_window->GetHandle(), { static_cast<short>(main_window->GetWidth() - 35), static_cast<short>(19 + i*2) });
-		std::cout << "                           ";
-	}
-	return ret;
+	Text::TableText(text, 1, 3, 3, 16, { static_cast<short>(main_window->GetWidth() - 55), 17 }, *main_window, false);
+	return 0;
 }
 void Race::Interface()
 {
@@ -313,12 +298,33 @@ void Race::Interface()
 	SetConsoleCursorPosition(window, { 0, 18 });
 	std::cout << " Your current speed is: ";
 	SetConsoleTextAttribute(window, main_window->color2);
-	std::cout << (*participants)[0]->current_speed << "     ";
+
+	std::cout << static_cast<int>((*participants)[0]->current_speed) << "     ";
 	SetConsoleTextAttribute(window, main_window->color1);
 	SetConsoleCursorPosition(window, { 0, 20 });
 	std::cout << " Your vehice has ";
 	SetConsoleTextAttribute(window, main_window->color2);
-	std::cout << (*participants)[0]->current_durability << " durability   ";
+	std::cout << static_cast<int>((*participants)[0]->current_durability) << " durability   ";
+
+	SetConsoleTextAttribute(window, 8);
+	for (int i = 0; i < 5; i++)
+	{
+		SetConsoleCursorPosition(window, { 2, static_cast<short>(40 + i * 2) });
+		std::cout << string[i];
+	}
+	SetConsoleCursorPosition(window, { 0, 55 });
+	SetConsoleTextAttribute(window, main_window->color2);
+	std::cout << "                          Infobox                         " << std::endl;
+	std::cout << "----------------------------------------------------------";
+	SetConsoleCursorPosition(window, { 0, 67 });
+	std::cout << "----------------------------------------------------------";
+
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 34),48 });
+	std::cout << "Action Box";
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), 49});
+	std::cout << "---------------------------------------------";
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51),67 });
+	std::cout << "---------------------------------------------";
 }
 
 void Race::VisionBox(std::vector<std::string> visible_tour)
