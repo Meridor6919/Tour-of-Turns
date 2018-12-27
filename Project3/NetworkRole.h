@@ -31,7 +31,8 @@ public:
 	virtual void Attack(std::vector<Participant*> &participants, int ais);
 
 	virtual void SendInfo(std::string special_text, std::string text);
-	virtual void TakeAction(std::vector<Participant*> &participants, int ais);
+	virtual void TakeAction(Participant* &participants);
+	virtual void GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string> &tour);
 	virtual void SendTarget(int ranking_position);
 
 	virtual int Possible_AIs();
@@ -54,7 +55,8 @@ public:
 	void Attack(std::vector<Participant*> &participants, int ais);
 
 	void SendInfo(std::string special_text, std::string text);
-	void TakeAction(std::vector<Participant*> &participants, int ais);
+	void TakeAction(Participant* &participants);
+	void GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string> &tour);
 	void SendTarget(int ranking_position);
 
 	int Possible_AIs();
@@ -82,7 +84,8 @@ public:
 	void Attack(std::vector<Participant*> &participants, int ais);
 
 	void SendInfo(std::string special_text, std::string text);
-	void TakeAction(std::vector<Participant*> &participants, int ais);
+	void TakeAction(Participant* &participants);
+	void GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string> &tour);
 	void SendTarget(int ranking_position);
 
 	int Possible_AIs();

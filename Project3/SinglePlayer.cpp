@@ -164,8 +164,9 @@ void SinglePlayer::SendInfo(std::string special_text, std::string text)
 {
 	
 }
-void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
+void SinglePlayer::TakeAction(Participant* &participants)
 {
+	//player
 	std::vector<std::string> actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
 	static int position = 0;
 	HANDLE window = main_window->GetHandle();
@@ -180,7 +181,7 @@ void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 			case 0:
 			case 1:
 			{
-				if (participants[0]->current_speed == 0 && position == 1)
+				if (participants->current_speed == 0 && position == 1)
 				{
 					std::cout << " - You can't do this because you aren't moving...";
 					main_window->Pause(1500);
@@ -192,7 +193,7 @@ void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 				
 				std::cout << ": ";
 				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-				value = Text::Choose::Numeric(participants[0]->car_modifiers[CarModifiers::max_accelerating + position], {console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y}, true, *main_window);
+				value = Text::Choose::Numeric(participants->car_modifiers[CarModifiers::max_accelerating + position], {console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y}, true, *main_window);
 				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
 				std::cout << "  ";
 				if (value == 0)
@@ -200,15 +201,15 @@ void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 				
 				if (position)
 				{
-					participants[0]->current_speed -= value;
-					if (participants[0]->current_speed < 0)
-						participants[0]->current_speed = 0;
+					participants->current_speed -= value;
+					if (participants->current_speed < 0)
+						participants->current_speed = 0;
 				}
 				else
 				{
-					participants[0]->current_speed += value;
-					if (participants[0]->current_speed > participants[0]->car_modifiers[CarModifiers::max_speed])
-						participants[0]->current_speed = participants[0]->car_modifiers[CarModifiers::max_speed];
+					participants->current_speed += value;
+					if (participants->current_speed > participants->car_modifiers[CarModifiers::max_speed])
+						participants->current_speed = participants->car_modifiers[CarModifiers::max_speed];
 				}
 				return;		
 			}
@@ -228,22 +229,22 @@ void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 				{
 					if (position == 4)
 					{
-						participants[0]->car_modifiers[CarModifiers::durability] = 0;
+						participants->car_modifiers[CarModifiers::durability] = 0;
 						return;
 					}
 
 
-					if (participants[0]->current_speed > 0)
+					if (participants->current_speed > 0)
 					{
 						if (position == 2)
 						{
-							participants[0]->current_speed -= participants[0]->car_modifiers[CarModifiers::hand_brake_value];
-							if (participants[0]->current_speed > 40)
-								participants[0]->drift = true;
-							if (participants[0]->current_speed < 0)
-								participants[0]->current_speed = 0;
+							participants->current_speed -= participants->car_modifiers[CarModifiers::hand_brake_value];
+							if (participants->current_speed > 40)
+								participants->drift = true;
+							if (participants->current_speed < 0)
+								participants->current_speed = 0;
 						}
-						participants[0]->current_speed = participants[0]->current_speed*0.9f;
+						participants->current_speed = participants->current_speed*0.9f;
 						return;
 					}
 					else
@@ -263,6 +264,24 @@ void SinglePlayer::TakeAction(std::vector<Participant*> &participants, int ais)
 			}
 		}
 		}
+	}
+}
+void SinglePlayer::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string> &tour)
+{
+	int safe_speed = INT32_MAX;
+	std::string helper;
+
+	for (int i = participants.size() - ais; i < participants.size() && participants.size() != 1; i++)
+	{
+		for (int j = 0; j < participants[i]->car_modifiers[CarModifiers::visibility]; j++)
+		{
+			if (tour[j].size() > 1)
+			{
+				if (atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i]->car_modifiers[CarModifiers::max_braking]) < safe_speed)
+					safe_speed = atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i]->car_modifiers[CarModifiers::max_braking]);
+			}
+		}
+		participants[i]->TakeAction(safe_speed, (bool)tour[0].size > 1);
 	}
 }
 void SinglePlayer::SendTarget(int ranking_position)

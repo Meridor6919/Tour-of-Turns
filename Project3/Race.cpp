@@ -240,7 +240,8 @@ void Race::Game()
 		if(turn > 0)
 			(*participants)[0]->network_role->Attack(*participants, ais);
 
-		(*participants)[0]->network_role->TakeAction(*participants, ais);
+		(*participants)[0]->network_role->TakeAction((*participants)[0]);
+		(*participants)[0]->network_role->GetOthersAction(*participants, ais, tour);
 		//tests, scores
 	}
 }

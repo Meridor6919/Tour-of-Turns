@@ -27,7 +27,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	static std::string names[] =
 	{ "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
 	"John Hill", "Andrew Anderson", "Jane Turning", "Lester King", "Drew McNeil", "Sam Samson","Gaston Reveneu", "Roman Torbon",
-	"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic" };
+	"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic", "Blu Apostrof" };
 	std::string BestCarPath;
 	std::string BestTirePath;
 	std::string helper;
@@ -35,10 +35,10 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	ai_type = rand() % 3+1;
 
 	static int used_names = 0;
-	int RandomName = rand() % (23 - used_names);
+	int RandomName = rand() % (24 - used_names);
 
 	helper = names[RandomName];
-	names[RandomName] = names[23 - used_names];
+	names[RandomName] = names[24 - used_names];
 	name = helper;
 	used_names++;
 	
@@ -202,4 +202,87 @@ int Participant::CarPoints(std::string cars_path)
 	}
 	return total_points;
 	return 0;
+}
+void Participant::TakeAction(int safe_speed, bool turn) {
+
+	switch (ai_type)
+	{
+	case 2://speedy guy
+	{
+		if (current_durability < current_speed * 2 && current_speed>safe_speed * 2 / 3)
+		{
+			current_speed -= car_modifiers[CarModifiers::hand_brake_value];
+			if (current_speed == 0)
+				current_speed = safe_speed * 0.7 + rand() % 5 - 2;
+		}
+		else if (turn && current_speed > 40 && rand() % 2 == 1)
+		{
+			drift = true;
+			current_speed -= car_modifiers[CarModifiers::hand_brake_value];
+		}
+		else
+		{
+			current_speed += car_modifiers[CarModifiers::max_accelerating];
+			if (current_speed > safe_speed*1.4)
+				current_speed = safe_speed * 1.4 + rand() % 5 - 2;
+
+		}
+		break;
+	}
+	case 1://drifter
+	{
+		if (turn && current_speed > 40)
+		{
+			drift = true;
+			current_speed -= car_modifiers[CarModifiers::hand_brake_value];
+		}
+		else if (current_durability < current_speed * 2 && current_speed>safe_speed * 0.7)
+		{
+			current_speed -= car_modifiers[CarModifiers::max_braking];
+
+			if (current_speed < safe_speed * 0.7)
+				current_speed = safe_speed * 0.7 + rand() % 5 - 2;
+		}
+		else if (current_speed > safe_speed*1.4)
+		{
+			current_speed -= car_modifiers[CarModifiers::max_braking];
+			if (current_speed < safe_speed * 1.4)
+				current_speed = safe_speed * 1.4 + rand() % 5 - 2;
+		}
+		else
+			current_speed += car_modifiers[CarModifiers::max_accelerating];
+
+		break;
+	}
+	case 0://safe guy
+	{
+		if (turn && current_speed > 40 && current_speed < 150 && rand() % 2 == 1)
+		{
+			drift = true;
+			current_speed -= car_modifiers[CarModifiers::hand_brake_value];
+		}
+		else if (current_durability < current_speed * 2 || current_speed>safe_speed*1.1)
+		{
+			current_speed -= car_modifiers[CarModifiers::max_braking];
+
+			if (current_speed < safe_speed)
+				current_speed = safe_speed + rand() % 5 - 2;
+		}
+		else
+		{
+			current_speed += car_modifiers[CarModifiers::max_accelerating];
+			if (current_speed > safe_speed)
+				current_speed = safe_speed + rand() % 5 - 2;
+		}
+
+		break;
+	}
+	}
+	if (current_speed > car_modifiers[CarModifiers::max_speed])
+		current_speed = car_modifiers[CarModifiers::max_speed];
+
+	else if (current_speed < 0)
+		current_speed = 0;
+
+	current_speed = static_cast<int>(static_cast<float>(current_speed)*0.9f);
 }

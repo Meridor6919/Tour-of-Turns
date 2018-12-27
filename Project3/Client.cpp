@@ -299,9 +299,12 @@ void Client::SendInfo(std::string special_text, std::string text)
 {
 
 }
-void Client::TakeAction(std::vector<Participant*> &participants, int ais)
+void Client::TakeAction(Participant* &participants)
 {
 
+}
+void Client::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
+{
 }
 void Client::SendTarget(int ranking_position)
 {

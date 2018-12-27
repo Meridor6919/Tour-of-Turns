@@ -263,9 +263,12 @@ void Host::SendInfo(std::string special_text, std::string text)
 {
 
 }
-void Host::TakeAction(std::vector<Participant*> &participants, int ais)
+void Host::TakeAction(Participant* &participants)
 {
 	
+}
+void Host::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
+{
 }
 void Host::SendTarget(int ranking_position)
 {

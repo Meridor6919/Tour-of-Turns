@@ -49,6 +49,7 @@ public:
 	int attacked;
 	bool drift;
 
-	Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role);//Creating human player
+	Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role);		//Creating human player
 	Participant(SinglePlayer *network_role, std::string tour_path);//creating AI
+	void TakeAction(int safe_speed, bool turn);
 };
