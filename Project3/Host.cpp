@@ -251,7 +251,7 @@ void Host::GetInfobox(InfoBox *infobox)
 {
 
 }
-void Host::GetCurrentAtribs(float &durability, float current_speed)
+void Host::GetCurrentAtribs(Participant* &participant)
 {
 
 }

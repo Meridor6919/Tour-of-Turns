@@ -113,7 +113,7 @@ void SinglePlayer::GetInfobox(InfoBox *infobox)
 {
 
 }
-void SinglePlayer::GetCurrentAtribs(float &durability, float current_speed)
+void SinglePlayer::GetCurrentAtribs(Participant* &participant)
 {
 
 }

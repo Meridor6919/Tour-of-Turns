@@ -221,6 +221,7 @@ void Race::Game()
 
 	for(int turn = 0; turn < tour.size()+1; turn++) //main game loop
 	{
+
 		Interface();
 		std::vector<std::string>::const_iterator first = tour.begin() + turn;
 		std::vector<std::string>::const_iterator last;
@@ -242,6 +243,8 @@ void Race::Game()
 
 		(*participants)[0]->network_role->TakeAction((*participants)[0]);
 		(*participants)[0]->network_role->GetOthersAction(*participants, ais, tour);
+
+		(*participants)[0]->network_role->
 		//tests, scores
 	}
 }

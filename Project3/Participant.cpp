@@ -286,3 +286,137 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 
 	current_speed = static_cast<int>(static_cast<float>(current_speed)*0.9f);
 }
+
+void Participant::Test(std::string field)
+{
+	if (field.size() == 1)
+	{
+		int r = rand() % 8;
+		int lost = (attacked - r)*rand() % 5 * 5;
+		if (attacked > r)
+		{
+			current_speed /= attacked - r;
+			current_durability -= lost;
+			//if (show)
+				//infobox(name + " lost " + NumberToString(lost) + " durability", ", because of enemies attacks", color, color2);
+		}
+		attacked = 0;
+		return;
+	}
+
+
+
+	const char Chelper = field[0];
+	field.erase(0, 1);
+	std::string tire = tire_modifiers[atoi(&Chelper)];
+	std::string helper = tire;
+	int find = tire.find("x");
+	int reqired_tests = atoi(helper.erase(find, helper.size() - find).c_str());
+	int number_of_tests = atoi(tire.erase(0, find + 1).c_str());
+	int passed_tests = 0;
+	int max = 0, min = 100;
+	float local_score;
+	float formula;
+	float base = static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()));
+
+
+	if (base < 0)
+		base = 0;
+
+
+
+	if (drift == true)
+	{
+		base *= 10000.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(5 * attacked);
+		if (base > 100.0f)
+			base = 100.0f;
+		formula = (current_speed + base) / 2;
+	}
+	else
+	{
+		base *= 10000.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(0.15f * attacked);
+		if (base > 100.0f)
+			base = 100.0f;
+		formula = 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;
+	}
+
+	attacked = 0;
+
+	for (int i = 0; i < number_of_tests; i++)
+	{
+		local_score = static_cast<float>(rand() % 100) + static_cast<float>(rand() % 100 + 1) / 100.0f;
+
+		if (local_score > formula)
+		{
+			if (local_score > max)
+				max = static_cast<int>(local_score);
+
+			passed_tests++;
+		}
+		else if (local_score < min)
+		{
+			min = static_cast<int>(local_score);
+		}
+	}
+
+	if (passed_tests >= reqired_tests)
+	{
+		//if (show)
+			//infobox(name + " have manage to turn, ", "required - " + NumberToString(static_cast<int>(formula)) + " highest roll - " + NumberToString(max), color, color2);
+	}
+	else
+	{
+		//if (show)
+			//infobox(name + " had mistaken, ", "required - " + NumberToString(static_cast<int>(formula)) + " lowest roll - " + NumberToString(min), color, color2);
+
+		if (formula > static_cast<float>(min + 50))
+		{
+			current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 50.0f;
+			//if (show)
+				//infobox(name + " badly crashed !!! ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 50) + " durability", color, color2);
+			current_speed = 0;
+		}
+		else if (formula > static_cast<float>(min + 40))
+		{
+			current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f;
+			//if (show)
+				//infobox(name + " crashed !!!, ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 75) + " durability", color, color2);
+			current_speed = 0;
+		}
+		else if (formula > static_cast<float>(min + 30))
+		{
+
+			current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f;
+			//if (show)
+				//infobox(name + " had an dangerous accident, ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 120) + " durability", color, color2);
+			current_speed /= 10;
+		}
+		else if (formula > static_cast<float>(min + 20))
+		{
+			current_durability -= current_speed;
+			//if (show)
+				//infobox(name + " got off the route, ", name + " lost " + NumberToString(current_speed) + " durability", color, color2);
+			current_speed /= 5;
+		}
+		else if (formula > static_cast<float>(min + 10))
+		{
+			current_durability -= current_speed / 2;
+			//if (show)
+				//infobox(name + " fell into a dangerous slip, ", name + " lost " + NumberToString(current_speed / 2) + " durability", color, color2);
+			current_speed /= 2;
+		}
+		else
+		{
+			current_speed = static_cast<int>(static_cast<int>(current_speed) / 1.2f);
+			//if (show)
+				//infobox(name + " slipped, ", name + " lost a little bit of speed", color, color2);
+		}
+
+		if (current_durability <= 0)
+		{
+			//infobox("RIP, " + name + " dezintegrated his vehichle...", "", color, color2);
+			
+		}
+	}
+}
+

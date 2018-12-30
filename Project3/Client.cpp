@@ -287,7 +287,7 @@ void Client::GetInfobox(InfoBox *infobox)
 {
 
 }
-void Client::GetCurrentAtribs(float &durability, float current_speed)
+void Client::GetCurrentAtribs(Participant* &participant)
 {
 
 }
