@@ -266,20 +266,24 @@ bool Race::Game()
 }
 void Race::Ending()
 {
-	while (true)
-	{
-		//to do - > deal with threads and leaking memory :/
-		_getch();
-	}
-	//save scores
-}
 
-//to do
-	//network device
-	//ai as singleplayer child
+	std::fstream fvar;
+
+	int points = (ais + 2 - Ranking((*participants)[0]->network_role, true)) * static_cast<int>(1000.0f / (*participants)[0]->score);
+	
+	fvar.open((tour_path.substr(0, tour_path.size() - 4) + "rank").c_str(), std::ios::in | std::ios::app);
+	
+	fvar << (*participants)[0]->name << std::endl;
+	fvar << (*participants)[0]->car_path << std::endl;
+	fvar << ais << std::endl;
+	fvar << (*participants)[0]->score << std::endl;
+	fvar << Ranking((*participants)[0]->network_role, true) << std::endl;
+	fvar << points << std::endl;
+			
+	fvar.close();
+}
 int Race::Ranking(SinglePlayer* network_role, bool clear)
 {
-	//ranking clear after rip
 	std::vector<std::string> text;
 	text.push_back("PLACE");
 	text.push_back("RACER");
@@ -296,7 +300,7 @@ int Race::Ranking(SinglePlayer* network_role, bool clear)
 			ret = i + 1;
 	}
 	Text::TableText(text, 1, 3, 3, 16, { static_cast<short>(main_window->GetWidth() - 55), 17 }, *main_window, clear);
-	return 0;
+	return ret;
 }
 void Race::Interface()
 {

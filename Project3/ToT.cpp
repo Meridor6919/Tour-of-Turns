@@ -137,23 +137,23 @@ void GameMode::Ranking(ToT_Window &main_window)
 	{
 		tmp_int = position;
 
-		Text::TableText(map_information, 1, 7, 3, main_window.GetWidth() / 7, { 0,23 }, main_window, true);
+		Text::TableText(map_information, 1, 6, 3, main_window.GetWidth() / 6, { 0,23 }, main_window, true);
 		map_information.clear();
 
-		map_information = { "Name", "Car", "Tires", "AI","Time","Place","Points" };
+		map_information = { "Name", "Car", "AI","Time","Place","Points" };
 
 		fvar.open((maps_rankings[position] + ".rank").c_str(), std::ios::in);
 
 		while (std::getline(fvar, tmp_string))
 			map_information.push_back(tmp_string);
 
-		Text::TableText(map_information, 1, 7, 3, main_window.GetWidth() / 7, { 0,23 }, main_window);
+		Text::TableText(map_information, 1, 6, 3, main_window.GetWidth() / 6, { 0,23 }, main_window);
 		fvar.close();
 
 		position = Text::Choose::Horizontal(maps_rankings, position, { (short)main_window.GetWidth() / 2, 18 }, Text::TextAlign::center, true, main_window);
 	} while (tmp_int != position);
 
-	Text::TableText(map_information, 1, 7, 3, main_window.GetWidth() / 7, { 0,23 }, main_window, true);
+	Text::TableText(map_information, 1, 6, 3, main_window.GetWidth() / 6, { 0,23 }, main_window, true);
 	map_information.clear();
 }
 void GameMode::Game(bool multiplayer, ToT_Window &main_window)
@@ -202,11 +202,12 @@ void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 	
 	Race race(main_window, &participants);
 	race.Lobby(network_role);
-	if (!race.Game())
+	if (race.Game())
 		race.Ending();
-	_getch();
-	_getch();
 	
-
+	_getch();
+	_getch();
+	system("cls");
+	main_window.Title();
 	delete network_role;
 }
