@@ -65,6 +65,7 @@ class Client : public SinglePlayer {
 
 	SOCKET host;
 	bool StartNetwork();
+	std::string tire_path; //needed for communication with host
 
 public:
 

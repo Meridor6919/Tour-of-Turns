@@ -17,7 +17,7 @@ bool Client::StartNetwork()
 
 	short cursor_pos = 0;
 	HANDLE handle = main_window->GetHandle();
-	COORD starting_point = { (short)main_window->GetWidth() / 2, 15 };
+	COORD starting_point = { (short)main_window->GetWidth() / 2, 20 };
 	std::map<int, std::string>::iterator  it;
 	SOCKET intercept_brodcast_socket;
 
@@ -193,6 +193,7 @@ bool Client::StartNetwork()
 }
 void Client::GetTourNames(std::vector<std::string>&tours)
 {
+	tours.clear();
 	std::string get_tour_name_code = "50";
 	send(host, get_tour_name_code.c_str(), 4, 0);
 	char temp[255];
@@ -207,31 +208,36 @@ void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 	std::string get_tour_name_code = "51";
 	send(host, get_tour_name_code.c_str(), 4, 0);
 	char temp[255];
+	cars.clear();
 
-	do
+	while (true)
 	{
 		if (!recv(host, temp, 255, 0) < 0)
 			MessageBox(0, "GetCarNames method failed", "Error", 0);
-
-		cars.push_back(temp);
-
-	} while ((std::string)temp != "exit");
-	
+		
+		if ((std::string)temp != "exit")
+			cars.push_back((std::string)temp);
+		else
+			break;
+	} 
 }
 void Client::GetTireNames(std::vector<std::string>&tires)
 {
 	std::string get_tour_name_code = "52";
 	send(host, get_tour_name_code.c_str(), 4, 0);
 	char temp[255];
+	tires.clear();
 
-	do
+	while (true)
 	{
 		if (!recv(host, temp, 255, 0) < 0)
 			MessageBox(0, "GetTireNames method failed", "Error", 0);
 
-		tires.push_back(temp);
-
-	} while ((std::string)temp != "exit");
+		if ((std::string)temp != "exit")
+			tires.push_back((std::string)temp);
+		else
+			break;
+	} 
 }
 std::vector<int> Client::GetCarParameters(std::string path)
 {
@@ -265,6 +271,7 @@ std::vector<std::string> Client::GetTireParameters(std::string path)
 
 		ret.push_back(temp);
 	}
+	tire_path = path;
 	return ret;
 }
 std::vector<std::string> Client::GetTourParameters(std::string path)
@@ -276,7 +283,13 @@ std::vector<std::string> Client::GetTourParameters(std::string path)
 }
 void Client::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {
-
+	//client don't need to know stats of other participants but he need to tell host what have he choosed
+	std::string get_tour_name_code = "59";
+	send(host, get_tour_name_code.c_str(), 4, 0);
+	send(host, participants[0]->name.c_str(), 255, 0);
+	send(host, participants[0]->car_path.c_str(), 255, 0);
+	send(host, tire_path.c_str(), 255, 0);
+	return; 
 }
 std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Participant*> &participants)
 {

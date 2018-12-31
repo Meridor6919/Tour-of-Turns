@@ -101,6 +101,21 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 				send((*clients_sockets)[client_id].first, tires_params[i].c_str(), 255, 0);
 			break;
 		}
+		case 59://receving clientparticipant info 
+		{
+			std::string info[3];
+			char temp[255];
+			
+
+			for (int i = 0; i < 3; i++)
+			{
+				if (!recv((*clients_sockets)[client_id].first, temp, 255, 0) < 0)
+					MessageBox(0, "GetTireNames method failed", "Error", 0);
+
+				info[i] = (std::string)temp;
+			}
+			clients->emplace_back(new Participant(info[0], info[1], info[2], *host));
+		}
 		default:
 		{
 			return false;

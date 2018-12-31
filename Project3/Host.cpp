@@ -114,7 +114,7 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 				{
 					clients.push_back(std::make_pair(temp, sock_addr));
 
-					SetConsoleCursorPosition(handle, { 0, 18 + 2 * (short)clients.size() });
+					SetConsoleCursorPosition(handle, { 0, 23 + 2 * (short)clients.size() });
 					SetConsoleTextAttribute(handle, main_window->color2);
 
 					in_addr ip_addr = sock_addr.sin_addr;
@@ -128,7 +128,7 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 		
 	});
 	
-	SetConsoleCursorPosition(handle, { 0, 18 });
+	SetConsoleCursorPosition(handle, { 0, 23 });
 	SetConsoleTextAttribute(handle, main_window->color1);
 	std::cout << "Players in lobby";
 
@@ -137,7 +137,7 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 		std::vector<std::string> lobby_options = { "Start game", "Kick player", "Back" };
 		int pos = 0;
 
-		pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 15 }, 3, Text::center, true, *main_window);
+		pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 20 }, 3, Text::center, true, *main_window);
 
 		switch (pos)
 		{
@@ -183,12 +183,12 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 
 				while (true)
 				{
-					int kicked_player = Text::Choose::Veritcal(text, 0, { (short)main_window->GetWidth() / 2, 15 }, 3, Text::center, true, *main_window);
+					int kicked_player = Text::Choose::Veritcal(text, 0, { (short)main_window->GetWidth() / 2, 20 }, 3, Text::center, true, *main_window);
 					if (kicked_player != text.size() - 1) //if host kicked somebody
 					{
 						for (int i = 0; i < clients.size(); i++)
 						{
-							SetConsoleCursorPosition(handle, { 0, 18 + 2 * (short)clients.size() });
+							SetConsoleCursorPosition(handle, { 0, 23 + 2 * (short)clients.size() });
 							std::cout << "                ";
 						}
 
@@ -197,7 +197,7 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 
 						for (int i = 0; i < static_cast<int>(text.size()) - 1; i++)
 						{
-							SetConsoleCursorPosition(handle, { 0, 18 + 2 * (short)clients.size() });
+							SetConsoleCursorPosition(handle, { 0, 23 + 2 * (short)clients.size() });
 							SetConsoleTextAttribute(handle, main_window->color2);
 							std::cout << text[i];
 						}
@@ -240,6 +240,13 @@ void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais
 	if(network_device != nullptr)
 		network_device->HandleClientConnection(tour);
 
+	while (true)
+	{
+		if (participants.size() == clients.size() + 1)
+			break;
+
+		main_window->Pause(500);
+	}
 	SinglePlayer::GetOtherParticipants(participants, ais, tour);
 }
 
