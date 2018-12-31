@@ -113,9 +113,11 @@ void SinglePlayer::GetInfobox(InfoBox *infobox)
 {
 
 }
-void SinglePlayer::GetCurrentAtribs(Participant* &participant)
+void SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
-
+	for (int i = 0; i < participants.size(); i++)
+		participants[i]->Test(field);
+	
 }
 void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
 {

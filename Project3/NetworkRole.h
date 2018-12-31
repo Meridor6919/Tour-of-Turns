@@ -27,7 +27,7 @@ public:
 
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	virtual void GetInfobox(InfoBox *infobox);
-	virtual void GetCurrentAtribs(Participant* &participant);
+	virtual void GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
 	virtual void Attack(std::vector<Participant*> &participants, int ais);
 
 	virtual void SendInfo(std::string special_text, std::string text);
@@ -51,7 +51,7 @@ public:
 
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	void GetInfobox(InfoBox *infobox);
-	void GetCurrentAtribs(Participant* &participant);
+	void GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
 	void Attack(std::vector<Participant*> &participants, int ais);
 
 	void SendInfo(std::string special_text, std::string text);
@@ -80,7 +80,7 @@ public:
 
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	void GetInfobox(InfoBox *infobox);
-	void GetCurrentAtribs(Participant* &participant);
+	void GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
 	void Attack(std::vector<Participant*> &participants, int ais);
 
 	void SendInfo(std::string special_text, std::string text);

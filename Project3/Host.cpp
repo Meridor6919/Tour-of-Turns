@@ -251,7 +251,7 @@ void Host::GetInfobox(InfoBox *infobox)
 {
 
 }
-void Host::GetCurrentAtribs(Participant* &participant)
+void Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
 
 }

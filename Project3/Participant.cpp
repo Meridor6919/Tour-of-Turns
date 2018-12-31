@@ -86,7 +86,7 @@ int Participant::TiresPoints(std::string tires_path)
 			return 1;
 	};
 	auto power = [](float number, int power) {
-		int ret = 1;
+		float ret = 1;
 
 		for (int i = 0; i < power; i++)
 			ret *= number;
@@ -115,7 +115,7 @@ int Participant::TiresPoints(std::string tires_path)
 			total_points += (factorial(y) / (factorial(y - x)*factorial(x)) * power(0.5f, x) * power(0.5f, y - x));
 		}
 	}
-	return total_points;
+	return static_cast<int>(total_points);
 }
 int Participant::CarPoints(std::string cars_path)
 {
@@ -209,22 +209,22 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 	{
 	case 2://speedy guy
 	{
-		if (current_durability < current_speed * 2 && current_speed>safe_speed * 2 / 3)
+		if (current_durability < current_speed * 2.0f && current_speed>static_cast<float>(safe_speed) * 2.0f / 3.0f)
 		{
-			current_speed -= car_modifiers[CarModifiers::hand_brake_value];
-			if (current_speed == 0)
-				current_speed = safe_speed * 0.7 + rand() % 5 - 2;
+			current_speed -= static_cast<float>(car_modifiers[CarModifiers::hand_brake_value]);
+			if (current_speed == 0.0f)
+				current_speed = static_cast<float>(safe_speed) * 0.7f + static_cast<float>(rand() % 5 - 2);
 		}
 		else if (turn && current_speed > 40 && rand() % 2 == 1)
 		{
 			drift = true;
-			current_speed -= car_modifiers[CarModifiers::hand_brake_value];
+			current_speed -= static_cast<float>(car_modifiers[CarModifiers::hand_brake_value]);
 		}
 		else
 		{
-			current_speed += car_modifiers[CarModifiers::max_accelerating];
-			if (current_speed > safe_speed*1.4)
-				current_speed = safe_speed * 1.4 + rand() % 5 - 2;
+			current_speed += static_cast<float>(car_modifiers[CarModifiers::max_accelerating]);
+			if (current_speed > static_cast<float>(safe_speed)*1.4f)
+				current_speed = static_cast<float>(safe_speed) * 1.4f + static_cast<float>(rand() % 5 - 2);
 
 		}
 		break;
@@ -234,23 +234,23 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 		if (turn && current_speed > 40)
 		{
 			drift = true;
-			current_speed -= car_modifiers[CarModifiers::hand_brake_value];
+			current_speed -= static_cast<float>(car_modifiers[CarModifiers::hand_brake_value]);
 		}
-		else if (current_durability < current_speed * 2 && current_speed>safe_speed * 0.7)
+		else if (current_durability < current_speed * 2.0f && current_speed > static_cast<float>(safe_speed) * 0.7)
 		{
-			current_speed -= car_modifiers[CarModifiers::max_braking];
+			current_speed -= static_cast<float>(car_modifiers[CarModifiers::max_braking]);
 
-			if (current_speed < safe_speed * 0.7)
-				current_speed = safe_speed * 0.7 + rand() % 5 - 2;
+			if (current_speed < static_cast<float>(safe_speed) * 0.7f)
+				current_speed = static_cast<float>(safe_speed) * 0.7f + static_cast<float>(rand() % 5 - 2);
 		}
-		else if (current_speed > safe_speed*1.4)
+		else if (current_speed > static_cast<float>(safe_speed)*1.4f)
 		{
-			current_speed -= car_modifiers[CarModifiers::max_braking];
-			if (current_speed < safe_speed * 1.4)
-				current_speed = safe_speed * 1.4 + rand() % 5 - 2;
+			current_speed -= static_cast<float>(car_modifiers[CarModifiers::max_braking]);
+			if (current_speed < safe_speed * 1.4f)
+				current_speed = static_cast<float>(safe_speed) * 1.4f + static_cast<float>(rand() % 5 - 2);
 		}
 		else
-			current_speed += car_modifiers[CarModifiers::max_accelerating];
+			current_speed += static_cast<float>(car_modifiers[CarModifiers::max_accelerating]);
 
 		break;
 	}
@@ -259,32 +259,32 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 		if (turn && current_speed > 40 && current_speed < 150 && rand() % 2 == 1)
 		{
 			drift = true;
-			current_speed -= car_modifiers[CarModifiers::hand_brake_value];
+			current_speed -= static_cast<float>(car_modifiers[CarModifiers::hand_brake_value]);
 		}
 		else if (current_durability < current_speed * 2 || current_speed>safe_speed*1.1)
 		{
-			current_speed -= car_modifiers[CarModifiers::max_braking];
+			current_speed -= static_cast<float>(car_modifiers[CarModifiers::max_braking]);
 
 			if (current_speed < safe_speed)
-				current_speed = safe_speed + rand() % 5 - 2;
+				current_speed = static_cast<float>(safe_speed + rand() % 5 - 2);
 		}
 		else
 		{
-			current_speed += car_modifiers[CarModifiers::max_accelerating];
+			current_speed += static_cast<float>(car_modifiers[CarModifiers::max_accelerating]);
 			if (current_speed > safe_speed)
-				current_speed = safe_speed + rand() % 5 - 2;
+				current_speed = static_cast<float>(safe_speed + rand() % 5 - 2);
 		}
 
 		break;
 	}
 	}
-	if (current_speed > car_modifiers[CarModifiers::max_speed])
-		current_speed = car_modifiers[CarModifiers::max_speed];
+	if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed]))
+		current_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed]);
 
-	else if (current_speed < 0)
-		current_speed = 0;
+	else if (current_speed < 0.0f)
+		current_speed = 0.0f;
 
-	current_speed = static_cast<int>(static_cast<float>(current_speed)*0.9f);
+	current_speed = static_cast<float>(current_speed)*0.9f;
 }
 
 void Participant::Test(std::string field)
@@ -301,122 +301,125 @@ void Participant::Test(std::string field)
 				//infobox(name + " lost " + NumberToString(lost) + " durability", ", because of enemies attacks", color, color2);
 		}
 		attacked = 0;
-		return;
-	}
-
-
-
-	const char Chelper = field[0];
-	field.erase(0, 1);
-	std::string tire = tire_modifiers[atoi(&Chelper)];
-	std::string helper = tire;
-	int find = tire.find("x");
-	int reqired_tests = atoi(helper.erase(find, helper.size() - find).c_str());
-	int number_of_tests = atoi(tire.erase(0, find + 1).c_str());
-	int passed_tests = 0;
-	int max = 0, min = 100;
-	float local_score;
-	float formula;
-	float base = static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()));
-
-
-	if (base < 0)
-		base = 0;
-
-
-
-	if (drift == true)
-	{
-		base *= 10000.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(5 * attacked);
-		if (base > 100.0f)
-			base = 100.0f;
-		formula = (current_speed + base) / 2;
 	}
 	else
 	{
-		base *= 10000.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(0.15f * attacked);
-		if (base > 100.0f)
-			base = 100.0f;
-		formula = 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;
-	}
+		const char Chelper = field[0];
+		field.erase(0, 1);
+		std::string tire = tire_modifiers[atoi(&Chelper)];
+		std::string helper = tire;
+		int find = static_cast<int>(tire.find("x"));
+		int reqired_tests = atoi(helper.erase(find, helper.size() - find).c_str());
+		int number_of_tests = atoi(tire.erase(0, find + 1).c_str());
+		int passed_tests = 0;
+		int max = 0, min = 100;
+		float local_score;
+		float formula;
+		float base = static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()));
 
-	attacked = 0;
+		if (base < 0)
+			base = 0;
 
-	for (int i = 0; i < number_of_tests; i++)
-	{
-		local_score = static_cast<float>(rand() % 100) + static_cast<float>(rand() % 100 + 1) / 100.0f;
-
-		if (local_score > formula)
+		if (drift == true)
 		{
-			if (local_score > max)
-				max = static_cast<int>(local_score);
-
-			passed_tests++;
-		}
-		else if (local_score < min)
-		{
-			min = static_cast<int>(local_score);
-		}
-	}
-
-	if (passed_tests >= reqired_tests)
-	{
-		//if (show)
-			//infobox(name + " have manage to turn, ", "required - " + NumberToString(static_cast<int>(formula)) + " highest roll - " + NumberToString(max), color, color2);
-	}
-	else
-	{
-		//if (show)
-			//infobox(name + " had mistaken, ", "required - " + NumberToString(static_cast<int>(formula)) + " lowest roll - " + NumberToString(min), color, color2);
-
-		if (formula > static_cast<float>(min + 50))
-		{
-			current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 50.0f;
-			//if (show)
-				//infobox(name + " badly crashed !!! ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 50) + " durability", color, color2);
-			current_speed = 0;
-		}
-		else if (formula > static_cast<float>(min + 40))
-		{
-			current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f;
-			//if (show)
-				//infobox(name + " crashed !!!, ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 75) + " durability", color, color2);
-			current_speed = 0;
-		}
-		else if (formula > static_cast<float>(min + 30))
-		{
-
-			current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f;
-			//if (show)
-				//infobox(name + " had an dangerous accident, ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 120) + " durability", color, color2);
-			current_speed /= 10;
-		}
-		else if (formula > static_cast<float>(min + 20))
-		{
-			current_durability -= current_speed;
-			//if (show)
-				//infobox(name + " got off the route, ", name + " lost " + NumberToString(current_speed) + " durability", color, color2);
-			current_speed /= 5;
-		}
-		else if (formula > static_cast<float>(min + 10))
-		{
-			current_durability -= current_speed / 2;
-			//if (show)
-				//infobox(name + " fell into a dangerous slip, ", name + " lost " + NumberToString(current_speed / 2) + " durability", color, color2);
-			current_speed /= 2;
+			base *= 10000.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(5 * attacked);
+			if (base > 100.0f)
+				base = 100.0f;
+			formula = (current_speed + base) / 2;
 		}
 		else
 		{
-			current_speed = static_cast<int>(static_cast<int>(current_speed) / 1.2f);
-			//if (show)
-				//infobox(name + " slipped, ", name + " lost a little bit of speed", color, color2);
+			base *= 10000.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(0.15f * attacked);
+			if (base > 100.0f)
+				base = 100.0f;
+			formula = 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;
 		}
 
-		if (current_durability <= 0)
+		attacked = 0;
+
+		for (int i = 0; i < number_of_tests; i++)
 		{
-			//infobox("RIP, " + name + " dezintegrated his vehichle...", "", color, color2);
-			
+			local_score = static_cast<float>(rand() % 100) + static_cast<float>(rand() % 100 + 1) / 100.0f;
+
+			if (local_score > formula)
+			{
+				if (local_score > max)
+					max = static_cast<int>(local_score);
+
+				passed_tests++;
+			}
+			else if (local_score < min)
+			{
+				min = static_cast<int>(local_score);
+			}
+		}
+
+		if (passed_tests >= reqired_tests)
+		{
+			//if (show)
+				//infobox(name + " have manage to turn, ", "required - " + NumberToString(static_cast<int>(formula)) + " highest roll - " + NumberToString(max), color, color2);
+		}
+		else
+		{
+			//if (show)
+				//infobox(name + " had mistaken, ", "required - " + NumberToString(static_cast<int>(formula)) + " lowest roll - " + NumberToString(min), color, color2);
+
+			if (formula > static_cast<float>(min + 50))
+			{
+				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 50.0f;
+				//if (show)
+					//infobox(name + " badly crashed !!! ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 50) + " durability", color, color2);
+				current_speed = 0;
+			}
+			else if (formula > static_cast<float>(min + 40))
+			{
+				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f;
+				//if (show)
+					//infobox(name + " crashed !!!, ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 75) + " durability", color, color2);
+				current_speed = 0;
+			}
+			else if (formula > static_cast<float>(min + 30))
+			{
+
+				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f;
+				//if (show)
+					//infobox(name + " had an dangerous accident, ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 120) + " durability", color, color2);
+				current_speed /= 10;
+			}
+			else if (formula > static_cast<float>(min + 20))
+			{
+				current_durability -= current_speed;
+				//if (show)
+					//infobox(name + " got off the route, ", name + " lost " + NumberToString(current_speed) + " durability", color, color2);
+				current_speed /= 5;
+			}
+			else if (formula > static_cast<float>(min + 10))
+			{
+				current_durability -= current_speed / 2;
+				//if (show)
+					//infobox(name + " fell into a dangerous slip, ", name + " lost " + NumberToString(current_speed / 2) + " durability", color, color2);
+				current_speed /= 2;
+			}
+			else
+			{
+				current_speed = static_cast<float>(current_speed) / 1.2f;
+				//if (show)
+					//infobox(name + " slipped, ", name + " lost a little bit of speed", color, color2);
+			}
+
+			if (current_durability <= 0)
+			{
+				//infobox("RIP, " + name + " dezintegrated his vehichle...", "", color, color2);
+
+			}
 		}
 	}
+	if (drift == true)
+	{
+		drift = false;
+		score += 1.5;
+	}
+	else
+		score += 100 / (1 + current_speed * 10.0f / 36.0f);
 }
 

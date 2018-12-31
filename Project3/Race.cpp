@@ -218,10 +218,10 @@ void  Race::Lobby(SinglePlayer *network_role)
 void Race::Game()
 {
 	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
+	Ranking(false);
 
 	for(int turn = 0; turn < tour.size()+1; turn++) //main game loop
 	{
-
 		Interface();
 		std::vector<std::string>::const_iterator first = tour.begin() + turn;
 		std::vector<std::string>::const_iterator last;
@@ -236,15 +236,15 @@ void Race::Game()
 		std::vector<std::string> visible_tour(first, last);
 
 		VisionBox(visible_tour);
-		Ranking();
 
 		if(turn > 0)
 			(*participants)[0]->network_role->Attack(*participants, ais);
 
 		(*participants)[0]->network_role->TakeAction((*participants)[0]);
 		(*participants)[0]->network_role->GetOthersAction(*participants, ais, tour);
-
-		(*participants)[0]->network_role->
+		Ranking(true);
+		(*participants)[0]->network_role->GetCurrentAtribs(*participants, tour[turn]);
+		Ranking(false);
 		//tests, scores
 	}
 }
@@ -261,7 +261,7 @@ void Race::Ending()
 //to do
 	//network device
 	//ai as singleplayer child
-int Race::Ranking()
+int Race::Ranking(bool clear)
 {
 	//ranking clear after rip
 	std::vector<std::string> text;
@@ -279,7 +279,7 @@ int Race::Ranking()
 		if (ranking_info[i].second == (*participants)[0]->name && ranking_info[i].first == (*participants)[0]->score)
 			ret = i + 1;
 	}
-	Text::TableText(text, 1, 3, 3, 16, { static_cast<short>(main_window->GetWidth() - 55), 17 }, *main_window, false);
+	Text::TableText(text, 1, 3, 3, 16, { static_cast<short>(main_window->GetWidth() - 55), 17 }, *main_window, clear);
 	return 0;
 }
 void Race::Interface()

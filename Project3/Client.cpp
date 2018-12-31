@@ -127,7 +127,7 @@ bool Client::StartNetwork()
 			{
 				cursor_pos -= 1;
 				if (cursor_pos < 0)
-					cursor_pos = name_ip.size() - 1;
+					cursor_pos = static_cast<int>(name_ip.size()) - 1;
 			}
 		}
 		show_options();
@@ -287,7 +287,7 @@ void Client::GetInfobox(InfoBox *infobox)
 {
 
 }
-void Client::GetCurrentAtribs(Participant* &participant)
+void Client::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
 
 }
