@@ -202,7 +202,14 @@ void GameMode::Game(bool multiplayer, ToT_Window_ &main_window)
 	
 	Race race(main_window, &participants);
 	race.Lobby(network_role);
-	race.Game();
+	try
+	{
+		race.Game();
+	}
+	catch (int err)
+	{
+		return;//RIP
+	}
 	race.Ending();
 
 	delete network_role;

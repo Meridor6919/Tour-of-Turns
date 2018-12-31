@@ -207,7 +207,7 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 
 	switch (ai_type)
 	{
-	case 2://speedy guy
+	case 3://speedy guy
 	{
 		if (current_durability < current_speed * 2.0f && current_speed>static_cast<float>(safe_speed) * 2.0f / 3.0f)
 		{
@@ -229,7 +229,7 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 		}
 		break;
 	}
-	case 1://drifter
+	case 2://drifter
 	{
 		if (turn && current_speed > 40)
 		{
@@ -254,7 +254,7 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 
 		break;
 	}
-	case 0://safe guy
+	case 1://safe guy
 	{
 		if (turn && current_speed > 40 && current_speed < 150 && rand() % 2 == 1)
 		{

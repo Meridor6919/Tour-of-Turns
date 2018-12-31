@@ -247,9 +247,9 @@ std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Part
 {
 	return SinglePlayer::GetRankingInfo(participants);
 }
-void Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
+bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
-
+	return false;
 }
 void Host::Attack(std::vector<Participant*> &participants, int ais)
 {

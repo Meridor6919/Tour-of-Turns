@@ -111,11 +111,23 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo(std::vec
 	}
 	return ret;
 }
-void SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
+bool SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
 	for (int i = 0; i < participants.size(); i++)
 		participants[i]->Test(field, i == 0);
-	
+
+	for (int i = participants.size() -1; i >= 0 ; i--)
+	{
+		if (participants[i]->current_durability <= 0.0f)
+		{
+			infobox->Push("RIP, " + participants[i]->name + " dezintegrated his vehichle...", "");
+			participants.erase(participants.begin() + i);
+			
+			if(i == 0)
+				return false;
+		}
+	}
+	return true;
 }
 void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
 {

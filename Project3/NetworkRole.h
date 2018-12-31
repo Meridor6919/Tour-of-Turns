@@ -27,7 +27,7 @@ public:
 	virtual void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
-	virtual void GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
+	virtual bool GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
 	virtual void Attack(std::vector<Participant*> &participants, int ais);
 
 	virtual void SendInfo(std::string special_text, std::string text);
@@ -50,7 +50,7 @@ public:
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
-	void GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
+	bool GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
 	void Attack(std::vector<Participant*> &participants, int ais);
 
 	void SendInfo(std::string special_text, std::string text);
@@ -78,7 +78,7 @@ public:
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
-	void GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
+	bool GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
 	void Attack(std::vector<Participant*> &participants, int ais);
 
 	void SendInfo(std::string special_text, std::string text);

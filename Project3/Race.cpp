@@ -238,14 +238,23 @@ void Race::Game()
 		VisionBox(visible_tour);
 
 		if(turn > 0)
-			(*participants)[0]->network_role->Attack(*participants, ais);
+			(*participants)[0]->network_role->Attack(*participants, (*participants).size()-1);
 
 		(*participants)[0]->network_role->TakeAction((*participants)[0]);
-		(*participants)[0]->network_role->GetOthersAction(*participants, ais, tour);
+		(*participants)[0]->network_role->GetOthersAction(*participants, (*participants).size() - 1, tour);
 		Ranking(true);
-		(*participants)[0]->network_role->GetCurrentAtribs(*participants, tour[turn]);
+
+
+		if (!(*participants)[0]->network_role->GetCurrentAtribs(*participants, tour[turn]))
+		{
+			_getch();
+			throw 1;
+		}
 		Ranking(false);
-		//tests, scores
+		
+
+
+
 	}
 }
 void Race::Ending()

@@ -283,9 +283,9 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Pa
 	std::vector<std::pair<float, std::string>> temp = {};
 	return temp;
 }
-void Client::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
+bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
-
+	return false;
 }
 void Client::Attack(std::vector<Participant*> &participants, int ais)
 {
