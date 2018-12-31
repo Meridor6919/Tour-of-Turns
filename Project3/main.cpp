@@ -8,7 +8,7 @@
 int main()
 {
 	char title[] = "Tour of Turns";
-	ToT_Window GameWindow(title, 15, 10, 14, true); //window settings
+	ToT_Window_ GameWindow(title, 15, 10, 14, true); //window settings
 	std::vector<std::string> text = { "New Game ", "Multiplayer ", "Ranking ", "Options ", "Credits ", "Exit" };
 	int main_menu_position = 0;
 
@@ -25,22 +25,22 @@ int main()
 			case 0:
 			case 1:
 			{
-				GameMode_::Game(main_menu_position, GameWindow);
+				GameMode::Game(main_menu_position, GameWindow);
 				break;
 			}
 			case 2:
 			{
-				GameMode_::Ranking(GameWindow);
+				GameMode::Ranking(GameWindow);
 				break;
 			}
 			case 3:
 			{
-				GameMode_::Options(GameWindow);
+				GameMode::Options(GameWindow);
 				break;
 			}
 			case 4:
 			{
-				GameMode_::Credits(GameWindow);
+				GameMode::Credits(GameWindow);
 				break;
 			}
 			case 5:

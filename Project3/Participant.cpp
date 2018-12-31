@@ -287,7 +287,7 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 	current_speed = static_cast<float>(current_speed)*0.9f;
 }
 
-void Participant::Test(std::string field)
+void Participant::Test(std::string field, bool show)
 {
 	if (field.size() == 1)
 	{
@@ -297,8 +297,8 @@ void Participant::Test(std::string field)
 		{
 			current_speed /= attacked - r;
 			current_durability -= lost;
-			//if (show)
-				//infobox(name + " lost " + NumberToString(lost) + " durability", ", because of enemies attacks", color, color2);
+			if (show)
+				network_role->SendInfo(name + " lost " + std::to_string(lost) + " durability", ", because of enemies attacks");
 		}
 		attacked = 0;
 	}
@@ -356,61 +356,54 @@ void Participant::Test(std::string field)
 
 		if (passed_tests >= reqired_tests)
 		{
-			//if (show)
-				//infobox(name + " have manage to turn, ", "required - " + NumberToString(static_cast<int>(formula)) + " highest roll - " + NumberToString(max), color, color2);
+			if (show)
+				network_role->SendInfo(name + " have manage to turn, ", "required - " + std::to_string(static_cast<int>(formula)) + " highest roll - " + std::to_string(max));
 		}
 		else
 		{
-			//if (show)
-				//infobox(name + " had mistaken, ", "required - " + NumberToString(static_cast<int>(formula)) + " lowest roll - " + NumberToString(min), color, color2);
+			if (show)
+				network_role->SendInfo(name + " had mistaken, ", "required - " + std::to_string(static_cast<int>(formula)) + " lowest roll - " + std::to_string(min));
 
 			if (formula > static_cast<float>(min + 50))
 			{
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 50.0f;
-				//if (show)
-					//infobox(name + " badly crashed !!! ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 50) + " durability", color, color2);
+				if (show)
+					network_role->SendInfo(name + " badly crashed !!! ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 50)) + " durability");
 				current_speed = 0;
 			}
 			else if (formula > static_cast<float>(min + 40))
 			{
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f;
-				//if (show)
-					//infobox(name + " crashed !!!, ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 75) + " durability", color, color2);
+				if (show)
+					network_role->SendInfo(name + " crashed !!!, ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f)) + " durability");
 				current_speed = 0;
 			}
 			else if (formula > static_cast<float>(min + 30))
 			{
-
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f;
-				//if (show)
-					//infobox(name + " had an dangerous accident, ", name + " lost " + NumberToString(current_speed * (100 + static_cast<int>(formula) - min) / 120) + " durability", color, color2);
+				if (show)
+					network_role->SendInfo(name + " had an dangerous accident, ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f)) + " durability");
 				current_speed /= 10;
 			}
 			else if (formula > static_cast<float>(min + 20))
 			{
 				current_durability -= current_speed;
-				//if (show)
-					//infobox(name + " got off the route, ", name + " lost " + NumberToString(current_speed) + " durability", color, color2);
+				if (show)
+					network_role->SendInfo(name + " got off the route, ", name + " lost " + std::to_string(static_cast<int>(current_speed)) + " durability");
 				current_speed /= 5;
 			}
 			else if (formula > static_cast<float>(min + 10))
 			{
-				current_durability -= current_speed / 2;
-				//if (show)
-					//infobox(name + " fell into a dangerous slip, ", name + " lost " + NumberToString(current_speed / 2) + " durability", color, color2);
+				current_durability -= current_speed / 2.0f;
+				if (show)
+					network_role->SendInfo(name + " fell into a dangerous slip, ", name + " lost " + std::to_string(static_cast<int>(current_speed / 2.0f)) + " durability");
 				current_speed /= 2;
 			}
 			else
 			{
 				current_speed = static_cast<float>(current_speed) / 1.2f;
-				//if (show)
-					//infobox(name + " slipped, ", name + " lost a little bit of speed", color, color2);
-			}
-
-			if (current_durability <= 0)
-			{
-				//infobox("RIP, " + name + " dezintegrated his vehichle...", "", color, color2);
-
+				if (show)
+					network_role->SendInfo(name + " slipped, ", name + " lost a little bit of speed");
 			}
 		}
 	}

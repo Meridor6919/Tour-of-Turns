@@ -1,8 +1,10 @@
 #include "NetworkRole.h"
 
-SinglePlayer::SinglePlayer(ToT_Window &main_window)
+SinglePlayer::SinglePlayer(ToT_Window_ &main_window)
 {
 	this->main_window = &main_window;
+	this->infobox = new InfoBox(8, Text::TextAlign::left, { 0,58 }, 1, main_window);
+	
 }
 void SinglePlayer::GetTourNames(std::vector<std::string>&tours)
 {
@@ -109,14 +111,10 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo(std::vec
 	}
 	return ret;
 }
-void SinglePlayer::GetInfobox(InfoBox *infobox)
-{
-
-}
 void SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
 	for (int i = 0; i < participants.size(); i++)
-		participants[i]->Test(field);
+		participants[i]->Test(field, i == 0);
 	
 }
 void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
@@ -143,7 +141,7 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
 		if (rival_id[i] != 10)
 			participants[rival_id[i]]->attacked++;
 	}
-	for (int i = participants.size() - ais; i < participants.size() && participants.size() != 1; i++)
+	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()) && static_cast<int>(participants.size()) != 1; i++)
 	{
 
 		rival_id.clear();
@@ -164,7 +162,7 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
 }
 void SinglePlayer::SendInfo(std::string special_text, std::string text)
 {
-	
+	infobox->Push(special_text, text);
 }
 void SinglePlayer::TakeAction(Participant* &participants)
 {
@@ -210,8 +208,8 @@ void SinglePlayer::TakeAction(Participant* &participants)
 				else
 				{
 					participants->current_speed += value;
-					if (participants->current_speed > participants->car_modifiers[CarModifiers::max_speed])
-						participants->current_speed = participants->car_modifiers[CarModifiers::max_speed];
+					if (participants->current_speed > static_cast<float>(participants->car_modifiers[CarModifiers::max_speed]))
+						participants->current_speed = static_cast<float>(participants->car_modifiers[CarModifiers::max_speed]);
 				}
 				return;		
 			}
@@ -240,11 +238,11 @@ void SinglePlayer::TakeAction(Participant* &participants)
 					{
 						if (position == 2)
 						{
-							participants->current_speed -= participants->car_modifiers[CarModifiers::hand_brake_value];
+							participants->current_speed -= static_cast<float>(participants->car_modifiers[CarModifiers::hand_brake_value]);
 							if (participants->current_speed > 40)
 								participants->drift = true;
 							if (participants->current_speed < 0)
-								participants->current_speed = 0;
+								participants->current_speed = 0.0f;
 						}
 						participants->current_speed = participants->current_speed*0.9f;
 						return;
@@ -273,7 +271,7 @@ void SinglePlayer::GetOthersAction(std::vector<Participant*>& participants, int 
 	int safe_speed = INT32_MAX;
 	std::string helper;
 
-	for (int i = participants.size() - ais; i < participants.size() && participants.size() != 1; i++)
+	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()) && static_cast<int>(participants.size()) != 1; i++)
 	{
 		for (int j = 0; j < participants[i]->car_modifiers[CarModifiers::visibility]; j++)
 		{
@@ -288,7 +286,7 @@ void SinglePlayer::GetOthersAction(std::vector<Participant*>& participants, int 
 }
 void SinglePlayer::SendTarget(int ranking_position)
 {
-
+	
 }
 int SinglePlayer::Possible_AIs()
 {

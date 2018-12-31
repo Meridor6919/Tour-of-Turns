@@ -10,10 +10,10 @@ InfoBox::InfoBox(int size, Text::TextAlign text_align, COORD starting_point, int
 }
 void InfoBox::Push(std::string special_text, std::string text)
 {
+	info.push_back(special_text + " " + text);		//adding text to infobox
+
 	HANDLE handle = main_window->GetHandle();
 	std::vector<std::string>::iterator it = info.begin();
-
-	info.push_back(special_text + " " + text);		//adding text to infobox
 
 	Clear();									//clearing visible text from infobox to update it
 

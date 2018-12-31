@@ -107,4 +107,5 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 
 	}
+	return true;
 }

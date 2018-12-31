@@ -5,10 +5,10 @@
 #include "ToT_Window.h"
 
 
-namespace GameMode_
+namespace GameMode
 {
-	void Game(bool multiplayer, ToT_Window &main_window);
-	void Credits(ToT_Window &main_window);
-	void Options(ToT_Window &main_window);
-	void Ranking(ToT_Window &main_window);
+	void Game(bool multiplayer, ToT_Window_ &main_window);
+	void Credits(ToT_Window_ &main_window);
+	void Options(ToT_Window_ &main_window);
+	void Ranking(ToT_Window_ &main_window);
 }

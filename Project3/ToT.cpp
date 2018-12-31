@@ -1,7 +1,7 @@
 #include "ToT.h"
 
 
-void GameMode_::Credits(ToT_Window &main_window)
+void GameMode::Credits(ToT_Window_ &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
 
@@ -28,7 +28,7 @@ void GameMode_::Credits(ToT_Window &main_window)
 	_getch(); _getch();
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window, true);
 }
-void GameMode_::Options(ToT_Window &main_window)
+void GameMode::Options(ToT_Window_ &main_window)
 {
 	std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
@@ -47,7 +47,7 @@ void GameMode_::Options(ToT_Window &main_window)
 				//list of colours from 2 to 17
 				std::vector<std::string> local_text = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green",
 						"light cyan","light red","light magenta","yellow","white" };
-				COORD local_starting_point = { starting_point.X + options_text[main_menu_position].size() / 2 + 3 , starting_point.Y + main_menu_position * spacing };
+				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size() / 2 + 3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				
 				//erasing color that is already used by second colour
 				//program crashes when local_text.begin() is equal to local.text.end() -1 so inline if is nessesary. Substracting by 2 to synchronizewith list.
@@ -66,7 +66,7 @@ void GameMode_::Options(ToT_Window &main_window)
 				//list of colours from 2 to 17
 				std::vector<std::string> local_text = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green",
 						"light cyan","light red","light magenta","yellow","white" };
-				COORD local_starting_point = { starting_point.X + options_text[main_menu_position].size() / 2 + 3 , starting_point.Y + main_menu_position * spacing };
+				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size() / 2 + 3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				
 				//erasing color that is already used by second colour
 				//program crashes when local_text.begin() is equal to local.text.end() -1 so inline if is nessesary. Substracting by 2 to synchronizewith list.
@@ -84,7 +84,7 @@ void GameMode_::Options(ToT_Window &main_window)
 			{
 				static bool flag = false;
 				std::vector<std::string> local_text = { "on", "off" };
-				COORD local_starting_point = { starting_point.X + options_text[main_menu_position].size()/2 +3 , starting_point.Y + main_menu_position * spacing };
+				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()/2 +3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				
 				main_window.SetMusic("test.wav", !(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
@@ -93,7 +93,7 @@ void GameMode_::Options(ToT_Window &main_window)
 			{
 				static bool flag = false;
 				std::vector<std::string> local_text = { "on", "off" };
-				COORD local_starting_point = { starting_point.X + options_text[main_menu_position].size()/2 + 3 , starting_point.Y + main_menu_position * spacing };
+				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()/2 + 3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 
 				main_window.SetHamachiConnectionFlag(!(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
@@ -114,7 +114,7 @@ void GameMode_::Options(ToT_Window &main_window)
 		}
 	}
 }
-void GameMode_::Ranking(ToT_Window &main_window)
+void GameMode::Ranking(ToT_Window_ &main_window)
 {
 	
 	HANDLE handle = main_window.GetHandle();
@@ -156,7 +156,7 @@ void GameMode_::Ranking(ToT_Window &main_window)
 	Text::TableText(map_information, 1, 7, 3, main_window.GetWidth() / 7, { 0,23 }, main_window, true);
 	map_information.clear();
 }
-void GameMode_::Game(bool multiplayer, ToT_Window &main_window)
+void GameMode::Game(bool multiplayer, ToT_Window_ &main_window)
 {
 
 	SinglePlayer *network_role = nullptr;

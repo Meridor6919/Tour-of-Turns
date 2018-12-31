@@ -2,7 +2,7 @@
 #include <map>
 #include <string>
 
-Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
+Client::Client(ToT_Window_ &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	if (!StartNetwork())
@@ -282,10 +282,6 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Pa
 {
 	std::vector<std::pair<float, std::string>> temp = {};
 	return temp;
-}
-void Client::GetInfobox(InfoBox *infobox)
-{
-
 }
 void Client::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {

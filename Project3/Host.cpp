@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
+Host::Host(ToT_Window_ &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	if(!StartNetwork(participants)) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
@@ -246,10 +246,6 @@ void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Participant*> &participants)
 {
 	return SinglePlayer::GetRankingInfo(participants);
-}
-void Host::GetInfobox(InfoBox *infobox)
-{
-
 }
 void Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
