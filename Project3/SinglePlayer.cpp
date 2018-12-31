@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-SinglePlayer::SinglePlayer(ToT_Window_ &main_window)
+SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
 	this->infobox = new InfoBox(8, Text::TextAlign::left, { 0,58 }, 1, main_window);
@@ -120,16 +120,24 @@ bool SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, std
 	{
 		if (participants[i]->current_durability <= 0.0f)
 		{
+			if (i == 0)
+			{
+				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color1);
+				SetConsoleCursorPosition(main_window->GetHandle(), { 0, 20 });
+				std::cout << " Your vehice has ";
+				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color2);
+				std::cout << static_cast<int>(participants[0]->current_durability) << " durability   ";
+				infobox->Push("RIP, " + participants[i]->name + " dezintegrated his vehichle...", "");
+				participants.erase(participants.begin() + i);
+				return false;
+			}
 			infobox->Push("RIP, " + participants[i]->name + " dezintegrated his vehichle...", "");
 			participants.erase(participants.begin() + i);
-			
-			if(i == 0)
-				return false;
 		}
 	}
 	return true;
 }
-void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
+void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
 	std::vector<std::string> rival_name;
 	std::vector<int> rival_id;
@@ -147,13 +155,13 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
 		}
 		participants[i]->attacked = 0;
 	}
-	if (rival_id.size() != 1)
+	if (rival_id.size() != 1 && alive)
 	{
 		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);
 		if (rival_id[i] != 10)
 			participants[rival_id[i]]->attacked++;
 	}
-	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()) && static_cast<int>(participants.size()) != 1; i++)
+	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); i++)
 	{
 
 		rival_id.clear();
@@ -169,14 +177,13 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais)
 		int random = rand() % rival_id.size();
 		if(rival_id[random] != 10)
 			participants[rival_id[random]]->attacked++;
-
 	}
 }
 void SinglePlayer::SendInfo(std::string special_text, std::string text)
 {
 	infobox->Push(special_text, text);
 }
-void SinglePlayer::TakeAction(Participant* &participants)
+void SinglePlayer::TakeAction(Participant* &participant)
 {
 	//player
 	std::vector<std::string> actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
@@ -193,7 +200,7 @@ void SinglePlayer::TakeAction(Participant* &participants)
 			case 0:
 			case 1:
 			{
-				if (participants->current_speed == 0 && position == 1)
+				if (participant->current_speed == 0 && position == 1)
 				{
 					std::cout << " - You can't do this because you aren't moving...";
 					main_window->Pause(1500);
@@ -205,7 +212,7 @@ void SinglePlayer::TakeAction(Participant* &participants)
 				
 				std::cout << ": ";
 				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-				value = Text::Choose::Numeric(participants->car_modifiers[CarModifiers::max_accelerating + position], {console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y}, true, *main_window);
+				value = Text::Choose::Numeric(participant->car_modifiers[CarModifiers::max_accelerating + position], {console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y}, true, *main_window);
 				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
 				std::cout << "  ";
 				if (value == 0)
@@ -213,15 +220,15 @@ void SinglePlayer::TakeAction(Participant* &participants)
 				
 				if (position)
 				{
-					participants->current_speed -= value;
-					if (participants->current_speed < 0)
-						participants->current_speed = 0;
+					participant->current_speed -= value;
+					if (participant->current_speed < 0)
+						participant->current_speed = 0;
 				}
 				else
 				{
-					participants->current_speed += value;
-					if (participants->current_speed > static_cast<float>(participants->car_modifiers[CarModifiers::max_speed]))
-						participants->current_speed = static_cast<float>(participants->car_modifiers[CarModifiers::max_speed]);
+					participant->current_speed += value;
+					if (participant->current_speed > static_cast<float>(participant->car_modifiers[CarModifiers::max_speed]))
+						participant->current_speed = static_cast<float>(participant->car_modifiers[CarModifiers::max_speed]);
 				}
 				return;		
 			}
@@ -241,22 +248,22 @@ void SinglePlayer::TakeAction(Participant* &participants)
 				{
 					if (position == 4)
 					{
-						participants->car_modifiers[CarModifiers::durability] = 0;
+						participant->current_durability = 0;
 						return;
 					}
 
 
-					if (participants->current_speed > 0)
+					if (participant->current_speed > 0)
 					{
 						if (position == 2)
 						{
-							participants->current_speed -= static_cast<float>(participants->car_modifiers[CarModifiers::hand_brake_value]);
-							if (participants->current_speed > 40)
-								participants->drift = true;
-							if (participants->current_speed < 0)
-								participants->current_speed = 0.0f;
+							participant->current_speed -= static_cast<float>(participant->car_modifiers[CarModifiers::hand_brake_value]);
+							if (participant->current_speed > 40)
+								participant->drift = true;
+							if (participant->current_speed < 0)
+								participant->current_speed = 0.0f;
 						}
-						participants->current_speed = participants->current_speed*0.9f;
+						participant->current_speed = participant->current_speed*0.9f;
 						return;
 					}
 					else
@@ -283,7 +290,7 @@ void SinglePlayer::GetOthersAction(std::vector<Participant*>& participants, int 
 	int safe_speed = INT32_MAX;
 	std::string helper;
 
-	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()) && static_cast<int>(participants.size()) != 1; i++)
+	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); i++)
 	{
 		for (int j = 0; j < participants[i]->car_modifiers[CarModifiers::visibility]; j++)
 		{

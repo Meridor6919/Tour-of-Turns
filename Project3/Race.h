@@ -7,17 +7,17 @@ class Race {
 	std::vector<Participant*> *participants;
 	std::vector<float> scores;
 	std::string tour_path;
-	ToT_Window_ *main_window;
+	ToT_Window *main_window;
 	int ais;
 
 	void Interface();
-	void VisionBox(std::vector<std::string> visible_tour);
-	int Ranking(bool clear);
+	void VisionBox(std::vector<std::string> visible_tour, int visibility);
+	int Ranking(SinglePlayer* network_role, bool clear);
 
 public:
-	Race(ToT_Window_ &window, std::vector<Participant*> *participants);
+	Race(ToT_Window &window, std::vector<Participant*> *participants);
 	void Lobby(SinglePlayer *network_role);
-	void Game();
+	bool Game();
 	void Ending();
 };
 

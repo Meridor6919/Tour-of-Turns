@@ -2,7 +2,7 @@
 #include <map>
 #include <string>
 
-Client::Client(ToT_Window_ &main_window) : SinglePlayer(main_window)
+Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	if (!StartNetwork())
@@ -287,7 +287,7 @@ bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, std::stri
 {
 	return false;
 }
-void Client::Attack(std::vector<Participant*> &participants, int ais)
+void Client::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
 	
 }

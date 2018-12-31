@@ -1,6 +1,6 @@
 #include "Race.h"
 
-Race::Race(ToT_Window_ &window, std::vector<Participant*> *participants)
+Race::Race(ToT_Window &window, std::vector<Participant*> *participants)
 {
 	main_window = &window;
 	this->participants = participants;
@@ -215,47 +215,54 @@ void  Race::Lobby(SinglePlayer *network_role)
 	
 	network_role->GetOtherParticipants(*participants, ais, tour_path);
 }
-void Race::Game()
+bool Race::Game()
 {
+	bool alive = true;
+	SinglePlayer* network_role = (*participants)[0]->network_role;
+	int visibility = (*participants)[0]->car_modifiers[CarModifiers::visibility];
 	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
-	Ranking(false);
+	
+	Interface();
+	Ranking(network_role, false);
 
 	for(int turn = 0; turn < tour.size()+1; turn++) //main game loop
 	{
-		Interface();
 		std::vector<std::string>::const_iterator first = tour.begin() + turn;
 		std::vector<std::string>::const_iterator last;
-		if (tour.size() < turn + (*participants)[0]->car_modifiers[CarModifiers::visibility])
-		{
-			last = tour.begin() + tour.size();
-		}
-		else
-		{
-			last = tour.begin() + turn + (*participants)[0]->car_modifiers[CarModifiers::visibility];
-		}
-		std::vector<std::string> visible_tour(first, last);
 
-		VisionBox(visible_tour);
+		if (tour.size() < turn + visibility)
+			last = tour.begin() + tour.size();
+		else
+			last = tour.begin() + turn + visibility;
+
+		std::vector<std::string> visible_tour(first, last);
+		VisionBox(visible_tour, visibility);
 
 		if(turn > 0)
-			(*participants)[0]->network_role->Attack(*participants, (*participants).size()-1);
+			network_role->Attack(*participants, static_cast<int>((*participants).size())-static_cast<int>(alive), alive);
 
-		(*participants)[0]->network_role->TakeAction((*participants)[0]);
-		(*participants)[0]->network_role->GetOthersAction(*participants, (*participants).size() - 1, tour);
-		Ranking(true);
-
-
-		if (!(*participants)[0]->network_role->GetCurrentAtribs(*participants, tour[turn]))
+		if (alive)
 		{
-			_getch();
-			throw 1;
+			network_role->TakeAction((*participants)[0]);
+			Interface();
 		}
-		Ranking(false);
-		
 
+		network_role->GetOthersAction(*participants, static_cast<int>((*participants).size()) - 1, tour);
+		Ranking(network_role, true);
 
+		if (turn < tour.size())
+		{
+			if (!network_role->GetCurrentAtribs(*participants, tour[turn]))
+			{
+				alive = false;
+			}
+		}
+		if (static_cast<int>((*participants).size()) == 0)
+			break;
 
+		Ranking(network_role, false);
 	}
+	return alive;
 }
 void Race::Ending()
 {
@@ -270,14 +277,14 @@ void Race::Ending()
 //to do
 	//network device
 	//ai as singleplayer child
-int Race::Ranking(bool clear)
+int Race::Ranking(SinglePlayer* network_role, bool clear)
 {
 	//ranking clear after rip
 	std::vector<std::string> text;
 	text.push_back("PLACE");
 	text.push_back("RACER");
 	text.push_back("SCORE");
-	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
+	std::vector<std::pair<float, std::string>> ranking_info = network_role->GetRankingInfo(*participants);
 	int ret;
 	
 	for (int i = 0; i < (*participants).size(); i++)
@@ -340,7 +347,7 @@ void Race::Interface()
 	std::cout << "---------------------------------------------";
 }
 
-void Race::VisionBox(std::vector<std::string> visible_tour)
+void Race::VisionBox(std::vector<std::string> visible_tour, int visibility)
 {
 
 	HANDLE window = main_window->GetHandle();
@@ -348,7 +355,7 @@ void Race::VisionBox(std::vector<std::string> visible_tour)
 	std::string Distance[] = { "In front of you: ", "Close to you: ", "At some distance: ", "A little further: ",
 								"At a considerable distance: ", "Far ahead: ", "Barely noticeable: " };
 
-	for (int i = 0; i < (*participants)[0]->car_modifiers[CarModifiers::visibility]; i++)
+	for (int i = 0; i < visibility; i++)
 	{
 		if (visible_tour.size() == i)
 		{

@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-Host::Host(ToT_Window_ &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
+Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	if(!StartNetwork(participants)) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
@@ -251,9 +251,9 @@ bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string
 {
 	return false;
 }
-void Host::Attack(std::vector<Participant*> &participants, int ais)
+void Host::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
-	SinglePlayer::Attack(participants, ais);
+	SinglePlayer::Attack(participants, ais, alive);
 }
 void Host::SendInfo(std::string special_text, std::string text)
 {

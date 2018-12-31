@@ -13,11 +13,11 @@ class SinglePlayer {
 
 protected:
 
-	ToT_Window_ *main_window;
+	ToT_Window *main_window;
 	InfoBox *infobox;
 
 public:
-	SinglePlayer(ToT_Window_ &main_window);
+	SinglePlayer(ToT_Window &main_window);
 	virtual void GetTourNames(std::vector<std::string>&tours);
 	virtual void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	virtual void GetTireNames(std::vector<std::string>&tires);
@@ -28,7 +28,7 @@ public:
 
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	virtual bool GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
-	virtual void Attack(std::vector<Participant*> &participants, int ais);
+	virtual void Attack(std::vector<Participant*> &participants, int ais, bool alive);
 
 	virtual void SendInfo(std::string special_text, std::string text);
 	virtual void TakeAction(Participant* &participants);
@@ -46,12 +46,12 @@ class Host : public SinglePlayer {
 
 public:
 
-	Host(ToT_Window_ &main_window, std::vector<Participant*> *participants);
+	Host(ToT_Window &main_window, std::vector<Participant*> *participants);
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	bool GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
-	void Attack(std::vector<Participant*> &participants, int ais);
+	void Attack(std::vector<Participant*> &participants, int ais, bool alive);
 
 	void SendInfo(std::string special_text, std::string text);
 	void TakeAction(Participant* &participants);
@@ -68,7 +68,7 @@ class Client : public SinglePlayer {
 
 public:
 
-	Client(ToT_Window_ &main_window);
+	Client(ToT_Window &main_window);
 	void GetTourNames(std::vector<std::string>&tours);
 	void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	void GetTireNames(std::vector<std::string>&tires);
@@ -79,7 +79,7 @@ public:
 
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	bool GetCurrentAtribs(std::vector<Participant*> &participants, std::string field);
-	void Attack(std::vector<Participant*> &participants, int ais);
+	void Attack(std::vector<Participant*> &participants, int ais, bool alive);
 
 	void SendInfo(std::string special_text, std::string text);
 	void TakeAction(Participant* &participants);
