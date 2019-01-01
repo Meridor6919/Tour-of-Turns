@@ -1,13 +1,13 @@
 #include "MultiplayerDevice.h"
 #include "NetworkRole.h"
 
-MultiplayerDevice::MultiplayerDevice(std::vector<Participant*> *clients, std::vector<std::pair<SOCKET, sockaddr_in>> *clients_sockets, Host *host, int current_stage)
+MultiplayerDevice::MultiplayerDevice(std::vector<Participant*> *clients, std::vector<std::pair<SOCKET, sockaddr_in>> *clients_sockets, Host *host, int &current_stage)
 {
 
 	this->clients = clients;
 	this->clients_sockets = clients_sockets;
 	this->host = host;
-	this->current_stage = current_stage;
+	this->current_stage = &current_stage;
 }
 void MultiplayerDevice::HandleClientConnection(std::string tour)
 {
@@ -40,7 +40,7 @@ bool MultiplayerDevice::ClientsReadyForNewStage()
 
 	for (int i = 0; i < client_current_game_stage.size(); i++)
 	{
-		if (client_current_game_stage[i] != current_stage)
+		if (client_current_game_stage[i] != *current_stage)
 			ready = false;
 	}
 	return ready;
@@ -118,6 +118,11 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		case 61:
 		{
+			while (*current_stage < 1)
+			{
+				std::chrono::milliseconds ms(100);
+				std::this_thread::sleep_for(ms);
+			}
 			std::vector<std::pair<float, std::string>> ranking = (*clients)[0]->network_role->GetRankingInfo(*clients);
 
 			for (int i = 0; i < ranking.size(); i++)

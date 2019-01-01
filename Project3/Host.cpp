@@ -3,6 +3,7 @@
 Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
+	stage = 0;
 	if(!StartNetwork(participants)) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
 	{
 		for (int i =0; i < clients.size(); i++)
@@ -165,7 +166,7 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 
 				broadcast.join();
 				accepting_clients.join();
-				network_device = new MultiplayerDevice(participants, &clients, this, 0);
+				network_device = new MultiplayerDevice(participants, &clients, this, stage);
 				return true;
 			}
 			case 1: // kick players
@@ -248,6 +249,7 @@ void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais
 		main_window->Pause(500);
 	}
 	SinglePlayer::GetOtherParticipants(participants, ais, tour);
+	stage = 1;
 }
 
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Participant*> &participants)
