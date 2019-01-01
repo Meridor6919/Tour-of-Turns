@@ -224,7 +224,8 @@ bool Race::Game()
 	
 	Interface();
 	Ranking(network_role, false);
-
+	_getch();
+	_getch();
 	for(int turn = 0; turn < tour.size()+1; turn++) //main game loop
 	{
 		std::vector<std::string>::const_iterator first = tour.begin() + turn;
@@ -291,7 +292,7 @@ int Race::Ranking(SinglePlayer* network_role, bool clear)
 	std::vector<std::pair<float, std::string>> ranking_info = network_role->GetRankingInfo(*participants);
 	int ret;
 	
-	for (int i = 0; i < (*participants).size(); i++)
+	for (int i = 0; i < ranking_info.size(); i++)
 	{
 		text.push_back(std::to_string(i + 1));
 		text.push_back(ranking_info[i].second);

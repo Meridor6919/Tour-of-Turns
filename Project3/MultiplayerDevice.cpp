@@ -116,6 +116,18 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			}
 			clients->emplace_back(new Participant(info[0], info[1], info[2], *host));
 		}
+		case 61:
+		{
+			std::vector<std::pair<float, std::string>> ranking = (*clients)[0]->network_role->GetRankingInfo(*clients);
+
+			for (int i = 0; i < ranking.size(); i++)
+			{
+				send((*clients_sockets)[client_id].first, std::to_string(ranking[i].first).c_str(), 255, 0);
+				send((*clients_sockets)[client_id].first, ranking[i].second.c_str(), 255, 0);
+			}
+
+			send((*clients_sockets)[client_id].first, "exit", 255, 0);
+		}
 		default:
 		{
 			return false;

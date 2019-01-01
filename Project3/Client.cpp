@@ -293,8 +293,29 @@ void Client::GetOtherParticipants(std::vector<Participant*> &participants, int a
 }
 std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Participant*> &participants)
 {
-	std::vector<std::pair<float, std::string>> temp = {};
-	return temp;
+	
+	std::string get_tour_name_code = "61";
+	send(host, get_tour_name_code.c_str(), 4, 0);
+	char temp[255];
+	float fhelper;
+	std::vector<std::pair<float, std::string>> ret = {};
+
+	while (true)
+	{
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetTireNames method failed", "Error", 0);
+
+		if ((std::string)temp != "exit")
+		{
+			fhelper = atof(static_cast<std::string>(temp).c_str());
+			if (!recv(host, temp, 255, 0) < 0)
+				MessageBox(0, "GetTireNames method failed", "Error", 0);
+			ret.push_back(std::make_pair(fhelper, (std::string)temp));
+		}
+		else
+			break;
+	}
+	return ret;
 }
 bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
 {
