@@ -224,8 +224,7 @@ bool Race::Game()
 	
 	Interface();
 	Ranking(network_role, false);
-	_getch();
-	_getch();
+	
 	for(int turn = 0; turn < tour.size()+1; turn++) //main game loop
 	{
 		std::vector<std::string>::const_iterator first = tour.begin() + turn;
@@ -238,7 +237,8 @@ bool Race::Game()
 
 		std::vector<std::string> visible_tour(first, last);
 		VisionBox(visible_tour, visibility);
-
+		_getch();
+		_getch();
 		if(turn > 0)
 			network_role->Attack(*participants, static_cast<int>((*participants).size())-static_cast<int>(alive), alive);
 

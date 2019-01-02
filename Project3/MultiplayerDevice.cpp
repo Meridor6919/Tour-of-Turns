@@ -81,6 +81,12 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		case 53://get tour params
 		{
+			std::vector<std::string> ret = host->GetTourParameters(tour);
+
+			for (int i = 0; i < ret.size(); i++)
+				send((*clients_sockets)[client_id].first, ret[i].c_str(), 255, 0);
+
+			send((*clients_sockets)[client_id].first, "exit", 255, 0);
 			break;
 		}
 		case 54://get car params
@@ -101,12 +107,11 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 				send((*clients_sockets)[client_id].first, tires_params[i].c_str(), 255, 0);
 			break;
 		}
-		case 59://receving clientparticipant info 
+		case 59://receving client participant info 
 		{
 			std::string info[3];
 			char temp[255];
 			
-
 			for (int i = 0; i < 3; i++)
 			{
 				if (!recv((*clients_sockets)[client_id].first, temp, 255, 0) < 0)
@@ -115,8 +120,9 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 				info[i] = (std::string)temp;
 			}
 			clients->emplace_back(new Participant(info[0], info[1], info[2], *host));
+			break;
 		}
-		case 61:
+		case 61://get ranking info 
 		{
 			while (*current_stage < 1)
 			{
@@ -132,6 +138,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			}
 
 			send((*clients_sockets)[client_id].first, "exit", 255, 0);
+			break;
 		}
 		default:
 		{

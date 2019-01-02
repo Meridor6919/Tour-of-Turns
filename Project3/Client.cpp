@@ -276,10 +276,23 @@ std::vector<std::string> Client::GetTireParameters(std::string path)
 }
 std::vector<std::string> Client::GetTourParameters(std::string path)
 {
-	std::string get_tour_name_code = "53";
 
-	std::vector<std::string>x = {""};
-	return x;
+	std::string get_tour_name_code = "53";
+	send(host, get_tour_name_code.c_str(), 4, 0);
+	char temp[255];
+	std::vector<std::string>ret;
+
+	while (true)
+	{
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetCarNames method failed", "Error", 0);
+
+		if ((std::string)temp != "exit")
+			ret.push_back((std::string)temp);
+		else
+			break;
+	}
+	return ret;
 }
 void Client::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {
