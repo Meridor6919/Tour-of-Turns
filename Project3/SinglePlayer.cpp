@@ -163,7 +163,6 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais, bool
 	}
 	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); i++)
 	{
-
 		rival_id.clear();
 		rival_id.push_back(10);
 		for (int j = 0; j < participants.size(); j++)

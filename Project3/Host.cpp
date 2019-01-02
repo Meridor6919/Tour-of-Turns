@@ -243,7 +243,14 @@ void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais
 
 	while (true)
 	{
-		if (participants.size() == clients.size() + 1)
+		bool breaking = true;
+
+		for (int i = 0; i < participants.size(); i++)
+		{
+			if (participants[i] == nullptr)
+				breaking = false;
+		}
+		if (breaking)
 			break;
 
 		main_window->Pause(500);

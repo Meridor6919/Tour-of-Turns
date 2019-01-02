@@ -249,7 +249,7 @@ std::vector<int> Client::GetCarParameters(std::string path)
 	for (int i = 0; i < 8; ++i)
 	{
 		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetTireNames method failed", "Error", 0);
+			MessageBox(0, "GetCarParameters method failed", "Error", 0);
 
 		ret.push_back(std::atoi(((std::string)temp).c_str()));
 	}
@@ -267,7 +267,7 @@ std::vector<std::string> Client::GetTireParameters(std::string path)
 	for (int i = 0; i < 6; i++)
 	{
 		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetTireNames method failed", "Error", 0);
+			MessageBox(0, "GetTireParameters method failed", "Error", 0);
 
 		ret.push_back(temp);
 	}
@@ -285,7 +285,7 @@ std::vector<std::string> Client::GetTourParameters(std::string path)
 	while (true)
 	{
 		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetCarNames method failed", "Error", 0);
+			MessageBox(0, "GetTourParameter method failed", "Error", 0);
 
 		if ((std::string)temp != "exit")
 			ret.push_back((std::string)temp);
@@ -316,13 +316,13 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Pa
 	while (true)
 	{
 		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetTireNames method failed", "Error", 0);
+			MessageBox(0, "GetRankingInfo method failed", "Error", 0);
 
 		if ((std::string)temp != "exit")
 		{
 			fhelper = atof(static_cast<std::string>(temp).c_str());
 			if (!recv(host, temp, 255, 0) < 0)
-				MessageBox(0, "GetTireNames method failed", "Error", 0);
+				MessageBox(0, "GetRankingInfo method failed", "Error", 0);
 			ret.push_back(std::make_pair(fhelper, (std::string)temp));
 		}
 		else
@@ -336,7 +336,30 @@ bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, std::stri
 }
 void Client::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
-	
+	std::string get_tour_name_code = "62";
+	send(host, get_tour_name_code.c_str(), 4, 0);
+	char temp[255];
+	std::vector<std::string> id;
+	std::vector<std::string> options;
+
+	while (true)
+	{
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetTireNames method failed", "Error", 0);
+
+		if ((std::string)temp != "exit")
+		{
+			options.push_back((std::string)temp);
+			if (!recv(host, temp, 255, 0) < 0)
+				MessageBox(0, "GetTireNames method failed", "Error", 0);
+			id.push_back((std::string)temp);
+		}
+		else
+			break;
+	}
+
+	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);	
+	send(host, id[i].c_str(), 4, 0);
 }
 void Client::SendInfo(std::string special_text, std::string text)
 {

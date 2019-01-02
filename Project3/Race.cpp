@@ -237,8 +237,7 @@ bool Race::Game()
 
 		std::vector<std::string> visible_tour(first, last);
 		VisionBox(visible_tour, visibility);
-		_getch();
-		_getch();
+		
 		if(turn > 0)
 			network_role->Attack(*participants, static_cast<int>((*participants).size())-static_cast<int>(alive), alive);
 

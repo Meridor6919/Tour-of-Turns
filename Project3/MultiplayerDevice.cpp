@@ -18,15 +18,16 @@ void MultiplayerDevice::HandleClientConnection(std::string tour)
 
 	for (int i = 0; i < (int)(*clients_sockets).size(); i++)
 		send((*clients_sockets)[i].first, "start", 255, 0);
-	
 
+	for (int i = 0; i < clients_sockets->size(); i++)
+		clients->push_back(nullptr);
+	
 	auto recv_function = [&](int i) {
 
 		while (true)
 		{
 			auto h = recv((*clients_sockets)[i].first, buffer, 254, 0);
 			ValidateClientAction((std::string)buffer, i);
-
 		}
 	};
 
@@ -119,7 +120,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 
 				info[i] = (std::string)temp;
 			}
-			clients->emplace_back(new Participant(info[0], info[1], info[2], *host));
+			(*clients)[client_id + 1] = new Participant(info[0], info[1], info[2], *host);
 			break;
 		}
 		case 61://get ranking info 
@@ -138,6 +139,30 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			}
 
 			send((*clients_sockets)[client_id].first, "exit", 255, 0);
+			break;
+		}
+		case 62://get ranking info 
+		{
+			std::vector<std::string> rival_name;
+			std::vector<int> rival_id;
+
+			send((*clients_sockets)[client_id].first, "Don't attack", 255, 0);
+			send((*clients_sockets)[client_id].first, "10", 255, 0);
+
+			for (int i = 1; i < (*clients).size(); i++)
+			{
+				if ((*clients)[i]->score < (*clients)[0]->score + 5 && (*clients)[i]->score >(*clients)[0]->score - 5)
+				{
+					send((*clients_sockets)[client_id].first, (*clients)[i]->name.c_str(), 255, 0);
+					send((*clients_sockets)[client_id].first, std::to_string(i).c_str(), 255, 0);
+				}
+			}
+			send((*clients_sockets)[client_id].first, "exit", 255, 0);
+
+			char temp[4];
+			recv((*clients_sockets)[client_id].first, temp, 4, 0);
+			(*clients)[atoi(static_cast<std::string>(temp).c_str())]->attacked++;
+
 			break;
 		}
 		default:
