@@ -125,7 +125,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		case 61://get ranking info 
 		{
-			while (*current_stage < 1)
+			while (*current_stage != 1)
 			{
 				std::chrono::milliseconds ms(100);
 				std::this_thread::sleep_for(ms);
@@ -164,6 +164,95 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			(*clients)[atoi(static_cast<std::string>(temp).c_str())]->attacked++;
 
 			break;
+		}
+		case 70://speed up
+		{
+			while (*current_stage != 2)
+			{
+				std::chrono::milliseconds ms(100);
+				std::this_thread::sleep_for(ms);
+			}
+			
+			int value = atoi(message.substr(2, message.size() - 2).c_str());
+			if ((*clients)[client_id]->car_modifiers[CarModifiers::max_accelerating] >= value)
+			{
+				(*clients)[client_id]->current_speed += value;
+				if ((*clients)[client_id]->current_speed > (*clients)[client_id]->car_modifiers[CarModifiers::max_speed])
+					(*clients)[client_id]->current_speed = (*clients)[client_id]->car_modifiers[CarModifiers::max_speed];
+				(*clients)[client_id]->current_speed = (*clients)[client_id]->current_speed*0.9f;
+			}
+			else
+				return false;
+	
+			break;
+		}
+		case 71://braking
+		{
+			while (*current_stage != 2)
+			{
+				std::chrono::milliseconds ms(100);
+				std::this_thread::sleep_for(ms);
+			}
+
+			int value = atoi(message.substr(2, message.size() - 2).c_str());
+			if ((*clients)[client_id]->car_modifiers[CarModifiers::max_braking] >= value)
+			{
+				(*clients)[client_id]->current_speed += value;
+				if ((*clients)[client_id]->current_speed < 0)
+					(*clients)[client_id]->current_speed = 0;
+				(*clients)[client_id]->current_speed = (*clients)[client_id]->current_speed*0.9f;
+			}
+			else
+				return false;
+
+			break;
+		}
+		case 72://hand braking
+		{
+			while (*current_stage != 2)
+			{
+				std::chrono::milliseconds ms(100);
+				std::this_thread::sleep_for(ms);
+			}
+			if ((*clients)[client_id]->current_speed > 0)
+			{
+				if ((*clients)[client_id]->current_speed > 40)
+					(*clients)[client_id]->drift = true;
+				(*clients)[client_id]->current_speed -= static_cast<float>((*clients)[client_id]->car_modifiers[CarModifiers::hand_brake_value]);
+				if ((*clients)[client_id]->current_speed < 0)
+					(*clients)[client_id]->current_speed = 0.0f;
+				(*clients)[client_id]->current_speed = (*clients)[client_id]->current_speed*0.9f;
+			}
+			else
+				return false;
+
+			break;
+		}
+		case 73://do nothing
+		{
+			while (*current_stage != 2)
+			{
+				std::chrono::milliseconds ms(100);
+				std::this_thread::sleep_for(ms);
+			}
+			if ((*clients)[client_id]->current_speed > 0)
+				(*clients)[client_id]->current_speed = (*clients)[client_id]->current_speed*0.9f;
+			else
+				return false;
+
+			break;
+		}
+		case 74://abaddon race
+		{
+			while (*current_stage != 2)
+			{
+				std::chrono::milliseconds ms(100);
+				std::this_thread::sleep_for(ms);
+			}
+			
+			(*clients)[client_id]->current_durability = 0.0f;
+			
+			return false;
 		}
 		default:
 		{

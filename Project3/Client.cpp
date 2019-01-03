@@ -365,9 +365,86 @@ void Client::SendInfo(std::string special_text, std::string text)
 {
 
 }
-void Client::TakeAction(Participant* &participants)
+void Client::TakeAction(Participant* &participant)
 {
+	std::string get_tour_name_code = "7";
+	char temp[255];
 
+	std::vector<std::string> actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
+	static int position = 0;
+	HANDLE window = main_window->GetHandle();
+	char button;
+	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
+
+	while (true)
+	{
+		int value = 0;
+		switch (position = Text::Choose::Veritcal(actions, position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window))
+		{
+		case 0:
+		case 1:
+		{
+			if (participant->current_speed == 0 && position == 1)
+			{
+				std::cout << " - You can't do this because you aren't moving...";
+				main_window->Pause(1500);
+				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 49,console_screen_buffer_info.dwCursorPosition.Y });
+				std::cout << "                                                 ";
+				break;
+			}
+
+			std::cout << ": ";
+			GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+			value = Text::Choose::Numeric(participant->car_modifiers[CarModifiers::max_accelerating + position], { console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y }, true, *main_window);
+			SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
+			std::cout << "  ";
+			if (value == 0)
+				break;
+
+			get_tour_name_code += std::to_string(position) + std::to_string(value);
+			send(host, get_tour_name_code.c_str(), 4, 0);
+
+			return;
+		}
+		case 2:
+		case 3:
+		case 4:
+		{
+			while (true)
+			{
+				std::cout << " - Do you really want to do this ? (Y/N) ";
+				button = _getch();
+				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 41,console_screen_buffer_info.dwCursorPosition.Y });
+				std::cout << "                                         ";
+				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 41,console_screen_buffer_info.dwCursorPosition.Y });
+				if (button == 'y' || button == 'Y')
+				{
+					if (participant->current_speed > 0 || position == 4)
+					{
+						get_tour_name_code += std::to_string(position);
+						send(host, get_tour_name_code.c_str(), 4, 0);
+						return;
+					}
+					else
+					{
+						std::cout << " - You can't do this because you aren't moving...";
+						main_window->Pause(1500);
+						GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+						SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 49,console_screen_buffer_info.dwCursorPosition.Y });
+						std::cout << "                                                 ";
+						break;
+					}
+				}
+				else if (button == 13 || button == 27 || button == 'n' || button == 'N')
+				{
+					break;
+				}
+			}
+		}
+		}
+	}
 }
 void Client::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
 {

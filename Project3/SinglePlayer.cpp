@@ -229,6 +229,7 @@ void SinglePlayer::TakeAction(Participant* &participant)
 					if (participant->current_speed > static_cast<float>(participant->car_modifiers[CarModifiers::max_speed]))
 						participant->current_speed = static_cast<float>(participant->car_modifiers[CarModifiers::max_speed]);
 				}
+				participant->current_speed = participant->current_speed*0.9f;
 				return;		
 			}
 		case 2:
@@ -256,9 +257,9 @@ void SinglePlayer::TakeAction(Participant* &participant)
 					{
 						if (position == 2)
 						{
-							participant->current_speed -= static_cast<float>(participant->car_modifiers[CarModifiers::hand_brake_value]);
 							if (participant->current_speed > 40)
 								participant->drift = true;
+							participant->current_speed -= static_cast<float>(participant->car_modifiers[CarModifiers::hand_brake_value]);
 							if (participant->current_speed < 0)
 								participant->current_speed = 0.0f;
 						}

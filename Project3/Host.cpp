@@ -261,6 +261,7 @@ void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais
 
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Participant*> &participants)
 {
+	stage = 1;
 	return SinglePlayer::GetRankingInfo(participants);
 }
 bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
@@ -277,10 +278,11 @@ void Host::SendInfo(std::string special_text, std::string text)
 }
 void Host::TakeAction(Participant* &participants)
 {
-	
+	SinglePlayer::TakeAction(participants);
 }
 void Host::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
 {
+	stage = 2;
 }
 void Host::SendTarget(int ranking_position)
 {
