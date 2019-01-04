@@ -167,6 +167,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		case 70://speed up
 		{
+
 			while (*current_stage != 2)
 			{
 				std::chrono::milliseconds ms(100);
@@ -174,12 +175,12 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			}
 			
 			int value = atoi(message.substr(2, message.size() - 2).c_str());
-			if ((*clients)[client_id]->car_modifiers[CarModifiers::max_accelerating] >= value)
+			if ((*clients)[client_id+1]->car_modifiers[CarModifiers::max_accelerating] >= value)
 			{
-				(*clients)[client_id]->current_speed += value;
-				if ((*clients)[client_id]->current_speed > (*clients)[client_id]->car_modifiers[CarModifiers::max_speed])
-					(*clients)[client_id]->current_speed = (*clients)[client_id]->car_modifiers[CarModifiers::max_speed];
-				(*clients)[client_id]->current_speed = (*clients)[client_id]->current_speed*0.9f;
+				(*clients)[client_id+1]->current_speed += value;
+				if ((*clients)[client_id+1]->current_speed > (*clients)[client_id+1]->car_modifiers[CarModifiers::max_speed])
+					(*clients)[client_id+1]->current_speed = (*clients)[client_id+1]->car_modifiers[CarModifiers::max_speed];
+				(*clients)[client_id+1]->current_speed = (*clients)[client_id+1]->current_speed*0.9f;
 			}
 			else
 				return false;
@@ -197,10 +198,10 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			int value = atoi(message.substr(2, message.size() - 2).c_str());
 			if ((*clients)[client_id]->car_modifiers[CarModifiers::max_braking] >= value)
 			{
-				(*clients)[client_id]->current_speed += value;
-				if ((*clients)[client_id]->current_speed < 0)
-					(*clients)[client_id]->current_speed = 0;
-				(*clients)[client_id]->current_speed = (*clients)[client_id]->current_speed*0.9f;
+				(*clients)[client_id+1]->current_speed += value;
+				if ((*clients)[client_id+1]->current_speed < 0)
+					(*clients)[client_id+1]->current_speed = 0;
+				(*clients)[client_id]->current_speed = (*clients)[client_id+1]->current_speed*0.9f;
 			}
 			else
 				return false;
@@ -214,14 +215,14 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 				std::chrono::milliseconds ms(100);
 				std::this_thread::sleep_for(ms);
 			}
-			if ((*clients)[client_id]->current_speed > 0)
+			if ((*clients)[client_id+1]->current_speed > 0)
 			{
-				if ((*clients)[client_id]->current_speed > 40)
-					(*clients)[client_id]->drift = true;
-				(*clients)[client_id]->current_speed -= static_cast<float>((*clients)[client_id]->car_modifiers[CarModifiers::hand_brake_value]);
-				if ((*clients)[client_id]->current_speed < 0)
-					(*clients)[client_id]->current_speed = 0.0f;
-				(*clients)[client_id]->current_speed = (*clients)[client_id]->current_speed*0.9f;
+				if ((*clients)[client_id+1]->current_speed > 40)
+					(*clients)[client_id+1]->drift = true;
+				(*clients)[client_id+1]->current_speed -= static_cast<float>((*clients)[client_id+1]->car_modifiers[CarModifiers::hand_brake_value]);
+				if ((*clients)[client_id+1]->current_speed < 0)
+					(*clients)[client_id+1]->current_speed = 0.0f;
+				(*clients)[client_id+1]->current_speed = (*clients)[client_id+1]->current_speed*0.9f;
 			}
 			else
 				return false;
@@ -235,8 +236,8 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 				std::chrono::milliseconds ms(100);
 				std::this_thread::sleep_for(ms);
 			}
-			if ((*clients)[client_id]->current_speed > 0)
-				(*clients)[client_id]->current_speed = (*clients)[client_id]->current_speed*0.9f;
+			if ((*clients)[client_id+1]->current_speed > 0)
+				(*clients)[client_id+1]->current_speed = (*clients)[client_id+1]->current_speed*0.9f;
 			else
 				return false;
 
@@ -250,7 +251,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 				std::this_thread::sleep_for(ms);
 			}
 			
-			(*clients)[client_id]->current_durability = 0.0f;
+			(*clients)[client_id+1]->current_durability = 0.0f;
 			
 			return false;
 		}

@@ -246,8 +246,10 @@ bool Race::Game()
 			network_role->TakeAction((*participants)[0]);
 			Interface();
 		}
-
+		
 		network_role->GetOthersAction(*participants, static_cast<int>((*participants).size()) - 1, tour);
+		_getch();
+		_getch();
 		Ranking(network_role, true);
 
 		if (turn < tour.size())

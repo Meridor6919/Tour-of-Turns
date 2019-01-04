@@ -403,7 +403,7 @@ void Client::TakeAction(Participant* &participant)
 				break;
 
 			get_tour_name_code += std::to_string(position) + std::to_string(value);
-			send(host, get_tour_name_code.c_str(), 4, 0);
+			send(host, get_tour_name_code.c_str(), 8, 0);
 
 			return;
 		}
@@ -424,7 +424,7 @@ void Client::TakeAction(Participant* &participant)
 					if (participant->current_speed > 0 || position == 4)
 					{
 						get_tour_name_code += std::to_string(position);
-						send(host, get_tour_name_code.c_str(), 4, 0);
+						send(host, get_tour_name_code.c_str(), 8, 0);
 						return;
 					}
 					else
