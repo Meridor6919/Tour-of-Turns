@@ -8,7 +8,7 @@
 int main()
 {
 	char title[] = "Tour of Turns";
-	ToT_Window GameWindow(title, 15, 10, 14, true); //window settings
+	ToT_Window_ GameWindow(title, 15, 10, 14, true); //window settings
 	std::vector<std::string> text = { "New Game ", "Multiplayer ", "Ranking ", "Options ", "Credits ", "Exit" };
 	int main_menu_position = 0;
 

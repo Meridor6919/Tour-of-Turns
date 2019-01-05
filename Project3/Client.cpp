@@ -2,7 +2,7 @@
 #include <map>
 #include <string>
 
-Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
+Client::Client(ToT_Window_ &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	if (!StartNetwork())

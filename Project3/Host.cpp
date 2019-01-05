@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
+Host::Host(ToT_Window_ &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	stage = 0;
@@ -256,12 +256,11 @@ void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais
 		main_window->Pause(500);
 	}
 	SinglePlayer::GetOtherParticipants(participants, ais, tour);
-	stage = 1;
+	stage = 2;
 }
 
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Participant*> &participants)
 {
-	stage = 1;
 	return SinglePlayer::GetRankingInfo(participants);
 }
 bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
@@ -270,7 +269,9 @@ bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string
 }
 void Host::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
+	stage = 1;
 	SinglePlayer::Attack(participants, ais, alive);
+	network_device->ClientsReadyForNewStage();
 }
 void Host::SendInfo(std::string special_text, std::string text)
 {
@@ -278,11 +279,13 @@ void Host::SendInfo(std::string special_text, std::string text)
 }
 void Host::TakeAction(Participant* &participants)
 {
+	stage = 2;
 	SinglePlayer::TakeAction(participants);
 }
 void Host::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
 {
-	stage = 2;
+	SinglePlayer::GetOthersAction(participants, ais, tour);
+	network_device->ClientsReadyForNewStage();
 }
 void Host::SendTarget(int ranking_position)
 {

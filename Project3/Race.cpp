@@ -1,6 +1,6 @@
 #include "Race.h"
 
-Race::Race(ToT_Window &window, std::vector<Participant*> *participants)
+Race::Race(ToT_Window_ &window, std::vector<Participant*> *participants)
 {
 	main_window = &window;
 	this->participants = participants;
@@ -248,9 +248,9 @@ bool Race::Game()
 		}
 		
 		network_role->GetOthersAction(*participants, static_cast<int>((*participants).size()) - 1, tour);
-		_getch();
-		_getch();
 		Ranking(network_role, true);
+		_getch();
+		_getch();
 
 		if (turn < tour.size())
 		{

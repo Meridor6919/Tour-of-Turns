@@ -21,6 +21,9 @@ void MultiplayerDevice::HandleClientConnection(std::string tour)
 
 	for (int i = 0; i < clients_sockets->size(); i++)
 		clients->push_back(nullptr);
+
+	for (int i = 0; i < clients_sockets->size(); i++)
+		client_current_game_stage.push_back(0);
 	
 	auto recv_function = [&](int i) {
 
@@ -35,16 +38,20 @@ void MultiplayerDevice::HandleClientConnection(std::string tour)
 		recv_threads[i] = std::thread(recv_function, i);
 
 }
-bool MultiplayerDevice::ClientsReadyForNewStage()
+void MultiplayerDevice::ClientsReadyForNewStage()
 {
 	bool ready = true;
-
-	for (int i = 0; i < client_current_game_stage.size(); i++)
+	std::chrono::milliseconds ms(100);
+	do
 	{
-		if (client_current_game_stage[i] != *current_stage)
-			ready = false;
-	}
-	return ready;
+		ready = true;
+		for (int i = 0; i < client_current_game_stage.size(); i++)
+		{
+			if (client_current_game_stage[i] != *current_stage)
+				ready = false;
+		}
+		std::this_thread::sleep_for(ms);
+	} while (!ready);
 }
 bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 {
@@ -125,7 +132,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		case 61://get ranking info 
 		{
-			while (*current_stage != 1)
+			while (*current_stage != 2)//stage 2 - action
 			{
 				std::chrono::milliseconds ms(100);
 				std::this_thread::sleep_for(ms);
@@ -141,8 +148,13 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			send((*clients_sockets)[client_id].first, "exit", 255, 0);
 			break;
 		}
-		case 62://get ranking info 
+		case 62://get attack 
 		{
+			while (*current_stage != 1)//stage 1 - attack
+			{
+				std::chrono::milliseconds ms(100);
+				std::this_thread::sleep_for(ms);
+			}
 			std::vector<std::string> rival_name;
 			std::vector<int> rival_id;
 
@@ -163,11 +175,12 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			recv((*clients_sockets)[client_id].first, temp, 4, 0);
 			(*clients)[atoi(static_cast<std::string>(temp).c_str())]->attacked++;
 
+			client_current_game_stage[client_id] = 1;
+
 			break;
 		}
 		case 70://speed up
 		{
-
 			while (*current_stage != 2)
 			{
 				std::chrono::milliseconds ms(100);
@@ -184,7 +197,8 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			}
 			else
 				return false;
-	
+
+			client_current_game_stage[client_id] = 2;
 			break;
 		}
 		case 71://braking
@@ -206,6 +220,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			else
 				return false;
 
+			client_current_game_stage[client_id] = 2;
 			break;
 		}
 		case 72://hand braking
@@ -227,6 +242,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			else
 				return false;
 
+			client_current_game_stage[client_id] = 2;
 			break;
 		}
 		case 73://do nothing
@@ -241,6 +257,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			else
 				return false;
 
+			client_current_game_stage[client_id] = 2;
 			break;
 		}
 		case 74://abaddon race

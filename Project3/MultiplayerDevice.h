@@ -26,5 +26,5 @@ public:
 	MultiplayerDevice(std::vector<Participant*> *clients, std::vector<std::pair<SOCKET, sockaddr_in>> *clients_sockets, Host *host, int &current_stage);
 	void NextStage() { current_stage++; }
 	void HandleClientConnection(std::string tour);
-	bool ClientsReadyForNewStage();
+	void ClientsReadyForNewStage();
 };

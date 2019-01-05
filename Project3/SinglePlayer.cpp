@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-SinglePlayer::SinglePlayer(ToT_Window &main_window)
+SinglePlayer::SinglePlayer(ToT_Window_ &main_window)
 {
 	this->main_window = &main_window;
 	this->infobox = new InfoBox(8, Text::TextAlign::left, { 0,58 }, 1, main_window);
