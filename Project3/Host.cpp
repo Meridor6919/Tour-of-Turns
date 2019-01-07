@@ -263,9 +263,9 @@ std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Part
 {
 	return SinglePlayer::GetRankingInfo(participants);
 }
-bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
+bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field)
 {
-	return false;
+	return SinglePlayer::GetCurrentAtribs(participants, ais, field);
 }
 void Host::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
@@ -286,10 +286,6 @@ void Host::GetOthersAction(std::vector<Participant*>& participants, int ais, std
 {
 	SinglePlayer::GetOthersAction(participants, ais, tour);
 	network_device->ClientsReadyForNewStage();
-}
-void Host::SendTarget(int ranking_position)
-{
-
 }
 int Host::Possible_AIs()
 {

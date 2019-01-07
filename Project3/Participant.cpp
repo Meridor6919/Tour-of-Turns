@@ -62,12 +62,19 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 
 	std::vector<std::string> tires;
 	network_role->GetTireNames(tires);
+
+	std::vector<std::string> tour = network_role->GetTourParameters(tour_path);
+	int terrain[6];
+	memset(terrain, 0, 6);
+	for (int i = 0; i < tour.size(); i++)
+		terrain[static_cast<int>(tour[i][0])-48] ++;
+
 	
 	current_best = 0;
 	best_points = 0;
 	for (int i = 0; i < tires.size(); i++)
 	{
-		int j = TiresPoints(tires[i]);
+		int j = TiresPoints(terrain, tires[i]);
 		if (j > best_points)
 		{
 			best_points = j;
@@ -76,7 +83,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	}
 	this->tire_modifiers = network_role->GetTireParameters(tires[current_best]);
 }
-int Participant::TiresPoints(std::string tires_path)
+int Participant::TiresPoints(int terrain[], std::string tires_path)
 {
 	std::function <int(int)> factorial;
 	factorial = [&factorial](int i) -> int {
@@ -112,7 +119,7 @@ int Participant::TiresPoints(std::string tires_path)
 		}
 		for (int i2 = 0; i2 <= y - x; x++)
 		{
-			total_points += (factorial(y) / (factorial(y - x)*factorial(x)) * power(0.5f, x) * power(0.5f, y - x));
+			total_points += (factorial(y) / (factorial(y - x)*factorial(x)) * power(0.5f, x) * power(0.5f, y - x) * terrain[i]);
 		}
 	}
 	return static_cast<int>(total_points);
@@ -298,7 +305,7 @@ void Participant::Test(std::string field, bool show)
 			current_speed /= attacked - r;
 			current_durability -= lost;
 			if (show)
-				network_role->SendInfo(name + " lost " + std::to_string(lost) + " durability", ", because of enemies attacks");
+				network_role->infobox->Push(name + " lost " + std::to_string(lost) + " durability", ", because of enemies attacks");
 		}
 		attacked = 0;
 	}
@@ -357,53 +364,53 @@ void Participant::Test(std::string field, bool show)
 		if (passed_tests >= reqired_tests)
 		{
 			if (show)
-				network_role->SendInfo(name + " have manage to turn, ", "required - " + std::to_string(static_cast<int>(formula)) + " highest roll - " + std::to_string(max));
+				network_role->infobox->Push(name + " have manage to turn, ", "required - " + std::to_string(static_cast<int>(formula)) + " highest roll - " + std::to_string(max));
 		}
 		else
 		{
 			if (show)
-				network_role->SendInfo(name + " had mistaken, ", "required - " + std::to_string(static_cast<int>(formula)) + " lowest roll - " + std::to_string(min));
+				network_role->infobox->Push(name + " had mistaken, ", "required - " + std::to_string(static_cast<int>(formula)) + " lowest roll - " + std::to_string(min));
 
 			if (formula > static_cast<float>(min + 50))
 			{
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 50.0f;
 				if (show)
-					network_role->SendInfo(name + " badly crashed !!! ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 50)) + " durability");
+					network_role->infobox->Push(name + " badly crashed !!! ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 50)) + " durability");
 				current_speed = 0;
 			}
 			else if (formula > static_cast<float>(min + 40))
 			{
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f;
 				if (show)
-					network_role->SendInfo(name + " crashed !!!, ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f)) + " durability");
+					network_role->infobox->Push(name + " crashed !!!, ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f)) + " durability");
 				current_speed = 0;
 			}
 			else if (formula > static_cast<float>(min + 30))
 			{
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f;
 				if (show)
-					network_role->SendInfo(name + " had an dangerous accident, ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f)) + " durability");
+					network_role->infobox->Push(name + " had an dangerous accident, ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f)) + " durability");
 				current_speed /= 10;
 			}
 			else if (formula > static_cast<float>(min + 20))
 			{
 				current_durability -= current_speed;
 				if (show)
-					network_role->SendInfo(name + " got off the route, ", name + " lost " + std::to_string(static_cast<int>(current_speed)) + " durability");
+					network_role->infobox->Push(name + " got off the route, ", name + " lost " + std::to_string(static_cast<int>(current_speed)) + " durability");
 				current_speed /= 5;
 			}
 			else if (formula > static_cast<float>(min + 10))
 			{
 				current_durability -= current_speed / 2.0f;
 				if (show)
-					network_role->SendInfo(name + " fell into a dangerous slip, ", name + " lost " + std::to_string(static_cast<int>(current_speed / 2.0f)) + " durability");
+					network_role->infobox->Push(name + " fell into a dangerous slip, ", name + " lost " + std::to_string(static_cast<int>(current_speed / 2.0f)) + " durability");
 				current_speed /= 2;
 			}
 			else
 			{
 				current_speed = static_cast<float>(current_speed) / 1.2f;
 				if (show)
-					network_role->SendInfo(name + " slipped, ", name + " lost a little bit of speed");
+					network_role->infobox->Push(name + " slipped, ", name + " lost a little bit of speed");
 			}
 		}
 	}

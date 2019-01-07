@@ -34,7 +34,7 @@ class Participant
 private:
 	int ai_type;
 	int CarPoints(std::string car_path);
-	int TiresPoints(std::string tires_path);
+	int TiresPoints(int terrain[], std::string tires_path);
 
 public:
 

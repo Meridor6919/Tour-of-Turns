@@ -330,7 +330,7 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Pa
 	}
 	return ret;
 }
-bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
+bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field)
 {
 	return false;
 }
@@ -447,9 +447,6 @@ void Client::TakeAction(Participant* &participant)
 	}
 }
 void Client::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
-{
-}
-void Client::SendTarget(int ranking_position)
 {
 
 }

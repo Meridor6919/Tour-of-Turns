@@ -254,7 +254,7 @@ bool Race::Game()
 
 		if (turn < tour.size())
 		{
-			if (!network_role->GetCurrentAtribs(*participants, tour[turn]))
+			if (!network_role->GetCurrentAtribs(*participants, static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))
 			{
 				alive = false;
 			}
@@ -338,7 +338,7 @@ void Race::Interface()
 		SetConsoleCursorPosition(window, { 2, static_cast<short>(40 + i * 2) });
 		std::cout << string[i];
 	}
-	SetConsoleCursorPosition(window, { 0, 55 });
+	SetConsoleCursorPosition(window, { 0, 53 });
 	SetConsoleTextAttribute(window, main_window->color2);
 	std::cout << "                          Infobox                         " << std::endl;
 	std::cout << "----------------------------------------------------------";

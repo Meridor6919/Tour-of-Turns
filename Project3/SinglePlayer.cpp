@@ -3,8 +3,7 @@
 SinglePlayer::SinglePlayer(ToT_Window_ &main_window)
 {
 	this->main_window = &main_window;
-	this->infobox = new InfoBox(8, Text::TextAlign::left, { 0,58 }, 1, main_window);
-	
+	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
 }
 void SinglePlayer::GetTourNames(std::vector<std::string>&tours)
 {
@@ -111,12 +110,12 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo(std::vec
 	}
 	return ret;
 }
-bool SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, std::string field)
+bool SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field)
 {
 	for (int i = 0; i < participants.size(); i++)
-		participants[i]->Test(field, i == 0);
+		participants[i]->Test(field, i < participants.size() - ais);
 
-	for (int i = participants.size() -1; i >= 0 ; i--)
+	for (int i = participants.size() - 1; i >= 0; i--)
 	{
 		if (participants[i]->current_durability <= 0.0f)
 		{
@@ -180,7 +179,7 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais, bool
 }
 void SinglePlayer::SendInfo(std::string special_text, std::string text)
 {
-	infobox->Push(special_text, text);
+	
 }
 void SinglePlayer::TakeAction(Participant* &participant)
 {
@@ -302,10 +301,6 @@ void SinglePlayer::GetOthersAction(std::vector<Participant*>& participants, int 
 		}
 		participants[i]->TakeAction(safe_speed, (bool)tour[0].size > 1);
 	}
-}
-void SinglePlayer::SendTarget(int ranking_position)
-{
-	
 }
 int SinglePlayer::Possible_AIs()
 {
