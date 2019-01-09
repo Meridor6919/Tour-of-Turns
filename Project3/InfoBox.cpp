@@ -10,7 +10,7 @@ InfoBox::InfoBox(int size, Text::TextAlign text_align, COORD starting_point, int
 }
 void InfoBox::Push(std::string special_text, std::string text)
 {
-	info.push_back(special_text + " " + text);		//adding text to infobox
+	info.push_back(special_text + "  " + text);		//adding text to infobox
 
 	HANDLE handle = main_window->GetHandle();
 	std::vector<std::string>::iterator it = info.begin();
@@ -33,9 +33,9 @@ void InfoBox::Push(std::string special_text, std::string text)
 	//showing new text with special colouring
 	SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)text_align / 2 * (float)it->size()), starting_point.Y + (short)(info.size() - 1) * (short)spacing });
 	SetConsoleTextAttribute(handle, main_window->color1);
-	std::cout << special_text << " ";
+	std::cout << special_text << "  ";
 	SetConsoleTextAttribute(handle, main_window->color2);
-	std::cout << text << " ";
+	std::cout << text << "  ";
 }
 void InfoBox::Clear()
 {
@@ -49,3 +49,4 @@ void InfoBox::Clear()
 			std::cout << " ";
 	}
 }
+

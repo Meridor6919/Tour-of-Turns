@@ -177,10 +177,6 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais, bool
 			participants[rival_id[random]]->attacked++;
 	}
 }
-void SinglePlayer::SendInfo(std::string special_text, std::string text)
-{
-	
-}
 void SinglePlayer::TakeAction(Participant* &participant)
 {
 	//player

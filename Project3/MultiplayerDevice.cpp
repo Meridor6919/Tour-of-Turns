@@ -179,6 +179,27 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 
 			break;
 		}
+		case 63://get atribs
+		{
+			while (*current_stage != 3)//stage 3 - get atribs
+			{
+				std::chrono::milliseconds ms(100);
+				std::this_thread::sleep_for(ms);
+			}
+			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_speed).c_str(), 255, 0);
+			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_durability).c_str(), 255, 0);
+
+			for (int i = 0; i < (*clients)[0]->network_role->infobox->info.size(); i++)
+			{
+				send((*clients_sockets)[client_id].first, (*clients)[0]->network_role->infobox->info[i].substr(0, (*clients)[0]->network_role->infobox->info[i].find("  ")).c_str(), 255, 0);
+				send((*clients_sockets)[client_id].first, (*clients)[0]->network_role->infobox->info[i].substr((*clients)[0]->network_role->infobox->info[i].find("  "), (*clients)[0]->network_role->infobox->info[i].size() - (*clients)[0]->network_role->infobox->info[i].find("  ")-1).c_str(), 255, 0);
+			}
+			send((*clients_sockets)[client_id].first, "exit", 255, 0);
+
+			client_current_game_stage[client_id] = 3;
+
+			break;
+		}
 		case 70://speed up
 		{
 			while (*current_stage != 2)

@@ -5,6 +5,7 @@
 Client::Client(ToT_Window_ &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
+	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
 	if (!StartNetwork())
 	{
 		closesocket(host);
@@ -332,7 +333,35 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Pa
 }
 bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field)
 {
-	return false;
+	std::string get_tour_name_code = "63";
+	send(host, get_tour_name_code.c_str(), 4, 0);
+	char temp[255];
+
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+		participants[0]->current_speed = atof(temp);
+
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+		participants[0]->current_durability = atof(temp);
+
+
+		while (true)
+		{
+			if (!recv(host, temp, 255, 0) < 0)
+				MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+
+			if ((std::string)temp != "exit")
+			{
+				std::string helper = ((std::string)temp).c_str();
+				if (!recv(host, temp, 255, 0) < 0)
+					MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+				(*infobox).Push(helper, (std::string)temp);
+			}
+			else
+				break;
+		}
+		return true;
 }
 void Client::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
@@ -360,10 +389,6 @@ void Client::Attack(std::vector<Participant*> &participants, int ais, bool alive
 
 	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);	
 	send(host, id[i].c_str(), 4, 0);
-}
-void Client::SendInfo(std::string special_text, std::string text)
-{
-
 }
 void Client::TakeAction(Participant* &participant)
 {

@@ -3,6 +3,7 @@
 Host::Host(ToT_Window_ &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
+	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
 	stage = 0;
 	if(!StartNetwork(participants)) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
 	{
@@ -265,17 +266,14 @@ std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Part
 }
 bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field)
 {
+	stage = 3;
 	return SinglePlayer::GetCurrentAtribs(participants, ais, field);
 }
 void Host::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
+	network_device->ClientsReadyForNewStage();
 	stage = 1;
 	SinglePlayer::Attack(participants, ais, alive);
-	network_device->ClientsReadyForNewStage();
-}
-void Host::SendInfo(std::string special_text, std::string text)
-{
-
 }
 void Host::TakeAction(Participant* &participants)
 {
@@ -284,6 +282,7 @@ void Host::TakeAction(Participant* &participants)
 }
 void Host::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
 {
+	network_device->ClientsReadyForNewStage();
 	SinglePlayer::GetOthersAction(participants, ais, tour);
 	network_device->ClientsReadyForNewStage();
 }

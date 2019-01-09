@@ -249,9 +249,7 @@ bool Race::Game()
 		
 		network_role->GetOthersAction(*participants, static_cast<int>((*participants).size()) - 1, tour);
 		Ranking(network_role, true);
-		_getch();
-		_getch();
-
+		
 		if (turn < tour.size())
 		{
 			if (!network_role->GetCurrentAtribs(*participants, static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))
