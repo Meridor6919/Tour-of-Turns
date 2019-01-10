@@ -193,7 +193,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			for (int i = 0; i < (*clients)[0]->network_role->infobox->info.size(); i++)
 			{
 				send((*clients_sockets)[client_id].first, (*clients)[0]->network_role->infobox->info[i].substr(0, (*clients)[0]->network_role->infobox->info[i].find("  ")).c_str(), 255, 0);
-				send((*clients_sockets)[client_id].first, (*clients)[0]->network_role->infobox->info[i].substr((*clients)[0]->network_role->infobox->info[i].find("  "), (*clients)[0]->network_role->infobox->info[i].size() - (*clients)[0]->network_role->infobox->info[i].find("  ")-1).c_str(), 255, 0);
+				send((*clients_sockets)[client_id].first, (*clients)[0]->network_role->infobox->info[i].substr((*clients)[0]->network_role->infobox->info[i].find("  ")+2, (*clients)[0]->network_role->infobox->info[i].size() - (*clients)[0]->network_role->infobox->info[i].find("  ")).c_str(), 255, 0);
 			}
 			send((*clients_sockets)[client_id].first, "exit", 255, 0);
 

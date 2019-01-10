@@ -245,10 +245,8 @@ bool Race::Game()
 			network_role->Attack(*participants, static_cast<int>((*participants).size())-static_cast<int>(alive), alive);
 
 		if (alive)
-		{
 			network_role->TakeAction((*participants)[0]);
-			Interface();
-		}
+		
 		
 		network_role->GetOthersAction(*participants, static_cast<int>((*participants).size()) - 1, tour);
 		
@@ -256,9 +254,8 @@ bool Race::Game()
 		if (turn < tour.size())
 		{
 			if (!network_role->GetCurrentAtribs(*participants, static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))
-			{
 				alive = false;
-			}
+			Interface();
 		}
 		if (static_cast<int>((*participants).size()) == 0)
 			break;

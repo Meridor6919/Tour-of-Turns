@@ -267,7 +267,7 @@ std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Part
 bool Host::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field)
 {
 	stage = 3;
-	return SinglePlayer::GetCurrentAtribs(participants, ais, field);
+	return SinglePlayer::GetCurrentAtribs(participants, ais - clients.size(), field);
 }
 void Host::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
