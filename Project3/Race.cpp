@@ -1,6 +1,6 @@
 #include "Race.h"
 
-Race::Race(ToT_Window_ &window, std::vector<Participant*> *participants)
+Race::Race(ToT_Window &window, std::vector<Participant*> *participants)
 {
 	main_window = &window;
 	this->participants = participants;
@@ -217,13 +217,16 @@ void  Race::Lobby(SinglePlayer *network_role)
 }
 bool Race::Game()
 {
+
+	
+	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
 	bool alive = true;
 	SinglePlayer* network_role = (*participants)[0]->network_role;
 	int visibility = (*participants)[0]->car_modifiers[CarModifiers::visibility];
 	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
 	
 	Interface();
-	Ranking(network_role, false);
+	Ranking(ranking_info, false);
 	
 	for(int turn = 0; turn < tour.size()+1; turn++) //main game loop
 	{
@@ -248,7 +251,7 @@ bool Race::Game()
 		}
 		
 		network_role->GetOthersAction(*participants, static_cast<int>((*participants).size()) - 1, tour);
-		Ranking(network_role, true);
+		
 		
 		if (turn < tour.size())
 		{
@@ -260,16 +263,18 @@ bool Race::Game()
 		if (static_cast<int>((*participants).size()) == 0)
 			break;
 
-		Ranking(network_role, false);
+		Ranking(ranking_info, true);
+		ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
+		Ranking(ranking_info, false);
 	}
 	return alive;
 }
 void Race::Ending()
 {
-
+	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
 	std::fstream fvar;
-
-	int points = (ais + 2 - Ranking((*participants)[0]->network_role, true)) * static_cast<int>(1000.0f / (*participants)[0]->score);
+	int place = Ranking(ranking_info, false);
+	int points = (ais + 2 - place) * static_cast<int>(1000.0f / (*participants)[0]->score);
 	
 	fvar.open((tour_path.substr(0, tour_path.size() - 4) + "rank").c_str(), std::ios::in | std::ios::app);
 	
@@ -277,18 +282,18 @@ void Race::Ending()
 	fvar << (*participants)[0]->car_path << std::endl;
 	fvar << ais << std::endl;
 	fvar << (*participants)[0]->score << std::endl;
-	fvar << Ranking((*participants)[0]->network_role, true) << std::endl;
+	fvar << place << std::endl;
 	fvar << points << std::endl;
-			
+		
+	Ranking(ranking_info, true);
 	fvar.close();
 }
-int Race::Ranking(SinglePlayer* network_role, bool clear)
+int Race::Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool clear)
 {
 	std::vector<std::string> text;
 	text.push_back("PLACE");
 	text.push_back("RACER");
 	text.push_back("SCORE");
-	std::vector<std::pair<float, std::string>> ranking_info = network_role->GetRankingInfo(*participants);
 	int ret;
 	
 	for (int i = 0; i < ranking_info.size(); i++)
@@ -300,6 +305,10 @@ int Race::Ranking(SinglePlayer* network_role, bool clear)
 			ret = i + 1;
 	}
 	Text::TableText(text, 1, 3, 3, 16, { static_cast<short>(main_window->GetWidth() - 55), 17 }, *main_window, clear);
+
+	if (clear)
+		return 0;
+
 	return ret;
 }
 void Race::Interface()

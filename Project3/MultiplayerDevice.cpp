@@ -132,7 +132,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 		}
 		case 61://get ranking info 
 		{
-			while (*current_stage != 2)//stage 2 - action
+			while (*current_stage != 3)//stage 2 - action
 			{
 				std::chrono::milliseconds ms(100);
 				std::this_thread::sleep_for(ms);
@@ -188,6 +188,7 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			}
 			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_speed).c_str(), 255, 0);
 			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_durability).c_str(), 255, 0);
+			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->score).c_str(), 255, 0);
 
 			for (int i = 0; i < (*clients)[0]->network_role->infobox->info.size(); i++)
 			{

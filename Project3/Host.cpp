@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-Host::Host(ToT_Window_ &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
+Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
@@ -257,7 +257,7 @@ void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais
 		main_window->Pause(500);
 	}
 	SinglePlayer::GetOtherParticipants(participants, ais, tour);
-	stage = 2;
+	stage = 3;
 }
 
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::vector<Participant*> &participants)
@@ -277,11 +277,11 @@ void Host::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 }
 void Host::TakeAction(Participant* &participants)
 {
-	stage = 2;
 	SinglePlayer::TakeAction(participants);
 }
 void Host::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
 {
+	stage = 2;
 	network_device->ClientsReadyForNewStage();
 	SinglePlayer::GetOthersAction(participants, ais, tour);
 	network_device->ClientsReadyForNewStage();

@@ -2,7 +2,7 @@
 #include <map>
 #include <string>
 
-Client::Client(ToT_Window_ &main_window) : SinglePlayer(main_window)
+Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
@@ -109,7 +109,7 @@ bool Client::StartNetwork()
 		std::cout << it->second;
 	};
 	
-	char button;
+	char button = ' ';
 	show_options();
 	do
 	{
@@ -344,6 +344,10 @@ bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, 
 		if (!recv(host, temp, 255, 0) < 0)
 			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		participants[0]->current_durability = atof(temp);
+
+		if (!recv(host, temp, 255, 0) < 0)
+			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+		participants[0]->score = atof(temp);
 
 
 		while (true)
