@@ -168,6 +168,12 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 				broadcast.join();
 				accepting_clients.join();
 				network_device = new MultiplayerDevice(participants, &clients, this, stage);
+
+				for (short i = 0; i < static_cast<int>(clients.size()+1); i++)
+				{
+					SetConsoleCursorPosition(handle, { 0, 23 + 2 * i });
+					std::cout << "                    ";
+				}
 				return true;
 			}
 			case 1: // kick players
