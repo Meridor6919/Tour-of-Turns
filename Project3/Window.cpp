@@ -12,8 +12,7 @@ Window::Window(char title[], int color1, int color2, int font_size, bool fullscr
 	window_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	window_hwnd = GetConsoleWindow();
 
-	char temp_char[254] = "title ";
-	system(strcat(temp_char, title));
+	SetConsoleTitle(title);
 	srand(static_cast<int>(time(0)));
 
 	//Font setup
@@ -25,10 +24,16 @@ Window::Window(char title[], int color1, int color2, int font_size, bool fullscr
 	GetCurrentConsoleFontEx(window_handle, NULL, &ConsoleFontInfoEx);
 
 	//window setup
-	if (fullscreen)
+	if (!fullscreen)
+	{
+		SetConsoleScreenBufferSize(window_hwnd, {window_size.X * ConsoleFontInfoEx.dwFontSize.X, window_size.Y*ConsoleFontInfoEx.dwFontSize.Y});
+		MoveWindow(window_hwnd, 0, 0, window_size.X * ConsoleFontInfoEx.dwFontSize.X, window_size.Y*ConsoleFontInfoEx.dwFontSize.Y, true);
+	}
+	else
+	{
+		ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 		window_size = GetLargestConsoleWindowSize(window_handle);
-	MoveWindow(window_hwnd, 0, 0, window_size.X * ConsoleFontInfoEx.dwFontSize.X, window_size.Y*ConsoleFontInfoEx.dwFontSize.Y, true);
-
+	}
 	//Cursor visibility								
 	GetConsoleCursorInfo(window_handle, &console_cursor);
 	SetCursor(false);
