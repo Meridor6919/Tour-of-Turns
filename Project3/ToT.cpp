@@ -20,12 +20,13 @@ void GameMode::Credits(ToT_Window &main_window)
 		"Miroslaw Zelent ",
 		"for getting me interested in programming"
 	};
-	std::vector<Text::Atributes> credits_atribute = { Text::endl, Text::endl, Text::endl, Text::color2, Text::endl,
+	std::vector<Text::OrdinaryText_atributes> credits_atribute = { Text::endl, Text::endl, Text::endl, Text::color2, Text::endl,
 												Text::endl, Text::color2, Text::endl, Text::color2, Text::endl,
 												Text::endl, Text::color2, Text::endl };
 
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window);
-	_getch(); _getch();
+	_getch();
+	_getch();
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window, true);
 }
 void GameMode::Options(ToT_Window &main_window)
@@ -116,7 +117,6 @@ void GameMode::Options(ToT_Window &main_window)
 }
 void GameMode::Ranking(ToT_Window &main_window)
 {
-	
 	HANDLE handle = main_window.GetHandle();
 	std::vector<std::string> maps_rankings;
 	std::vector<std::string>map_information;
@@ -124,7 +124,6 @@ void GameMode::Ranking(ToT_Window &main_window)
 	std::fstream fvar;
 	int position = 0;
 	short tmp_int;
-
 
 	fvar.open("Ranking.txt", std::ios::in);
 
@@ -158,7 +157,6 @@ void GameMode::Ranking(ToT_Window &main_window)
 }
 void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 {
-
 	SinglePlayer *network_role = nullptr;
 	std::vector<Participant*> participants;
 

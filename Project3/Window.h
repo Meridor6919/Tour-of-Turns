@@ -34,5 +34,4 @@ public:
 	void SetCursor(bool visible);
 	void SetMusic(std::string sound_file, bool playing);
 	void Pause(int miliseconds);
-
 };

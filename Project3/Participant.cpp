@@ -18,16 +18,16 @@ Participant::Participant(std::string name, std::string car_path, std::string tir
 
 Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 {
-
 	this->network_role = network_role;
 	this->current_speed = 0.0f;
 	this->score = 0.0f;
 	this->attacked = 0;
+	const int number_of_names = 25;
 
-	static std::string names[] =
+	static std::string names[number_of_names] =
 	{ "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
 	"John Hill", "Andrew Anderson", "Jane Turning", "Lester King", "Drew McNeil", "Sam Samson","Gaston Reveneu", "Roman Torbon",
-	"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic", "Blu Apostrof" };
+	"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic", "Blu Apostrof" };	//possible ai names (if added you need to change const number below)
 	std::string BestCarPath;
 	std::string BestTirePath;
 	std::string helper;
@@ -35,14 +35,14 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	ai_type = rand() % 3+1;
 
 	static int used_names = 0;
-	int RandomName = rand() % (24 - used_names);
+	int RandomName = rand() % (number_of_names-1 - used_names);//choosing name
 
 	helper = names[RandomName];
-	names[RandomName] = names[24 - used_names];
+	names[RandomName] = names[number_of_names-1 - used_names];
 	name = helper;
 	used_names++;
 	
-	std::vector<std::string> cars;
+	std::vector<std::string> cars;//choosing car
 	network_role->GetCarNames(cars, tour_path);
 
 	int current_best = 0;
@@ -60,7 +60,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	this->car_modifiers = network_role->GetCarParameters(cars[current_best]);
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 
-	std::vector<std::string> tires;
+	std::vector<std::string> tires;//choosing tires
 	network_role->GetTireNames(tires);
 
 	std::vector<std::string> tour = network_role->GetTourParameters(tour_path);
@@ -106,7 +106,7 @@ int Participant::TiresPoints(int terrain[], std::string tires_path)
 	std::string helper;
 
 	std::vector<std::string>tires_atrib = network_role->GetTireParameters(tires_path);
-	for (int i = 0; i < tires_atrib.size(); i++)
+	for (int i = 0; i < tires_atrib.size(); i++)	//algorithm that uses probability to evaluate tire rating
 	{
 
 		for (int j = 0; j < tires_atrib[i].size(); j++)
@@ -129,7 +129,7 @@ int Participant::CarPoints(std::string cars_path)
 	std::vector<int> car_params;
 	int total_points = 0;
 	car_params = network_role->GetCarParameters(cars_path);
-	for (int i = 0; i < car_params.size(); i++)
+	for (int i = 0; i < car_params.size(); i++)	//AI parameters rating
 	{
 		switch (i)
 		{
@@ -296,7 +296,7 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 
 void Participant::Test(std::string field, bool show)
 {
-	if (field.size() == 1)
+	if (field.size() == 1)//if road is straight just calculate attacks;
 	{
 		int r = rand() % 8;
 		int lost = (attacked - r)*rand() % 5 * 5;
@@ -332,18 +332,19 @@ void Participant::Test(std::string field, bool show)
 			base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(5 * attacked);
 			if (base > 100.0f)
 				base = 100.0f;
-			formula = (current_speed + base) / 2;
+			formula = (current_speed + base) / 2;	//formula that return percentage needed to pass a test
 		}
 		else
 		{
 			base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(0.15f * attacked);
 			if (base > 100.0f)
 				base = 100.0f;
-			formula = 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;
+			formula = 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;	//formula that return percentage needed to pass a test
 		}
 
 		attacked = 0;
 
+		//testing algorithm
 		for (int i = 0; i < number_of_tests; i++)
 		{
 			local_score = static_cast<float>(rand() % 100) + static_cast<float>(rand() % 100 + 1) / 100.0f;
@@ -360,7 +361,7 @@ void Participant::Test(std::string field, bool show)
 				min = static_cast<int>(local_score);
 			}
 		}
-
+		//consequences and messages of test results
 		if (passed_tests >= reqired_tests)
 		{
 			if (show)
@@ -414,12 +415,12 @@ void Participant::Test(std::string field, bool show)
 			}
 		}
 	}
-	if (drift == true)
+	if (drift == true)	//drift score
 	{
 		drift = false;
 		score += 1.5;
 	}
-	else
+	else	//normal socre
 		score += 100 / (1 + current_speed * 10.0f / 36.0f);
 }
 

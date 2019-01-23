@@ -4,7 +4,6 @@
 #include "TextLib.h"
 #include "ToT_Window.h"
 
-
 namespace GameMode
 {
 	void Game(bool multiplayer, ToT_Window &main_window);

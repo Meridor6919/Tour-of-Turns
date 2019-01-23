@@ -62,7 +62,6 @@ void Window::SetWindowFlags(int flags)
 {
 	flags |= SWP_NOMOVE | SWP_NOSIZE;
 
-
 	SetWindowPos(GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, flags);
 	SetConsoleCursorInfo(window_handle, &console_cursor);
 }

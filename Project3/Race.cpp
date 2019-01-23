@@ -4,10 +4,11 @@ Race::Race(ToT_Window &window, std::vector<Participant*> *participants)
 {
 	main_window = &window;
 	this->participants = participants;
+	ais = 0;
 }
 void  Race::Lobby(SinglePlayer *network_role)
 {
-
+	//lobby parameters
 	std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
 	COORD starting_point = { (short)main_window->GetWidth() / 2, 20 };
 	const short spacing = 3;
@@ -15,69 +16,69 @@ void  Race::Lobby(SinglePlayer *network_role)
 	const int max_name_size = 14;
 	HANDLE handle = main_window->GetHandle();
 	
+	//player related variables
 	std::string name = "Racer";
 	std::vector<std::string> tours;
 	std::vector<std::string> cars;
 	std::vector<std::string> tires;
+	std::string tire_path;
+	std::string car_path;
 	int tires_pos = 0;
 	int cars_pos = 0;
 	int tours_pos = 0;
-	ais = 0;
 	
 	network_role->GetTourNames(tours);
-	network_role->GetTireNames(tires);
-
 	if (tours.size() == 0)
 	{
 		MessageBox(0, "Cannot load any map files", "error", 0);
 		return;
 	}
-	else if (tires.size() == 0)
+	network_role->GetTireNames(tires);
+	if (tires.size() == 0)
 	{
 		MessageBox(0, "Cannot load any tire files", "error", 0);
 		return;
 	}
-
-	tour_path = tours[0];
-	std::string tire_path = tires[0];
-	std::string car_path;
-
-	network_role->GetCarNames(cars, tour_path);
-
+	network_role->GetCarNames(cars, tours[0]);
 	if (cars.size() == 0)
 		MessageBox(0, "Cannot load any car from selected tour", "error", 0);
 	else
 		car_path = cars[0];
 
-	//showing params
-	//-----------------------------------------------------------------------------------------------------------
-	std::vector<std::string> car_parameters;																	//
-	std::vector<std::string> tire_parameters;																	//
-	std::vector<Text::Atributes> text_atributes;																//
-																												//
-	for (int i = 0; i < Modifiers::car_modifiers->size(); i++)													//
-	{																											//
-		text_atributes.push_back(Text::Atributes::color2);														//
-		text_atributes.push_back(Text::Atributes::endl);														//
-	}																											//
-																												//
-	auto params1 = network_role->GetCarParameters(car_path);													//
-	for (int i = 0; i < params1.size(); i++)																	//
-	{																											//
-		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");//atrib names:								//
-		car_parameters.push_back(std::to_string(params1[i]));													//
-	}																											//
-	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);				//
-																												//
-	auto params2 = network_role->GetTireParameters(tire_path);													//
-	for (int i = 0; i < params2.size(); i++)																	//
-	{																											//
-		tire_parameters.push_back(Modifiers::tire_modifiers[i]+ ": ");//atrib names:							//
-		tire_parameters.push_back(params2[i]);																	//
-	}																											//
-	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);			//
-	//-----------------------------------------------------------------------------------------------------------
+	tour_path = tours[0];
+	tire_path = tires[0];
 
+	//showing params of current setup
+	std::vector<std::string> car_parameters;																	
+	std::vector<std::string> tire_parameters;																	
+	std::vector<Text::OrdinaryText_atributes> text_atributes;													
+							
+	//preparing vectors for OrdinaryText function
+	for (int i = 0; i < Modifiers::car_modifiers->size(); i++)													
+	{																											
+		text_atributes.push_back(Text::OrdinaryText_atributes::color2);											
+		text_atributes.push_back(Text::OrdinaryText_atributes::endl);											
+	}																											
+																	
+	//showing car parameters
+	std::vector<int> params1 = network_role->GetCarParameters(car_path);													
+	for (int i = 0; i < params1.size(); i++)																	
+	{																											
+		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
+		car_parameters.push_back(std::to_string(params1[i]));													
+	}																											
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);				
+			
+	//showing tire parameters
+	auto params2 = network_role->GetTireParameters(tire_path);													
+	for (int i = 0; i < params2.size(); i++)																	
+	{																											
+		tire_parameters.push_back(Modifiers::tire_modifiers[i]+ ": ");//atrib names:							
+		tire_parameters.push_back(params2[i]);																	
+	}																											
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);			
+
+	//menu segment
 	while (main_menu_position != 5 || cars.size() == 0)
 	{
 		switch (main_menu_position = Text::Choose::Veritcal(options, main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window))
@@ -199,6 +200,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 			}
 		}
 	}
+	//clearing menu afterwards
 	for (short i = 0; i < options.size(); i++)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::TextAlign::center / 2 * (float)options[i].size()), starting_point.Y + i * (short)spacing });
@@ -206,30 +208,33 @@ void  Race::Lobby(SinglePlayer *network_role)
 			std::cout << " ";
 	}
 
+	//clearing params segment
 	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window, true);
 	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window, true);
 
-	//AIs
-
+	//loading player
 	participants->emplace_back(new Participant(name, car_path, tire_path, *network_role));
+	//loading clients/ais
 	network_role->GetOtherParticipants(*participants, ais, tour_path);
 
 }
 bool Race::Game()
 {
-
-	
+	//initialization of important variables
 	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
-	bool alive = true;
+	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
 	SinglePlayer* network_role = (*participants)[0]->network_role;
 	int visibility = (*participants)[0]->car_modifiers[CarModifiers::visibility];
-	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
+	bool alive = true;
 	
+	//pre-game_loop interface loading
 	Interface();
 	Ranking(ranking_info, false);
 	
-	for(int turn = 0; turn < tour.size()+1; turn++) //main game loop
+	//main game loop
+	for(int turn = 0; turn < tour.size()+1; turn++) 
 	{
+		//getting visible tour
 		std::vector<std::string>::const_iterator first = tour.begin() + turn;
 		std::vector<std::string>::const_iterator last;
 
@@ -239,28 +244,29 @@ bool Race::Game()
 			last = tour.begin() + turn + visibility;
 
 		std::vector<std::string> visible_tour(first, last);
+
+		//showing incoming parts of tour
 		VisionBox(visible_tour, visibility);
 		
-		if(turn > 0)
+		if(turn > 0)	//attacking players from second turn for gameplay purposes
 			network_role->Attack(*participants, static_cast<int>((*participants).size())-static_cast<int>(alive), alive);
 
-		if (alive)
+		if (alive)		//if main player is alive he can choose an action, else he can only watch
 			network_role->TakeAction((*participants)[0]);
 		
-		
+		//waiting for clients/ais
 		network_role->GetOthersAction(*participants, static_cast<int>((*participants).size()) - 1, tour);
 		
-		
-		if (turn < tour.size())
+		if (turn < tour.size())//game runs until tour size +1 because of "meta" sign in the end of the race, but atribs take current tour part so if statement is needed
 		{
-			if (!network_role->GetCurrentAtribs(*participants, static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))
+			if (!network_role->GetCurrentAtribs(*participants, static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))	//if durability == 0
 				alive = false;
 			Interface();
 		}
-		if (static_cast<int>((*participants).size()) == 0)
+		if (static_cast<int>((*participants).size()) == 0)//if everyone is dead
 			break;
 
-		Ranking(ranking_info, true);
+		Ranking(ranking_info, true);	//ranking part
 		ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
 		Ranking(ranking_info, false);
 	}
@@ -271,7 +277,7 @@ void Race::Ending()
 	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
 	std::fstream fvar;
 	int place = Ranking(ranking_info, false);
-	int points = (ais + 2 - place) * static_cast<int>(1000.0f / (*participants)[0]->score);
+	int points = (ais + 2 - place) * static_cast<int>(1000.0f / (*participants)[0]->score);	//points formula
 	
 	fvar.open((tour_path.substr(0, tour_path.size() - 4) + "rank").c_str(), std::ios::in | std::ios::app);
 	
@@ -306,7 +312,7 @@ int Race::Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool
 	if (clear)
 		return 0;
 
-	return ret;
+	return ret;	//returning players place
 }
 void Race::Interface()
 {
@@ -356,7 +362,6 @@ void Race::Interface()
 	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51),67 });
 	std::cout << "---------------------------------------------";
 }
-
 void Race::VisionBox(std::vector<std::string> visible_tour, int visibility)
 {
 

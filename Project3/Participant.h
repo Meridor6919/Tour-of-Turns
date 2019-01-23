@@ -45,12 +45,12 @@ public:
 	float current_speed;
 	float current_durability;
 	SinglePlayer *network_role;
-	std::string car_path;	//for ranking
+	std::string car_path;	
 	int attacked;
 	bool drift;
 
-	Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role);		//Creating human player
-	Participant(SinglePlayer *network_role, std::string tour_path);//creating AI
-	void TakeAction(int safe_speed, bool turn);
+	Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role);	//Creating human player
+	Participant(SinglePlayer *network_role, std::string tour_path);	//creating AI
+	void TakeAction(int safe_speed, bool turn);	//ai action
 	void Test(std::string field, bool show);
 };

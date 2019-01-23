@@ -168,17 +168,8 @@ int Text::Choose::Numeric(int max, COORD starting_point, bool zero_allowed, Wind
 		std::cout << " ";
 	return number;
 }
-
-void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Atributes> atribute, const Text::TextAlign text_align, const short spacing, const short position, Window &MainWindow, bool clearing)
+void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::OrdinaryText_atributes> atribute, const Text::TextAlign text_align, const short spacing, const short position, Window &MainWindow, bool clearing)
 {
-#ifdef DEBUG
-	if (text.size() != atribute.size())
-	{
-		MessageBox(0, "Diffrent vector sizes", "Error", 0);
-		return;
-	}
-#endif // DEBUG
-
 	HANDLE handle = MainWindow.GetHandle();
 	const int records = text.size();
 	short current_position;
@@ -256,12 +247,6 @@ void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Atribut
 }
 void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, short vertical_spacing, const COORD starting_point, Window &main_window, bool clearing)
 {
-#ifdef DEBUG
-	if (texts_per_row == 0)
-		MessageBox(0, "parametr in function TableText texts_per_row cannot be 0", "Error", 0);
-	return;
-#endif 
-
 	HANDLE handle = main_window.GetHandle();
 	std::vector<std::string>::iterator it = text.begin();
 

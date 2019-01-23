@@ -10,19 +10,19 @@ InfoBox::InfoBox(int size, Text::TextAlign text_align, COORD starting_point, int
 }
 void InfoBox::Push(std::string special_text, std::string text)
 {
-	info.push_back(special_text + "  " + text);		//adding text to infobox
+	info.push_back(special_text + "  " + text);	//adding text to infobox
 
 	HANDLE handle = main_window->GetHandle();
 	std::vector<std::string>::iterator it = info.begin();
 
-	Clear();									//clearing visible text from infobox to update it
+	Clear();	//clearing visible text from infobox to update it
 
-	if (size < info.size())						//deleting elements out of setted size
+	if (size < info.size())	//deleting elements out of setted size
 	{
 		info.erase(it);
 		it = info.begin();
 	}
-	SetConsoleTextAttribute(handle, 8);			//painting elder texts in gray 
+	SetConsoleTextAttribute(handle, 8);	//painting elder texts in gray 
 
 	for (short i = 0; it != std::prev(info.end(), 1); ++it, i++)	//showing it
 	{
