@@ -161,9 +161,12 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			send((*clients_sockets)[client_id].first, "Don't attack", 255, 0);
 			send((*clients_sockets)[client_id].first, "10", 255, 0);
 
-			for (int i = 1; i < (*clients).size(); i++)
+			for (int i = 0; i < (*clients).size(); i++)
 			{
-				if ((*clients)[i]->score < (*clients)[0]->score + 5 && (*clients)[i]->score >(*clients)[0]->score - 5)
+				if (i == client_id + 1)
+					continue;
+
+				if ((*clients)[i]->score < (*clients)[client_id + 1]->score + 5 && (*clients)[i]->score >(*clients)[client_id + 1]->score - 5)
 				{
 					send((*clients_sockets)[client_id].first, (*clients)[i]->name.c_str(), 255, 0);
 					send((*clients_sockets)[client_id].first, std::to_string(i).c_str(), 255, 0);

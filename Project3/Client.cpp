@@ -11,6 +11,7 @@ Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 		closesocket(host);
 		throw 1;
 	}
+	
 }
 bool Client::StartNetwork()
 {
