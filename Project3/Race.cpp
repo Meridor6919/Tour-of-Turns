@@ -297,7 +297,7 @@ int Race::Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool
 	text.push_back("PLACE");
 	text.push_back("RACER");
 	text.push_back("SCORE");
-	int ret;
+	int ret = 0;
 	
 	for (int i = 0; i < ranking_info.size(); i++)
 	{

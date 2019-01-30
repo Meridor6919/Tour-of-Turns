@@ -308,7 +308,12 @@ void Client::GetOtherParticipants(std::vector<Participant*> &participants, int a
 }
 std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Participant*> &participants)
 {
-	
+	if (!participants[0]->current_durability)
+	{
+		std::vector<std::pair<float, std::string>> ret;
+		ret.clear();
+		return ret;
+	}
 	std::string get_tour_name_code = "61";
 	send(host, get_tour_name_code.c_str(), 4, 0);
 	char temp[255];
@@ -346,6 +351,13 @@ bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, 
 			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		participants[0]->current_durability = atof(temp);
 
+		if (!participants[0]->current_durability)
+		{
+			send(host, "", 1, 0);
+			closesocket(host);
+			return false;
+		}
+
 		if (!recv(host, temp, 255, 0) < 0)
 			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		participants[0]->score = atof(temp);
@@ -370,6 +382,8 @@ bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, 
 }
 void Client::Attack(std::vector<Participant*> &participants, int ais, bool alive)
 {
+	if (!participants[0]->current_durability)
+		return;
 	std::string get_tour_name_code = "62";
 	send(host, get_tour_name_code.c_str(), 4, 0);
 	char temp[255];

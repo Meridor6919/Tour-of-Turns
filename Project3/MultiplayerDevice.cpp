@@ -27,11 +27,12 @@ void MultiplayerDevice::HandleClientConnection(std::string tour)
 	
 	auto recv_function = [&](int i) {
 
-		while (true)
+		while ((*clients_sockets).size() > i)//placeholder
 		{
 			auto h = recv((*clients_sockets)[i].first, buffer, 254, 0);
 			ValidateClientAction((std::string)buffer, i);
 		}
+		client_current_game_stage.erase(client_current_game_stage.begin() + i);
 	};
 
 	for (int i = 0; i < (int)(*clients_sockets).size(); i++)
@@ -189,9 +190,21 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 				std::chrono::milliseconds ms(100);
 				std::this_thread::sleep_for(ms);
 			}
-			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_speed).c_str(), 255, 0);
-			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_durability).c_str(), 255, 0);
-			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->score).c_str(), 255, 0);
+			if ((*clients).size() < client_id + 1)
+			{
+				send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_speed).c_str(), 255, 0);
+				send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_durability).c_str(), 255, 0);
+				send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->score).c_str(), 255, 0);
+			}
+			else
+			{	
+				send((*clients_sockets)[client_id].first, std::to_string(0).c_str(), 255, 0);
+				send((*clients_sockets)[client_id].first, std::to_string(0).c_str(), 255, 0);
+				closesocket((*clients_sockets)[client_id].first);
+				(*clients_sockets).erase((*clients_sockets).begin() + client_id);
+				break;
+			}
+			
 
 			for (int i = 0; i < (*clients)[0]->network_role->infobox->info.size(); i++)
 			{
@@ -294,8 +307,9 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			}
 			
 			(*clients)[client_id+1]->current_durability = 0.0f;
-			
-			return false;
+
+			client_current_game_stage[client_id] = 2;
+			return true;
 		}
 		default:
 		{
