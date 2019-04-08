@@ -17,7 +17,6 @@ int main()
 
 	while (true)
 	{
-
 		switch (main_menu_position = Text::Choose::Veritcal(text, main_menu_position, { (short)GameWindow.GetWidth() / 2, 20 }, 3, Text::TextAlign::center, true, GameWindow))
 		{
 			case 0:

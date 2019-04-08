@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="GeneralMultiPlayer.cpp" />
     <ClCompile Include="InfoBox.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Host.cpp" />
@@ -131,6 +132,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GeneralMultiPlayer.h" />
     <ClInclude Include="Infobox.h" />
     <ClInclude Include="MultiplayerDevice.h" />
     <ClInclude Include="NetworkRole.h" />
