@@ -1,90 +1,121 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Files\GeneralLibraries">
+      <UniqueIdentifier>{ee618611-a4c3-4fa5-932e-dd775b22477c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Files\GeneralLibraries\HeaderFiles">
+      <UniqueIdentifier>{f7ac20f0-dc7b-48d2-ac64-45bcf20a3b1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\GeneralLibraries\SourceFiles">
+      <UniqueIdentifier>{f787c36d-da32-424f-8fe8-df858c2f6bf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles">
+      <UniqueIdentifier>{24138a25-90f4-4418-a685-bed6e65cb2d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\PlayerClasses">
+      <UniqueIdentifier>{06947dfc-3123-4e94-a9c2-a0c8fc8fe8fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\PlayerClasses\HeaderFiles">
+      <UniqueIdentifier>{df7ec13e-f09a-4ed7-ab7a-433852061617}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\PlayerClasses\SourceFiles">
+      <UniqueIdentifier>{7effde4b-4157-4221-9724-9eb31aa51060}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\GameLogic">
+      <UniqueIdentifier>{01a10d97-3976-42ff-b0dd-671788676263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\GameLogic\HeaderFiles">
+      <UniqueIdentifier>{13b14e40-f014-4ff9-be67-192a17894184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\GameLogic\SourceFiles">
+      <UniqueIdentifier>{99f0d8c6-c8fd-41d4-a712-de48e4a7f1d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTLibraries">
+      <UniqueIdentifier>{67b82779-9998-4cf0-b6b7-8b165064dc05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTLibraries\SourceFiles">
+      <UniqueIdentifier>{43db4a43-0ba7-46c2-acd2-ab4d853345c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTLibraries\HeaderFiles">
+      <UniqueIdentifier>{7578b80f-8835-495f-a275-96b3b8b64116}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ToT.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ToT.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneralMultiPlayer.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="TextLib.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="Host.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Window.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="SinglePlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Race.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MultiplayerDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InfoBox.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Host.cpp">
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="Participant.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="ToT_Window.h">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="SinglePlayer.cpp">
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="ToT.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Race.cpp">
+      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="ToT.cpp">
+      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="ToT_Window.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Files\ToTLibraries\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="GeneralMultiPlayer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ToT_Window.h">
+      <Filter>Files\ToTLibraries\HeaderFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiplayerDevice.cpp">
+      <Filter>Files\ToTLibraries\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="InfoBox.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GeneralMultiPlayer.h">
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+    </ClInclude>
     <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="TextLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkRole.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Race.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiplayerDevice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Infobox.h">
-      <Filter>Header Files</Filter>
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="Participant.h">
-      <Filter>Header Files</Filter>
+      <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="GeneralMultiPlayer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="NetworkRole.h">
+      <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Race.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiplayerDevice.h">
+      <Filter>Files\ToTLibraries\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Infobox.h">
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
