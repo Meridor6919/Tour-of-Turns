@@ -57,11 +57,11 @@ void GeneralMultiPlayer::Host::Broadcast(unsigned long addr_range, int ms_interv
 	}
 	closesocket(broadcast_socket);
 }
-void GeneralMultiPlayer::Host::Accept_clients(int max)
+void GeneralMultiPlayer::Host::AcceptClients(int max)
 {
 	accepting_running = true;
 
-	//temporary socket for accepting clients
+	//socket for accepting clients
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (sock < 0)
@@ -90,12 +90,7 @@ void GeneralMultiPlayer::Host::Accept_clients(int max)
 	//main accepting loop
 	while (accepting_running)
 	{
-
-		//reducing speed for optimalization purposes 
-		std::chrono::milliseconds ms(100);
-		std::this_thread::sleep_for(ms);
-
-		//accepting clients
+		//creating temporary socket to check if accepted connection is valid
 		SOCKET temp = accept(sock, (sockaddr *)& sock_addr, &addr_size);
 		if (temp != INVALID_SOCKET && accepting_running)
 		{
@@ -135,6 +130,28 @@ void GeneralMultiPlayer::Host::Accept_clients(int max)
 	}
 	closesocket(sock);
 }
+void GeneralMultiPlayer::Host::StopAcceptingClients()
+{
+	accepting_running = false;
+
+	//connecting with myself to proc accept function that will wait forever otherwise
+	SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
+
+	if (temp < 0)
+	{
+		MessageBox(0, ("Socket error: " + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		WSACleanup();
+		exit(0);
+	}
+	sockaddr_in SocketAddress;
+	memset(&SocketAddress, 0, sizeof(SocketAddress));
+	SocketAddress.sin_family = AF_INET;
+	SocketAddress.sin_port = htons(6919);
+	SocketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+	connect(temp, (sockaddr *)&SocketAddress, sizeof(SocketAddress));
+	closesocket(temp);
+}
 std::string GeneralMultiPlayer::Host::GetHostName(sockaddr_in sock_addr)
 {
 	char helper[INET_ADDRSTRLEN];
@@ -142,6 +159,8 @@ std::string GeneralMultiPlayer::Host::GetHostName(sockaddr_in sock_addr)
 
 	return helper;
 }
+
+
 GeneralMultiPlayer::Client::Client()
 {
 	port = 6919;

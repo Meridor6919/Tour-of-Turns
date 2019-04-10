@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
+Host::Host(ToT_Window_ &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
@@ -16,119 +16,16 @@ Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : S
 }
 bool Host::StartNetwork(std::vector<Participant*> *participants)
 {
-	bool threads_active = true;
 	HANDLE handle = main_window->GetHandle();
 	
+	GeneralMultiPlayer::Host host;
+	unsigned long addr_range = inet_addr("192.168.x.x");
 
-	std::thread broadcast([&]() {	//sends broadcast msg to all other machines in local network (+hamachi if option is active) with hostname
+	if (main_window->GetHamachiConnectionFlag())
+		addr_range |= inet_addr("25.x.x.x");
 
-		SOCKET sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-		if (sock < 0)
-		{
-			MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-			WSACleanup();
-			exit(0);
-		}
-
-		char broadcast = 'a';
-		if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(int)) < 0)
-		{
-			MessageBox(0, ("Socket option error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-			WSACleanup();
-			exit(0);
-		}
-		sockaddr_in sock_addr;
-		memset(&sock_addr, 0, sizeof(sock_addr));
-		sock_addr.sin_family = AF_INET;
-		sock_addr.sin_port = htons(6919);
-		sock_addr.sin_addr.s_addr = inet_addr("192.168.x.x");
-		if (main_window->GetHamachiConnectionFlag())
-			sock_addr.sin_addr.s_addr |= inet_addr("25.x.x.x");
-		
-		char host_name[50];
-
-		if (gethostname(host_name, sizeof(host_name)) < 0)
-		{
-			MessageBox(0, ("Gethostname error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-			WSACleanup();
-			exit(0);
-		}
-		while (threads_active)
-		{
-			if (sendto(sock, host_name, sizeof(host_name), 0, (sockaddr *)&sock_addr, sizeof(sock_addr)) < 0)
-			{
-				MessageBox(0, ("Sending error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-				WSACleanup();
-				exit(0);
-			}
-			std::chrono::seconds s(1);
-			std::this_thread::sleep_for(s);
-		}
-		closesocket(sock);
-	});
-	std::thread accepting_clients([&]() {
-	
-		SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-
-		if (sock < 0)
-		{
-			MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-			WSACleanup();
-			exit(0);
-		}
-		sockaddr_in sock_addr;
-			memset(&sock_addr, 0, sizeof(sock_addr));
-			sock_addr.sin_family = AF_INET;
-			sock_addr.sin_port = htons(6919);
-			sock_addr.sin_addr.s_addr = INADDR_ANY;
-
-		int addr_size = sizeof(sockaddr_in);
-
-		if (bind(sock, (sockaddr *)& sock_addr, sizeof(sockaddr)) < 0)
-		{
-			MessageBox(0, ("Binding error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-			WSACleanup();
-			exit(0);
-		}
-
-		listen(sock, 7);
-
-		while (threads_active)
-		{
-			std::chrono::milliseconds ms(100);
-			std::this_thread::sleep_for(ms);
-			SOCKET temp = accept(sock, (sockaddr *) & sock_addr, &addr_size);
-			if (temp != INVALID_SOCKET && threads_active)
-			{
-				bool equal = false;
-
-				for (int i = 0; i < clients.size(); i++)
-				{
-					if (sock_addr.sin_addr.s_addr == clients[i].second.sin_addr.s_addr)
-					{
-						equal = true;
-						closesocket(temp);
-					}
-				}
-				
-				if (!equal)
-				{
-					clients.push_back(std::make_pair(temp, sock_addr));
-
-					SetConsoleCursorPosition(handle, { 0, 23 + 2 * (short)clients.size() });
-					SetConsoleTextAttribute(handle, main_window->color2);
-
-					in_addr ip_addr = sock_addr.sin_addr;
-					char helper[INET_ADDRSTRLEN];
-					inet_ntop(AF_INET, &ip_addr, helper, INET_ADDRSTRLEN);
-					std::cout << helper;
-				}
-			}
-		}
-		closesocket(sock);
-		
-	});
+	std::thread broadcast(&GeneralMultiPlayer::Host::Broadcast, &host, addr_range, 200);
+	std::thread accept_clients(&GeneralMultiPlayer::Host::AcceptClients, &host, 8);
 	
 	SetConsoleCursorPosition(handle, { 0, 23 });
 	SetConsoleTextAttribute(handle, main_window->color1);
@@ -140,33 +37,17 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 		int pos = 0;
 
 		pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 20 }, 3, Text::center, true, *main_window);
+		clients = host.GetClients();
 
 		switch (pos)
 		{
 			case 0: // start game
 			{
-				SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
-				threads_active = false;
-
-				if (temp < 0)
-				{
-					MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-					broadcast.join();
-					accepting_clients.join();
-					WSACleanup();
-					exit(0);
-				}
-				sockaddr_in SocketAddress;
-				memset(&SocketAddress, 0, sizeof(SocketAddress));
-				SocketAddress.sin_family = AF_INET;
-				SocketAddress.sin_port = htons(6919);
-				SocketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-				connect(temp, (sockaddr *)&SocketAddress, sizeof(SocketAddress));	//connecting with themself to proc accept function that will wait forever otherwise
-				closesocket(temp);
-
+				host.StopBroadcasting();
+				host.StopAcceptingClients();
 				broadcast.join();
-				accepting_clients.join();
+				accept_clients.join();
+				
 				network_device = new MultiplayerDevice(participants, &clients, this, stage);
 
 				for (short i = 0; i < static_cast<int>(clients.size()+1); i++)
@@ -200,6 +81,9 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 							std::cout << "                ";
 						}
 
+						std::vector<sockaddr_in> *black_list = host.GetBlackListPtr();
+						black_list->push_back((clients.begin() + kicked_player)->second);
+
 						text.erase(text.begin() + kicked_player);
 						clients.erase(clients.begin() + kicked_player);
 
@@ -217,31 +101,15 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 			}
 			case 2: //back
 			{
-				SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
-				threads_active = false;
-
-				if (temp < 0)
-				{
-					MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-					broadcast.join();
-					accepting_clients.join();
-					WSACleanup();
-					exit(0);
-				}
-				sockaddr_in SocketAddress;
-				memset(&SocketAddress, 0, sizeof(SocketAddress));
-				SocketAddress.sin_family = AF_INET;
-				SocketAddress.sin_port = htons(6919);
-				SocketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-				connect(temp, (sockaddr *)&SocketAddress, sizeof(SocketAddress));	//connecting with themself to proc accept function that will wait forever otherwise
-				closesocket(temp);
+				host.StopBroadcasting();
+				host.StopAcceptingClients();
 				broadcast.join();
-				accepting_clients.join();
+				accept_clients.join();
 				return false;
 			}
 		}
 	}
+	
 }
 void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {

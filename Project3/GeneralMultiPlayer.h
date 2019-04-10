@@ -39,7 +39,13 @@ namespace GeneralMultiPlayer {
 		void Broadcast(unsigned long addr_range, int ms_interval);
 
 		//accepts clients that want to connect
-		void Accept_clients(int max);
+		void AcceptClients(int max);
+
+		//functions for private data access
+		std::vector <std::pair<SOCKET, sockaddr_in>> GetClients() { return clients; }
+		std::vector <sockaddr_in>* GetBlackListPtr() { return &black_list; }
+		void StopBroadcasting() { broadcast_running = false; }
+		void StopAcceptingClients();
 	};
 
 	class Client {
