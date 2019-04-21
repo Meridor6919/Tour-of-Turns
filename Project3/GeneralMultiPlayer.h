@@ -33,7 +33,7 @@ namespace GeneralMultiPlayer {
 		Host();
 
 		//gets name of current station
-		std::string GetHostName(sockaddr_in sock_addr);
+		std::string GetIP(sockaddr_in sock_addr);
 
 		//broadcasts host name within given range
 		void Broadcast(unsigned long addr_range, int ms_interval);
@@ -42,7 +42,7 @@ namespace GeneralMultiPlayer {
 		void AcceptClients(int max);
 
 		//functions for private data access
-		std::vector <std::pair<SOCKET, sockaddr_in>> GetClients() { return clients; }
+		std::vector <std::pair<SOCKET, sockaddr_in>>* GetClientsPtr() { return &clients; }
 		std::vector <sockaddr_in>* GetBlackListPtr() { return &black_list; }
 		void StopBroadcasting() { broadcast_running = false; }
 		void StopAcceptingClients();

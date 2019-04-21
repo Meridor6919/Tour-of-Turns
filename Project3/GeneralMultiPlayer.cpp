@@ -114,7 +114,7 @@ void GeneralMultiPlayer::Host::AcceptClients(int max)
 			//checking black list
 			for (int i = 0; i < black_list.size(); i++)
 			{
-				if (black_list[i].sin_addr.s_addr == clients[i].second.sin_addr.s_addr)
+				if (black_list[i].sin_addr.s_addr == sock_addr.sin_addr.s_addr)
 				{
 					good = false;
 					break;
@@ -152,7 +152,7 @@ void GeneralMultiPlayer::Host::StopAcceptingClients()
 	connect(temp, (sockaddr *)&SocketAddress, sizeof(SocketAddress));
 	closesocket(temp);
 }
-std::string GeneralMultiPlayer::Host::GetHostName(sockaddr_in sock_addr)
+std::string GeneralMultiPlayer::Host::GetIP(sockaddr_in sock_addr)
 {
 	char helper[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &sock_addr.sin_addr, helper, INET_ADDRSTRLEN);

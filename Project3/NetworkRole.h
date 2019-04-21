@@ -14,10 +14,10 @@ class SinglePlayer {
 
 public:
 
-	ToT_Window_ *main_window;
+	ToT_Window *main_window;
 	InfoBox *infobox;
 
-	SinglePlayer(ToT_Window_ &main_window);
+	SinglePlayer(ToT_Window &main_window);
 	virtual void GetTourNames(std::vector<std::string>&tours);
 	virtual void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	virtual void GetTireNames(std::vector<std::string>&tires);
@@ -36,14 +36,14 @@ public:
 
 class Host : public SinglePlayer {
 
-	std::vector<std::pair<SOCKET, sockaddr_in>> clients;
+	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
 	MultiplayerDevice *network_device;
 	bool StartNetwork(std::vector<Participant*> *participants);
 	int stage;
 
 public:
 
-	Host(ToT_Window_ &main_window, std::vector<Participant*> *participants);
+	Host(ToT_Window &main_window, std::vector<Participant*> *participants);
 	void GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour);
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::vector<Participant*> &participants);
 	bool GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field);
@@ -62,7 +62,7 @@ class Client : public SinglePlayer {
 
 public:
 
-	Client(ToT_Window_ &main_window);
+	Client(ToT_Window &main_window);
 	void GetTourNames(std::vector<std::string>&tours);
 	void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	void GetTireNames(std::vector<std::string>&tires);

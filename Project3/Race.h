@@ -6,7 +6,7 @@ class Race {
 	std::vector<Participant*> *participants; 
 	std::vector<float> scores;
 	std::string tour_path;
-	ToT_Window_ *main_window;
+	ToT_Window *main_window;
 	int ais;
 
 	void Interface();
@@ -14,7 +14,7 @@ class Race {
 	int Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool clear);
 
 public:
-	Race(ToT_Window_ &window, std::vector<Participant*> *participants);
+	Race(ToT_Window &window, std::vector<Participant*> *participants);
 	void Lobby(SinglePlayer *network_role);		//game states
 	bool Game();
 	void Ending();
