@@ -17,13 +17,11 @@ void MultiplayerDevice::HandleClientConnection(std::string tour)
 	recv_threads = new std::thread[(int)(*clients_sockets).size()];
 
 	for (int i = 0; i < (int)(*clients_sockets).size(); i++)
+	{
 		send((*clients_sockets)[i].first, "start", 255, 0);
-
-	for (int i = 0; i < clients_sockets->size(); i++)
 		clients->push_back(nullptr);
-
-	for (int i = 0; i < clients_sockets->size(); i++)
 		client_current_game_stage.push_back(0);
+	}
 	
 	auto recv_function = [&](int i) {
 

@@ -36,6 +36,7 @@ public:
 
 class Host : public SinglePlayer {
 
+	GeneralMultiPlayer::Host *host;
 	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
 	MultiplayerDevice *network_device;
 	bool StartNetwork(std::vector<Participant*> *participants);

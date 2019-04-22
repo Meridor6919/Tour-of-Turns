@@ -46,25 +46,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneralMultiPlayer.cpp">
-      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
-    </ClCompile>
     <ClCompile Include="TextLib.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="Client.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="Host.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
-    </ClCompile>
     <ClCompile Include="Participant.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="SinglePlayer.cpp">
       <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="ToT.h">
@@ -90,6 +78,24 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralMultiPlayerHost.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralMultiPlayerClient.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralMultiPlayerGeneric.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkRoleClient.cpp">
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkRoleHost.cpp">
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkRoleSinglePlayer.cpp">
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

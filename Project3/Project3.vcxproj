@@ -115,14 +115,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Client.cpp" />
-    <ClCompile Include="GeneralMultiPlayer.cpp" />
+    <ClCompile Include="NetworkRoleClient.cpp" />
+    <ClCompile Include="GeneralMultiPlayerGeneric.cpp" />
+    <ClCompile Include="GeneralMultiPlayerClient.cpp" />
+    <ClCompile Include="GeneralMultiPlayerHost.cpp" />
     <ClCompile Include="InfoBox.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Host.cpp" />
+    <ClCompile Include="NetworkRoleHost.cpp" />
     <ClCompile Include="MultiplayerDevice.cpp" />
     <ClCompile Include="Race.cpp" />
-    <ClCompile Include="SinglePlayer.cpp" />
+    <ClCompile Include="NetworkRoleSinglePlayer.cpp" />
     <ClCompile Include="Participant.cpp" />
     <ClCompile Include="TextLib.cpp" />
     <ClCompile Include="ToT.cpp" />

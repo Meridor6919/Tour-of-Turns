@@ -18,21 +18,21 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 {
 	HANDLE handle = main_window->GetHandle();
 	bool showing_clients = true;
+	host = new GeneralMultiPlayer::Host();
 
-	GeneralMultiPlayer::Host host;
 	unsigned long addr_range = inet_addr("192.168.x.x");
 
 	if (main_window->GetHamachiConnectionFlag())
 		addr_range |= inet_addr("25.x.x.x");
 
-	std::thread broadcast(&GeneralMultiPlayer::Host::Broadcast, &host, addr_range, 200);
-	std::thread accept_clients(&GeneralMultiPlayer::Host::AcceptClients, &host, 8);
+	std::thread broadcast(&GeneralMultiPlayer::Host::Broadcast, host, addr_range, 200);
+	std::thread accept_clients(&GeneralMultiPlayer::Host::AcceptClients, host, 8);
 	std::thread show_clients([&]() {
-		while (&showing_clients)
+		while (showing_clients)
 		{
 			std::chrono::milliseconds ms(100);
 			std::this_thread::sleep_for(ms);
-			std::vector<std::pair<SOCKET, sockaddr_in>> clients = *host.GetClientsPtr();
+			std::vector<std::pair<SOCKET, sockaddr_in>> clients = *host->GetClientsPtr();
 			for (int i = 0; i < clients.size(); i++)
 			{
 				SetConsoleCursorPosition(handle, { 0, 25 + 2 * static_cast<short>(i) });
@@ -40,7 +40,7 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 				char h[30];
 				getnameinfo((sockaddr *)(&clients[i].second), sizeof(clients[i].second), h, sizeof(h), NULL, NULL,0);
 
-				std::string clientname = (std::string)h + " - " + host.GetIP(clients[i].second);
+				std::string clientname = (std::string)h + " - " + host->GetIP(clients[i].second);
 
 				for (int j = 0; j < 50; j++)
 				{
@@ -66,14 +66,14 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 		int pos = 0;
 
 		pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 20 }, 3, Text::center, true, *main_window);
-		clients = host.GetClientsPtr();
+		clients = host->GetClientsPtr();
 
 		switch (pos)
 		{
 			case 0: // start game
 			{
-				host.StopBroadcasting();
-				host.StopAcceptingClients();
+				host->StopBroadcasting();
+				host->StopAcceptingClients();
 				showing_clients = false;
 				show_clients.join();
 				broadcast.join();
@@ -112,7 +112,7 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 							std::cout << "                ";
 						}
 
-						std::vector<sockaddr_in> *black_list = host.GetBlackListPtr();
+						std::vector<sockaddr_in> *black_list = host->GetBlackListPtr();
 						black_list->push_back(((*clients).begin() + kicked_player)->second);
 
 						text.erase(text.begin() + kicked_player);
@@ -132,8 +132,8 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 			}
 			case 2: //back
 			{
-				host.StopBroadcasting();
-				host.StopAcceptingClients();
+				host->StopBroadcasting();
+				host->StopAcceptingClients();
 				showing_clients = false;
 				show_clients.join();
 				broadcast.join();

@@ -11,6 +11,9 @@
 #pragma comment(lib, "Ws2_32.lib")
 namespace GeneralMultiPlayer {
 
+	//recv with disconnect handling
+	bool Recv(SOCKET socket, char *buffer, int length, int flags);
+
 	class Host {
 
 	protected:
