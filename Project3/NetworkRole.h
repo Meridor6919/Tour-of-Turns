@@ -57,6 +57,7 @@ public:
 
 class Client : public SinglePlayer {
 
+	GeneralMultiPlayer::Client *client;
 	SOCKET host;
 	bool StartNetwork();
 	std::string tire_path; //needed for communication with host

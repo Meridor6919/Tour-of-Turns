@@ -61,11 +61,11 @@ namespace GeneralMultiPlayer {
 		10. target stopped hosting*/
 
 	protected:
-		//map that contains key - indicates order, and string that discribes name of the host and his ip
-		std::map<int, std::string> name_ip;
+		//key - time of last msg recived from this host, value - name of the host and his ip separated with " - "
+		std::map<int, std::string> current_hosts;
 
 		//socket that will connect to host
-		SOCKET host;
+		SOCKET *host;
 
 		//host's address
 		sockaddr_in addr;
@@ -78,12 +78,15 @@ namespace GeneralMultiPlayer {
 
 	public:
 
-		Client();
+		Client(SOCKET *host);
 
-		//recv broadcast msgs from potential hosts and saves it in "name_ip" container
+		//recv broadcast msgs from potential hosts and saves it in "current_hosts" container
 		void RecvBroadcast(int max_hosts, int ms_interval);
-		void FinishBroadcast() { receiving_broadcast = false; }
 		//sets connection with host
-		void Connect(std::string ip, int recv_time);
+		void Connect(std::string ip);
+
+		void FinishBroadcast() { receiving_broadcast = false; }
+		std::map<int, std::string> GetCurrentHosts() { return current_hosts; }
+		std::string GetIpFromMapValue(std::string value) { return value.substr(value.find_last_of(" ")+1, value.size()- value.find_last_of(" ")-1); }
 	};
 }

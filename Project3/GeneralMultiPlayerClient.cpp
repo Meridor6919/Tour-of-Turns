@@ -1,7 +1,8 @@
 #include "GeneralMultiPlayer.h"
 
-GeneralMultiPlayer::Client::Client()
+GeneralMultiPlayer::Client::Client(SOCKET *host)
 {
+	this->host = host;
 	port = 6919;
 }
 void GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
@@ -57,23 +58,23 @@ void GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
 			for (int i = 0; hostent->h_addr_list[i] != 0; ++i)
 				memcpy(&temp_addr, hostent->h_addr_list[i], sizeof(struct in_addr));
 
-			//chcking size of name_ip map;
-			if (name_ip.size() <= max_hosts)
+			//chcking size of current_hosts map;
+			if (current_hosts.size() <= max_hosts)
 			{
 				//value contains ip and name with " - " between them
 				std::string value = (std::string)recv_buffer + " - " + (std::string)inet_ntoa(temp_addr);
 				//searching for record with the same name and ip
 				bool finded = false;
-				for (std::map<int, std::string>::iterator it = name_ip.begin(); it != name_ip.end(); ++it)
+				for (std::map<int, std::string>::iterator it = current_hosts.begin(); it != current_hosts.end(); ++it)
 				{
 					//if it has been finded - refresh map key that indicates time
 					if (it->second == value)
 					{
-						auto new_record = name_ip.find(it->first);
-						if (new_record != name_ip.end())
+						auto new_record = current_hosts.find(it->first);
+						if (new_record != current_hosts.end())
 						{
-							std::swap(name_ip[clock() + (ms_interval)*1.5], new_record->second);
-							name_ip.erase(new_record);
+							std::swap(current_hosts[clock() + (ms_interval)*1.5], new_record->second);
+							current_hosts.erase(new_record);
 							finded = true;
 							break;
 						}
@@ -82,18 +83,18 @@ void GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
 				//else - add new record
 				if (!(finded))
 				{
-					name_ip.insert(std::make_pair(clock() + (ms_interval)*1.5, value));
+					current_hosts.insert(std::make_pair(clock() + (ms_interval)*1.5, value));
 				}
 			}
 		}
 		//checking if records are still valid
 		else
 		{
-			std::map<int, std::string>::iterator it = name_ip.begin();
-			while (it != name_ip.end())
+			std::map<int, std::string>::iterator it = current_hosts.begin();
+			while (it != current_hosts.end())
 			{
 				if (it->first < clock())
-					name_ip.erase(it++);
+					current_hosts.erase(it++);
 				else
 					break;
 			}
@@ -104,10 +105,10 @@ void GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
 	}
 	closesocket(intercept_brodcast_socket);
 }
-void GeneralMultiPlayer::Client::Connect(std::string ip, int recv_time)
+void GeneralMultiPlayer::Client::Connect(std::string ip)
 {
 	//setting socket for direct connection with host
-	host = socket(AF_INET, SOCK_STREAM, 0);
+	*host = socket(AF_INET, SOCK_STREAM, 0);
 	int addr_size = sizeof(addr);
 	memset(&addr, 0, addr_size);
 	addr.sin_family = AF_INET;
@@ -115,7 +116,7 @@ void GeneralMultiPlayer::Client::Connect(std::string ip, int recv_time)
 	addr.sin_addr.s_addr = addr.sin_addr.s_addr = inet_addr(ip.c_str());
 
 	//checking socket
-	if (host == INVALID_SOCKET)
+	if (*host == INVALID_SOCKET)
 	{
 		MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 		throw 1;
@@ -123,7 +124,7 @@ void GeneralMultiPlayer::Client::Connect(std::string ip, int recv_time)
 	}
 
 	//connect to host
-	if (connect(host, (sockaddr *)&addr, sizeof(addr)))
+	if (connect(*host, (sockaddr *)&addr, sizeof(addr)))
 	{
 		int result = WSAGetLastError();
 		if (result == 10061)
@@ -140,7 +141,7 @@ void GeneralMultiPlayer::Client::Connect(std::string ip, int recv_time)
 	char temp[6] = "";
 	while ((std::string)temp != (std::string)"start")
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 6, 0))
+		if (!GeneralMultiPlayer::Recv(*host, temp, 6, 0))
 		{
 			throw 10;
 			break;
