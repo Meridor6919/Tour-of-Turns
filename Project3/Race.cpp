@@ -261,7 +261,8 @@ bool Race::Game()
 		{
 			if (!network_role->GetCurrentAtribs(*participants, static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))	//if durability == 0
 				alive = false;
-			Interface();
+			else
+				Interface();
 		}
 		if (static_cast<int>((*participants).size()) == 0)//if everyone is dead
 			break;
