@@ -28,11 +28,12 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 	std::thread broadcast(&GeneralMultiPlayer::Host::Broadcast, host, addr_range, 200);
 	std::thread accept_clients(&GeneralMultiPlayer::Host::AcceptClients, host, 8);
 	std::thread show_clients([&]() {
+		std::chrono::milliseconds ms(100);
+		std::vector<std::pair<SOCKET, sockaddr_in>> clients;
 		while (showing_clients)
 		{
-			std::chrono::milliseconds ms(100);
 			std::this_thread::sleep_for(ms);
-			std::vector<std::pair<SOCKET, sockaddr_in>> clients = *host->GetClientsPtr();
+			clients = *host->GetClientsPtr();
 			for (int i = 0; i < clients.size(); i++)
 			{
 				SetConsoleCursorPosition(handle, { 0, 25 + 2 * static_cast<short>(i) });
@@ -52,7 +53,13 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 			}
 			SetConsoleCursorPosition(handle, { 0, 25 + 2 * static_cast<short>(clients.size()) });
 			SetConsoleTextAttribute(handle, main_window->color2);
-			std::cout << "                        ";
+			std::cout << "                                                 ";
+		}
+		for (short i = 0; i < static_cast<short>(clients.size()); i++)
+		{
+			SetConsoleCursorPosition(handle, { 0, 25 + 2 * i });
+			SetConsoleTextAttribute(handle, main_window->color2);
+			std::cout << "                                                 ";
 		}
 	});
 	
