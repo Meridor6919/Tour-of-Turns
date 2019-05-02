@@ -53,13 +53,6 @@ namespace GeneralMultiPlayer {
 
 	class Client {
 
-		/*EXCEPTION CODES
-		1. socket error
-		2. socket opt error
-		3. socket connection error
-		4. socket bind error
-		10. target stopped hosting*/
-
 	protected:
 		//key - time of last msg recived from this host, value - name of the host and his ip separated with " - "
 		std::map<int, std::string> current_hosts;
@@ -81,9 +74,9 @@ namespace GeneralMultiPlayer {
 		Client(SOCKET *host);
 
 		//recv broadcast msgs from potential hosts and saves it in "current_hosts" container
-		void RecvBroadcast(int max_hosts, int ms_interval);
+		bool RecvBroadcast(int max_hosts, int ms_interval);
 		//sets connection with host
-		void Connect(std::string ip);
+		bool Connect(std::string ip);
 
 		void FinishBroadcast() { receiving_broadcast = false; }
 		std::map<int, std::string> GetCurrentHosts() { return current_hosts; }

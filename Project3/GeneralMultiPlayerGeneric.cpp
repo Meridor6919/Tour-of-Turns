@@ -7,6 +7,5 @@ bool GeneralMultiPlayer::Recv(SOCKET socket, char * buffer, int length, int flag
 		MessageBox(0, "disconnected", "", 0);
 		return false;
 	}
-
 	return true;
 }

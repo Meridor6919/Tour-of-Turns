@@ -28,8 +28,12 @@ bool Client::StartNetwork()
 	current_hosts.insert(std::make_pair(MAXINT, "back"));
 
 	//recv hosts from local network
-	std::thread receiving_broadcast(&GeneralMultiPlayer::Client::RecvBroadcast, client, 8, 200);
-
+	std::thread receiving_broadcast([&]() {
+		if (!client->RecvBroadcast(8, 200))
+		{
+			return false;
+		}
+	});
 
 	auto show_options = [&]() {
 		it = current_hosts.begin();
@@ -45,7 +49,6 @@ bool Client::StartNetwork()
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + cursor_pos * 2 });
 		std::cout << it->second;
 	};
-	
 	
 	show_options();
 	do
@@ -74,27 +77,31 @@ bool Client::StartNetwork()
 		Sleep(60);
 		if (button == 13)
 		{
-			short i = 0;
-			for (std::map<int, std::string>::iterator it2 = current_hosts.begin(); it2 != current_hosts.end(); ++it2, i++)
+			client->FinishBroadcast();
+			receiving_broadcast.join();
+			it = current_hosts.begin();
+			for (short i = 0; it != current_hosts.end(); ++it, i++)
 			{
-				SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it2->second.size()), starting_point.Y + i * 2 });
-				for (int j = 0; j < it2->second.size(); j++)
+				SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::center / 2 * (float)it->second.size()), starting_point.Y + i * 2 });
+				for (int j = 0; j < it->second.size(); j++)
 					std::cout << ' ';
 			}
+			it = current_hosts.begin();
+			std::advance(it, cursor_pos);
 
-			if (it->first == MAXINT)//back
+			if (it->first == MAXINT)
 			{
-				client->FinishBroadcast();
-				receiving_broadcast.join();
+				//back button selected
+				return false;
+			}
+			else if (!client->Connect(client->GetIpFromMapValue(it->second)))
+			{
+				//connecton error
 				return false;
 			}
 			else
 			{
-				it = current_hosts.begin();
-				std::advance(it, cursor_pos);
-				client->Connect(client->GetIpFromMapValue(it->second));
-				client->FinishBroadcast();
-				receiving_broadcast.join();
+				//succesful multiplayer initialization
 				return true;
 			}
 		}

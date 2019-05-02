@@ -5,7 +5,7 @@ GeneralMultiPlayer::Client::Client(SOCKET *host)
 	this->host = host;
 	port = 6919;
 }
-void GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
+bool GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
 {
 	receiving_broadcast = true;	//started broadcasting
 
@@ -22,22 +22,19 @@ void GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
 	if (intercept_brodcast_socket < 0)
 	{
 		MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-		throw 1;
-		return;
+		return false;
 	}
 	//setting socket's recv time to given value
 	if (setsockopt(intercept_brodcast_socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&ms_interval), sizeof(ms_interval)) < 0)
 	{
 		MessageBox(0, ("Socket option error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-		throw 2;
-		return;
+		return false;
 	}
 	//binding
 	if (bind(intercept_brodcast_socket, (sockaddr*)&addr, addr_size))
 	{
 		MessageBox(0, ("Binding error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-		throw 4;
-		return;
+		return false;
 	}
 	//buffer that will contain host's name
 	char recv_buffer[50];
@@ -104,8 +101,9 @@ void GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
 		std::this_thread::sleep_for(ms);
 	}
 	closesocket(intercept_brodcast_socket);
+	return true;
 }
-void GeneralMultiPlayer::Client::Connect(std::string ip)
+bool GeneralMultiPlayer::Client::Connect(std::string ip)
 {
 	//setting socket for direct connection with host
 	*host = socket(AF_INET, SOCK_STREAM, 0);
@@ -119,8 +117,7 @@ void GeneralMultiPlayer::Client::Connect(std::string ip)
 	if (*host == INVALID_SOCKET)
 	{
 		MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-		throw 1;
-		return;
+		return false;
 	}
 
 	//connect to host
@@ -130,12 +127,10 @@ void GeneralMultiPlayer::Client::Connect(std::string ip)
 		if (result == 10061)
 		{
 			MessageBox(0, "Target stopped hosting", "Error", 0);
-			throw 10;
-			return;
+			return false;
 		}
 		MessageBox(0, ("Connection error" + std::to_string(result)).c_str(), "Error", 0);
-		throw 3;
-		return;
+		return false;
 	}
 	//waiting until the host is ready
 	char temp[6] = "";
@@ -143,8 +138,9 @@ void GeneralMultiPlayer::Client::Connect(std::string ip)
 	{
 		if (!GeneralMultiPlayer::Recv(*host, temp, 6, 0))
 		{
-			throw 10;
+			return false;
 			break;
 		}
 	}
+	return true;
 }
