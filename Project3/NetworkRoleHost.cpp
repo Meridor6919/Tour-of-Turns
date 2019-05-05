@@ -151,10 +151,81 @@ bool Host::StartNetwork(std::vector<Participant*> *participants)
 	}
 	
 }
+void Host::MsgHandling(std::string msg, int client_id)
+{
+	
+	int code = atoi(msg.substr(0, 2).c_str());
+	msg = msg.substr(2, msg.size() - 2);
+	std::string tour = "highway.tour";
+
+	//first two chars describe key code and next will represent some sort of value
+	switch (code)
+	{
+	case 50://get tour
+	{
+		send((*clients)[client_id].first, tour.c_str(), 255, 0);
+		break;
+	}
+	case 51://get cars
+	{
+		std::vector<std::string> cars;
+		GetCarNames(cars, tour);
+
+		for (int i = 0; i < cars.size(); i++)
+			send((*clients)[client_id].first, cars[i].c_str(), static_cast<int>(cars[i].size() - 1), 0);
+
+		send((*clients)[client_id].first, "exit", 5, 0);
+		break;
+	}
+	case 52://get tires
+	{
+		std::vector<std::string> tires;
+		GetTireNames(tires);
+
+		for (int i = 0; i < tires.size(); i++)
+			send((*clients)[client_id].first, tires[i].c_str(), static_cast<int>(tires[i].size() - 1), 0);
+
+		send((*clients)[client_id].first, "exit", 5, 0);
+		break;
+	}
+	case 53://get tour params
+	{
+		std::vector<std::string> ret = GetTourParameters(tour);
+
+		for (int i = 0; i < ret.size(); i++)
+			send((*clients)[client_id].first, ret[i].c_str(), ret[i].size(), 0);
+
+		send((*clients)[client_id].first, "exit", 5, 0);
+		break;
+	}
+	case 54://get car params
+	{
+		std::vector<int> car_params;
+		car_params = GetCarParameters(msg);
+
+		for (int i = 0; i < car_params.size(); i++)
+			send((*clients)[client_id].first, std::to_string(car_params[i]).c_str(), car_params.size(), 0);
+		break;
+	}
+	case 55://get tires params
+	{
+		std::vector<std::string> tires_params;
+		tires_params = GetTireParameters(msg);
+
+		for (int i = 0; i < tires_params.size(); i++)
+			send((*clients)[client_id].first, tires_params[i].c_str(), tires_params[i].size(), 0);
+		break;
+	}
+	}
+}
+
 void Host::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
 {
-	if(network_device != nullptr)
-		network_device->HandleClientConnection(tour);
+	//if(network_device != nullptr)
+		//network_device->HandleClientConnection(tour);
+		//host->HandleConnection<Host>(&Host::MsgHandling, this);
+
+	host->HandleConnection<MultiplayerDevice>(&MultiplayerDevice::ValidateClientAction, network_device);
 
 	while (true)
 	{

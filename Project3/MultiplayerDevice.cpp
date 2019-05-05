@@ -52,9 +52,9 @@ void MultiplayerDevice::ClientsReadyForNewStage()
 		std::this_thread::sleep_for(ms);
 	} while (!ready);
 }
-bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
+void MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 {
-
+	tour = "Mountain.tour";
 	int code = atoi(message.substr(0, 2).c_str());
 	//first two chars describe key code and next will represent some sort of value
 	switch (code)
@@ -231,8 +231,6 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 					(*clients)[client_id+1]->current_speed = (*clients)[client_id+1]->car_modifiers[CarModifiers::max_speed];
 				(*clients)[client_id+1]->current_speed = (*clients)[client_id+1]->current_speed*0.9f;
 			}
-			else
-				return false;
 
 			client_current_game_stage[client_id] = 2;
 			break;
@@ -253,8 +251,6 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 					(*clients)[client_id+1]->current_speed = 0;
 				(*clients)[client_id]->current_speed = (*clients)[client_id+1]->current_speed*0.9f;
 			}
-			else
-				return false;
 
 			client_current_game_stage[client_id] = 2;
 			break;
@@ -275,8 +271,6 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 					(*clients)[client_id+1]->current_speed = 0.0f;
 				(*clients)[client_id+1]->current_speed = (*clients)[client_id+1]->current_speed*0.9f;
 			}
-			else
-				return false;
 
 			client_current_game_stage[client_id] = 2;
 			break;
@@ -290,8 +284,6 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			}
 			if ((*clients)[client_id+1]->current_speed > 0)
 				(*clients)[client_id+1]->current_speed = (*clients)[client_id+1]->current_speed*0.9f;
-			else
-				return false;
 
 			client_current_game_stage[client_id] = 2;
 			break;
@@ -307,13 +299,10 @@ bool MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 			(*clients)[client_id+1]->current_durability = 0.0f;
 
 			client_current_game_stage[client_id] = 2;
-			return true;
+			
 		}
-		default:
-		{
-			return false;
-		}
+		
 
 	}
-	return true;
+	
 }

@@ -111,7 +111,7 @@ void Client::GetTourNames(std::vector<std::string>&tours)
 {
 	tours.clear();
 	std::string get_tour_name_code = "50";
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 
 	if (recv(host, temp, 255, 0) < 0)
@@ -122,7 +122,7 @@ void Client::GetTourNames(std::vector<std::string>&tours)
 void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 {
 	std::string get_tour_name_code = "51";
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 	cars.clear();
 
@@ -140,7 +140,7 @@ void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 void Client::GetTireNames(std::vector<std::string>&tires)
 {
 	std::string get_tour_name_code = "52";
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 	tires.clear();
 
@@ -158,7 +158,8 @@ void Client::GetTireNames(std::vector<std::string>&tires)
 std::vector<int> Client::GetCarParameters(std::string path)
 {
 	std::string get_tour_name_code = "54"+path;
-	send(host, get_tour_name_code.c_str(), 256, 0);
+
+	send(host, get_tour_name_code.c_str(), get_tour_name_code.size()+1, 0);
 	char temp[255];
 
 	std::vector<int> ret;
@@ -175,7 +176,7 @@ std::vector<int> Client::GetCarParameters(std::string path)
 std::vector<std::string> Client::GetTireParameters(std::string path)
 {
 	std::string get_tour_name_code = "55"+path;
-	send(host, get_tour_name_code.c_str(), 256, 0);
+	send(host, get_tour_name_code.c_str(), get_tour_name_code.size(), 0);
 	char temp[255];
 
 	std::vector<std::string> ret;
@@ -194,7 +195,7 @@ std::vector<std::string> Client::GetTourParameters(std::string path)
 {
 
 	std::string get_tour_name_code = "53";
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 	std::vector<std::string>ret;
 

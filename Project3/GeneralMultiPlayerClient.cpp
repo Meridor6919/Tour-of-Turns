@@ -132,7 +132,7 @@ bool GeneralMultiPlayer::Client::Connect(std::string ip)
 		MessageBox(0, ("Connection error" + std::to_string(result)).c_str(), "Error", 0);
 		return false;
 	}
-	//waiting until the host is ready
+	//waiting until the host is ready to handle connections
 	char temp[6] = "";
 	while ((std::string)temp != (std::string)"start")
 	{

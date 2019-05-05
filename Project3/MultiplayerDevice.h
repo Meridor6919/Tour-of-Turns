@@ -19,7 +19,7 @@ class MultiplayerDevice
 	std::string tour;
 	Host *host;
 
-	bool ValidateClientAction(std::string message, int client_id);
+	
 
 public:
 
@@ -27,4 +27,5 @@ public:
 	void NextStage() { current_stage++; }
 	void HandleClientConnection(std::string tour);
 	void ClientsReadyForNewStage();
+	void ValidateClientAction(std::string message, int client_id);
 };
