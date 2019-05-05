@@ -1,5 +1,5 @@
 #include "ToT.h"
-extern ToT_Window;
+
 void GameMode::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();

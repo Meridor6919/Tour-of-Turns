@@ -38,6 +38,7 @@ private:
 
 public:
 
+	bool alive;
 	std::string name;
 	std::vector<int>car_modifiers;
 	std::vector<std::string>tire_modifiers;

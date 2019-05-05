@@ -29,7 +29,7 @@ public:
 	virtual void GetOtherParticipants(int ais, std::string tour);
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
 	virtual bool GetCurrentAtribs(int ais, std::string field);
-	virtual void Attack(int ais, bool alive);
+	virtual void Attack(int ais);
 	virtual void TakeAction();
 	virtual void GetOthersAction(int ais, std::vector<std::string> &tour);
 
@@ -51,7 +51,7 @@ public:
 	void GetOtherParticipants(int ais, std::string tour);
 	std::vector<std::pair<float, std::string>> GetRankingInfo();
 	bool GetCurrentAtribs(int ais, std::string field);
-	void Attack(int ais, bool alive);
+	void Attack(int ais);
 	void TakeAction();
 	void GetOthersAction(int ais, std::vector<std::string> &tour);
 
@@ -77,7 +77,7 @@ public:
 	void GetOtherParticipants(int ais, std::string tour);
 	std::vector<std::pair<float, std::string>> GetRankingInfo();
 	bool GetCurrentAtribs(int ais, std::string field);
-	void Attack(int ais, bool alive);
+	void Attack(int ais);
 	void TakeAction();
 	void GetOthersAction(int ais, std::vector<std::string> &tour);
 	int Possible_AIs();

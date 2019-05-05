@@ -296,7 +296,7 @@ bool Client::GetCurrentAtribs(int ais, std::string field)
 		}
 		return true;
 }
-void Client::Attack(int ais, bool alive)
+void Client::Attack(int ais)
 {
 	if (!(*participants)[0]->current_durability)
 		return;

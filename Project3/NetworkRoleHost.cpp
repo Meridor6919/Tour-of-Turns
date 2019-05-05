@@ -411,10 +411,10 @@ bool Host::GetCurrentAtribs(int ais, std::string field)
 	stage = 3;
 	return SinglePlayer::GetCurrentAtribs(ais - (*clients).size(), field);
 }
-void Host::Attack(int ais, bool alive)
+void Host::Attack(int ais)
 {
 	stage = 1;
-	SinglePlayer::Attack(ais, alive);
+	SinglePlayer::Attack(ais);
 }
 void Host::TakeAction()
 {

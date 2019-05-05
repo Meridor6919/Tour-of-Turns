@@ -220,12 +220,12 @@ void  Race::Lobby(SinglePlayer *network_role)
 }
 bool Race::Game()
 {
+
 	//initialization of important variables
 	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo();
 	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
 	SinglePlayer* network_role = (*participants)[0]->network_role;
 	int visibility = (*participants)[0]->car_modifiers[CarModifiers::visibility];
-	bool alive = true;
 	
 	//pre-game_loop interface loading
 	Interface();
@@ -249,9 +249,9 @@ bool Race::Game()
 		VisionBox(visible_tour, visibility);
 		
 		if(turn > 0)	//attacking players starting with second turn 
-			network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>(alive), alive);
+			network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>((*participants)[0]->alive));
 
-		if (alive)		//if main player is alive he can choose an action, else he can only watch
+		if ((*participants)[0]->alive)		//if main player is alive he can choose an action, else he can only watch
 			network_role->TakeAction();
 		
 		//waiting for clients/ais
@@ -259,19 +259,25 @@ bool Race::Game()
 		
 		if (turn < tour.size())//game runs until tour size +1 because of "meta" sign in the end of the race, but atribs take current tour part so if statement is needed
 		{
-			if (!network_role->GetCurrentAtribs(static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))	//if durability == 0
-				alive = false;
-			else
+			if (network_role->GetCurrentAtribs(static_cast<int>((*participants).size()) - static_cast<int>((*participants)[0]->alive), tour[turn]))	//if durability == 0
 				Interface();
 		}
-		if (static_cast<int>((*participants).size()) == 0)//if everyone is dead
+
+		//checking if everyone is dead
+		int players_alive = (*participants).size();
+		for (int i = 0; i < (*participants).size(); i++)
+		{
+			if ((*participants)[i]->current_durability <= 0.0f)
+				players_alive--;
+		}
+		if (players_alive == 0)
 			break;
 
 		Ranking(ranking_info, true);	//ranking part
 		ranking_info = (*participants)[0]->network_role->GetRankingInfo();
 		Ranking(ranking_info, false);
 	}
-	return alive;
+	return (*participants)[0]->alive;
 }
 void Race::Ending()
 {

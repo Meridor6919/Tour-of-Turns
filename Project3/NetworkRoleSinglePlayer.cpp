@@ -86,7 +86,10 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 	std::vector<std::string> names;
 
 	for (int i = 0; i < (*participants).size(); i++)
-		ret.push_back(std::make_pair((*participants)[i]->score, (*participants)[i]->name));
+	{
+		if((*participants)[i]->alive)
+			ret.push_back(std::make_pair((*participants)[i]->score, (*participants)[i]->name));
+	}
 
 	bool flag = true;
 	float fhelper;
@@ -95,7 +98,7 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 	while (flag)
 	{
 		flag = false;
-		for (int i = 0; i < (*participants).size() - 1; i++)
+		for (int i = 0; i < ret.size() - 1; i++)
 		{
 			if (ret[i].first > ret[i+1].first)
 			{
@@ -118,8 +121,10 @@ bool SinglePlayer::GetCurrentAtribs(int ais, std::string field)
 
 	for (int i = (*participants).size() - 1; i >= 0; i--)
 	{
-		if ((*participants)[i]->current_durability <= 0.0f)
+		if ((*participants)[i]->current_durability <= 0.0f && (*participants)[i]->alive)
 		{
+			infobox->Push("RIP, " + (*participants)[i]->name + " dezintegrated his vehichle...", "");
+			(*participants)[i]->alive = false;
 			if (i == 0)
 			{
 				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color1);
@@ -127,17 +132,13 @@ bool SinglePlayer::GetCurrentAtribs(int ais, std::string field)
 				std::cout << " Your vehice has ";
 				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color2);
 				std::cout << static_cast<int>((*participants)[0]->current_durability) << " durability   ";
-				infobox->Push("RIP, " + (*participants)[i]->name + " dezintegrated his vehichle...", "");
-				(*participants).erase((*participants).begin() + i);
 				return false;
 			}
-			infobox->Push("RIP, " + (*participants)[i]->name + " dezintegrated his vehichle...", "");
-			(*participants).erase((*participants).begin() + i);
 		}
 	}
 	return true;
 }
-void SinglePlayer::Attack(int ais, bool alive)
+void SinglePlayer::Attack(int ais)
 {
 	std::vector<std::string> rival_name;
 	std::vector<int> rival_id;
@@ -148,31 +149,33 @@ void SinglePlayer::Attack(int ais, bool alive)
 	(*participants)[0]->attacked = 0;
 	for (int i = 1; i < (*participants).size(); i++)
 	{
-		if ((*participants)[i]->score < (*participants)[0]->score + 5 && (*participants)[i]->score >(*participants)[0]->score - 5)
+		if ((*participants)[i]->score < (*participants)[0]->score + 5 && (*participants)[i]->score >(*participants)[0]->score - 5 && (*participants)[i]->alive)
 		{
 			rival_name.push_back((*participants)[i]->name);
 			rival_id.push_back(i);
 		}
 		(*participants)[i]->attacked = 0;
 	}
-	if (rival_id.size() != 1 && alive)
+	if (rival_id.size() != 1 && (*participants)[0]->alive)
 	{
 		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);
 		if (rival_id[i] != 10)
 			(*participants)[rival_id[i]]->attacked++;
 	}
+
 	for (int i = static_cast<int>((*participants).size()) - ais; i < static_cast<int>((*participants).size()); i++)
 	{
 		rival_id.clear();
 		rival_id.push_back(10);
 		for (int j = 0; j < (*participants).size(); j++)
 		{
-			if ((*participants)[j]->score < (*participants)[i]->score + 5 && (*participants)[j]->score >(*participants)[i]->score - 5)
+			if ((*participants)[j]->score < (*participants)[i]->score + 5 && (*participants)[j]->score >(*participants)[i]->score - 5 && (*participants)[j]->alive)
 			{
-				if (participants[i] != participants[j])
+				if ((*participants)[i] != (*participants)[j])
 					rival_id.push_back(j);
 			}
 		}
+
 		int random = rand() % rival_id.size();
 		if(rival_id[random] != 10)
 			(*participants)[rival_id[random]]->attacked++;

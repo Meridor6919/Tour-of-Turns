@@ -4,6 +4,7 @@
 
 Participant::Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role)
 {
+	alive = true;
 	ai_type = 0;
 	this->name = name;
 	this->car_path = car_path;
@@ -18,6 +19,7 @@ Participant::Participant(std::string name, std::string car_path, std::string tir
 
 Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 {
+	alive = true;
 	this->network_role = network_role;
 	this->current_speed = 0.0f;
 	this->score = 0.0f;
