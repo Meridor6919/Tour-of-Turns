@@ -136,7 +136,7 @@ void MultiplayerDevice::ValidateClientAction(std::string message, int client_id)
 				std::chrono::milliseconds ms(100);
 				std::this_thread::sleep_for(ms);
 			}
-			std::vector<std::pair<float, std::string>> ranking = (*clients)[0]->network_role->GetRankingInfo(*clients);
+			std::vector<std::pair<float, std::string>> ranking = (*clients)[0]->network_role->GetRankingInfo();
 
 			for (int i = 0; i < ranking.size(); i++)
 			{

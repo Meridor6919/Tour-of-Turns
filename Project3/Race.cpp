@@ -215,13 +215,13 @@ void  Race::Lobby(SinglePlayer *network_role)
 	//loading player
 	participants->emplace_back(new Participant(name, car_path, tire_path, *network_role));
 	//loading clients/ais
-	network_role->GetOtherParticipants(*participants, ais, tour_path);
+	network_role->GetOtherParticipants(ais, tour_path);
 
 }
 bool Race::Game()
 {
 	//initialization of important variables
-	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
+	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo();
 	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
 	SinglePlayer* network_role = (*participants)[0]->network_role;
 	int visibility = (*participants)[0]->car_modifiers[CarModifiers::visibility];
@@ -248,18 +248,18 @@ bool Race::Game()
 		//showing incoming parts of tour
 		VisionBox(visible_tour, visibility);
 		
-		if(turn > 0)	//attacking players from second turn for gameplay purposes
-			network_role->Attack(*participants, static_cast<int>((*participants).size())-static_cast<int>(alive), alive);
+		if(turn > 0)	//attacking players starting with second turn 
+			network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>(alive), alive);
 
 		if (alive)		//if main player is alive he can choose an action, else he can only watch
-			network_role->TakeAction((*participants)[0]);
+			network_role->TakeAction();
 		
 		//waiting for clients/ais
-		network_role->GetOthersAction(*participants, static_cast<int>((*participants).size()) - 1, tour);
+		network_role->GetOthersAction(static_cast<int>((*participants).size()) - 1, tour);
 		
 		if (turn < tour.size())//game runs until tour size +1 because of "meta" sign in the end of the race, but atribs take current tour part so if statement is needed
 		{
-			if (!network_role->GetCurrentAtribs(*participants, static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))	//if durability == 0
+			if (!network_role->GetCurrentAtribs(static_cast<int>((*participants).size()) - static_cast<int>(alive), tour[turn]))	//if durability == 0
 				alive = false;
 			else
 				Interface();
@@ -268,14 +268,14 @@ bool Race::Game()
 			break;
 
 		Ranking(ranking_info, true);	//ranking part
-		ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
+		ranking_info = (*participants)[0]->network_role->GetRankingInfo();
 		Ranking(ranking_info, false);
 	}
 	return alive;
 }
 void Race::Ending()
 {
-	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo(*participants);
+	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo();
 	std::fstream fvar;
 	int place = Ranking(ranking_info, false);
 	int points = (ais + 2 - place) * static_cast<int>(1000.0f / (*participants)[0]->score);	//points formula

@@ -2,8 +2,9 @@
 #include <map>
 #include <string>
 
-Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
+Client::Client(ToT_Window &main_window, std::vector<Participant*> *participants) : SinglePlayer(main_window, participants)
 {
+	this->participants = participants;
 	this->main_window = &main_window;
 	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
 	if (!StartNetwork())
@@ -211,19 +212,19 @@ std::vector<std::string> Client::GetTourParameters(std::string path)
 	}
 	return ret;
 }
-void Client::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
+void Client::GetOtherParticipants(int ais, std::string tour)
 {
 	//client don't need to know stats of other participants but he need to tell host what have he choosed
 	std::string get_tour_name_code = "59";
 	send(host, get_tour_name_code.c_str(), 4, 0);
-	send(host, participants[0]->name.c_str(), 255, 0);
-	send(host, participants[0]->car_path.c_str(), 255, 0);
+	send(host, (*participants)[0]->name.c_str(), 255, 0);
+	send(host,(* participants)[0]->car_path.c_str(), 255, 0);
 	send(host, tire_path.c_str(), 255, 0);
 	return; 
 }
-std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Participant*> &participants)
+std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 {
-	if (!participants[0]->current_durability)
+	if (!(*participants)[0]->current_durability)
 	{
 		std::vector<std::pair<float, std::string>> ret;
 		ret.clear();
@@ -252,7 +253,7 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::vector<Pa
 	}
 	return ret;
 }
-bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field)
+bool Client::GetCurrentAtribs(int ais, std::string field)
 {
 	std::string get_tour_name_code = "63";
 	send(host, get_tour_name_code.c_str(), 4, 0);
@@ -260,13 +261,13 @@ bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, 
 
 		if (!recv(host, temp, 255, 0) < 0)
 			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		participants[0]->current_speed = atof(temp);
+		(*participants)[0]->current_speed = atof(temp);
 
 		if (!recv(host, temp, 255, 0) < 0)
 			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		participants[0]->current_durability = atof(temp);
+		(*participants)[0]->current_durability = atof(temp);
 
-		if (!participants[0]->current_durability)
+		if (!(*participants)[0]->current_durability)
 		{
 			send(host, "", 1, 0);
 			closesocket(host);
@@ -275,7 +276,7 @@ bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, 
 
 		if (!recv(host, temp, 255, 0) < 0)
 			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		participants[0]->score = atof(temp);
+		(*participants)[0]->score = atof(temp);
 
 
 		while (true)
@@ -295,9 +296,9 @@ bool Client::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, 
 		}
 		return true;
 }
-void Client::Attack(std::vector<Participant*> &participants, int ais, bool alive)
+void Client::Attack(int ais, bool alive)
 {
-	if (!participants[0]->current_durability)
+	if (!(*participants)[0]->current_durability)
 		return;
 	std::string get_tour_name_code = "62";
 	send(host, get_tour_name_code.c_str(), 4, 0);
@@ -324,7 +325,7 @@ void Client::Attack(std::vector<Participant*> &participants, int ais, bool alive
 	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);	
 	send(host, id[i].c_str(), 4, 0);
 }
-void Client::TakeAction(Participant* &participant)
+void Client::TakeAction()
 {
 	std::string get_tour_name_code = "7";
 	char temp[255];
@@ -343,7 +344,7 @@ void Client::TakeAction(Participant* &participant)
 		case 0:
 		case 1:
 		{
-			if (participant->current_speed == 0 && position == 1)
+			if ((*participants)[0]->current_speed == 0 && position == 1)
 			{
 				std::cout << " - You can't do this because you aren't moving...";
 				main_window->Pause(1500);
@@ -355,7 +356,7 @@ void Client::TakeAction(Participant* &participant)
 
 			std::cout << ": ";
 			GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-			value = Text::Choose::Numeric(participant->car_modifiers[CarModifiers::max_accelerating + position], { console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y }, true, *main_window);
+			value = Text::Choose::Numeric((*participants)[0]->car_modifiers[CarModifiers::max_accelerating + position], { console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y }, true, *main_window);
 			SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
 			std::cout << "  ";
 			if (value == 0)
@@ -380,7 +381,7 @@ void Client::TakeAction(Participant* &participant)
 				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 41,console_screen_buffer_info.dwCursorPosition.Y });
 				if (button == 'y' || button == 'Y')
 				{
-					if (participant->current_speed > 0 || position == 4)
+					if ((*participants)[0]->current_speed > 0 || position == 4)
 					{
 						get_tour_name_code += std::to_string(position);
 						send(host, get_tour_name_code.c_str(), 8, 0);
@@ -405,7 +406,7 @@ void Client::TakeAction(Participant* &participant)
 		}
 	}
 }
-void Client::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string>& tour)
+void Client::GetOthersAction(int ais, std::vector<std::string>& tour)
 {
 
 }

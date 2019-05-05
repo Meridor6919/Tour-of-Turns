@@ -1,7 +1,8 @@
 #include "NetworkRole.h"
 
-SinglePlayer::SinglePlayer(ToT_Window &main_window)
+SinglePlayer::SinglePlayer(ToT_Window &main_window, std::vector<Participant*> *participants)
 {
+	this->participants = participants;
 	this->main_window = &main_window;
 	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
 }
@@ -52,10 +53,10 @@ std::vector<std::string> SinglePlayer::GetTireParameters(std::string path)
 
 	return tire_parameters;
 }
-void SinglePlayer::GetOtherParticipants(std::vector<Participant*> &participants, int ais, std::string tour)
+void SinglePlayer::GetOtherParticipants(int ais, std::string tour)
 {
 	for (int i = 0; i < ais; i++)
-		participants.emplace_back(new Participant(participants[i]->network_role, tour));
+		(*participants).emplace_back(new Participant((*participants)[i]->network_role, tour));
 }
 std::vector<std::string> SinglePlayer::GetTourParameters(std::string path)
 {
@@ -77,15 +78,15 @@ std::vector<std::string> SinglePlayer::GetTourParameters(std::string path)
 
 	return ret;
 }
-std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo(std::vector<Participant*> &participants)
+std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 {
 	std::vector<std::pair<float, std::string>> ret;
 
 	std::vector<float> scores;
 	std::vector<std::string> names;
 
-	for (int i = 0; i < participants.size(); i++)
-		ret.push_back(std::make_pair(participants[i]->score, participants[i]->name));
+	for (int i = 0; i < (*participants).size(); i++)
+		ret.push_back(std::make_pair((*participants)[i]->score, (*participants)[i]->name));
 
 	bool flag = true;
 	float fhelper;
@@ -94,7 +95,7 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo(std::vec
 	while (flag)
 	{
 		flag = false;
-		for (int i = 0; i < participants.size() - 1; i++)
+		for (int i = 0; i < (*participants).size() - 1; i++)
 		{
 			if (ret[i].first > ret[i+1].first)
 			{
@@ -110,14 +111,14 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo(std::vec
 	}
 	return ret;
 }
-bool SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, int ais, std::string field)
+bool SinglePlayer::GetCurrentAtribs(int ais, std::string field)
 {
-	for (int i = 0; i < participants.size(); i++)
-		participants[i]->Test(field, i < participants.size() - ais);
+	for (int i = 0; i < (*participants).size(); i++)
+		(*participants)[i]->Test(field, i < (*participants).size() - ais);
 
-	for (int i = participants.size() - 1; i >= 0; i--)
+	for (int i = (*participants).size() - 1; i >= 0; i--)
 	{
-		if (participants[i]->current_durability <= 0.0f)
+		if ((*participants)[i]->current_durability <= 0.0f)
 		{
 			if (i == 0)
 			{
@@ -125,18 +126,18 @@ bool SinglePlayer::GetCurrentAtribs(std::vector<Participant*> &participants, int
 				SetConsoleCursorPosition(main_window->GetHandle(), { 0, 20 });
 				std::cout << " Your vehice has ";
 				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color2);
-				std::cout << static_cast<int>(participants[0]->current_durability) << " durability   ";
-				infobox->Push("RIP, " + participants[i]->name + " dezintegrated his vehichle...", "");
-				participants.erase(participants.begin() + i);
+				std::cout << static_cast<int>((*participants)[0]->current_durability) << " durability   ";
+				infobox->Push("RIP, " + (*participants)[i]->name + " dezintegrated his vehichle...", "");
+				(*participants).erase((*participants).begin() + i);
 				return false;
 			}
-			infobox->Push("RIP, " + participants[i]->name + " dezintegrated his vehichle...", "");
-			participants.erase(participants.begin() + i);
+			infobox->Push("RIP, " + (*participants)[i]->name + " dezintegrated his vehichle...", "");
+			(*participants).erase((*participants).begin() + i);
 		}
 	}
 	return true;
 }
-void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais, bool alive)
+void SinglePlayer::Attack(int ais, bool alive)
 {
 	std::vector<std::string> rival_name;
 	std::vector<int> rival_id;
@@ -144,29 +145,29 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais, bool
 
 	rival_name.push_back("Don't attack");
 	rival_id.push_back(10);
-	participants[0]->attacked = 0;
-	for (int i = 1; i < participants.size(); i++)
+	(*participants)[0]->attacked = 0;
+	for (int i = 1; i < (*participants).size(); i++)
 	{
-		if (participants[i]->score < participants[0]->score + 5 && participants[i]->score > participants[0]->score - 5)
+		if ((*participants)[i]->score < (*participants)[0]->score + 5 && (*participants)[i]->score >(*participants)[0]->score - 5)
 		{
-			rival_name.push_back(participants[i]->name);
+			rival_name.push_back((*participants)[i]->name);
 			rival_id.push_back(i);
 		}
-		participants[i]->attacked = 0;
+		(*participants)[i]->attacked = 0;
 	}
 	if (rival_id.size() != 1 && alive)
 	{
 		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);
 		if (rival_id[i] != 10)
-			participants[rival_id[i]]->attacked++;
+			(*participants)[rival_id[i]]->attacked++;
 	}
-	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); i++)
+	for (int i = static_cast<int>((*participants).size()) - ais; i < static_cast<int>((*participants).size()); i++)
 	{
 		rival_id.clear();
 		rival_id.push_back(10);
-		for (int j = 0; j < participants.size(); j++)
+		for (int j = 0; j < (*participants).size(); j++)
 		{
-			if (participants[j]->score < participants[i]->score + 5 && participants[j]->score > participants[i]->score - 5)
+			if ((*participants)[j]->score < (*participants)[i]->score + 5 && (*participants)[j]->score >(*participants)[i]->score - 5)
 			{
 				if (participants[i] != participants[j])
 					rival_id.push_back(j);
@@ -174,10 +175,10 @@ void SinglePlayer::Attack(std::vector<Participant*> &participants, int ais, bool
 		}
 		int random = rand() % rival_id.size();
 		if(rival_id[random] != 10)
-			participants[rival_id[random]]->attacked++;
+			(*participants)[rival_id[random]]->attacked++;
 	}
 }
-void SinglePlayer::TakeAction(Participant* &participant)
+void SinglePlayer::TakeAction()
 {
 	//player
 	std::vector<std::string> actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
@@ -194,7 +195,7 @@ void SinglePlayer::TakeAction(Participant* &participant)
 			case 0:
 			case 1:
 			{
-				if (participant->current_speed == 0 && position == 1)
+				if ((*participants)[0]->current_speed == 0 && position == 1)
 				{
 					std::cout << " - You can't do this because you aren't moving...";
 					main_window->Pause(1500);
@@ -206,7 +207,7 @@ void SinglePlayer::TakeAction(Participant* &participant)
 				
 				std::cout << ": ";
 				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-				value = Text::Choose::Numeric(participant->car_modifiers[CarModifiers::max_accelerating + position], {console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y}, true, *main_window);
+				value = Text::Choose::Numeric((*participants)[0]->car_modifiers[CarModifiers::max_accelerating + position], {console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y}, true, *main_window);
 				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
 				std::cout << "  ";
 				if (value == 0)
@@ -214,17 +215,17 @@ void SinglePlayer::TakeAction(Participant* &participant)
 				
 				if (position)
 				{
-					participant->current_speed -= value;
-					if (participant->current_speed < 0)
-						participant->current_speed = 0;
+					(*participants)[0]->current_speed -= value;
+					if ((*participants)[0]->current_speed < 0)
+						(*participants)[0]->current_speed = 0;
 				}
 				else
 				{
-					participant->current_speed += value;
-					if (participant->current_speed > static_cast<float>(participant->car_modifiers[CarModifiers::max_speed]))
-						participant->current_speed = static_cast<float>(participant->car_modifiers[CarModifiers::max_speed]);
+					(*participants)[0]->current_speed += value;
+					if ((*participants)[0]->current_speed > static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed]))
+						(*participants)[0]->current_speed = static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed]);
 				}
-				participant->current_speed = participant->current_speed*0.9f;
+				(*participants)[0]->current_speed = (*participants)[0]->current_speed*0.9f;
 				return;		
 			}
 		case 2:
@@ -243,22 +244,22 @@ void SinglePlayer::TakeAction(Participant* &participant)
 				{
 					if (position == 4)
 					{
-						participant->current_durability = 0;
+						(*participants)[0]->current_durability = 0;
 						return;
 					}
 
 
-					if (participant->current_speed > 0)
+					if ((*participants)[0]->current_speed > 0)
 					{
 						if (position == 2)
 						{
-							if (participant->current_speed > 40)
-								participant->drift = true;
-							participant->current_speed -= static_cast<float>(participant->car_modifiers[CarModifiers::hand_brake_value]);
-							if (participant->current_speed < 0)
-								participant->current_speed = 0.0f;
+							if ((*participants)[0]->current_speed > 40)
+								(*participants)[0]->drift = true;
+							(*participants)[0]->current_speed -= static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::hand_brake_value]);
+							if ((*participants)[0]->current_speed < 0)
+								(*participants)[0]->current_speed = 0.0f;
 						}
-						participant->current_speed = participant->current_speed*0.9f;
+						(*participants)[0]->current_speed = (*participants)[0]->current_speed*0.9f;
 						return;
 					}
 					else
@@ -280,22 +281,22 @@ void SinglePlayer::TakeAction(Participant* &participant)
 		}
 	}
 }
-void SinglePlayer::GetOthersAction(std::vector<Participant*>& participants, int ais, std::vector<std::string> &tour)
+void SinglePlayer::GetOthersAction(int ais, std::vector<std::string> &tour)
 {
 	int safe_speed = INT32_MAX;
 	std::string helper;
 
-	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); i++)
+	for (int i = static_cast<int>((*participants).size()) - ais; i < static_cast<int>((*participants).size()); i++)
 	{
-		for (int j = 0; j < participants[i]->car_modifiers[CarModifiers::visibility]; j++)
+		for (int j = 0; j < (*participants)[i]->car_modifiers[CarModifiers::visibility]; j++)
 		{
 			if (tour[j].size() > 1)
 			{
-				if (atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i]->car_modifiers[CarModifiers::max_braking]) < safe_speed)
-					safe_speed = atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i]->car_modifiers[CarModifiers::max_braking]);
+				if (atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*(*participants)[i]->car_modifiers[CarModifiers::max_braking]) < safe_speed)
+					safe_speed = atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*(*participants)[i]->car_modifiers[CarModifiers::max_braking]);
 			}
 		}
-		participants[i]->TakeAction(safe_speed, (bool)tour[0].size > 1);
+		(*participants)[i]->TakeAction(safe_speed, (bool)tour[0].size > 1);
 	}
 }
 int SinglePlayer::Possible_AIs()

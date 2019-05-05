@@ -153,6 +153,17 @@ void GeneralMultiPlayer::Host::StopAcceptingClients()
 	connect(temp, (sockaddr *)&SocketAddress, sizeof(SocketAddress));
 	closesocket(temp);
 }
+void GeneralMultiPlayer::Host::CloseActiveConnections()
+{
+	handling_connection = false;
+	for (int i = 0; i < clients.size(); i++)
+		closesocket(clients[i].first);
+
+	for (int i = 0; i < clients.size(); i++)
+		recv_threads[i].join();
+
+	delete[] recv_threads;
+}
 std::string GeneralMultiPlayer::Host::GetIP(sockaddr_in sock_addr)
 {
 	char helper[INET_ADDRSTRLEN];

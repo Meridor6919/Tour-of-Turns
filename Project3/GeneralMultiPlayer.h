@@ -27,9 +27,14 @@ namespace GeneralMultiPlayer {
 		//variables responsible for functions with coresponding  names
 		bool broadcast_running;
 		bool accepting_running;
+		bool handling_connection;
 
 		//port number
 		unsigned short port;
+
+		template <class T>
+		void RecvFunction(int client_id, void(T::*MsgHandling)(std::string, int), T* object);
+		std::thread *recv_threads;
 
 	public:
 
@@ -44,43 +49,14 @@ namespace GeneralMultiPlayer {
 		//accepts clients that want to connect
 		void AcceptClients(int max);
 		template <class T>
-		bool HandleConnection(void(T::*MsgHandling)(std::string, int), T* object)
-		{
-			std::thread *recv_threads;
-			recv_threads = new std::thread[static_cast<int>((clients).size())];
-
-			for (int i = 0; i < static_cast<int>((clients).size()); i++)
-			{
-				if (!send(clients[i].first, "start", 6, 0))
-				{
-					MessageBox(0, ("Socket error: " + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
-					return false;
-				}
-			}
-			auto recv_function = [](int i, void(T::*MsgHandling)(std::string, int), T* object, GeneralMultiPlayer::Host *host)
-			{
-				char buffer[12] = "";
-				bool result;
-				while (true)
-				{
-					if (!GeneralMultiPlayer::Recv(host->clients[i].first, buffer, 24, 0))
-					{
-						MessageBox(0, ((std::string)"Client " + std::to_string(i) + " disconnected").c_str(), "Message", 0);
-						break;
-					}
-					else
-						std::invoke(MsgHandling, object, buffer, i);
-				}
-			};
-			for (int i = 0; i < static_cast<int>((clients).size()); i++)
-				recv_threads[i] = std::thread(recv_function, i, MsgHandling, object, this);
-		}
+		bool HandleConnection(void(T::*MsgHandling)(std::string, int), T* object);
 
 		//functions for private data access
 		std::vector <std::pair<SOCKET, sockaddr_in>>* GetClientsPtr() { return &clients; }
 		std::vector <sockaddr_in>* GetBlackListPtr() { return &black_list; }
 		void StopBroadcasting() { broadcast_running = false; }
 		void StopAcceptingClients();
+		void CloseActiveConnections();
 	};
 
 	class Client {
@@ -115,4 +91,39 @@ namespace GeneralMultiPlayer {
 		std::string GetIpFromMapValue(std::string value) { return value.substr(value.find_last_of(" ")+1, value.size()- value.find_last_of(" ")-1); }
 	};
 	
+}
+
+template <class T>
+bool GeneralMultiPlayer::Host::HandleConnection(void(T::*MsgHandling)(std::string, int), T* object)
+{
+	handling_connection = true;
+	recv_threads = new std::thread[static_cast<int>((clients).size())];
+
+	for (int i = 0; i < static_cast<int>((clients).size()); i++)
+	{
+		if (!send(clients[i].first, "start", 6, 0))
+		{
+			MessageBox(0, ("Socket error: " + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+			return false;
+		}
+	}
+	for (int i = 0; i < static_cast<int>((clients).size()); i++)
+		recv_threads[i] = std::thread(&GeneralMultiPlayer::Host::RecvFunction<T>, this, i, MsgHandling, object);
+}
+template <class T>
+void  GeneralMultiPlayer::Host::RecvFunction(int client_id, void(T::*MsgHandling)(std::string, int), T* object)
+{
+	char buffer[12] = "";
+	bool result;
+	while (handling_connection)
+	{
+		if (!GeneralMultiPlayer::Recv(clients[client_id].first, buffer, 24, 0))
+		{
+			MessageBox(0, ((std::string)"Client " + std::to_string(client_id) + " disconnected").c_str(), "Message", 0);
+			closesocket(clients[client_id].first);
+			break;
+		}
+		else
+			std::invoke(MsgHandling, object, buffer, client_id);
+	}
 }

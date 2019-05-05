@@ -1,6 +1,5 @@
 #include "ToT.h"
 extern ToT_Window;
-
 void GameMode::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
@@ -182,7 +181,7 @@ void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 		{
 			try
 			{
-				network_role = new Client(main_window);
+				network_role = new Client(main_window, &participants);
 			}
 			catch (int err)
 			{
@@ -196,7 +195,7 @@ void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 		}
 	}
 	else
-		network_role = new SinglePlayer(main_window);
+		network_role = new SinglePlayer(main_window, &participants);
 	
 	Race race(main_window, &participants);
 	race.Lobby(network_role);
