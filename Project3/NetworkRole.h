@@ -1,5 +1,4 @@
 #pragma once
-#include "MultiplayerDevice.h"
 #include "GeneralMultiPlayer.h"
 #include "ToT_Window.h"
 #include <fstream>
@@ -41,7 +40,6 @@ class Host : public SinglePlayer {
 
 	GeneralMultiPlayer::Host *host;
 	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
-	MultiplayerDevice *network_device;
 	bool StartNetwork();
 	std::string tour;
 	int stage;

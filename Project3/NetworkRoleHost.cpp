@@ -86,8 +86,6 @@ bool Host::StartNetwork()
 				show_clients.join();
 				broadcast.join();
 				accept_clients.join();
-				
-				network_device = new MultiplayerDevice(participants, clients, this, stage);
 
 				for (short i = 0; i < static_cast<int>((*clients).size()+1); i++)
 				{
@@ -415,7 +413,6 @@ bool Host::GetCurrentAtribs(int ais, std::string field)
 }
 void Host::Attack(int ais, bool alive)
 {
-	network_device->ClientsReadyForNewStage();
 	stage = 1;
 	SinglePlayer::Attack(ais, alive);
 }
@@ -426,9 +423,7 @@ void Host::TakeAction()
 void Host::GetOthersAction(int ais, std::vector<std::string>& tour)
 {
 	stage = 2;
-	network_device->ClientsReadyForNewStage();
 	SinglePlayer::GetOthersAction(ais, tour);
-	network_device->ClientsReadyForNewStage();
 }
 int Host::Possible_AIs()
 {
