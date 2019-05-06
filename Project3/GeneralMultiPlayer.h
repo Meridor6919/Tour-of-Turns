@@ -14,6 +14,17 @@ namespace GeneralMultiPlayer {
 	//recv with disconnect handling
 	bool Recv(SOCKET socket, char *buffer, int length, int flags);
 
+	class RequestHandler {
+
+		unsigned int number_of_clients;
+		std::vector<std::vector<std::string>> requests;
+
+	public:
+		RequestHandler(int number_of_clients);
+		void SaveMsg(std::string msg, int client_id);
+		std::vector<std::string>* GetMsgsPtr(int client_id);
+	};
+
 	class Host {
 
 	protected:
@@ -113,11 +124,11 @@ bool GeneralMultiPlayer::Host::HandleConnection(void(T::*MsgHandling)(std::strin
 template <class T>
 void  GeneralMultiPlayer::Host::RecvFunction(int client_id, void(T::*MsgHandling)(std::string, int), T* object)
 {
-	char buffer[12] = "";
+	char buffer[128] = "";
 	bool result;
 	while (handling_connection)
 	{
-		if (!GeneralMultiPlayer::Recv(clients[client_id].first, buffer, 24, 0))
+		if (!GeneralMultiPlayer::Recv(clients[client_id].first, buffer, 128, 0))
 		{
 			MessageBox(0, ((std::string)"Client " + std::to_string(client_id) + " disconnected").c_str(), "Message", 0);
 			closesocket(clients[client_id].first);

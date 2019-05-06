@@ -39,6 +39,7 @@ public:
 class Host : public SinglePlayer {
 
 	GeneralMultiPlayer::Host *host;
+	GeneralMultiPlayer::RequestHandler *request_handler;
 	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
 	bool StartNetwork();
 	std::string tour;

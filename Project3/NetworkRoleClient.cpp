@@ -111,27 +111,31 @@ bool Client::StartNetwork()
 void Client::GetTourNames(std::vector<std::string>&tours)
 {
 	tours.clear();
-	std::string get_tour_name_code = "50";
+	std::string get_tour_name_code = "01";
 	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 
-	if (recv(host, temp, 255, 0) < 0)
+	if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+	{
 		MessageBox(0, "GetTourNames method failed", "Error", 0);
-
+		return;
+	}
 	tours.push_back(temp);//host will always send only one tour (the tour that he choosed)
 }
 void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 {
-	std::string get_tour_name_code = "51";
+	std::string get_tour_name_code = "02";
 	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 	cars.clear();
 
 	while (true)
 	{
-		if (!recv(host, temp, 255, 0) < 0)
+		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		{
 			MessageBox(0, "GetCarNames method failed", "Error", 0);
-		
+			return;
+		}
 		if ((std::string)temp != "exit")
 			cars.push_back((std::string)temp);
 		else
@@ -140,71 +144,40 @@ void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 }
 void Client::GetTireNames(std::vector<std::string>&tires)
 {
-	std::string get_tour_name_code = "52";
+	std::string get_tour_name_code = "03";
 	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 	tires.clear();
 
 	while (true)
 	{
-		if (!recv(host, temp, 255, 0) < 0)
+		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		{
 			MessageBox(0, "GetTireNames method failed", "Error", 0);
-
+			return;
+		}
 		if ((std::string)temp != "exit")
 			tires.push_back((std::string)temp);
 		else
 			break;
 	} 
 }
-std::vector<int> Client::GetCarParameters(std::string path)
-{
-	std::string get_tour_name_code = "54"+path;
-
-	send(host, get_tour_name_code.c_str(), get_tour_name_code.size()+1, 0);
-	char temp[255];
-
-	std::vector<int> ret;
-	for (int i = 0; i < 8; ++i)
-	{
-		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetCarParameters method failed", "Error", 0);
-
-		ret.push_back(std::atoi(((std::string)temp).c_str()));
-	}
-
-	return ret;
-}
-std::vector<std::string> Client::GetTireParameters(std::string path)
-{
-	std::string get_tour_name_code = "55"+path;
-	send(host, get_tour_name_code.c_str(), get_tour_name_code.size(), 0);
-	char temp[255];
-
-	std::vector<std::string> ret;
-
-	for (int i = 0; i < 6; i++)
-	{
-		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetTireParameters method failed", "Error", 0);
-
-		ret.push_back(temp);
-	}
-	tire_path = path;
-	return ret;
-}
 std::vector<std::string> Client::GetTourParameters(std::string path)
 {
 
-	std::string get_tour_name_code = "53";
+	std::string get_tour_name_code = "04";
 	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 	std::vector<std::string>ret;
 
 	while (true)
 	{
-		if (!recv(host, temp, 255, 0) < 0)
+		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		{
 			MessageBox(0, "GetTourParameter method failed", "Error", 0);
-
+			ret.clear();
+			return ret;
+		}
 		if ((std::string)temp != "exit")
 			ret.push_back((std::string)temp);
 		else
@@ -212,40 +185,74 @@ std::vector<std::string> Client::GetTourParameters(std::string path)
 	}
 	return ret;
 }
-void Client::GetOtherParticipants(int ais, std::string tour)
+std::vector<int> Client::GetCarParameters(std::string path)
 {
-	//client don't need to know stats of other participants but he need to tell host what have he choosed
-	std::string get_tour_name_code = "59";
-	send(host, get_tour_name_code.c_str(), 4, 0);
-	send(host, (*participants)[0]->name.c_str(), 255, 0);
-	send(host,(* participants)[0]->car_path.c_str(), 255, 0);
-	send(host, tire_path.c_str(), 255, 0);
-	return; 
+
+	std::string get_tour_name_code = "05"+path;
+
+	send(host, get_tour_name_code.c_str(), get_tour_name_code.size()+1, 0);
+	char temp[255];
+
+	std::vector<int> ret;
+	for (int i = 0; i < 8; ++i)
+	{
+		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		{
+			MessageBox(0, "GetCarParameters method failed", "Error", 0);
+			ret.clear();
+			return ret;
+		}
+		ret.push_back(std::atoi(((std::string)temp).c_str()));
+	}
+	return ret;
+}
+std::vector<std::string> Client::GetTireParameters(std::string path)
+{
+
+	std::string get_tour_name_code = "06" + path;
+	send(host, get_tour_name_code.c_str(), get_tour_name_code.size(), 0);
+	char temp[255];
+
+	std::vector<std::string> ret;
+
+	for (int i = 0; i < 6; i++)
+	{
+		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		{
+			MessageBox(0, "GetTireParameters method failed", "Error", 0);
+			ret.clear();
+			return ret;
+		}
+		ret.push_back(temp);
+	}
+	tire_path = path;
+	return ret;
 }
 std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 {
-	if (!(*participants)[0]->current_durability)
-	{
-		std::vector<std::pair<float, std::string>> ret;
-		ret.clear();
-		return ret;
-	}
-	std::string get_tour_name_code = "61";
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	std::string get_tour_name_code = "07";
+	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 	float fhelper;
 	std::vector<std::pair<float, std::string>> ret = {};
 
 	while (true)
 	{
-		if (!recv(host, temp, 255, 0) < 0)
+		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		{
 			MessageBox(0, "GetRankingInfo method failed", "Error", 0);
-
+			ret.clear();
+			return ret;
+		}
 		if ((std::string)temp != "exit")
 		{
 			fhelper = atof(static_cast<std::string>(temp).c_str());
-			if (!recv(host, temp, 255, 0) < 0)
+			if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+			{
 				MessageBox(0, "GetRankingInfo method failed", "Error", 0);
+				ret.clear();
+				return ret;
+			}
 			ret.push_back(std::make_pair(fhelper, (std::string)temp));
 		}
 		else
@@ -253,77 +260,110 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 	}
 	return ret;
 }
-bool Client::GetCurrentAtribs(int ais, std::string field)
-{
-	std::string get_tour_name_code = "63";
-	send(host, get_tour_name_code.c_str(), 4, 0);
-	char temp[255];
-
-		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		(*participants)[0]->current_speed = atof(temp);
-
-		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		(*participants)[0]->current_durability = atof(temp);
-
-		if (!(*participants)[0]->current_durability)
-		{
-			send(host, "", 1, 0);
-			closesocket(host);
-			return false;
-		}
-
-		if (!recv(host, temp, 255, 0) < 0)
-			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		(*participants)[0]->score = atof(temp);
-
-
-		while (true)
-		{
-			if (!recv(host, temp, 255, 0) < 0)
-				MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-
-			if ((std::string)temp != "exit")
-			{
-				std::string helper = ((std::string)temp).c_str();
-				if (!recv(host, temp, 255, 0) < 0)
-					MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-				(*infobox).Push(helper, (std::string)temp);
-			}
-			else
-				break;
-		}
-		return true;
-}
 void Client::Attack(int ais)
 {
-	if (!(*participants)[0]->current_durability)
-		return;
-	std::string get_tour_name_code = "62";
-	send(host, get_tour_name_code.c_str(), 4, 0);
+	std::string get_tour_name_code = "08";
+	send(host, get_tour_name_code.c_str(), 3, 0);
 	char temp[255];
 	std::vector<std::string> id;
 	std::vector<std::string> options;
 
 	while (true)
 	{
-		if (!recv(host, temp, 255, 0) < 0)
+		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		{
 			MessageBox(0, "GetTireNames method failed", "Error", 0);
-
+			return;
+		}
 		if ((std::string)temp != "exit")
 		{
 			options.push_back((std::string)temp);
-			if (!recv(host, temp, 255, 0) < 0)
+			if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+			{
 				MessageBox(0, "GetTireNames method failed", "Error", 0);
+				return;
+			}
 			id.push_back((std::string)temp);
 		}
 		else
 			break;
 	}
+	
+	/*
+	get_tour_name_code="51";
+	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);
+	get_tour_name_code += id[i];
+	send(host, get_tour_name_code.c_str(), get_tour_name_code.size() + 1, 0);
+	*/
+}
+bool Client::GetCurrentAtribs(int ais, std::string field)
+{
+	std::string get_tour_name_code = "09";
+	send(host, get_tour_name_code.c_str(), 3, 0);
+	char temp[255];
 
-	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);	
-	send(host, id[i].c_str(), 4, 0);
+	if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+	{
+		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+		return false;
+	}
+	(*participants)[0]->current_speed = atof(temp);
+
+	if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+	{
+		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+		return false;
+	}
+	(*participants)[0]->current_durability = atof(temp);
+
+	if ((*participants)[0]->current_durability <= 0.0f)
+	{
+		return false;
+	}
+
+	if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+	{
+		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+		return false;
+	}
+	(*participants)[0]->score = atof(temp);
+
+
+	while (true)
+	{
+		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		{
+			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+			return false;
+		}
+
+		if ((std::string)temp != "exit")
+		{
+			std::string helper = ((std::string)temp).c_str();
+			if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+			{
+				MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+				return false;
+			}
+			(*infobox).Push(helper, (std::string)temp);
+		}
+		else
+			break;
+	}
+	return true;
+}
+void Client::GetOtherParticipants(int ais, std::string tour)
+{
+	//client don't need to know stats of other participants but he need to tell host what have he choosed
+	std::string get_tour_name_code = "51";
+	send(host, (get_tour_name_code + (*participants)[0]->name).c_str(), (get_tour_name_code + (*participants)[0]->name).size() + 1, 0);
+
+	get_tour_name_code = "52";
+	send(host, (get_tour_name_code + (*participants)[0]->car_path).c_str(), (get_tour_name_code + (*participants)[0]->car_path).size() + 1, 0);
+
+	get_tour_name_code = "53";
+	send(host, (get_tour_name_code + tire_path).c_str(), (get_tour_name_code + tire_path).size() + 1, 0);
+	return; 
 }
 void Client::TakeAction()
 {

@@ -125,6 +125,7 @@
     <ClCompile Include="Race.cpp" />
     <ClCompile Include="NetworkRoleSinglePlayer.cpp" />
     <ClCompile Include="Participant.cpp" />
+    <ClCompile Include="GeneralMultiPlayerRequestHandler.cpp" />
     <ClCompile Include="TextLib.cpp" />
     <ClCompile Include="ToT.cpp" />
     <ClCompile Include="ToT.h" />

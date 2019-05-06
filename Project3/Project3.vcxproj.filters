@@ -85,6 +85,9 @@
     <ClCompile Include="ToT_Window.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="GeneralMultiPlayerRequestHandler.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralMultiPlayer.h">

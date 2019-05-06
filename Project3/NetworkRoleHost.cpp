@@ -86,7 +86,7 @@ bool Host::StartNetwork()
 				show_clients.join();
 				broadcast.join();
 				accept_clients.join();
-
+				request_handler = new GeneralMultiPlayer::RequestHandler(clients->size());
 				for (short i = 0; i < static_cast<int>((*clients).size()+1); i++)
 				{
 					SetConsoleCursorPosition(handle, { 0, 23 + 2 * i });
@@ -152,69 +152,77 @@ bool Host::StartNetwork()
 }
 void Host::MsgHandling(std::string msg, int client_id)
 {
-	
 	int code = atoi(msg.substr(0, 2).c_str());
 	msg = msg.substr(2, msg.size() - 2);
 
 	//first two chars describe key code and next will represent some sort of value
 	switch (code)
 	{
-	case 0://get tour
+	case 1://get tour
 	{
 		send((*clients)[client_id].first, tour.c_str(), tour.size() + 1, 0);
 		break;
 	}
-	case 1://get cars
+	case 2://get cars
 	{
 		std::vector<std::string> cars;
 		GetCarNames(cars, tour);
 
 		for (int i = 0; i < cars.size(); i++)
+		{
 			send((*clients)[client_id].first, cars[i].c_str(), cars[i].size() + 1, 0);
-
+		}
 		send((*clients)[client_id].first, "exit", 5, 0);
 		break;
 	}
-	case 2://get tires
+	case 3://get tires
 	{
 		std::vector<std::string> tires;
 		GetTireNames(tires);
 
 		for (int i = 0; i < tires.size(); i++)
+		{
 			send((*clients)[client_id].first, tires[i].c_str(), tires[i].size() + 1, 0);
-
+			std::this_thread::sleep_for(ms);
+		}
 		send((*clients)[client_id].first, "exit", 5, 0);
 		break;
 	}
-	case 3://get tour params
+	case 4://get tour params
 	{
 		std::vector<std::string> ret = GetTourParameters(tour);
 
 		for (int i = 0; i < ret.size(); i++)
+		{
 			send((*clients)[client_id].first, ret[i].c_str(), ret[i].size() + 1, 0);
+		}
 
 		send((*clients)[client_id].first, "exit", 5, 0);
 		break;
 	}
-	case 4://get car params
+	case 5://get car params
 	{
 		std::vector<int> car_params;
 		car_params = GetCarParameters(msg);
 
 		for (int i = 0; i < car_params.size(); i++)
-			send((*clients)[client_id].first, std::to_string(car_params[i]).c_str(), car_params.size()+1, 0);
+		{
+			send((*clients)[client_id].first, std::to_string(car_params[i]).c_str(), car_params.size() + 1, 0);
+		}
 		break;
 	}
-	case 5://get tires params
+	case 6://get tires params
 	{
 		std::vector<std::string> tires_params;
 		tires_params = GetTireParameters(msg);
 
 		for (int i = 0; i < tires_params.size(); i++)
-			send((*clients)[client_id].first, tires_params[i].c_str(), tires_params[i].size()+1, 0);
+		{
+			send((*clients)[client_id].first, tires_params[i].c_str(), tires_params[i].size() + 1, 0);
+		}
 		break;
 	}
-	case 6://get ranking info 
+	case 7://get ranking info 
 	{
 		std::vector<std::pair<float, std::string>> ranking = GetRankingInfo();
 
@@ -227,7 +235,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 		send((*clients)[client_id].first, "exit", 5, 0);
 		break;
 	}
-	case 7://get attack 
+	case 8://get attack targets
 	{
 		std::vector<std::string> rival_name;
 		std::vector<int> rival_id;
@@ -237,167 +245,79 @@ void Host::MsgHandling(std::string msg, int client_id)
 			if (i == client_id + 1)
 				continue;
 
-			if ((*participants)[i]->score < (*participants)[client_id + 1]->score + 5 && (*participants)[i]->score >(*participants)[client_id + 1]->score - 5)
+			if ((*participants)[i]->score < (*participants)[client_id + 1]->score + 5 && (*participants)[i]->score >(*participants)[client_id + 1]->score - 5 && (*participants)[i]->alive)
 			{
 				send((*clients)[client_id].first, (*participants)[i]->name.c_str(), (*participants)[i]->name.size()+1, 0);
 				send((*clients)[client_id].first, std::to_string(i).c_str(), std::to_string(i).size()+1, 0);
 			}
 		}
 		send((*clients)[client_id].first, "exit", 5, 0);
-	}
-	/*
-	case 63://get atribs
-	{
-		if ((*clients).size() < client_id + 1)
-		{
-			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_speed).c_str(), 255, 0);
-			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->current_durability).c_str(), 255, 0);
-			send((*clients_sockets)[client_id].first, std::to_string((*clients)[client_id + 1]->score).c_str(), 255, 0);
-		}
-		else
-		{
-			send((*clients_sockets)[client_id].first, std::to_string(0).c_str(), 255, 0);
-			send((*clients_sockets)[client_id].first, std::to_string(0).c_str(), 255, 0);
-			closesocket((*clients_sockets)[client_id].first);
-			(*clients_sockets).erase((*clients_sockets).begin() + client_id);
-			break;
-		}
-
-
-		for (int i = 0; i < (*clients)[0]->network_role->infobox->info.size(); i++)
-		{
-			send((*clients_sockets)[client_id].first, (*clients)[0]->network_role->infobox->info[i].substr(0, (*clients)[0]->network_role->infobox->info[i].find("  ")).c_str(), 255, 0);
-			send((*clients_sockets)[client_id].first, (*clients)[0]->network_role->infobox->info[i].substr((*clients)[0]->network_role->infobox->info[i].find("  ") + 2, (*clients)[0]->network_role->infobox->info[i].size() - (*clients)[0]->network_role->infobox->info[i].find("  ")).c_str(), 255, 0);
-		}
-		send((*clients_sockets)[client_id].first, "exit", 255, 0);
-
-		client_current_game_stage[client_id] = 3;
-
 		break;
 	}
-	case 59://receving client participant info 
+	case 9://get atribs
 	{
-		std::string info[3];
-		char temp[255];
+		send((*clients)[client_id].first, std::to_string((*participants)[client_id + 1]->current_speed).c_str(), std::to_string((*participants)[client_id + 1]->current_speed).size()+1, 0);
+		send((*clients)[client_id].first, std::to_string((*participants)[client_id + 1]->current_durability).c_str(), std::to_string((*participants)[client_id + 1]->current_durability).size()+1, 0);
+		send((*clients)[client_id].first, std::to_string((*participants)[client_id + 1]->score).c_str(), std::to_string((*participants)[client_id + 1]->score).size()+1, 0);
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < infobox->info.size(); i++)
 		{
-			if (!recv((*clients_sockets)[client_id].first, temp, 255, 0) < 0)
-				MessageBox(0, "GetTireNames method failed", "Error", 0);
-
-			info[i] = (std::string)temp;
+			send((*clients)[client_id].first, (*participants)[0]->network_role->infobox->info[i].substr(0, (*participants)[0]->network_role->infobox->info[i].find("  ")).c_str(), (*participants)[0]->network_role->infobox->info[i].substr(0, (*participants)[0]->network_role->infobox->info[i].find("  ")).size()+1, 0);
+			send((*clients)[client_id].first, (*participants)[0]->network_role->infobox->info[i].substr((*participants)[0]->network_role->infobox->info[i].find("  ") + 2, (*participants)[0]->network_role->infobox->info[i].size() - (*participants)[0]->network_role->infobox->info[i].find("  ")).c_str(), (*participants)[0]->network_role->infobox->info[i].substr((*participants)[0]->network_role->infobox->info[i].find("  ") + 2, (*participants)[0]->network_role->infobox->info[i].size() - (*participants)[0]->network_role->infobox->info[i].find("  ")).size() + 1, 0);
 		}
-		(*clients)[client_id + 1] = new Participant(info[0], info[1], info[2], *host);
+		send((*clients)[client_id].first, "exit", 255, 0);
 		break;
 	}
-	case 70://speed up
+	case 10://get current game stage
 	{
-		while (*current_stage != 2)
-		{
-			std::chrono::milliseconds ms(100);
-			std::this_thread::sleep_for(ms);
-		}
-
-		int value = atoi(message.substr(2, message.size() - 2).c_str());
-		if ((*clients)[client_id + 1]->car_modifiers[CarModifiers::max_accelerating] >= value)
-		{
-			(*clients)[client_id + 1]->current_speed += value;
-			if ((*clients)[client_id + 1]->current_speed > (*clients)[client_id + 1]->car_modifiers[CarModifiers::max_speed])
-				(*clients)[client_id + 1]->current_speed = (*clients)[client_id + 1]->car_modifiers[CarModifiers::max_speed];
-			(*clients)[client_id + 1]->current_speed = (*clients)[client_id + 1]->current_speed*0.9f;
-		}
-
-		client_current_game_stage[client_id] = 2;
+		send((*clients)[client_id].first, std::to_string(stage).c_str(), std::to_string(stage).size() + 1, 0);
 		break;
 	}
-	case 71://braking
+	default:
 	{
-		while (*current_stage != 2)
-		{
-			std::chrono::milliseconds ms(100);
-			std::this_thread::sleep_for(ms);
-		}
-
-		int value = atoi(message.substr(2, message.size() - 2).c_str());
-		if ((*clients)[client_id]->car_modifiers[CarModifiers::max_braking] >= value)
-		{
-			(*clients)[client_id + 1]->current_speed += value;
-			if ((*clients)[client_id + 1]->current_speed < 0)
-				(*clients)[client_id + 1]->current_speed = 0;
-			(*clients)[client_id]->current_speed = (*clients)[client_id + 1]->current_speed*0.9f;
-		}
-
-		client_current_game_stage[client_id] = 2;
+		request_handler->SaveMsg(msg, client_id);
 		break;
 	}
-	case 72://hand braking
-	{
-		while (*current_stage != 2)
-		{
-			std::chrono::milliseconds ms(100);
-			std::this_thread::sleep_for(ms);
-		}
-		if ((*clients)[client_id + 1]->current_speed > 0)
-		{
-			if ((*clients)[client_id + 1]->current_speed > 40)
-				(*clients)[client_id + 1]->drift = true;
-			(*clients)[client_id + 1]->current_speed -= static_cast<float>((*clients)[client_id + 1]->car_modifiers[CarModifiers::hand_brake_value]);
-			if ((*clients)[client_id + 1]->current_speed < 0)
-				(*clients)[client_id + 1]->current_speed = 0.0f;
-			(*clients)[client_id + 1]->current_speed = (*clients)[client_id + 1]->current_speed*0.9f;
-		}
-
-		client_current_game_stage[client_id] = 2;
-		break;
-	}
-	case 73://do nothing
-	{
-		while (*current_stage != 2)
-		{
-			std::chrono::milliseconds ms(100);
-			std::this_thread::sleep_for(ms);
-		}
-		if ((*clients)[client_id + 1]->current_speed > 0)
-			(*clients)[client_id + 1]->current_speed = (*clients)[client_id + 1]->current_speed*0.9f;
-
-		client_current_game_stage[client_id] = 2;
-		break;
-	}
-	case 74://abaddon race
-	{
-		while (*current_stage != 2)
-		{
-			std::chrono::milliseconds ms(100);
-			std::this_thread::sleep_for(ms);
-		}
-
-		(*clients)[client_id + 1]->current_durability = 0.0f;
-
-		client_current_game_stage[client_id] = 2;
-
-	}*/
 	}
 }
 void Host::GetOtherParticipants(int ais, std::string tour)
 {
 	this->tour = tour;
-	for (int i = 0; i < clients->size(); i++)
-		(*participants).push_back(nullptr);
 	host->HandleConnection<Host>(&Host::MsgHandling, this);
 
-	while (true)
+	for (int i = clients->size() - 1; i >= 0; i--)
 	{
-		bool breaking = true;
+		std::vector<std::string>* msgs;
+		std::string name = "";
+		std::string tires_path = "";
+		std::string car_path = "";
+		bool error = false;
 
-		for (int i = 0; i < (*participants).size(); i++)
+		while (((name == "") || (tires_path == "") || (car_path == "")) && !error)
 		{
-			if ((*participants)[i] == nullptr)
-				breaking = false;
+			msgs = request_handler->GetMsgsPtr(i);
+			for (int j = msgs->size()-1; j >= 0 ; j--)
+			{
+				int code = atoi((*msgs)[j].substr(0, 2).c_str());
+				if (code == 51)
+				{
+					name = (*msgs)[j].substr(2, (*msgs)[j].size() - 2);
+					msgs->erase(msgs->begin()+j);
+				}
+				else if (code == 52)
+				{
+					car_path = (*msgs)[j].substr(2, (*msgs)[j].size() - 2);
+					msgs->erase(msgs->begin() + j);
+				}
+				else if (code == 53)
+				{
+					tires_path = (*msgs)[j].substr(2, (*msgs)[j].size() - 2);
+					msgs->erase(msgs->begin() + j);
+				}
+			}
 		}
-		if (breaking)
-			break;
+		(*participants).push_back(new Participant(name, car_path, tires_path, *this));
 
-		main_window->Pause(500);
 	}
 	SinglePlayer::GetOtherParticipants(ais, tour);
 	stage = 3;

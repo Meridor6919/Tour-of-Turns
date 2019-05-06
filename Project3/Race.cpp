@@ -222,9 +222,9 @@ bool Race::Game()
 {
 
 	//initialization of important variables
-	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo();
-	std::vector<std::string> tour = (*participants)[0]->network_role->GetTourParameters(tour_path);
 	SinglePlayer* network_role = (*participants)[0]->network_role;
+	std::vector<std::pair<float, std::string>> ranking_info = network_role->GetRankingInfo();
+	std::vector<std::string> tour = network_role->GetTourParameters(tour_path);	
 	int visibility = (*participants)[0]->car_modifiers[CarModifiers::visibility];
 	
 	//pre-game_loop interface loading
