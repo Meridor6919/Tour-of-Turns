@@ -25,7 +25,6 @@ bool Host::StartNetwork()
 
 	if (main_window->GetHamachiConnectionFlag())
 		addr_range |= inet_addr("25.x.x.x");
-
 	std::thread broadcast(&GeneralMultiPlayer::Host::Broadcast, host, addr_range, 200);
 	std::thread accept_clients(&GeneralMultiPlayer::Host::AcceptClients, host, 8);
 	std::thread show_clients([&]() {
@@ -152,15 +151,18 @@ bool Host::StartNetwork()
 }
 void Host::MsgHandling(std::string msg, int client_id)
 {
+
 	int code = atoi(msg.substr(0, 2).c_str());
 	msg = msg.substr(2, msg.size() - 2);
+	char buffer[254];
 
 	//first two chars describe key code and next will represent some sort of value
 	switch (code)
 	{
 	case 1://get tour
 	{
-		send((*clients)[client_id].first, tour.c_str(), tour.size() + 1, 0);
+		strcpy(buffer, tour.c_str());
+		send((*clients)[client_id].first, buffer, 254, 0);
 		break;
 	}
 	case 2://get cars
@@ -170,7 +172,8 @@ void Host::MsgHandling(std::string msg, int client_id)
 
 		for (int i = 0; i < cars.size(); i++)
 		{
-			send((*clients)[client_id].first, cars[i].c_str(), cars[i].size() + 1, 0);
+			strcpy(buffer, cars[i].c_str());
+			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 		send((*clients)[client_id].first, "exit", 5, 0);
 		break;
@@ -182,8 +185,8 @@ void Host::MsgHandling(std::string msg, int client_id)
 
 		for (int i = 0; i < tires.size(); i++)
 		{
-			send((*clients)[client_id].first, tires[i].c_str(), tires[i].size() + 1, 0);
-			std::this_thread::sleep_for(ms);
+			strcpy(buffer, tires[i].c_str());
+			send((*clients)[client_id].first, buffer,254, 0);
 		}
 		send((*clients)[client_id].first, "exit", 5, 0);
 		break;
@@ -194,7 +197,8 @@ void Host::MsgHandling(std::string msg, int client_id)
 
 		for (int i = 0; i < ret.size(); i++)
 		{
-			send((*clients)[client_id].first, ret[i].c_str(), ret[i].size() + 1, 0);
+			strcpy(buffer, ret[i].c_str());
+			send((*clients)[client_id].first,buffer, 254, 0);
 		}
 
 		send((*clients)[client_id].first, "exit", 5, 0);
@@ -207,7 +211,8 @@ void Host::MsgHandling(std::string msg, int client_id)
 
 		for (int i = 0; i < car_params.size(); i++)
 		{
-			send((*clients)[client_id].first, std::to_string(car_params[i]).c_str(), car_params.size() + 1, 0);
+			strcpy(buffer, std::to_string(car_params[i]).c_str());
+			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 		break;
 	}
@@ -218,7 +223,8 @@ void Host::MsgHandling(std::string msg, int client_id)
 
 		for (int i = 0; i < tires_params.size(); i++)
 		{
-			send((*clients)[client_id].first, tires_params[i].c_str(), tires_params[i].size() + 1, 0);
+			strcpy(buffer, tires_params[i].c_str());
+			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 		break;
 	}
@@ -228,8 +234,10 @@ void Host::MsgHandling(std::string msg, int client_id)
 
 		for (int i = 0; i < ranking.size(); i++)
 		{
-			send((*clients)[client_id].first, std::to_string(ranking[i].first).c_str(), std::to_string(ranking[i].first).size()+1, 0);
-			send((*clients)[client_id].first, ranking[i].second.c_str(), ranking[i].second.size()+1, 0);
+			strcpy(buffer, std::to_string(ranking[i].first).c_str());
+			send((*clients)[client_id].first, buffer, 254, 0);
+			strcpy(buffer, ranking[i].second.c_str());
+			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 
 		send((*clients)[client_id].first, "exit", 5, 0);
@@ -247,8 +255,10 @@ void Host::MsgHandling(std::string msg, int client_id)
 
 			if ((*participants)[i]->score < (*participants)[client_id + 1]->score + 5 && (*participants)[i]->score >(*participants)[client_id + 1]->score - 5 && (*participants)[i]->alive)
 			{
-				send((*clients)[client_id].first, (*participants)[i]->name.c_str(), (*participants)[i]->name.size()+1, 0);
-				send((*clients)[client_id].first, std::to_string(i).c_str(), std::to_string(i).size()+1, 0);
+				strcpy(buffer, (*participants)[i]->name.c_str());
+				send((*clients)[client_id].first, buffer, 254, 0);
+				strcpy(buffer, std::to_string(i).c_str());
+				send((*clients)[client_id].first, buffer, 254, 0);
 			}
 		}
 		send((*clients)[client_id].first, "exit", 5, 0);
@@ -256,26 +266,32 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 9://get atribs
 	{
-		send((*clients)[client_id].first, std::to_string((*participants)[client_id + 1]->current_speed).c_str(), std::to_string((*participants)[client_id + 1]->current_speed).size()+1, 0);
-		send((*clients)[client_id].first, std::to_string((*participants)[client_id + 1]->current_durability).c_str(), std::to_string((*participants)[client_id + 1]->current_durability).size()+1, 0);
-		send((*clients)[client_id].first, std::to_string((*participants)[client_id + 1]->score).c_str(), std::to_string((*participants)[client_id + 1]->score).size()+1, 0);
+		strcpy(buffer, std::to_string((*participants)[client_id + 1]->current_speed).c_str());
+		send((*clients)[client_id].first, buffer, 254, 0);
+		strcpy(buffer, std::to_string((*participants)[client_id + 1]->current_durability).c_str());
+		send((*clients)[client_id].first, buffer,254, 0);
+		strcpy(buffer, std::to_string((*participants)[client_id + 1]->score).c_str());
+		send((*clients)[client_id].first, buffer, 254, 0);
 
 		for (int i = 0; i < infobox->info.size(); i++)
 		{
-			send((*clients)[client_id].first, (*participants)[0]->network_role->infobox->info[i].substr(0, (*participants)[0]->network_role->infobox->info[i].find("  ")).c_str(), (*participants)[0]->network_role->infobox->info[i].substr(0, (*participants)[0]->network_role->infobox->info[i].find("  ")).size()+1, 0);
-			send((*clients)[client_id].first, (*participants)[0]->network_role->infobox->info[i].substr((*participants)[0]->network_role->infobox->info[i].find("  ") + 2, (*participants)[0]->network_role->infobox->info[i].size() - (*participants)[0]->network_role->infobox->info[i].find("  ")).c_str(), (*participants)[0]->network_role->infobox->info[i].substr((*participants)[0]->network_role->infobox->info[i].find("  ") + 2, (*participants)[0]->network_role->infobox->info[i].size() - (*participants)[0]->network_role->infobox->info[i].find("  ")).size() + 1, 0);
+			strcpy(buffer, (*participants)[0]->network_role->infobox->info[i].substr(0, (*participants)[0]->network_role->infobox->info[i].find("  ")).c_str());
+			send((*clients)[client_id].first, buffer, 254, 0);
+			strcpy(buffer, (*participants)[0]->network_role->infobox->info[i].substr((*participants)[0]->network_role->infobox->info[i].find("  ") + 2, (*participants)[0]->network_role->infobox->info[i].size() - (*participants)[0]->network_role->infobox->info[i].find("  ")).c_str());
+			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 		send((*clients)[client_id].first, "exit", 255, 0);
 		break;
 	}
 	case 10://get current game stage
 	{
-		send((*clients)[client_id].first, std::to_string(stage).c_str(), std::to_string(stage).size() + 1, 0);
+		strcpy(buffer, std::to_string(stage).c_str());
+		send((*clients)[client_id].first, buffer, 254, 0);
 		break;
 	}
 	default:
 	{
-		request_handler->SaveMsg(msg, client_id);
+		request_handler->SaveMsg(std::to_string(code) + msg, client_id);
 		break;
 	}
 	}
@@ -291,11 +307,13 @@ void Host::GetOtherParticipants(int ais, std::string tour)
 		std::string name = "";
 		std::string tires_path = "";
 		std::string car_path = "";
-		bool error = false;
+		bool error = false; 
+		std::chrono::milliseconds ms(20);
 
 		while (((name == "") || (tires_path == "") || (car_path == "")) && !error)
 		{
 			msgs = request_handler->GetMsgsPtr(i);
+			
 			for (int j = msgs->size()-1; j >= 0 ; j--)
 			{
 				int code = atoi((*msgs)[j].substr(0, 2).c_str());
@@ -315,6 +333,7 @@ void Host::GetOtherParticipants(int ais, std::string tour)
 					msgs->erase(msgs->begin() + j);
 				}
 			}
+			std::this_thread::sleep_for(ms);
 		}
 		(*participants).push_back(new Participant(name, car_path, tires_path, *this));
 

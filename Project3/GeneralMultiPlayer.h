@@ -124,11 +124,11 @@ bool GeneralMultiPlayer::Host::HandleConnection(void(T::*MsgHandling)(std::strin
 template <class T>
 void  GeneralMultiPlayer::Host::RecvFunction(int client_id, void(T::*MsgHandling)(std::string, int), T* object)
 {
-	char buffer[128] = "";
+	char buffer[254] = "";
 	bool result;
 	while (handling_connection)
 	{
-		if (!GeneralMultiPlayer::Recv(clients[client_id].first, buffer, 128, 0))
+		if (!GeneralMultiPlayer::Recv(clients[client_id].first, buffer, 254, 0))
 		{
 			MessageBox(0, ((std::string)"Client " + std::to_string(client_id) + " disconnected").c_str(), "Message", 0);
 			closesocket(clients[client_id].first);

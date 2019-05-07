@@ -111,53 +111,50 @@ bool Client::StartNetwork()
 void Client::GetTourNames(std::vector<std::string>&tours)
 {
 	tours.clear();
-	std::string get_tour_name_code = "01";
-	send(host, get_tour_name_code.c_str(), 3, 0);
-	char temp[255];
+	char buffer[254] = "01";
+	send(host, buffer, 254, 0);
 
-	if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
 		MessageBox(0, "GetTourNames method failed", "Error", 0);
 		return;
 	}
-	tours.push_back(temp);//host will always send only one tour (the tour that he choosed)
+	tours.push_back(buffer);//host will always send only one tour (the tour that he choosed)
 }
 void Client::GetCarNames(std::vector<std::string>&cars, std::string tour)
 {
-	std::string get_tour_name_code = "02";
-	send(host, get_tour_name_code.c_str(), 3, 0);
-	char temp[255];
+	char buffer[254] = "02";
+	send(host, buffer, 254, 0);
 	cars.clear();
 
 	while (true)
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
 			MessageBox(0, "GetCarNames method failed", "Error", 0);
 			return;
 		}
-		if ((std::string)temp != "exit")
-			cars.push_back((std::string)temp);
+		if ((std::string)buffer != "exit")
+			cars.push_back((std::string)buffer);
 		else
 			break;
 	} 
 }
 void Client::GetTireNames(std::vector<std::string>&tires)
 {
-	std::string get_tour_name_code = "03";
-	send(host, get_tour_name_code.c_str(), 3, 0);
-	char temp[255];
+	char buffer[254] = "03";
+	send(host, buffer, 254, 0);
 	tires.clear();
 
 	while (true)
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
 			MessageBox(0, "GetTireNames method failed", "Error", 0);
 			return;
 		}
-		if ((std::string)temp != "exit")
-			tires.push_back((std::string)temp);
+		if ((std::string)buffer != "exit")
+			tires.push_back((std::string)buffer);
 		else
 			break;
 	} 
@@ -165,21 +162,20 @@ void Client::GetTireNames(std::vector<std::string>&tires)
 std::vector<std::string> Client::GetTourParameters(std::string path)
 {
 
-	std::string get_tour_name_code = "04";
-	send(host, get_tour_name_code.c_str(), 3, 0);
-	char temp[255];
+	char buffer[254] = "04";
+	send(host, buffer, 254, 0);
 	std::vector<std::string>ret;
 
 	while (true)
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
 			MessageBox(0, "GetTourParameter method failed", "Error", 0);
 			ret.clear();
 			return ret;
 		}
-		if ((std::string)temp != "exit")
-			ret.push_back((std::string)temp);
+		if ((std::string)buffer != "exit")
+			ret.push_back((std::string)buffer);
 		else
 			break;
 	}
@@ -187,73 +183,71 @@ std::vector<std::string> Client::GetTourParameters(std::string path)
 }
 std::vector<int> Client::GetCarParameters(std::string path)
 {
+	char buffer[254];
 
-	std::string get_tour_name_code = "05"+path;
-
-	send(host, get_tour_name_code.c_str(), get_tour_name_code.size()+1, 0);
-	char temp[255];
+	strcpy(buffer, ("05" + path).c_str());
+	send(host, buffer, 254, 0);
 
 	std::vector<int> ret;
 	for (int i = 0; i < 8; ++i)
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
 			MessageBox(0, "GetCarParameters method failed", "Error", 0);
 			ret.clear();
 			return ret;
 		}
-		ret.push_back(std::atoi(((std::string)temp).c_str()));
+		ret.push_back(std::atoi(((std::string)buffer).c_str()));
 	}
 	return ret;
 }
 std::vector<std::string> Client::GetTireParameters(std::string path)
 {
-
-	std::string get_tour_name_code = "06" + path;
-	send(host, get_tour_name_code.c_str(), get_tour_name_code.size(), 0);
-	char temp[255];
+	char buffer[254];
+	
+	strcpy(buffer, ("06" + path).c_str());
+	send(host, buffer, 254, 0);
 
 	std::vector<std::string> ret;
 
 	for (int i = 0; i < 6; i++)
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
 			MessageBox(0, "GetTireParameters method failed", "Error", 0);
 			ret.clear();
 			return ret;
 		}
-		ret.push_back(temp);
+		ret.push_back(buffer);
 	}
 	tire_path = path;
 	return ret;
 }
 std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 {
-	std::string get_tour_name_code = "07";
-	send(host, get_tour_name_code.c_str(), 3, 0);
-	char temp[255];
+	char buffer[254] = "07";
+	send(host, buffer, 254, 0);
 	float fhelper;
 	std::vector<std::pair<float, std::string>> ret = {};
 
 	while (true)
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
 			MessageBox(0, "GetRankingInfo method failed", "Error", 0);
 			ret.clear();
 			return ret;
 		}
-		if ((std::string)temp != "exit")
+		if ((std::string)buffer != "exit")
 		{
-			fhelper = atof(static_cast<std::string>(temp).c_str());
-			if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+			fhelper = atof(static_cast<std::string>(buffer).c_str());
+			if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 			{
 				MessageBox(0, "GetRankingInfo method failed", "Error", 0);
 				ret.clear();
 				return ret;
 			}
-			ret.push_back(std::make_pair(fhelper, (std::string)temp));
+			ret.push_back(std::make_pair(fhelper, (std::string)buffer));
 		}
 		else
 			break;
@@ -262,28 +256,27 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 }
 void Client::Attack(int ais)
 {
-	std::string get_tour_name_code = "08";
-	send(host, get_tour_name_code.c_str(), 3, 0);
-	char temp[255];
+	char buffer[254] = "08";
+	send(host, buffer, 254, 0);
 	std::vector<std::string> id;
 	std::vector<std::string> options;
 
 	while (true)
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
 			MessageBox(0, "GetTireNames method failed", "Error", 0);
 			return;
 		}
-		if ((std::string)temp != "exit")
+		if ((std::string)buffer != "exit")
 		{
-			options.push_back((std::string)temp);
-			if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+			options.push_back((std::string)buffer);
+			if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 			{
 				MessageBox(0, "GetTireNames method failed", "Error", 0);
 				return;
 			}
-			id.push_back((std::string)temp);
+			id.push_back((std::string)buffer);
 		}
 		else
 			break;
@@ -298,54 +291,53 @@ void Client::Attack(int ais)
 }
 bool Client::GetCurrentAtribs(int ais, std::string field)
 {
-	std::string get_tour_name_code = "09";
-	send(host, get_tour_name_code.c_str(), 3, 0);
-	char temp[255];
+	char buffer[254] = "09";
+	send(host, buffer, 254, 0);
 
-	if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
 		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		return false;
 	}
-	(*participants)[0]->current_speed = atof(temp);
+	(*participants)[0]->current_speed = atof(buffer);
 
-	if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
 		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		return false;
 	}
-	(*participants)[0]->current_durability = atof(temp);
+	(*participants)[0]->current_durability = atof(buffer);
 
 	if ((*participants)[0]->current_durability <= 0.0f)
 	{
 		return false;
 	}
 
-	if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
 		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		return false;
 	}
-	(*participants)[0]->score = atof(temp);
+	(*participants)[0]->score = atof(buffer);
 
 
 	while (true)
 	{
-		if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
 			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 			return false;
 		}
 
-		if ((std::string)temp != "exit")
+		if ((std::string)buffer != "exit")
 		{
-			std::string helper = ((std::string)temp).c_str();
-			if (!GeneralMultiPlayer::Recv(host, temp, 255, 0))
+			std::string helper = ((std::string)buffer).c_str();
+			if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 			{
 				MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 				return false;
 			}
-			(*infobox).Push(helper, (std::string)temp);
+			(*infobox).Push(helper, (std::string)buffer);
 		}
 		else
 			break;
@@ -355,20 +347,20 @@ bool Client::GetCurrentAtribs(int ais, std::string field)
 void Client::GetOtherParticipants(int ais, std::string tour)
 {
 	//client don't need to know stats of other participants but he need to tell host what have he choosed
-	std::string get_tour_name_code = "51";
-	send(host, (get_tour_name_code + (*participants)[0]->name).c_str(), (get_tour_name_code + (*participants)[0]->name).size() + 1, 0);
+	char buffer[254];
+	strcpy(buffer, ("51" + (*participants)[0]->name).c_str());
+	send(host, buffer, 254, 0);
 
-	get_tour_name_code = "52";
-	send(host, (get_tour_name_code + (*participants)[0]->car_path).c_str(), (get_tour_name_code + (*participants)[0]->car_path).size() + 1, 0);
+	strcpy(buffer, ("52" + (*participants)[0]->car_path).c_str());
+	send(host, buffer, 254, 0);
 
-	get_tour_name_code = "53";
-	send(host, (get_tour_name_code + tire_path).c_str(), (get_tour_name_code + tire_path).size() + 1, 0);
+	strcpy(buffer, ("53" + tire_path).c_str());
+	send(host, buffer, 254, 0);
 	return; 
 }
 void Client::TakeAction()
 {
-	std::string get_tour_name_code = "7";
-	char temp[255];
+	char buffer[254];
 
 	std::vector<std::string> actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
 	static int position = 0;
@@ -402,8 +394,8 @@ void Client::TakeAction()
 			if (value == 0)
 				break;
 
-			get_tour_name_code += std::to_string(position) + std::to_string(value);
-			send(host, get_tour_name_code.c_str(), 8, 0);
+			strcpy(buffer, ("7"+ std::to_string(position) + std::to_string(value)).c_str());
+			send(host, buffer, 254, 0);
 
 			return;
 		}
@@ -423,8 +415,8 @@ void Client::TakeAction()
 				{
 					if ((*participants)[0]->current_speed > 0 || position == 4)
 					{
-						get_tour_name_code += std::to_string(position);
-						send(host, get_tour_name_code.c_str(), 8, 0);
+						strcpy(buffer,("7"+ std::to_string(position)).c_str());
+						send(host, buffer, 254, 0);
 						return;
 					}
 					else
