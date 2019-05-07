@@ -43,7 +43,7 @@ class Host : public SinglePlayer {
 	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
 	bool StartNetwork();
 	std::string tour;
-	int stage;
+	bool stage; //1 - get ranking allowed, 0 - get atribs allowed
 
 public:
 

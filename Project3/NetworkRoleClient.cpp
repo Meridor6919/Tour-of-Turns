@@ -225,10 +225,26 @@ std::vector<std::string> Client::GetTireParameters(std::string path)
 }
 std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 {
-	char buffer[254] = "07";
-	send(host, buffer, 254, 0);
+	char buffer[254] = "10";
 	float fhelper;
 	std::vector<std::pair<float, std::string>> ret = {};
+	std::chrono::milliseconds ms(30);
+	
+	while ((std::string)buffer != "1")
+	{
+		std::this_thread::sleep_for(ms);
+		strcpy(buffer, "10");
+		send(host, buffer, 254, 0);
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
+		{
+			MessageBox(0, "GetRankingInfo method failed", "Error", 0);
+			ret.clear();
+			return ret;
+		}
+	}
+
+	strcpy(buffer, "07");
+	send(host, buffer, 254, 0);
 
 	while (true)
 	{

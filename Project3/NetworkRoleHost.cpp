@@ -151,6 +151,8 @@ bool Host::StartNetwork()
 }
 void Host::MsgHandling(std::string msg, int client_id)
 {
+	if (msg.size() < 2)
+		return;
 
 	int code = atoi(msg.substr(0, 2).c_str());
 	msg = msg.substr(2, msg.size() - 2);
@@ -285,6 +287,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 10://get current game stage
 	{
+
 		strcpy(buffer, std::to_string(stage).c_str());
 		send((*clients)[client_id].first, buffer, 254, 0);
 		break;
@@ -339,20 +342,19 @@ void Host::GetOtherParticipants(int ais, std::string tour)
 
 	}
 	SinglePlayer::GetOtherParticipants(ais, tour);
-	stage = 3;
 }
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo()
 {
+	stage = 1;
 	return SinglePlayer::GetRankingInfo();
 }
 bool Host::GetCurrentAtribs(int ais, std::string field)
 {
-	stage = 3;
+	stage = 0;
 	return SinglePlayer::GetCurrentAtribs(ais - (*clients).size(), field);
 }
 void Host::Attack(int ais)
 {
-	stage = 1;
 	SinglePlayer::Attack(ais);
 }
 void Host::TakeAction()
@@ -361,7 +363,6 @@ void Host::TakeAction()
 }
 void Host::GetOthersAction(int ais, std::vector<std::string>& tour)
 {
-	stage = 2;
 	SinglePlayer::GetOthersAction(ais, tour);
 }
 int Host::Possible_AIs()
