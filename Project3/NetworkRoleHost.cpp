@@ -247,9 +247,6 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 8://get attack targets
 	{
-		std::vector<std::string> rival_name;
-		std::vector<int> rival_id;
-
 		for (int i = 0; i < (*participants).size(); i++)
 		{
 			if (i == client_id + 1)
@@ -287,7 +284,6 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 10://get current game stage
 	{
-
 		strcpy(buffer, std::to_string(stage).c_str());
 		send((*clients)[client_id].first, buffer, 254, 0);
 		break;
@@ -303,17 +299,16 @@ void Host::GetOtherParticipants(int ais, std::string tour)
 {
 	this->tour = tour;
 	host->HandleConnection<Host>(&Host::MsgHandling, this);
+	std::vector<std::string>* msgs;
+	std::chrono::milliseconds ms(20);
 
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
-		std::vector<std::string>* msgs;
 		std::string name = "";
 		std::string tires_path = "";
-		std::string car_path = "";
-		bool error = false; 
-		std::chrono::milliseconds ms(20);
+		std::string car_path = "";	
 
-		while (((name == "") || (tires_path == "") || (car_path == "")) && !error)
+		while (((name == "") || (tires_path == "") || (car_path == "")))
 		{
 			msgs = request_handler->GetMsgsPtr(i);
 			
@@ -350,12 +345,41 @@ std::vector<std::pair<float, std::string>> Host::GetRankingInfo()
 }
 bool Host::GetCurrentAtribs(int ais, std::string field)
 {
-	stage = 0;
 	return SinglePlayer::GetCurrentAtribs(ais - (*clients).size(), field);
 }
 void Host::Attack(int ais)
 {
 	SinglePlayer::Attack(ais);
+	std::vector<std::string>* msgs;
+	std::chrono::milliseconds ms(20);
+
+	for (int i = clients->size() - 1; i >= 0; i--)
+	{
+		if ((*participants)[i+1]->current_durability < 0)
+		{
+			continue;
+		}
+
+		while (true)
+		{
+			msgs = request_handler->GetMsgsPtr(i);
+			for (int j = msgs->size() - 1; j >= 0; j--)
+			{
+				int code = atoi((*msgs)[j].substr(0, 2).c_str());
+				if (code == 54)
+				{
+					int target = atoi((*msgs)[j].substr(2, (*msgs)[j].size() - 2).c_str());
+					if (target < participants->size())
+					{
+						(*participants)[target]->attacked++;
+					}
+					msgs->erase(msgs->begin() + j);
+					break;
+				}
+			}
+			std::this_thread::sleep_for(ms);
+		}
+	}
 }
 void Host::TakeAction()
 {
@@ -363,6 +387,97 @@ void Host::TakeAction()
 }
 void Host::GetOthersAction(int ais, std::vector<std::string>& tour)
 {
+	stage = 0;
+	std::vector<std::string>* msgs;
+	std::chrono::milliseconds ms(20);
+
+	for (int i = clients->size() - 1; i >= 0; i--)
+	{
+		if ((*participants)[i+1]->current_durability < 0)
+		{
+			continue;
+		}
+
+		bool action = false;
+
+		while (!action)
+		{
+			msgs = request_handler->GetMsgsPtr(i);
+			for (int j = msgs->size() - 1; j >= 0; j--)
+			{
+				int code = atoi((*msgs)[j].substr(0, 2).c_str());
+
+				if (code == 55)
+				{
+					switch ((*msgs)[j][2])
+					{
+					case '0':
+					case '1':
+					{
+						int value = atoi((*msgs)[j].substr(3, (*msgs)[j].size() - 3).c_str());
+
+						if ((*participants)[i+1]->current_speed == 0 && (*msgs)[j][2] || value <= 0)
+						{
+							msgs->erase(msgs->begin() + j);
+							break;
+						}
+						else if ((*msgs)[j][2])
+						{
+							(*participants)[i+1]->current_speed -= value;
+							if ((*participants)[i+1]->current_speed < 0)
+								(*participants)[i+1]->current_speed = 0;
+						}
+						else
+						{
+							(*participants)[i+1]->current_speed += value;
+							if ((*participants)[i+1]->current_speed > static_cast<float>((*participants)[i+1]->car_modifiers[CarModifiers::max_speed]))
+								(*participants)[i+1]->current_speed = static_cast<float>((*participants)[i+1]->car_modifiers[CarModifiers::max_speed]);
+						}
+						(*participants)[i+1]->current_speed = (*participants)[i+1]->current_speed*0.9f;
+						msgs->erase(msgs->begin() + j);
+						action = true;
+						break;
+					}
+					case '2':
+					case '3':
+					case '4':
+					{
+						if ((*msgs)[j][2] == 4)
+						{
+							(*participants)[i+1]->current_durability = 0;
+							action = true;
+							msgs->erase(msgs->begin() + j);
+							break;
+						}
+
+
+						if ((*participants)[i+1]->current_speed > 0)
+						{
+							if ((*msgs)[j][2] == 2)
+							{
+								if ((*participants)[i+1]->current_speed > 40)
+									(*participants)[i+1]->drift = true;
+								(*participants)[i+1]->current_speed -= static_cast<float>((*participants)[i+1]->car_modifiers[CarModifiers::hand_brake_value]);
+								if ((*participants)[i+1]->current_speed < 0)
+									(*participants)[i+1]->current_speed = 0.0f;
+							}
+							(*participants)[i+1]->current_speed = (*participants)[i+1]->current_speed*0.9f;
+							action = true;
+							msgs->erase(msgs->begin() + j);
+							break;
+						}
+						else
+						{
+							msgs->erase(msgs->begin() + j);
+							break;
+						}
+					}
+					}
+				}
+			}
+		}
+	}
+	stage = 1;
 	SinglePlayer::GetOthersAction(ais, tour);
 }
 int Host::Possible_AIs()

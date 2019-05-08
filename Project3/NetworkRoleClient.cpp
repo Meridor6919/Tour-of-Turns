@@ -12,7 +12,6 @@ Client::Client(ToT_Window &main_window, std::vector<Participant*> *participants)
 		closesocket(host);
 		throw 1;
 	}
-	
 }
 bool Client::StartNetwork()
 {
@@ -266,9 +265,10 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 			ret.push_back(std::make_pair(fhelper, (std::string)buffer));
 		}
 		else
-			break;
+		{
+			return ret;
+		}
 	}
-	return ret;
 }
 void Client::Attack(int ais)
 {
@@ -298,16 +298,28 @@ void Client::Attack(int ais)
 			break;
 	}
 	
-	/*
-	get_tour_name_code="51";
 	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);
-	get_tour_name_code += id[i];
-	send(host, get_tour_name_code.c_str(), get_tour_name_code.size() + 1, 0);
-	*/
+	strcpy(buffer, ("54" + id[i]).c_str());
+	send(host, buffer, 254, 0);
 }
 bool Client::GetCurrentAtribs(int ais, std::string field)
 {
-	char buffer[254] = "09";
+	char buffer[254] = "10";
+	std::chrono::milliseconds ms(30);
+
+	while ((std::string)buffer != "1")
+	{
+		std::this_thread::sleep_for(ms);
+		strcpy(buffer, "10");
+		send(host, buffer, 254, 0);
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
+		{
+			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
+			return false;
+		}
+	}
+
+	strcpy(buffer, "09");
 	send(host, buffer, 254, 0);
 
 	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
@@ -410,7 +422,7 @@ void Client::TakeAction()
 			if (value == 0)
 				break;
 
-			strcpy(buffer, ("7"+ std::to_string(position) + std::to_string(value)).c_str());
+			strcpy(buffer, ("55" + std::to_string(position) + std::to_string(value)).c_str());
 			send(host, buffer, 254, 0);
 
 			return;
@@ -431,7 +443,7 @@ void Client::TakeAction()
 				{
 					if ((*participants)[0]->current_speed > 0 || position == 4)
 					{
-						strcpy(buffer,("7"+ std::to_string(position)).c_str());
+						strcpy(buffer, ("55" + std::to_string(position)).c_str());
 						send(host, buffer, 254, 0);
 						return;
 					}
@@ -456,7 +468,7 @@ void Client::TakeAction()
 }
 void Client::GetOthersAction(int ais, std::vector<std::string>& tour)
 {
-
+	return;
 }
 int Client::Possible_AIs()
 {

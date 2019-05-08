@@ -273,8 +273,9 @@ bool Race::Game()
 		if (players_alive == 0)
 			break;
 
-		Ranking(ranking_info, true);	//ranking part
-		ranking_info = (*participants)[0]->network_role->GetRankingInfo();
+		std::vector<std::pair<float, std::string>> temp = network_role->GetRankingInfo();
+		Ranking(ranking_info, true);	
+		ranking_info = temp;
 		Ranking(ranking_info, false);
 	}
 	return (*participants)[0]->alive;
