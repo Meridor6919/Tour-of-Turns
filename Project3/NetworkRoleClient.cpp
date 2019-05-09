@@ -348,7 +348,7 @@ bool Client::GetCurrentAtribs(int ais, std::string field)
 	}
 	(*participants)[0]->score = atof(buffer);
 
-
+	(*infobox).info.clear();
 	while (true)
 	{
 		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
@@ -356,7 +356,7 @@ bool Client::GetCurrentAtribs(int ais, std::string field)
 			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 			return false;
 		}
-
+		
 		if ((std::string)buffer != "exit")
 		{
 			std::string helper = ((std::string)buffer).c_str();
@@ -370,7 +370,9 @@ bool Client::GetCurrentAtribs(int ais, std::string field)
 		else
 			break;
 	}
-	return true;
+	
+	
+	
 }
 void Client::GetOtherParticipants(int ais, std::string tour)
 {

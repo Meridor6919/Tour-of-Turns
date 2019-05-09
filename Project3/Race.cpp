@@ -248,30 +248,20 @@ bool Race::Game()
 		//showing incoming parts of tour
 		VisionBox(visible_tour, visibility);
 		
-		if(turn > 0)	//attacking players starting with second turn 
-			network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>((*participants)[0]->alive));
+		//if(turn > 0)	//attacking players starting with second turn 
+			//network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>((*participants)[0]->alive));
 
 		if ((*participants)[0]->alive)		//if main player is alive he can choose an action, else he can only watch
 			network_role->TakeAction();
 		
 		//waiting for clients/ais
-		network_role->GetOthersAction(static_cast<int>((*participants).size()) - 1, tour);
+		network_role->GetOthersAction(ais, tour);
 		
 		if (turn < tour.size())//game runs until tour size +1 because of "meta" sign in the end of the race, but atribs take current tour part so if statement is needed
 		{
 			if (network_role->GetCurrentAtribs(static_cast<int>((*participants).size()) - static_cast<int>((*participants)[0]->alive), tour[turn]))	//if durability == 0
 				Interface();
 		}
-
-		//checking if everyone is dead
-		int players_alive = (*participants).size();
-		for (int i = 0; i < (*participants).size(); i++)
-		{
-			if ((*participants)[i]->current_durability <= 0.0f)
-				players_alive--;
-		}
-		if (players_alive == 0)
-			break;
 
 		std::vector<std::pair<float, std::string>> temp = network_role->GetRankingInfo();
 		Ranking(ranking_info, true);	
