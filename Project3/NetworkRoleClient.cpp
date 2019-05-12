@@ -7,6 +7,7 @@ Client::Client(ToT_Window &main_window, std::vector<Participant*> *participants)
 	this->participants = participants;
 	this->main_window = &main_window;
 	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
+	stage = 0;
 	if (!StartNetwork())
 	{
 		closesocket(host);
@@ -229,7 +230,7 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 	std::vector<std::pair<float, std::string>> ret = {};
 	std::chrono::milliseconds ms(30);
 	
-	while ((std::string)buffer != "1")
+	while ((std::string)buffer != std::to_string(stage+1))
 	{
 		std::this_thread::sleep_for(ms);
 		strcpy(buffer, "10");
@@ -241,7 +242,7 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 			return ret;
 		}
 	}
-
+	stage++;
 	strcpy(buffer, "07");
 	send(host, buffer, 254, 0);
 
@@ -302,12 +303,13 @@ void Client::Attack(int ais)
 	strcpy(buffer, ("54" + id[i]).c_str());
 	send(host, buffer, 254, 0);
 }
-bool Client::GetCurrentAtribs(int ais, std::string field)
+bool Client::GetCurrentAtribs(int real_players, std::string field)
 {
+
 	char buffer[254] = "10";
 	std::chrono::milliseconds ms(30);
 
-	while ((std::string)buffer != "1")
+	while ((std::string)buffer != std::to_string(stage + 1))
 	{
 		std::this_thread::sleep_for(ms);
 		strcpy(buffer, "10");
@@ -336,10 +338,6 @@ bool Client::GetCurrentAtribs(int ais, std::string field)
 	}
 	(*participants)[0]->current_durability = atof(buffer);
 
-	if ((*participants)[0]->current_durability <= 0.0f)
-	{
-		return false;
-	}
 
 	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
@@ -370,9 +368,15 @@ bool Client::GetCurrentAtribs(int ais, std::string field)
 		else
 			break;
 	}
-	
-	
-	
+	if ((*participants)[0]->current_durability <= 0.0f)
+	{
+		(*participants)[0]->alive = false;
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 void Client::GetOtherParticipants(int ais, std::string tour)
 {

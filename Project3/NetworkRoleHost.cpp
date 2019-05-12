@@ -274,9 +274,12 @@ void Host::MsgHandling(std::string msg, int client_id)
 
 		for (int i = 0; i < infobox->info.size(); i++)
 		{
-			strcpy(buffer, (*participants)[0]->network_role->infobox->info[i].substr(0, (*participants)[0]->network_role->infobox->info[i].find("  ")).c_str());
+			std::string info = (*participants)[0]->network_role->infobox->info[i];
+
+			strcpy(buffer, info.substr(0, info.find("  ")).c_str());
 			send((*clients)[client_id].first, buffer, 254, 0);
-			strcpy(buffer, (*participants)[0]->network_role->infobox->info[i].substr((*participants)[0]->network_role->infobox->info[i].find("  ") + 2, (*participants)[0]->network_role->infobox->info[i].size() - (*participants)[0]->network_role->infobox->info[i].find("  ")).c_str());
+
+			strcpy(buffer, info.substr((*participants)[0]->network_role->infobox->info[i].find("  ") + 2, info.size() - info.find("  ")).c_str());
 			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 		send((*clients)[client_id].first, "exit", 254, 0);
@@ -284,8 +287,8 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 10://get current game stage
 	{
-		bool result = (*(request_handler->GetMsgsPtr(client_id))).size() == 0 && stage;
-		strcpy(buffer, std::to_string(result).c_str());
+		
+		strcpy(buffer, std::to_string(stage).c_str());
 		send((*clients)[client_id].first, buffer, 254, 0);
 		break;
 	}
@@ -337,16 +340,17 @@ void Host::GetOtherParticipants(int ais, std::string tour)
 		(*participants).push_back(new Participant(name, car_path, tires_path, *this));
 	}
 	SinglePlayer::GetOtherParticipants(ais, tour);
-	stage = 1;
+	stage =1;
 }
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo()
 {
-	stage = 1;
 	return SinglePlayer::GetRankingInfo();
 }
-bool Host::GetCurrentAtribs(int ais, std::string field)
+bool Host::GetCurrentAtribs(int real_players, std::string field)
 {
-	return SinglePlayer::GetCurrentAtribs(ais - (*clients).size(), field);
+	bool ret = SinglePlayer::GetCurrentAtribs(real_players, field);
+	stage++;
+	return ret;
 }
 void Host::Attack(int ais)
 {
@@ -388,13 +392,12 @@ void Host::TakeAction()
 }
 void Host::GetOthersAction(int ais, std::vector<std::string>& tour)
 {
-	stage = 0;
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
 
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
-		if ((*participants)[i+1]->current_durability < 0)
+		if ((*participants)[i+1]->current_durability <= 0)
 		{
 			continue;
 		}
@@ -436,7 +439,7 @@ void Host::GetOthersAction(int ais, std::vector<std::string>& tour)
 					case '3':
 					case '4':
 					{
-						if ((*msgs)[j][2] == 4)
+						if ((*msgs)[j][2] == '4')
 						{
 							(*participants)[i+1]->current_durability = 0;
 							action = true;
@@ -465,7 +468,6 @@ void Host::GetOthersAction(int ais, std::vector<std::string>& tour)
 			}
 		}
 	}
-	stage = 1;
 	SinglePlayer::GetOthersAction(ais, tour);
 }
 int Host::Possible_AIs()

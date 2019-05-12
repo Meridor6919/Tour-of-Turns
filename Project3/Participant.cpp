@@ -298,6 +298,9 @@ void Participant::TakeAction(int safe_speed, bool turn) {
 
 void Participant::Test(std::string field, bool show)
 {
+	if (!alive)
+		return;
+
 	if (field.size() == 1)//if road is straight just calculate attacks;
 	{
 		int r = rand() % 8;

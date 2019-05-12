@@ -91,6 +91,9 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 			ret.push_back(std::make_pair((*participants)[i]->score, (*participants)[i]->name));
 	}
 
+	if (ret.size() < 2)
+		return ret;
+
 	bool flag = true;
 	float fhelper;
 	std::string shelper;
@@ -114,10 +117,10 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 	}
 	return ret;
 }
-bool SinglePlayer::GetCurrentAtribs(int ais, std::string field)
+bool SinglePlayer::GetCurrentAtribs(int real_players, std::string field)
 {
 	for (int i = 0; i < (*participants).size(); i++)
-		(*participants)[i]->Test(field, i < (*participants).size() - ais);
+		(*participants)[i]->Test(field, i < real_players);
 
 	for (int i = (*participants).size() - 1; i >= 0; i--)
 	{

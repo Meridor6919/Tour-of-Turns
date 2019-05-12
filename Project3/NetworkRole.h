@@ -28,7 +28,7 @@ public:
 	virtual std::vector<std::string> GetTourParameters(std::string path);
 	virtual void GetOtherParticipants(int ais, std::string tour);
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
-	virtual bool GetCurrentAtribs(int ais, std::string field);
+	virtual bool GetCurrentAtribs(int real_players, std::string field);
 	virtual void Attack(int ais);
 	virtual void TakeAction();
 	virtual void GetOthersAction(int ais, std::vector<std::string> &tour);
@@ -43,7 +43,7 @@ class Host : public SinglePlayer {
 	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
 	bool StartNetwork();
 	std::string tour;
-	bool stage; //1 - get ranking allowed, 0 - get atribs allowed
+	int stage;
 
 public:
 
@@ -51,7 +51,7 @@ public:
 	Host(ToT_Window &main_window, std::vector<Participant*> *participants);
 	void GetOtherParticipants(int ais, std::string tour);
 	std::vector<std::pair<float, std::string>> GetRankingInfo();
-	bool GetCurrentAtribs(int ais, std::string field);
+	bool GetCurrentAtribs(int real_players, std::string field);
 	void Attack(int ais);
 	void TakeAction();
 	void GetOthersAction(int ais, std::vector<std::string> &tour);
@@ -65,6 +65,7 @@ class Client : public SinglePlayer {
 	SOCKET host;
 	bool StartNetwork();
 	std::string tire_path; //needed for communication with host
+	int stage;
 
 public:
 
@@ -77,7 +78,7 @@ public:
 	std::vector<std::string> GetTourParameters(std::string path);
 	void GetOtherParticipants(int ais, std::string tour);
 	std::vector<std::pair<float, std::string>> GetRankingInfo();
-	bool GetCurrentAtribs(int ais, std::string field);
+	bool GetCurrentAtribs(int real_players, std::string field);
 	void Attack(int ais);
 	void TakeAction();
 	void GetOthersAction(int ais, std::vector<std::string> &tour);

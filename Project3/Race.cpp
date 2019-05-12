@@ -259,8 +259,8 @@ bool Race::Game()
 		
 		if (turn < tour.size())//game runs until tour size +1 because of "meta" sign in the end of the race, but atribs take current tour part so if statement is needed
 		{
-			if (network_role->GetCurrentAtribs(static_cast<int>((*participants).size()) - static_cast<int>((*participants)[0]->alive), tour[turn]))	//if durability == 0
-				Interface();
+			network_role->GetCurrentAtribs(static_cast<int>((*participants).size()) - ais, tour[turn]);	//if durability != 0
+			Interface();
 		}
 
 		std::vector<std::pair<float, std::string>> temp = network_role->GetRankingInfo();
@@ -268,6 +268,7 @@ bool Race::Game()
 		ranking_info = temp;
 		Ranking(ranking_info, false);
 	}
+	
 	return (*participants)[0]->alive;
 }
 void Race::Ending()
