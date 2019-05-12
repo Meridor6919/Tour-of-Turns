@@ -252,6 +252,8 @@ void Host::MsgHandling(std::string msg, int client_id)
 			if (i == client_id + 1)
 				continue;
 
+			send((*clients)[client_id].first, "Don't attack", 254, 0);
+			send((*clients)[client_id].first, "10", 254, 0);
 			if ((*participants)[i]->score < (*participants)[client_id + 1]->score + 5 && (*participants)[i]->score >(*participants)[client_id + 1]->score - 5 && (*participants)[i]->alive)
 			{
 				strcpy(buffer, (*participants)[i]->name.c_str());
@@ -355,17 +357,21 @@ bool Host::GetCurrentAtribs(int real_players, std::string field)
 void Host::Attack(int ais)
 {
 	SinglePlayer::Attack(ais);
+
+
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
 
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
-		if ((*participants)[i+1]->current_durability < 0)
+		if ((*participants)[i+1]->current_durability <= 0)
 		{
 			continue;
 		}
 
-		while (true)
+		bool attacked = false;
+
+		while (!attacked)
 		{
 			msgs = request_handler->GetMsgsPtr(i);
 			for (int j = msgs->size() - 1; j >= 0; j--)
@@ -379,7 +385,7 @@ void Host::Attack(int ais)
 						(*participants)[target]->attacked++;
 					}
 					msgs->erase(msgs->begin() + j);
-					break;
+					attacked = true;
 				}
 			}
 			std::this_thread::sleep_for(ms);

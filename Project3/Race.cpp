@@ -248,8 +248,8 @@ bool Race::Game()
 		//showing incoming parts of tour
 		VisionBox(visible_tour, visibility);
 		
-		//if(turn > 0)	//attacking players starting with second turn 
-			//network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>((*participants)[0]->alive));
+		if(turn > 0)	//attacking players starting with second turn 
+			network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>((*participants)[0]->alive));
 
 		if ((*participants)[0]->alive)		//if main player is alive he can choose an action, else he can only watch
 			network_role->TakeAction();
