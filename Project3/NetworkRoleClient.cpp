@@ -225,12 +225,12 @@ std::vector<std::string> Client::GetTireParameters(std::string path)
 }
 std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 {
-	char buffer[254] = "10";
+	char buffer[254] = "0";
 	float fhelper;
 	std::vector<std::pair<float, std::string>> ret = {};
 	std::chrono::milliseconds ms(30);
 	
-	while ((std::string)buffer != std::to_string(stage+1))
+	while (atoi(buffer) < stage + 1)
 	{
 		std::this_thread::sleep_for(ms);
 		strcpy(buffer, "10");
@@ -273,6 +273,8 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
 }
 void Client::Attack(int ais)
 {
+	if (!(*participants)[0]->alive)
+		return;
 	char buffer[254] = "08";
 	send(host, buffer, 254, 0);
 	std::vector<std::string> id;
@@ -306,10 +308,10 @@ void Client::Attack(int ais)
 bool Client::GetCurrentAtribs(int real_players, std::string field)
 {
 
-	char buffer[254] = "10";
+	char buffer[254] = "0";
 	std::chrono::milliseconds ms(30);
 
-	while ((std::string)buffer != std::to_string(stage + 1))
+	while (atoi(buffer) < stage + 1)
 	{
 		std::this_thread::sleep_for(ms);
 		strcpy(buffer, "10");

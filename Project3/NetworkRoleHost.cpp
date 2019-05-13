@@ -247,13 +247,13 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 8://get attack targets
 	{
+		send((*clients)[client_id].first, "Don't attack", 254, 0);
+		send((*clients)[client_id].first, "10", 254, 0);
 		for (int i = 0; i < (*participants).size(); i++)
 		{
 			if (i == client_id + 1)
 				continue;
 
-			send((*clients)[client_id].first, "Don't attack", 254, 0);
-			send((*clients)[client_id].first, "10", 254, 0);
 			if ((*participants)[i]->score < (*participants)[client_id + 1]->score + 5 && (*participants)[i]->score >(*participants)[client_id + 1]->score - 5 && (*participants)[i]->alive)
 			{
 				strcpy(buffer, (*participants)[i]->name.c_str());
