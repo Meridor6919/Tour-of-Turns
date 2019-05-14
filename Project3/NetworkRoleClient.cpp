@@ -14,6 +14,20 @@ Client::Client(ToT_Window &main_window, std::vector<Participant*> *participants)
 		throw 1;
 	}
 }
+void Client::CloseConnection()
+{
+	char buffer[254] = "60";
+	send(host, buffer, 254, 0);
+	while ((std::string)buffer != "exit")
+	{
+		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
+		{
+			MessageBox(0, "GetTireNames method failed", "Error", 0);
+			return;
+		}
+	}
+	closesocket(host);
+}
 bool Client::StartNetwork()
 {
 	HANDLE handle = main_window->GetHandle();

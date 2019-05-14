@@ -15,6 +15,32 @@ Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : S
 		throw 1;
 	}
 }
+void Host::CloseConnection()
+{
+	std::vector<std::string>* msgs;
+	std::chrono::milliseconds ms(20);
+
+	stage++;
+	for (int i = clients->size() - 1; i >= 0; i--)
+	{
+		bool done = false;
+		while (!done)
+		{
+			msgs = request_handler->GetMsgsPtr(i);
+			for (int j = msgs->size() - 1; j >= 0; j--)
+			{
+				int code = atoi((*msgs)[j].substr(0, 2).c_str());
+				if (code == 60)
+				{
+					send((*clients)[i].first, "exit", 254, 0);
+					done = true;
+				}
+			}
+			std::this_thread::sleep_for(ms);
+		}
+	}
+	host->CloseActiveConnections();
+}
 bool Host::StartNetwork()
 {
 	HANDLE handle = main_window->GetHandle();

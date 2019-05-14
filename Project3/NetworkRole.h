@@ -20,6 +20,7 @@ public:
 	InfoBox *infobox;
 
 	SinglePlayer(ToT_Window &main_window, std::vector<Participant*> *participants);
+	virtual void CloseConnection() {};
 	virtual void GetTourNames(std::vector<std::string>&tours);
 	virtual void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	virtual void GetTireNames(std::vector<std::string>&tires);
@@ -32,7 +33,6 @@ public:
 	virtual void Attack(int ais);
 	virtual void TakeAction();
 	virtual void GetOthersAction(int ais, std::vector<std::string> &tour);
-
 	virtual int Possible_AIs();
 };
 
@@ -49,6 +49,7 @@ public:
 
 	void MsgHandling(std::string msg, int client_id);
 	Host(ToT_Window &main_window, std::vector<Participant*> *participants);
+	void CloseConnection();
 	void GetOtherParticipants(int ais, std::string tour);
 	std::vector<std::pair<float, std::string>> GetRankingInfo();
 	bool GetCurrentAtribs(int real_players, std::string field);
@@ -70,6 +71,7 @@ class Client : public SinglePlayer {
 public:
 
 	Client(ToT_Window &main_window, std::vector<Participant*> *participants);
+	void CloseConnection();
 	void GetTourNames(std::vector<std::string>&tours);
 	void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	void GetTireNames(std::vector<std::string>&tires);

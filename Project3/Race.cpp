@@ -218,7 +218,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 	network_role->GetOtherParticipants(ais, tour_path);
 
 }
-bool Race::Game()
+std::vector<std::pair<float, std::string>> Race::Game()
 {
 
 	//initialization of important variables
@@ -269,26 +269,29 @@ bool Race::Game()
 		Ranking(ranking_info, false);
 	}
 	
-	return (*participants)[0]->alive;
+	return ranking_info;
 }
-void Race::Ending()
+void Race::Ending(std::vector<std::pair<float, std::string>> ranking_info)
 {
-	std::vector<std::pair<float, std::string>> ranking_info = (*participants)[0]->network_role->GetRankingInfo();
-	std::fstream fvar;
-	int place = Ranking(ranking_info, false);
-	int points = (ais + 2 - place) * static_cast<int>(1000.0f / (*participants)[0]->score);	//points formula
-	
-	fvar.open((tour_path.substr(0, tour_path.size() - 4) + "rank").c_str(), std::ios::in | std::ios::app);
-	
-	fvar << (*participants)[0]->name << std::endl;
-	fvar << (*participants)[0]->car_path << std::endl;
-	fvar << ais << std::endl;
-	fvar << (*participants)[0]->score << std::endl;
-	fvar << place << std::endl;
-	fvar << points << std::endl;
-		
-	Ranking(ranking_info, true);
-	fvar.close();
+	if ((*participants)[0]->alive)
+	{
+		std::fstream fvar;
+		int place = Ranking(ranking_info, false);
+		int points = (ais + 2 - place) * static_cast<int>(1000.0f / (*participants)[0]->score);	//points formula
+
+		fvar.open((tour_path.substr(0, tour_path.size() - 4) + "rank").c_str(), std::ios::in | std::ios::app);
+
+		fvar << (*participants)[0]->name << std::endl;
+		fvar << (*participants)[0]->car_path << std::endl;
+		fvar << ais << std::endl;
+		fvar << (*participants)[0]->score << std::endl;
+		fvar << place << std::endl;
+		fvar << points << std::endl;
+
+		Ranking(ranking_info, true);
+		fvar.close();
+	}
+	(*participants)[0]->network_role->CloseConnection();
 }
 int Race::Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool clear)
 {

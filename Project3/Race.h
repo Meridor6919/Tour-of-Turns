@@ -16,6 +16,6 @@ class Race {
 public:
 	Race(ToT_Window &window, std::vector<Participant*> *participants);
 	void Lobby(SinglePlayer *network_role);		//game states
-	bool Game();
-	void Ending();
+	std::vector<std::pair<float, std::string>> Game();
+	void Ending(std::vector<std::pair<float, std::string>> ranking_info);
 };
