@@ -143,6 +143,9 @@ bool SinglePlayer::GetCurrentAtribs(int real_players, std::string field)
 }
 void SinglePlayer::Attack(int ais)
 {
+	//TODO make it more profitable to be first - being able attack from more distance
+	//TODO change attack mechanic in straight sections
+	//TODO there should be a drawback when you attack
 	std::vector<std::string> rival_name;
 	std::vector<int> rival_id;
 	HANDLE handle = main_window->GetHandle();
@@ -201,6 +204,8 @@ void SinglePlayer::TakeAction()
 			case 0:
 			case 1:
 			{
+				//TODO durablility should affect max speed
+				//TODO add an option to bypass max speed by burning durability
 				if ((*participants)[0]->current_speed == 0 && position == 1)
 				{
 					std::cout << " - You can't do this because you aren't moving...";
@@ -294,7 +299,7 @@ void SinglePlayer::GetOthersAction(int ais, std::vector<std::string> &tour)
 
 	for (int i = static_cast<int>((*participants).size()) - ais; i < static_cast<int>((*participants).size()); i++)
 	{
-		for (int j = 0; j < (*participants)[i]->car_modifiers[CarModifiers::visibility]; j++)
+		for (int j = 0; j < (*participants)[i]->car_modifiers[CarModifiers::visibility] && j < tour.size(); j++)
 		{
 			if (tour[j].size() > 1)
 			{

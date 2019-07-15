@@ -16,6 +16,7 @@ Client::Client(ToT_Window &main_window, std::vector<Participant*> *participants)
 }
 void Client::CloseConnection()
 {
+	//TODO disconnects
 	char buffer[254] = "60";
 	send(host, buffer, 254, 0);
 	while ((std::string)buffer != "exit")

@@ -48,7 +48,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 	tour_path = tours[0];
 	tire_path = tires[0];
 
-	//showing params of current setup
+	//TODO validating files
 	std::vector<std::string> car_parameters;																	
 	std::vector<std::string> tire_parameters;																	
 	std::vector<Text::OrdinaryText_atributes> text_atributes;													
@@ -251,6 +251,7 @@ std::vector<std::pair<float, std::string>> Race::Game()
 		if(turn > 0)	//attacking players starting with second turn 
 			network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>((*participants)[0]->alive));
 
+		//TODO additional panel that shows chance to succeed
 		if ((*participants)[0]->alive)		//if main player is alive he can choose an action, else he can only watch
 			network_role->TakeAction();
 		
@@ -273,20 +274,23 @@ std::vector<std::pair<float, std::string>> Race::Game()
 }
 void Race::Ending(std::vector<std::pair<float, std::string>> ranking_info)
 {
+
 	if ((*participants)[0]->alive)
 	{
 		std::fstream fvar;
 		int place = Ranking(ranking_info, false);
 		int points = (ais + 2 - place) * static_cast<int>(1000.0f / (*participants)[0]->score);	//points formula
-
-		fvar.open((tour_path.substr(0, tour_path.size() - 4) + "rank").c_str(), std::ios::in | std::ios::app);
-
+		std::string path = tour_path.substr(0, tour_path.size() - 4) + "rank";
+		
+		//TODO sorting ranking file
+		fvar.open(path.c_str(), std::ios::in | std::ios::app);
+		bool b = fvar.good();
+		fvar << points << std::endl;
 		fvar << (*participants)[0]->name << std::endl;
 		fvar << (*participants)[0]->car_path << std::endl;
 		fvar << ais << std::endl;
 		fvar << (*participants)[0]->score << std::endl;
 		fvar << place << std::endl;
-		fvar << points << std::endl;
 
 		Ranking(ranking_info, true);
 		fvar.close();
@@ -295,6 +299,7 @@ void Race::Ending(std::vector<std::pair<float, std::string>> ranking_info)
 }
 int Race::Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool clear)
 {
+	//TODO change ranking to show players accuracy in decision making instead of showing lucky and stupid ones that scores the highest
 	std::vector<std::string> text;
 	text.push_back("PLACE");
 	text.push_back("RACER");
@@ -372,16 +377,16 @@ void Race::VisionBox(std::vector<std::string> visible_tour, int visibility)
 	std::string Distance[] = { "In front of you: ", "Close to you: ", "At some distance: ", "A little further: ",
 								"At a considerable distance: ", "Far ahead: ", "Barely noticeable: " };
 
-	for (int i = 0; i < visibility; i++)
+	for (int i = 0; i < visibility && i < 7; i++)
 	{
 		if (visible_tour.size() == i)
 		{
-			SetConsoleCursorPosition(window, { 1,static_cast<short>(25 + 2 * i) });
+			SetConsoleCursorPosition(window, { 1,static_cast<short>(24 + 2 * i) });
 			SetConsoleTextAttribute(window, main_window->color1);
 			std::cout << Distance[i];
 			SetConsoleTextAttribute(window, main_window->color2);
 			std::cout << "META                                              ";
-			SetConsoleCursorPosition(window, { 1,static_cast<short>(27 + 2 * i) });
+			SetConsoleCursorPosition(window, { 1,static_cast<short>(26 + 2 * i) });
 			std::cout << "                                                   ";
 			break;
 		}
@@ -389,7 +394,7 @@ void Race::VisionBox(std::vector<std::string> visible_tour, int visibility)
 		helper = visible_tour[i];
 
 		SetConsoleTextAttribute(window, main_window->color1);
-		SetConsoleCursorPosition(window, { 1,static_cast<short>(25 + 2 * i) });
+		SetConsoleCursorPosition(window, { 1,static_cast<short>(24 + 2 * i) });
 		std::cout << Distance[i];
 		SetConsoleTextAttribute(window, main_window->color2);
 

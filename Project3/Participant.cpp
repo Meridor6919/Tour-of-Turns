@@ -213,7 +213,7 @@ int Participant::CarPoints(std::string cars_path)
 	return 0;
 }
 void Participant::TakeAction(int safe_speed, bool turn) {
-
+	//TODO improve AI
 	switch (ai_type)
 	{
 	case 3://speedy guy

@@ -17,6 +17,7 @@ Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : S
 }
 void Host::CloseConnection()
 {
+	//TODO disconnects
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
 
@@ -329,6 +330,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 }
 void Host::GetOtherParticipants(int ais, std::string tour)
 {
+	//TODO validate this
 	this->tour = tour;
 	host->HandleConnection<Host>(&Host::MsgHandling, this);
 	std::vector<std::string>* msgs;
@@ -424,6 +426,7 @@ void Host::TakeAction()
 }
 void Host::GetOthersAction(int ais, std::vector<std::string>& tour)
 {
+	//TODO basic anticheat
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
 

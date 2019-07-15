@@ -138,7 +138,7 @@ void GameMode::Ranking(ToT_Window &main_window)
 		Text::TableText(map_information, 1, 6, 3, main_window.GetWidth() / 6, { 0,23 }, main_window, true);
 		map_information.clear();
 
-		map_information = { "Name", "Car", "AI","Time","Place","Points" };
+		map_information = { "Points", "Name", "Car", "AI","Time","Place" };
 
 		fvar.open((maps_rankings[position] + ".rank").c_str(), std::ios::in);
 
