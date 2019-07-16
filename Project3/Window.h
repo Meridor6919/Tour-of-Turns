@@ -22,7 +22,7 @@ public:
 	int color1;
 	int color2;
 
-	Window(char title[], int color1, int color2, int font_size, bool fullscreen, int chars_in_rows = 0, int chars_in_columns = 0);
+	Window(char title[], int color1, int color2, int chars_in_rows, int chars_in_columns);
 
 	int GetWidth();
 	int GetHeight();

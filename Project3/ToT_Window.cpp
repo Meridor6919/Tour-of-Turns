@@ -1,6 +1,6 @@
 #include "ToT_Window.h"
-
-ToT_Window::ToT_Window(char title[], int color1, int color2, int font_size, bool fullscreen, int chars_in_rows, int chars_in_columns) : Window(title, color1, color2, font_size, fullscreen, chars_in_rows, chars_in_columns)
+;
+ToT_Window::ToT_Window(char title[], int color1, int color2, int chars_in_rows, int chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
 {
 	LoadFiles("Ranking.txt", "rank");
 	if (!LoadFiles("Tire.txt", "tire"))

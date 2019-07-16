@@ -1,13 +1,12 @@
 #include "Window.h"
 
 
-Window::Window(char title[], int color1, int color2, int font_size, bool fullscreen, int chars_in_rows, int chars_in_columns)
+Window::Window(char title[], int color1, int color2, int chars_in_rows, int chars_in_columns)
 {
 
 	strcpy(this->title, title);
 	this->color1 = color1;
 	this->color2 = color2;
-	this->font_size = font_size;
 	window_size = { (short)chars_in_rows, (short)chars_in_columns };
 	window_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	window_hwnd = GetConsoleWindow();
@@ -18,22 +17,19 @@ Window::Window(char title[], int color1, int color2, int font_size, bool fullscr
 	//Font setup
 	CONSOLE_FONT_INFOEX ConsoleFontInfoEx = { 0 };
 	ConsoleFontInfoEx.cbSize = sizeof(ConsoleFontInfoEx);
-	ConsoleFontInfoEx.dwFontSize.Y = font_size;
+	ConsoleFontInfoEx.dwFontSize.Y = 64;
 	wcscpy_s(ConsoleFontInfoEx.FaceName, L"Lucida Console");
-	SetCurrentConsoleFontEx(window_handle, NULL, &ConsoleFontInfoEx);
-	GetCurrentConsoleFontEx(window_handle, NULL, &ConsoleFontInfoEx);
-
+	for(COORD c = GetLargestConsoleWindowSize(window_handle); (c.X < chars_in_rows || c.Y < chars_in_columns) && ConsoleFontInfoEx.dwFontSize.Y > 0; c = GetLargestConsoleWindowSize(window_handle))
+	{
+		ConsoleFontInfoEx.dwFontSize.Y--;
+		SetCurrentConsoleFontEx(window_handle, NULL, &ConsoleFontInfoEx);
+	}
+	font_size = ConsoleFontInfoEx.dwFontSize.Y;
+	
 	//window setup
-	if (!fullscreen)
-	{
-		SetConsoleScreenBufferSize(window_hwnd, {window_size.X * ConsoleFontInfoEx.dwFontSize.X, window_size.Y*ConsoleFontInfoEx.dwFontSize.Y});
-		MoveWindow(window_hwnd, 0, 0, window_size.X * ConsoleFontInfoEx.dwFontSize.X, window_size.Y*ConsoleFontInfoEx.dwFontSize.Y, true);
-	}
-	else
-	{
-		ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
-		window_size = GetLargestConsoleWindowSize(window_handle);
-	}
+	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
+	window_size = GetLargestConsoleWindowSize(window_handle);
+	
 	//Cursor visibility								
 	GetConsoleCursorInfo(window_handle, &console_cursor);
 	SetCursor(false);

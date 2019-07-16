@@ -8,7 +8,7 @@ int main()
 	//TODO scalability to window size and font size
 	//TODO make maps cars and tires
 	char title[] = "Tour of Turns";
-	ToT_Window game_window(title, 15, 10, 12, true);
+	ToT_Window game_window(title, 15, 10, 200, 70);
 	std::vector<std::string> text = { "New Game ", "Multiplayer ", "Ranking ", "Options ", "Credits ", "Exit" };
 	int main_menu_position = 0;
 
