@@ -19,6 +19,8 @@ Window::Window(char title[], int color1, int color2, int chars_in_rows, int char
 	ConsoleFontInfoEx.cbSize = sizeof(ConsoleFontInfoEx);
 	ConsoleFontInfoEx.dwFontSize.Y = 64;
 	wcscpy_s(ConsoleFontInfoEx.FaceName, L"Lucida Console");
+	SetCurrentConsoleFontEx(window_handle, NULL, &ConsoleFontInfoEx);
+
 	for(COORD c = GetLargestConsoleWindowSize(window_handle); (c.X < chars_in_rows || c.Y < chars_in_columns) && ConsoleFontInfoEx.dwFontSize.Y > 0; c = GetLargestConsoleWindowSize(window_handle))
 	{
 		ConsoleFontInfoEx.dwFontSize.Y--;
@@ -29,6 +31,8 @@ Window::Window(char title[], int color1, int color2, int chars_in_rows, int char
 	//window setup
 	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 	window_size = GetLargestConsoleWindowSize(window_handle);
+	SetConsoleScreenBufferSize(window_handle, { window_size.X - 1,window_size.Y - 1 });
+	
 	
 	//Cursor visibility								
 	GetConsoleCursorInfo(window_handle, &console_cursor);
