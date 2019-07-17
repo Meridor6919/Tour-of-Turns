@@ -58,7 +58,7 @@ void GameMode::Options(ToT_Window &main_window)
 				main_window.color1 = Text::Choose::Horizontal(local_text, main_window.color1 - 2 - (main_window.color1 > main_window.color2), local_starting_point, Text::TextAlign::left, true, main_window) + 2;
 				if (main_window.color1 >= main_window.color2)
 					main_window.color1++;
-				main_window.Title();
+				main_window.Title({ (short)main_window.GetWidth() / 2, 0 }, Text::TextAlign::center);
 				break;
 			}
 			case 1:
@@ -77,7 +77,7 @@ void GameMode::Options(ToT_Window &main_window)
 				main_window.color2 = Text::Choose::Horizontal(local_text, main_window.color2 - 2 - (main_window.color2 > main_window.color1), local_starting_point, Text::TextAlign::left, true, main_window) + 2;
 				if (main_window.color2 >= main_window.color1)
 					main_window.color2++;
-				main_window.Title();
+				main_window.Title({ (short)main_window.GetWidth() / 2, 0 }, Text::TextAlign::center);
 				break;
 			}
 			case 2:
@@ -204,6 +204,6 @@ void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 	_getch();
 	_getch();
 	system("cls");
-	main_window.Title();
+	main_window.Title({ (short)main_window.GetWidth() / 2, 0 }, Text::TextAlign::center);
 	delete network_role;
 }

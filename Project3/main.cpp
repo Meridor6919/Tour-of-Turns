@@ -14,7 +14,7 @@ int main()
 
 	WSAData wsa_data;
 	WSAStartup(MAKEWORD(2, 2), &wsa_data);
-	game_window.Title();
+	game_window.Title({(short)game_window.GetWidth()/2, 0}, Text::TextAlign::center);
 
 	while (true)
 	{
