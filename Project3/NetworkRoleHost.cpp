@@ -4,7 +4,7 @@ Host::Host(ToT_Window &main_window, std::vector<Participant*> *participants) : S
 {
 	this->participants = participants;
 	this->main_window = &main_window;
-	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
+	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,static_cast<short>(main_window.GetHeight() - 12) }, 1, main_window);
 	stage = 0;
 	if(!StartNetwork()) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
 	{
@@ -44,6 +44,7 @@ void Host::CloseConnection()
 }
 bool Host::StartNetwork()
 {
+	//TODO use mutexes
 	HANDLE handle = main_window->GetHandle();
 	bool showing_clients = true;
 	host = new GeneralMultiPlayer::Host();
@@ -90,7 +91,7 @@ bool Host::StartNetwork()
 		}
 	});
 	
-	SetConsoleCursorPosition(handle, { 0, 23 });
+	SetConsoleCursorPosition(handle, { 0, 22 });
 	SetConsoleTextAttribute(handle, main_window->color1);
 	std::cout << "Players in lobby";
 
@@ -99,7 +100,7 @@ bool Host::StartNetwork()
 		std::vector<std::string> lobby_options = { "Start game", "Kick player", "Back" };
 		int pos = 0;
 
-		pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 20 }, 3, Text::center, true, *main_window);
+		pos = Text::Choose::Veritcal(lobby_options, pos, { (short)main_window->GetWidth() / 2, 25 }, 3, Text::center, true, *main_window);
 		clients = host->GetClientsPtr();
 
 		switch (pos)
@@ -115,7 +116,7 @@ bool Host::StartNetwork()
 				request_handler = new GeneralMultiPlayer::RequestHandler(clients->size());
 				for (short i = 0; i < static_cast<int>((*clients).size()+1); i++)
 				{
-					SetConsoleCursorPosition(handle, { 0, 23 + 2 * i });
+					SetConsoleCursorPosition(handle, { 0, 22 + 2 * i });
 					std::cout << "                    ";
 				}
 				return true;
@@ -135,12 +136,12 @@ bool Host::StartNetwork()
 
 				while (true)
 				{
-					int kicked_player = Text::Choose::Veritcal(text, 0, { (short)main_window->GetWidth() / 2, 20 }, 3, Text::center, true, *main_window);
+					int kicked_player = Text::Choose::Veritcal(text, 0, { (short)main_window->GetWidth() / 2, 25 }, 3, Text::center, true, *main_window);
 					if (kicked_player != text.size() - 1) //if host kicked somebody
 					{
 						for (int i = 0; i < (*clients).size(); i++)
 						{
-							SetConsoleCursorPosition(handle, { 0, 23 + 2 * (short)(*clients).size() });
+							SetConsoleCursorPosition(handle, { 0, 22 + 2 * (short)(*clients).size() });
 							std::cout << "                ";
 						}
 
@@ -152,7 +153,7 @@ bool Host::StartNetwork()
 
 						for (int i = 0; i < static_cast<int>(text.size()) - 1; i++)
 						{
-							SetConsoleCursorPosition(handle, { 0, 23 + 2 * (short)(*clients).size() });
+							SetConsoleCursorPosition(handle, { 0, 22 + 2 * (short)(*clients).size() });
 							SetConsoleTextAttribute(handle, main_window->color2);
 							std::cout << text[i];
 						}
@@ -164,6 +165,11 @@ bool Host::StartNetwork()
 			}
 			case 2: //back
 			{
+				for (short i = 0; i < static_cast<int>((*clients).size() + 1); i++)
+				{
+					SetConsoleCursorPosition(handle, { 0, 22 + 2 * i });
+					std::cout << "                    ";
+				}
 				host->StopBroadcasting();
 				host->StopAcceptingClients();
 				showing_clients = false;

@@ -4,7 +4,7 @@ SinglePlayer::SinglePlayer(ToT_Window &main_window, std::vector<Participant*> *p
 {
 	this->participants = participants;
 	this->main_window = &main_window;
-	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
+	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,static_cast<short>(main_window.GetHeight()-12) }, 1, main_window);
 }
 void SinglePlayer::GetTourNames(std::vector<std::string>&tours)
 {
@@ -164,7 +164,7 @@ void SinglePlayer::Attack(int ais)
 	}
 	if (rival_id.size() != 1 && (*participants)[0]->alive)
 	{
-		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);
+		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight()-17) }, 2, Text::TextAlign::center, true, *main_window);
 		if (rival_id[i] != 10)
 			(*participants)[rival_id[i]]->attacked++;
 	}

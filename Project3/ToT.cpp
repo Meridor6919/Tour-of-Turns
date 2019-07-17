@@ -23,16 +23,15 @@ void GameMode::Credits(ToT_Window &main_window)
 												Text::endl, Text::color2, Text::endl, Text::color2, Text::endl,
 												Text::endl, Text::color2, Text::endl };
 
-	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window);
+	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 25, main_window);
 	_getch();
-	_getch();
-	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 20, main_window, true);
+	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 25, main_window, true);
 }
 void GameMode::Options(ToT_Window &main_window)
 {
 	std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
-	COORD starting_point = { (short)main_window.GetWidth() / 2, 20 };
+	COORD starting_point = { (short)main_window.GetWidth() / 2+1, 25 };
 	const short spacing = 3;
 	bool loop = true;
 
@@ -82,7 +81,7 @@ void GameMode::Options(ToT_Window &main_window)
 			}
 			case 2:
 			{
-				static bool flag = false;
+				static bool flag = true;
 				std::vector<std::string> local_text = { "on", "off" };
 				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()/2 +3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				
@@ -116,43 +115,7 @@ void GameMode::Options(ToT_Window &main_window)
 }
 void GameMode::Ranking(ToT_Window &main_window)
 {
-	HANDLE handle = main_window.GetHandle();
-	std::vector<std::string> maps_rankings;
-	std::vector<std::string>map_information;
-	std::string tmp_string;
-	std::fstream fvar;
-	int position = 0;
-	short tmp_int;
-
-	fvar.open("Ranking.txt", std::ios::in);
-
-	while (std::getline(fvar, tmp_string))
-		maps_rankings.push_back(tmp_string.erase(tmp_string.size() - 5, 5));
-	
-	fvar.close();
-
-	do
-	{
-		tmp_int = position;
-
-		Text::TableText(map_information, 1, 6, 3, main_window.GetWidth() / 6, { 0,23 }, main_window, true);
-		map_information.clear();
-
-		map_information = { "Points", "Name", "Car", "AI","Time","Place" };
-
-		fvar.open((maps_rankings[position] + ".rank").c_str(), std::ios::in);
-
-		while (std::getline(fvar, tmp_string))
-			map_information.push_back(tmp_string);
-
-		Text::TableText(map_information, 1, 6, 3, main_window.GetWidth() / 6, { 0,23 }, main_window);
-		fvar.close();
-
-		position = Text::Choose::Horizontal(maps_rankings, position, { (short)main_window.GetWidth() / 2, 18 }, Text::TextAlign::center, true, main_window);
-	} while (tmp_int != position);
-
-	Text::TableText(map_information, 1, 6, 3, main_window.GetWidth() / 6, { 0,23 }, main_window, true);
-	map_information.clear();
+	//TODO ranking should show players accuracy in decision making instead of showing lucky and stupid ones that scores the highest
 }
 void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 {
@@ -163,7 +126,7 @@ void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 	{
 		std::vector<std::string> options = { "Host game", "Search game", "Back" };
 
-		switch (Text::Choose::Veritcal(options, 0, { (short)main_window.GetWidth() / 2, 20 }, 3, Text::TextAlign::center, true, main_window))
+		switch (Text::Choose::Veritcal(options, 0, { (short)main_window.GetWidth() / 2, 25 }, 3, Text::TextAlign::center, true, main_window))
 		{
 		case 0:
 		{

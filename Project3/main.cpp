@@ -5,7 +5,6 @@
 
 int main()
 {
-	//TODO scalability to window size and font size
 	//TODO make maps cars and tires
 	char title[] = "Tour of Turns";
 	ToT_Window game_window(title, 15, 10, 200, 70);
@@ -18,7 +17,7 @@ int main()
 
 	while (true)
 	{
-		switch (main_menu_position = Text::Choose::Veritcal(text, main_menu_position, { (short)game_window.GetWidth() / 2, 20 }, 3, Text::TextAlign::center, true, game_window))
+		switch (main_menu_position = Text::Choose::Veritcal(text, main_menu_position, { (short)game_window.GetWidth() / 2+1, 25 }, 3, Text::TextAlign::center, true, game_window))
 		{
 			case 0:
 			case 1:

@@ -6,7 +6,7 @@ Client::Client(ToT_Window &main_window, std::vector<Participant*> *participants)
 {
 	this->participants = participants;
 	this->main_window = &main_window;
-	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,56 }, 1, main_window);
+	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,static_cast<short>(main_window.GetHeight() - 12) }, 1, main_window);
 	stage = 0;
 	if (!StartNetwork())
 	{
@@ -32,7 +32,7 @@ void Client::CloseConnection()
 bool Client::StartNetwork()
 {
 	HANDLE handle = main_window->GetHandle();
-	COORD starting_point = { (short)main_window->GetWidth() / 2, 20 };
+	COORD starting_point = { (short)main_window->GetWidth() / 2, 25 };
 	short cursor_pos = 0;
 	char button = ' ';
 	std::map<int, std::string>::iterator  it;

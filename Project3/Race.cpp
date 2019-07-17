@@ -10,7 +10,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 {
 	//lobby parameters
 	std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
-	COORD starting_point = { (short)main_window->GetWidth() / 2, 20 };
+	COORD starting_point = { (short)main_window->GetWidth() / 2, 25 };
 	const short spacing = 3;
 	short main_menu_position = 0;
 	const int max_name_size = 14;
@@ -67,7 +67,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
 		car_parameters.push_back(std::to_string(params1[i]));													
 	}																											
-	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);				
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window);				
 			
 	//showing tire parameters
 	auto params2 = network_role->GetTireParameters(tire_path);													
@@ -76,7 +76,7 @@ void  Race::Lobby(SinglePlayer *network_role)
 		tire_parameters.push_back(Modifiers::tire_modifiers[i]+ ": ");//atrib names:							
 		tire_parameters.push_back(params2[i]);																	
 	}																											
-	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);			
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window);			
 
 	//menu segment
 	while (main_menu_position != 5 || cars.size() == 0)
@@ -209,8 +209,8 @@ void  Race::Lobby(SinglePlayer *network_role)
 	}
 
 	//clearing params segment
-	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window, true);
-	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window, true);
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window, true);
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window, true);
 
 	//loading player
 	participants->emplace_back(new Participant(name, car_path, tire_path, *network_role));
@@ -299,7 +299,6 @@ void Race::Ending(std::vector<std::pair<float, std::string>> ranking_info)
 }
 int Race::Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool clear)
 {
-	//TODO change ranking to show players accuracy in decision making instead of showing lucky and stupid ones that scores the highest
 	std::vector<std::string> text;
 	text.push_back("PLACE");
 	text.push_back("RACER");
@@ -314,7 +313,7 @@ int Race::Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool
 		if (ranking_info[i].second == (*participants)[0]->name && ranking_info[i].first == (*participants)[0]->score)
 			ret = i + 1;
 	}
-	Text::TableText(text, 1, 3, 3, 16, { static_cast<short>(main_window->GetWidth() - 55), 17 }, *main_window, clear);
+	Text::TableText(text, 1, 3, 2, 16, { static_cast<short>(main_window->GetWidth() - 55), 16 }, *main_window, clear);
 
 	if (clear)
 		return 0;
@@ -325,7 +324,7 @@ void Race::Interface()
 {
 	HANDLE window = main_window->GetHandle();
 
-	std::string string[5] = {
+	std::string possible_actions[5] = {
 		"You can speed up by (0 to " + std::to_string(static_cast<int>((*participants)[0]->car_modifiers[CarModifiers::max_accelerating])) + ")   ",
 		"You can slow down by (0 to " + std::to_string(static_cast<int>((*participants)[0]->car_modifiers[CarModifiers::max_braking])) + ")   ",
 		"Hand brake value is - " + std::to_string(static_cast<int>((*participants)[0]->car_modifiers[CarModifiers::hand_brake_value]))+ "   ",
@@ -353,20 +352,20 @@ void Race::Interface()
 	for (int i = 0; i < 5; i++)
 	{
 		SetConsoleCursorPosition(window, { 2, static_cast<short>(40 + i * 2) });
-		std::cout << string[i];
+		std::cout << possible_actions[i];
 	}
-	SetConsoleCursorPosition(window, { 0, 53 });
+	SetConsoleCursorPosition(window, { 0, static_cast<short>(main_window->GetHeight() - 15) });
 	SetConsoleTextAttribute(window, main_window->color2);
 	std::cout << "                          Infobox                         " << std::endl;
 	std::cout << "----------------------------------------------------------";
-	SetConsoleCursorPosition(window, { 0, 67 });
+	SetConsoleCursorPosition(window, { 0, static_cast<short>(main_window->GetHeight()-1) });
 	std::cout << "----------------------------------------------------------";
 
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 34),48 });
-	std::cout << "Action Box";
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), 49});
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 34), static_cast<short>(main_window->GetHeight() - 20) });
+	std::cout << "Attack Box";
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 19) });
 	std::cout << "---------------------------------------------";
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51),67 });
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight()-1) });
 	std::cout << "---------------------------------------------";
 }
 void Race::VisionBox(std::vector<std::string> visible_tour, int visibility)
