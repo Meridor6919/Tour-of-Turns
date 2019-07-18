@@ -1,7 +1,7 @@
 #pragma once
 #include "Window.h"
 #include "TextLib.h"
-
+;
 class ToT_Window : public Window
 {
 protected:

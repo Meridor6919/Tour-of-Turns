@@ -1,5 +1,5 @@
 #include "ToT.h"
-;
+
 void GameMode::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
@@ -163,9 +163,6 @@ void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 	Race race(main_window, &participants);
 	race.Lobby(network_role);
 	race.Ending(race.Game());
-	
-	_getch();
-	_getch();
 	system("cls");
 	main_window.Title({ (short)main_window.GetWidth() / 2, 0 }, Text::TextAlign::center);
 	delete network_role;

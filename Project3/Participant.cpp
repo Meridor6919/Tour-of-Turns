@@ -326,27 +326,8 @@ void Participant::Test(std::string field, bool show)
 		int passed_tests = 0;
 		int max = 0, min = 100;
 		float local_score;
-		float formula;
-		float base = (static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()))) / static_cast<float>(atof(field.c_str())) * 100 + static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()));
-
-		if (base < 0)
-			base = 0;
-
-		if (drift == true)
-		{
-			base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(5 * attacked);
-			if (base > 100.0f)
-				base = 100.0f;
-			formula = (current_speed + base) / 2;	//formula that return percentage needed to pass a test
-		}
-		else
-		{
-			base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(0.15f * attacked);
-			if (base > 100.0f)
-				base = 100.0f;
-			formula = 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;	//formula that return percentage needed to pass a test
-		}
-
+		float formula = EvaluateChance(field);
+		
 		attacked = 0;
 
 		//testing algorithm
@@ -427,5 +408,28 @@ void Participant::Test(std::string field, bool show)
 	}
 	else	//normal socre
 		score += 100 / (1 + current_speed * 10.0f / 36.0f);
+}
+
+float Participant::EvaluateChance(std::string field)
+{
+	float base = (static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()))) / static_cast<float>(atof(field.c_str())) * 100 + static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()));
+
+	if (base < 0)
+		base = 0;
+
+	if (drift == true)
+	{
+		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(5 * attacked);
+		if (base > 100.0f)
+			base = 100.0f;
+		return (current_speed + base) / 2;
+	}
+	else
+	{
+		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(0.15f * attacked);
+		if (base > 100.0f)
+			base = 100.0f;
+		return 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;
+	}
 }
 

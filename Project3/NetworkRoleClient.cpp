@@ -238,8 +238,9 @@ std::vector<std::string> Client::GetTireParameters(std::string path)
 	tire_path = path;
 	return ret;
 }
-std::vector<std::pair<float, std::string>> Client::GetRankingInfo()
+std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::string current_field)
 {
+	this->current_field = current_field;
 	char buffer[254] = "0";
 	float fhelper;
 	std::vector<std::pair<float, std::string>> ret = {};
@@ -316,11 +317,11 @@ void Client::Attack(int ais)
 			break;
 	}
 	
-	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), 51 }, 2, Text::TextAlign::center, true, *main_window);
+	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, 2, Text::TextAlign::center, true, *main_window);
 	strcpy(buffer, ("54" + id[i]).c_str());
 	send(host, buffer, 254, 0);
 }
-bool Client::GetCurrentAtribs(int real_players, std::string field)
+bool Client::GetCurrentAtribs(int real_players)
 {
 
 	char buffer[254] = "0";

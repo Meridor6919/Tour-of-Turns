@@ -265,7 +265,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 7://get ranking info 
 	{
-		std::vector<std::pair<float, std::string>> ranking = GetRankingInfo();
+		std::vector<std::pair<float, std::string>> ranking = GetRankingInfo(current_field);
 
 		for (int i = 0; i < ranking.size(); i++)
 		{
@@ -378,13 +378,13 @@ void Host::GetOtherParticipants(int ais, std::string tour)
 	SinglePlayer::GetOtherParticipants(ais, tour);
 	stage =1;
 }
-std::vector<std::pair<float, std::string>> Host::GetRankingInfo()
+std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::string current_field)
 {
-	return SinglePlayer::GetRankingInfo();
+	return SinglePlayer::GetRankingInfo(current_field);
 }
-bool Host::GetCurrentAtribs(int real_players, std::string field)
+bool Host::GetCurrentAtribs(int real_players)
 {
-	bool ret = SinglePlayer::GetCurrentAtribs(real_players, field);
+	bool ret = SinglePlayer::GetCurrentAtribs(real_players);
 	stage++;
 	return ret;
 }

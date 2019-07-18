@@ -78,12 +78,13 @@ std::vector<std::string> SinglePlayer::GetTourParameters(std::string path)
 
 	return ret;
 }
-std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
+std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo(std::string current_field)
 {
 	std::vector<std::pair<float, std::string>> ret;
-
 	std::vector<float> scores;
 	std::vector<std::string> names;
+
+	this->current_field = current_field;
 
 	for (int i = 0; i < (*participants).size(); i++)
 	{
@@ -117,10 +118,10 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 	}
 	return ret;
 }
-bool SinglePlayer::GetCurrentAtribs(int real_players, std::string field)
+bool SinglePlayer::GetCurrentAtribs(int real_players)
 {
 	for (int i = 0; i < (*participants).size(); i++)
-		(*participants)[i]->Test(field, i < real_players);
+		(*participants)[i]->Test(current_field, i < real_players);
 
 	for (int i = (*participants).size() - 1; i >= 0; i--)
 	{

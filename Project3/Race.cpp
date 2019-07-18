@@ -223,8 +223,8 @@ std::vector<std::pair<float, std::string>> Race::Game()
 
 	//initialization of important variables
 	SinglePlayer* network_role = (*participants)[0]->network_role;
-	std::vector<std::pair<float, std::string>> ranking_info = network_role->GetRankingInfo();
-	std::vector<std::string> tour = network_role->GetTourParameters(tour_path);	
+	std::vector<std::string> tour = network_role->GetTourParameters(tour_path);
+	std::vector<std::pair<float, std::string>> ranking_info = network_role->GetRankingInfo(tour[0]);
 	int visibility = (*participants)[0]->car_modifiers[CarModifiers::visibility];
 	
 	//pre-game_loop interface loading
@@ -260,16 +260,17 @@ std::vector<std::pair<float, std::string>> Race::Game()
 		
 		if (turn < tour.size())//game runs until tour size +1 because of "meta" sign in the end of the race, but atribs take current tour part so if statement is needed
 		{
-			network_role->GetCurrentAtribs(static_cast<int>((*participants).size()) - ais, tour[turn]);	//if durability != 0
+			network_role->GetCurrentAtribs(static_cast<int>((*participants).size()) - ais);	//if durability != 0
 			Interface();
 		}
 
-		std::vector<std::pair<float, std::string>> temp = network_role->GetRankingInfo();
+		std::vector<std::pair<float, std::string>> temp = network_role->GetRankingInfo(turn>=tour.size()-1?"0":tour[turn+1]);
 		Ranking(ranking_info, true);	
 		ranking_info = temp;
 		Ranking(ranking_info, false);
 	}
-	
+	_getch();
+	_getch();
 	return ranking_info;
 }
 void Race::Ending(std::vector<std::pair<float, std::string>> ranking_info)
@@ -366,6 +367,13 @@ void Race::Interface()
 	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 19) });
 	std::cout << "---------------------------------------------";
 	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight()-1) });
+	std::cout << "---------------------------------------------";
+
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 39), static_cast<short>(main_window->GetHeight() - 31) });
+	std::cout << "Chance of succeeding";
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 30) });
+	std::cout << "---------------------------------------------";
+	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 22) });
 	std::cout << "---------------------------------------------";
 }
 void Race::VisionBox(std::vector<std::string> visible_tour, int visibility)
