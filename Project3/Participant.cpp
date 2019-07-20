@@ -326,7 +326,7 @@ void Participant::Test(std::string field, bool show)
 		int passed_tests = 0;
 		int max = 0, min = 100;
 		float local_score;
-		float formula = EvaluateChance(field);
+		float formula = EvaluateChance(field, current_speed, drift);
 		
 		attacked = 0;
 
@@ -410,9 +410,11 @@ void Participant::Test(std::string field, bool show)
 		score += 100 / (1 + current_speed * 10.0f / 36.0f);
 }
 
-float Participant::EvaluateChance(std::string field)
+float Participant::EvaluateChance(std::string field, float speed, bool drift)
 {
-	float base = (static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()))) / static_cast<float>(atof(field.c_str())) * 100 + static_cast<float>(current_speed) - static_cast<float>(atof(field.c_str()));
+	if (field.size() < 2)
+		return 0;
+	float base = (static_cast<float>(speed) - static_cast<float>(atof(field.c_str()))) / static_cast<float>(atof(field.c_str())) * 100 + static_cast<float>(speed) - static_cast<float>(atof(field.c_str()));
 
 	if (base < 0)
 		base = 0;
@@ -422,7 +424,7 @@ float Participant::EvaluateChance(std::string field)
 		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(5 * attacked);
 		if (base > 100.0f)
 			base = 100.0f;
-		return (current_speed + base) / 2;
+		return (speed + base) / 2;
 	}
 	else
 	{

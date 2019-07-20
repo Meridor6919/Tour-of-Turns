@@ -192,7 +192,7 @@ void SinglePlayer::TakeAction()
 {
 	//player
 	std::vector<std::string> actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
-	static int position = 0;
+	static short position = 0;
 	HANDLE window = main_window->GetHandle();
 	char button;
 	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
@@ -200,6 +200,7 @@ void SinglePlayer::TakeAction()
 	while (true)
 	{
 		int value = 0;
+		ShowChances(0, 0, true);
 		switch (position = Text::Choose::Veritcal(actions, position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window))
 		{
 			case 0:
@@ -218,10 +219,48 @@ void SinglePlayer::TakeAction()
 				}
 				
 				std::cout << ": ";
-				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-				value = Text::Choose::Numeric((*participants)[0]->car_modifiers[CarModifiers::max_accelerating + position], {console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y}, true, *main_window);
-				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
-				std::cout << "  ";
+				char button;
+				short pos = 0;
+				while (true)//while player presses enter
+				{
+					button = _getch();
+					SetConsoleCursorPosition(window, {(short)actions[position].size()+3 + pos,39+2*position});
+					if (button >= '0' && button <= '9')
+					{
+						if (button == '0' && pos == 0)
+							continue;
+						else if (value * 10 + button - 48 > (*participants)[0]->car_modifiers[CarModifiers::max_accelerating + position])
+							continue;
+
+						std::cout << button;
+						value = value * 10 + button - 48;
+						pos++;
+					}
+					else if (button == '\b' && pos != 0)
+					{
+						std::cout << "\b \b";
+						value /= 10;
+						pos--;
+					}
+					else if (button == 13)
+					{
+						break;
+					}
+
+					if (value > 0)
+					{
+						ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1))*0.9, false)),
+							(100 / (1 + ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1))*0.9 * 10.0f / 36.0f)));
+					}
+					else
+					{
+						ShowChances(0, 0, true);
+					}
+				}
+				SetConsoleCursorPosition(window, { (short)actions[position].size()+1,39 + 2 * position });
+				for (int i = 0; i < pos+2 ; i++)
+					std::cout << " ";
+
 				if (value == 0)
 					break;
 				
@@ -246,12 +285,30 @@ void SinglePlayer::TakeAction()
 		{
 			while (true)
 			{
+				if ((*participants)[0]->current_speed <= 0)
+				{
+					std::cout << " - You can't do this because you aren't moving...";
+					main_window->Pause(1500);
+					GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
+					SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 49,console_screen_buffer_info.dwCursorPosition.Y });
+					std::cout << "                                                 ";
+					break;
+				}
+				if (position == 2)
+				{
+					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value])*0.9, (*participants)[0]->current_speed > 40)),
+						(*participants)[0]->current_speed > 40 ? 1.5 : 100 / (1 + ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value])*0.9 * 10.0f / 36.0f));
+				}
+				else if (position == 3)
+				{
+					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed)*0.9, false)),
+						(100 / (1 + (*participants)[0]->current_speed*0.9 * 10.0f / 36.0f)));
+				}
+				SetConsoleCursorPosition(window, { (short)actions[position].size() + 1,39 + 2 * position });
 				std::cout << " - Do you really want to do this ? (Y/N) ";
 				button = _getch();
-				GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 41,console_screen_buffer_info.dwCursorPosition.Y });
+				SetConsoleCursorPosition(window, { (short)actions[position].size() + 1,39 + 2 * position });
 				std::cout << "                                         ";
-				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 41,console_screen_buffer_info.dwCursorPosition.Y });
 				if (button == 'y' || button == 'Y')
 				{
 					if (position == 4)
@@ -259,9 +316,7 @@ void SinglePlayer::TakeAction()
 						(*participants)[0]->current_durability = 0;
 						return;
 					}
-
-
-					if ((*participants)[0]->current_speed > 0)
+					else
 					{
 						if (position == 2)
 						{
@@ -273,15 +328,6 @@ void SinglePlayer::TakeAction()
 						}
 						(*participants)[0]->current_speed = (*participants)[0]->current_speed*0.9f;
 						return;
-					}
-					else
-					{
-						std::cout << " - You can't do this because you aren't moving...";
-						main_window->Pause(1500);
-						GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-						SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 49,console_screen_buffer_info.dwCursorPosition.Y });
-						std::cout << "                                                 ";
-						break;
 					}
 				}
 				else if (button == 13 || button == 27 || button == 'n' || button == 'N')
@@ -314,4 +360,37 @@ void SinglePlayer::GetOthersAction(int ais, std::vector<std::string> &tour)
 int SinglePlayer::Possible_AIs()
 {
 	return 7;
+}
+
+void SinglePlayer::ShowChances(double chance_to_succeed, double estimated_time, bool reset)
+{
+	HANDLE window = main_window->GetHandle();
+	std::string helper;
+	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, "Chance: "},  {estimated_time, "Estimated time: "} };
+
+	if (!reset)
+	{
+		for (short i = 0; i < values.size(); i++)
+		{
+			if (values[i].first < 0.01)
+				values[i].first = 0;
+			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 27 - i) });
+			SetConsoleTextAttribute(window, main_window->color1);
+			std::cout << values[i].second;
+			SetConsoleTextAttribute(window, main_window->color2);
+			helper = std::to_string(values[i].first);
+			helper = helper.substr(0, helper.size() - 4);
+			std::cout << helper << "              ";
+		}
+	}
+	else
+	{
+		for (short i = 0; i < values.size(); i++)
+		{
+			SetConsoleTextAttribute(window, main_window->color1);
+			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 27 - i) });
+			std::cout << values[i].second << "                   ";
+		}
+		SetConsoleTextAttribute(window, main_window->color2);
+	}
 }

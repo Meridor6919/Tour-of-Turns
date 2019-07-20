@@ -54,5 +54,5 @@ public:
 	Participant(SinglePlayer *network_role, std::string tour_path);	//creating AI
 	void TakeAction(int safe_speed, bool turn);	//ai action
 	void Test(std::string field, bool show);
-	float EvaluateChance(std::string field);
+	float EvaluateChance(std::string field, float speed, bool drift);
 };
