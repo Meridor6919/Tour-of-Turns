@@ -251,7 +251,6 @@ std::vector<std::pair<float, std::string>> Race::Game()
 		if(turn > 0)	//attacking players starting with second turn 
 			network_role->Attack(static_cast<int>((*participants).size())-static_cast<int>((*participants)[0]->alive));
 
-		//TODO additional panel that shows chance to succeed
 		if ((*participants)[0]->alive)		//if main player is alive he can choose an action, else he can only watch
 			network_role->TakeAction();
 		
@@ -310,7 +309,8 @@ int Race::Ranking(std::vector<std::pair<float, std::string>> &ranking_info, bool
 	{
 		text.push_back(std::to_string(i + 1));
 		text.push_back(ranking_info[i].second);
-		text.push_back(std::to_string(static_cast<int>(ranking_info[i].first)));
+		text.push_back(std::to_string(ranking_info[i].first));
+		text[text.size() - 1] = text[text.size() - 1].substr(0, text[text.size() - 1].size() - 4);
 		if (ranking_info[i].second == (*participants)[0]->name && ranking_info[i].first == (*participants)[0]->score)
 			ret = i + 1;
 	}
@@ -342,12 +342,17 @@ void Race::Interface()
 	std::cout << " Your current speed is: ";
 	SetConsoleTextAttribute(window, main_window->color2);
 
-	std::cout << static_cast<int>((*participants)[0]->current_speed) << "     ";
+	std::string speed = std::to_string((*participants)[0]->current_speed);
+	std::string durability = std::to_string((*participants)[0]->current_durability);
+	speed = speed.substr(0, speed.size() - 4);
+	durability = durability.substr(0, durability.size() - 4);
+
+	std::cout << speed << "     ";
 	SetConsoleTextAttribute(window, main_window->color1);
 	SetConsoleCursorPosition(window, { 0, 20 });
 	std::cout << " Your vehice has ";
 	SetConsoleTextAttribute(window, main_window->color2);
-	std::cout << static_cast<int>((*participants)[0]->current_durability) << " durability   ";
+	std::cout << durability << " durability   ";
 
 	SetConsoleTextAttribute(window, 8);
 	for (int i = 0; i < 5; i++)
