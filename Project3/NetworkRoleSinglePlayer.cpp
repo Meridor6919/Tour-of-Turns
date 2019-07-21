@@ -200,7 +200,7 @@ void SinglePlayer::TakeAction()
 	while (true)
 	{
 		int value = 0;
-		ShowChances(0, 0, true);
+		ShowChances(0, 0, 0, true);
 		switch (position = Text::Choose::Veritcal(actions, position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window))
 		{
 			case 0:
@@ -250,11 +250,12 @@ void SinglePlayer::TakeAction()
 					if (value > 0)
 					{
 						ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1))*0.9, false)),
-							(100 / (1 + ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1))*0.9 * 10.0f / 36.0f)));
+							(100 / (1 + ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1)>0? (*participants)[0]->current_speed + value * (position > 0 ? -1 : 1):0)*9.0f / 36.0f)),
+							0);
 					}
 					else
 					{
-						ShowChances(0, 0, true);
+						ShowChances(0, 0, 0, true);
 					}
 				}
 				SetConsoleCursorPosition(window, { (short)actions[position].size()+1,39 + 2 * position });
@@ -296,13 +297,15 @@ void SinglePlayer::TakeAction()
 				}
 				if (position == 2)
 				{
-					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value])*0.9, (*participants)[0]->current_speed > 40)),
-						(*participants)[0]->current_speed > 40 ? 1.5 : 100 / (1 + ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value])*0.9 * 10.0f / 36.0f));
+					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value])*0.9, (*participants)[0]->current_speed > 40 && current_field.size() > 1)),
+						(*participants)[0]->current_speed > 40 && current_field.size()>1 ? 1.5 : 100 / (1 + ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value] > 0? (*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value]:0)*9.0f / 36.0f),
+						0);
 				}
 				else if (position == 3)
 				{
 					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed)*0.9, false)),
-						(100 / (1 + (*participants)[0]->current_speed*0.9 * 10.0f / 36.0f)));
+						(100 / (1 + (*participants)[0]->current_speed*9.0f / 36.0f)),
+						0);
 				}
 				SetConsoleCursorPosition(window, { (short)actions[position].size() + 1,39 + 2 * position });
 				std::cout << " - Do you really want to do this ? (Y/N) ";
@@ -320,7 +323,7 @@ void SinglePlayer::TakeAction()
 					{
 						if (position == 2)
 						{
-							if ((*participants)[0]->current_speed > 40)
+							if ((*participants)[0]->current_speed > 40 && current_field.size() > 1)
 								(*participants)[0]->drift = true;
 							(*participants)[0]->current_speed -= static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::hand_brake_value]);
 							if ((*participants)[0]->current_speed < 0)
@@ -362,11 +365,11 @@ int SinglePlayer::Possible_AIs()
 	return 7;
 }
 
-void SinglePlayer::ShowChances(double chance_to_succeed, double estimated_time, bool reset)
+void SinglePlayer::ShowChances(double chance_to_succeed, double estimated_time, double burned_durability, bool reset)
 {
 	HANDLE window = main_window->GetHandle();
 	std::string helper;
-	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, "Chance: "},  {estimated_time, "Estimated time: "} };
+	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, "Chance: "},  {estimated_time, "Estimated time: "}, {burned_durability, "Durability burning: "} };
 
 	if (!reset)
 	{

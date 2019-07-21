@@ -1,6 +1,6 @@
 #include "ToT.h"
 
-void GameMode::Credits(ToT_Window &main_window)
+void GameMode_::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
 
@@ -27,7 +27,7 @@ void GameMode::Credits(ToT_Window &main_window)
 	_getch();
 	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 25, main_window, true);
 }
-void GameMode::Options(ToT_Window &main_window)
+void GameMode_::Options(ToT_Window &main_window)
 {
 	std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
@@ -113,11 +113,11 @@ void GameMode::Options(ToT_Window &main_window)
 		}
 	}
 }
-void GameMode::Ranking(ToT_Window &main_window)
+void GameMode_::Ranking(ToT_Window &main_window)
 {
 	//TODO ranking should show players accuracy in decision making instead of showing lucky and stupid ones that scores the highest
 }
-void GameMode::Game(bool multiplayer, ToT_Window &main_window)
+void GameMode_::Game(bool multiplayer, ToT_Window &main_window)
 {
 	SinglePlayer *network_role = nullptr;
 	std::vector<Participant*> participants;
