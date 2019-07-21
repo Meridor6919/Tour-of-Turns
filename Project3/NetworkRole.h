@@ -35,6 +35,7 @@ public:
 	virtual void GetOthersAction(int ais, std::vector<std::string> &tour);
 	virtual int Possible_AIs();
 	void ShowChances(double chance_to_succeed, double estimated_time, double burned_durability, bool reset=false);
+	double CalculateBurning(double value);
 };
 
 class Host : public SinglePlayer {

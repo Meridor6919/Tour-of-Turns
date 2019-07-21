@@ -414,6 +414,9 @@ float Participant::EvaluateChance(std::string field, float speed, bool drift)
 {
 	if (field.size() < 2)
 		return 0;
+	if (speed > car_modifiers[CarModifiers::max_speed] * 1.25)
+		speed > car_modifiers[CarModifiers::max_speed] * 1.25;
+
 	float base = (static_cast<float>(speed) - static_cast<float>(atof(field.c_str()))) / static_cast<float>(atof(field.c_str())) * 100 + static_cast<float>(speed) - static_cast<float>(atof(field.c_str()));
 
 	if (base < 0)

@@ -251,7 +251,7 @@ void SinglePlayer::TakeAction()
 					{
 						ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1))*0.9, false)),
 							(100 / (1 + ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1)>0? (*participants)[0]->current_speed + value * (position > 0 ? -1 : 1):0)*9.0f / 36.0f)),
-							0);
+							CalculateBurning((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1) - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
 					}
 					else
 					{
@@ -274,8 +274,13 @@ void SinglePlayer::TakeAction()
 				else
 				{
 					(*participants)[0]->current_speed += value;
-					if ((*participants)[0]->current_speed > static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed]))
-						(*participants)[0]->current_speed = static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed]);
+				}
+				if ((*participants)[0]->current_speed > static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed]))
+				{
+					if ((*participants)[0]->current_speed > static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed])*1.25)
+						(*participants)[0]->current_speed = static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed]*1.25);
+
+					(*participants)[0]->current_durability -= CalculateBurning((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::max_speed]);
 				}
 				(*participants)[0]->current_speed = (*participants)[0]->current_speed*0.9f;
 				return;		
@@ -299,13 +304,13 @@ void SinglePlayer::TakeAction()
 				{
 					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value])*0.9, (*participants)[0]->current_speed > 40 && current_field.size() > 1)),
 						(*participants)[0]->current_speed > 40 && current_field.size()>1 ? 1.5 : 100 / (1 + ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value] > 0? (*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value]:0)*9.0f / 36.0f),
-						0);
+						CalculateBurning((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value] - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
 				}
 				else if (position == 3)
 				{
 					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed)*0.9, false)),
 						(100 / (1 + (*participants)[0]->current_speed*9.0f / 36.0f)),
-						0);
+						CalculateBurning((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
 				}
 				SetConsoleCursorPosition(window, { (short)actions[position].size() + 1,39 + 2 * position });
 				std::cout << " - Do you really want to do this ? (Y/N) ";
@@ -328,6 +333,12 @@ void SinglePlayer::TakeAction()
 							(*participants)[0]->current_speed -= static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::hand_brake_value]);
 							if ((*participants)[0]->current_speed < 0)
 								(*participants)[0]->current_speed = 0.0f;
+						}
+						if ((*participants)[0]->current_speed > static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed]))
+						{
+							if ((*participants)[0]->current_speed > static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed])*1.25)
+								(*participants)[0]->current_speed = static_cast<float>((*participants)[0]->car_modifiers[CarModifiers::max_speed] * 1.25);
+							(*participants)[0]->current_durability -= CalculateBurning((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::max_speed]);
 						}
 						(*participants)[0]->current_speed = (*participants)[0]->current_speed*0.9f;
 						return;
@@ -396,4 +407,23 @@ void SinglePlayer::ShowChances(double chance_to_succeed, double estimated_time, 
 		}
 		SetConsoleTextAttribute(window, main_window->color2);
 	}
+}
+double SinglePlayer::CalculateBurning(double value)
+{
+	if (value < 0)
+		return 0;
+	double raw = value / (*participants)[0]->car_modifiers[CarModifiers::max_speed];
+
+	if (raw > 0.25)
+	{
+		raw = 0.25;
+		value = (*participants)[0]->car_modifiers[CarModifiers::max_speed] * 0.25;
+	}
+
+	double result = 0;
+	for (int i = 1; i < raw / 0.05 + 3; i++)
+	{
+		result += i * value;
+	}
+	return result/10;
 }
