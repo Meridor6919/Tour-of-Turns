@@ -249,9 +249,15 @@ void SinglePlayer::TakeAction()
 
 					if (value > 0)
 					{
-						ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1))*0.9, false)),
-							(100 / (1 + ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1)>0? (*participants)[0]->current_speed + value * (position > 0 ? -1 : 1):0)*9.0f / 36.0f)),
-							CalculateBurning((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1) - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
+						double speed_estimation = ((*participants)[0]->current_speed + value * (position > 0 ? -1 : 1));
+						if (speed_estimation > static_cast<double>((*participants)[0]->car_modifiers[CarModifiers::max_speed])*1.25)
+							speed_estimation = static_cast<double>((*participants)[0]->car_modifiers[CarModifiers::max_speed])*1.25;
+						else if (speed_estimation < 0)
+							speed_estimation = 0;
+
+						ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, speed_estimation*0.9, false)),
+							(100 / (1 + speed_estimation*9.0f / 36.0f)),
+							CalculateBurning(speed_estimation - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
 					}
 					else
 					{
@@ -302,15 +308,23 @@ void SinglePlayer::TakeAction()
 				}
 				if (position == 2)
 				{
-					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value])*0.9, (*participants)[0]->current_speed > 40 && current_field.size() > 1)),
-						(*participants)[0]->current_speed > 40 && current_field.size()>1 ? 1.5 : 100 / (1 + ((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value] > 0? (*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value]:0)*9.0f / 36.0f),
-						CalculateBurning((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value] - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
+					double speed_estimation = (*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::hand_brake_value];
+					if (speed_estimation < 0)
+						speed_estimation = 0;
+
+					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, speed_estimation*0.9, (*participants)[0]->current_speed > 40 && current_field.size() > 1)),
+						(*participants)[0]->current_speed > 40 && current_field.size()>1 ? 1.5 : 100 / (1 + speed_estimation*9.0f / 36.0f),
+						CalculateBurning(speed_estimation - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
 				}
 				else if (position == 3)
 				{
-					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, ((*participants)[0]->current_speed)*0.9, false)),
-						(100 / (1 + (*participants)[0]->current_speed*9.0f / 36.0f)),
-						CalculateBurning((*participants)[0]->current_speed - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
+					double speed_estimation = (*participants)[0]->current_speed;
+					if (speed_estimation < 0)
+						speed_estimation = 0;
+
+					ShowChances((int)(100 - (*participants)[0]->EvaluateChance(current_field, (*participants)[0]->current_speed*0.9, false)),
+						(100 / (1 + speed_estimation*9.0f / 36.0f)),
+						CalculateBurning(speed_estimation - (*participants)[0]->car_modifiers[CarModifiers::max_speed]));
 				}
 				SetConsoleCursorPosition(window, { (short)actions[position].size() + 1,39 + 2 * position });
 				std::cout << " - Do you really want to do this ? (Y/N) ";
