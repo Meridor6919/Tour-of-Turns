@@ -69,7 +69,7 @@ bool Host::StartNetwork()
 				char h[30];
 				getnameinfo((sockaddr *)(&clients[i].second), sizeof(clients[i].second), h, sizeof(h), NULL, NULL,0);
 
-				std::string clientname = (std::string)h + " - " + host->GetIP(clients[i].second);
+				std::string clientname = (std::string)h + " - " + host->GetThisIp(clients[i].second);
 
 				for (int j = 0; j < 50; j++)
 				{

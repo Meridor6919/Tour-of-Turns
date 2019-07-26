@@ -9,8 +9,13 @@ void GeneralMultiPlayer::Host::Broadcast(unsigned long addr_range, int ms_interv
 {
 	broadcast_running = true;
 
-	//creating socket in udp protocole for broadcasting msgs
+	//UDP protocol to broadcast messages to all addresses in local network and virtual local network if flag is set
 	SOCKET broadcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	sockaddr_in sock_addr;
+	memset(&sock_addr, 0, sizeof(sock_addr));
+	sock_addr.sin_family = AF_INET;
+	sock_addr.sin_port = htons(6919);
+	sock_addr.sin_addr.s_addr = addr_range;
 
 	if (broadcast_socket < 0)
 	{
@@ -18,32 +23,20 @@ void GeneralMultiPlayer::Host::Broadcast(unsigned long addr_range, int ms_interv
 		WSACleanup();
 		exit(0);
 	}
-
-	//setting socket to broadcast
-	char option = 1;
-	if (setsockopt(broadcast_socket, SOL_SOCKET, SO_BROADCAST, &option, sizeof(int)) < 0)
+	if (setsockopt(broadcast_socket, SOL_SOCKET, SO_BROADCAST, 0, sizeof(int)) < 0)
 	{
 		MessageBox(0, ("Socket option error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 		WSACleanup();
 		exit(0);
 	}
-	sockaddr_in sock_addr;
-	memset(&sock_addr, 0, sizeof(sock_addr));
-	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(6919);
-	sock_addr.sin_addr.s_addr = addr_range;
 
-	//getting host's name
 	char host_name[50];
-
 	if (gethostname(host_name, sizeof(host_name)) < 0)
 	{
 		MessageBox(0, ("Gethostname error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 		WSACleanup();
 		exit(0);
 	}
-
-	//sending msgs with host's name to all addresses in given range
 	while (broadcast_running)
 	{
 		if (sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr *)&sock_addr, sizeof(sock_addr)) < 0)
@@ -61,9 +54,13 @@ void GeneralMultiPlayer::Host::Broadcast(unsigned long addr_range, int ms_interv
 void GeneralMultiPlayer::Host::AcceptClients(int max)
 {
 	accepting_running = true;
-
-	//socket for accepting clients
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+	sockaddr_in sock_addr;
+	memset(&sock_addr, 0, sizeof(sock_addr));
+	sock_addr.sin_family = AF_INET;
+	sock_addr.sin_port = htons(6919);
+	sock_addr.sin_addr.s_addr = INADDR_ANY;
+	int addr_size = sizeof(sockaddr_in);
 
 	if (sock < 0)
 	{
@@ -71,39 +68,26 @@ void GeneralMultiPlayer::Host::AcceptClients(int max)
 		WSACleanup();
 		exit(0);
 	}
-	sockaddr_in sock_addr;
-	memset(&sock_addr, 0, sizeof(sock_addr));
-	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(6919);
-	sock_addr.sin_addr.s_addr = INADDR_ANY;
-
-	int addr_size = sizeof(sockaddr_in);
-
 	if (bind(sock, (sockaddr *)& sock_addr, sizeof(sockaddr)) < 0)
 	{
 		MessageBox(0, ("Binding error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 		WSACleanup();
 		exit(0);
 	}
-
 	listen(sock, max);
 
-	//main accepting loop
 	while (accepting_running)
 	{
-		//creating temporary socket to check if accepted connection is valid
+		//Creating temporary socket to check if accepted connection is valid
 		SOCKET temp = accept(sock, (sockaddr *)& sock_addr, &addr_size);
 		if (temp != INVALID_SOCKET && accepting_running)
 		{
 			bool good = true;
 
-			//checking size
 			if (clients.size() >= max)
 			{
 				good = false;
 			}
-
-			//checking if client is already in base
 			for (int i = 0; i < clients.size(); i++)
 			{
 				if (sock_addr.sin_addr.s_addr == clients[i].second.sin_addr.s_addr)
@@ -112,7 +96,6 @@ void GeneralMultiPlayer::Host::AcceptClients(int max)
 					break;
 				}
 			}
-			//checking black list
 			for (int i = 0; i < black_list.size(); i++)
 			{
 				if (black_list[i].sin_addr.s_addr == sock_addr.sin_addr.s_addr)
@@ -121,7 +104,6 @@ void GeneralMultiPlayer::Host::AcceptClients(int max)
 					break;
 				}
 			}
-			//adding client to the vector and accepting connection
 			if (good)
 			{
 				clients.push_back(std::make_pair(temp, sock_addr));
@@ -135,7 +117,7 @@ void GeneralMultiPlayer::Host::StopAcceptingClients()
 {
 	accepting_running = false;
 
-	//connecting with myself to proc accept function that will wait forever otherwise
+	//Connecting with myself to process accept function that would otherwise wait forever
 	SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (temp < 0)
@@ -161,10 +143,8 @@ void GeneralMultiPlayer::Host::CloseActiveConnections()
 
 	for (int i = 0; i < clients.size(); i++)
 		recv_threads[i].join();
-
-	delete[] recv_threads;
 }
-std::string GeneralMultiPlayer::Host::GetIP(sockaddr_in sock_addr)
+std::string GeneralMultiPlayer::Host::GetThisIp(sockaddr_in sock_addr)
 {
 	char helper[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &sock_addr.sin_addr, helper, INET_ADDRSTRLEN);

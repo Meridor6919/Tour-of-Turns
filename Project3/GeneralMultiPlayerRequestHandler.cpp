@@ -19,7 +19,6 @@ std::vector<std::string>* GeneralMultiPlayer::RequestHandler::GetMsgsPtr(int cli
 
 void GeneralMultiPlayer::RequestHandler::SaveMsg(std::string msg, int client_id)
 {
-
 	if (client_id < number_of_clients)
 		requests[client_id].push_back(msg);
 }
