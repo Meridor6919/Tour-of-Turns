@@ -30,7 +30,6 @@ public:
 	HANDLE GetHandle();
 	HWND GetHWND();
 
-	void SetWindowFlags(int flags);
 	void SetCursor(bool visible);
 	void SetMusic(std::string sound_file, bool playing);
 	void Pause(int miliseconds);

@@ -3,18 +3,17 @@
 
 Window::Window(char title[], int color1, int color2, int chars_in_rows, int chars_in_columns)
 {
-
+	//Saving crucial data
 	strcpy(this->title, title);
 	this->color1 = color1;
 	this->color2 = color2;
 	window_size = { (short)chars_in_rows, (short)chars_in_columns };
 	window_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	window_hwnd = GetConsoleWindow();
-
 	SetConsoleTitle(title);
 	srand(static_cast<int>(time(0)));
 
-	//Font setup
+	//Automatically detecting appropriate font size
 	CONSOLE_FONT_INFOEX ConsoleFontInfoEx = { 0 };
 	ConsoleFontInfoEx.cbSize = sizeof(ConsoleFontInfoEx);
 	ConsoleFontInfoEx.dwFontSize.Y = 64;
@@ -28,13 +27,12 @@ Window::Window(char title[], int color1, int color2, int chars_in_rows, int char
 	}
 	font_size = ConsoleFontInfoEx.dwFontSize.Y;
 	
-	//window setup
+	//Setting window size
 	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 	window_size = GetLargestConsoleWindowSize(window_handle);
 	SetConsoleScreenBufferSize(window_handle, { window_size.X - 1,window_size.Y - 1 });
 	
-	
-	//Cursor visibility								
+	//Cursor visibility	set to false by default							
 	GetConsoleCursorInfo(window_handle, &console_cursor);
 	SetCursor(false);
 }
@@ -58,13 +56,6 @@ int Window::GetWidth()
 {
 	return window_size.X;
 }
-void Window::SetWindowFlags(int flags)
-{
-	flags |= SWP_NOMOVE | SWP_NOSIZE;
-
-	SetWindowPos(GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, flags);
-	SetConsoleCursorInfo(window_handle, &console_cursor);
-}
 void Window::SetCursor(bool visible)
 {
 	console_cursor.bVisible = visible;
@@ -79,8 +70,7 @@ void Window::SetMusic(std::string sound_file, bool playing)
 }
 void Window::Pause(int miliseconds)
 {
-	DWORD  consolesettings;
-
+	DWORD consolesettings;
 	GetConsoleMode(window_handle, &consolesettings);
 	SetConsoleMode(window_handle, 0 & ~ENABLE_ECHO_INPUT);
 	Sleep(miliseconds);
