@@ -10,32 +10,35 @@ InfoBox::InfoBox(int size, Text::TextAlign text_align, COORD starting_point, int
 }
 void InfoBox::Push(std::string special_text, std::string text)
 {
-	info.push_back(special_text + "  " + text);	//adding text to infobox
+	//Pushing new text into infobox
+	info.push_back(special_text + "  " + text);	
 
 	HANDLE handle = main_window->GetHandle();
 	std::vector<std::string>::iterator it = info.begin();
 
-	Clear();	//clearing visible text from infobox to update it
+	//Clearing visible text from infobox to update it
+	Clear();	
 
-	if (size < info.size())	//deleting elements out of setted size
+	//Deleting outdated elements
+	if (size < info.size())	
 	{
 		info.erase(it);
 		it = info.begin();
 	}
-	SetConsoleTextAttribute(handle, 8);	//painting elder texts in gray 
-
-	for (short i = 0; it != std::prev(info.end(), 1); ++it, i++)	//showing it
-	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)text_align / 2 * (float)it->size()), starting_point.Y + i * (short)spacing });
-		std::cout << *it;
-	}
-
-	//showing new text with special colouring
+	//Showing recent info
 	SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)text_align / 2 * (float)it->size()), starting_point.Y + (short)(info.size() - 1) * (short)spacing });
 	SetConsoleTextAttribute(handle, main_window->color1);
 	std::cout << special_text << "  ";
 	SetConsoleTextAttribute(handle, main_window->color2);
 	std::cout << text << "  ";
+
+	//Showing rest of elements
+	SetConsoleTextAttribute(handle, 8);
+	for (short i = 0; it != std::prev(info.end(), 1); ++it, i++)
+	{
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)text_align / 2 * (float)it->size()), starting_point.Y + i * (short)spacing });
+		std::cout << *it;
+	}
 }
 void InfoBox::Clear()
 {
