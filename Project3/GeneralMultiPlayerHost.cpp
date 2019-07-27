@@ -23,7 +23,8 @@ void GeneralMultiPlayer::Host::Broadcast(unsigned long addr_range, int ms_interv
 		WSACleanup();
 		exit(0);
 	}
-	if (setsockopt(broadcast_socket, SOL_SOCKET, SO_BROADCAST, 0, sizeof(int)) < 0)
+	char option = '1';
+	if (setsockopt(broadcast_socket, SOL_SOCKET, SO_BROADCAST, &option, sizeof(int)) < 0)
 	{
 		MessageBox(0, ("Socket option error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
 		WSACleanup();
