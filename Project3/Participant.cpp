@@ -65,7 +65,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	std::vector<std::string> tires;//choosing tires
 	network_role->GetTireNames(tires);
 
-	std::vector<std::string> tour = network_role->GetTourParameters(tour_path);
+	std::vector<std::string> tour = network_role->GetTourParameters(0, INT_MAX);
 	int terrain[6];
 	memset(terrain, 0, 6);
 	for (int i = 0; i < tour.size(); i++)

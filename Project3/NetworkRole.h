@@ -10,30 +10,36 @@
 
 class SinglePlayer {
 
-protected:
-	std::vector<Participant*> *participants;
-
 public:
 
 	ToT_Window *main_window;
 	InfoBox *infobox;
 	std::string current_field;
+	std::vector<Participant*> participants;
+	std::string tour;
+	int ais;
 
-	SinglePlayer(ToT_Window &main_window, std::vector<Participant*> *participants);
+	SinglePlayer(ToT_Window &main_window);
 	virtual void CloseConnection() {};
 	virtual void GetTourNames(std::vector<std::string>&tours);
 	virtual void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	virtual void GetTireNames(std::vector<std::string>&tires);
+
 	virtual std::vector<int> GetCarParameters(std::string path);
 	virtual std::vector<std::string> GetTireParameters(std::string path);
-	virtual std::vector<std::string> GetTourParameters(std::string path);
-	virtual void GetOtherParticipants(int ais, std::string tour);
-	virtual std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
-	virtual bool GetCurrentAtribs(int real_players);
-	virtual void Attack(int ais);
+	virtual std::vector<std::string> GetTourParameters(int position, int visibility);
+
+	virtual void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
+
+	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
+	virtual bool GetCurrentAtribs();
+	virtual void Attack();
 	virtual void TakeAction();
-	virtual void GetOthersAction(int ais, std::vector<std::string> &tour);
+	virtual void GetOthersAction(int turn);
 	virtual int Possible_AIs();
+	virtual int Ranking(bool clear);
+	virtual void Interface();
+	virtual bool VisionBox(int turn);
 	void ShowChances(double chance_to_succeed, double estimated_time, double burned_durability, bool reset=false);
 	double CalculateBurning(double value);
 };
@@ -44,20 +50,19 @@ class Host : public SinglePlayer {
 	GeneralMultiPlayer::RequestHandler *request_handler;
 	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
 	bool StartNetwork();
-	std::string tour;
 	int stage;
 
 public:
 
 	void MsgHandling(std::string msg, int client_id);
-	Host(ToT_Window &main_window, std::vector<Participant*> *participants);
+	Host(ToT_Window &main_window);
 	void CloseConnection();
-	void GetOtherParticipants(int ais, std::string tour);
+	void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
-	bool GetCurrentAtribs(int real_players);
-	void Attack(int ais);
+	bool GetCurrentAtribs();
+	void Attack();
 	void TakeAction();
-	void GetOthersAction(int ais, std::vector<std::string> &tour);
+	void GetOthersAction(std::vector<std::string> &tour);
 
 	int Possible_AIs();
 };
@@ -72,7 +77,7 @@ class Client : public SinglePlayer {
 
 public:
 
-	Client(ToT_Window &main_window, std::vector<Participant*> *participants);
+	Client(ToT_Window &main_window);
 	void CloseConnection();
 	void GetTourNames(std::vector<std::string>&tours);
 	void GetCarNames(std::vector<std::string>&cars, std::string tour);
@@ -80,12 +85,12 @@ public:
 	std::vector<int> GetCarParameters(std::string path);
 	std::vector<std::string> GetTireParameters(std::string path);
 	std::vector<std::string> GetTourParameters(std::string path);
-	void GetOtherParticipants(int ais, std::string tour);
+	void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
-	bool GetCurrentAtribs(int real_players);
-	void Attack(int ais);
+	bool GetCurrentAtribs();
+	void Attack();
 	void TakeAction();
-	void GetOthersAction(int ais, std::vector<std::string> &tour);
+	void GetOthersAction(std::vector<std::string> &tour);
 	int Possible_AIs();
 };
 

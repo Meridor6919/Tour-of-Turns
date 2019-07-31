@@ -49,9 +49,6 @@
     <ClCompile Include="ToT.h">
       <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClCompile>
-    <ClCompile Include="Race.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
-    </ClCompile>
     <ClCompile Include="ToT.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
@@ -104,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="NetworkRole.h">
       <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="Race.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="Infobox.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
