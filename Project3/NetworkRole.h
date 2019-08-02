@@ -42,6 +42,7 @@ public:
 	virtual bool VisionBox(int turn);
 	void ShowChances(double chance_to_succeed, double estimated_time, double burned_durability, bool reset=false);
 	double CalculateBurning(double value);
+	void GameLobby();
 };
 
 class Host : public SinglePlayer {

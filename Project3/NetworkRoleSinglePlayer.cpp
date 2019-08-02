@@ -455,6 +455,219 @@ double SinglePlayer::CalculateBurning(double value)
 	}
 	return result/10;
 }
+void SinglePlayer::GameLobby()
+{
+	//Lobby parameters
+	std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
+	COORD starting_point = { (short)main_window->GetWidth() / 2, 25 };
+	const short spacing = 3;
+	short main_menu_position = 0;
+	const int max_name_size = 14;
+	HANDLE handle = main_window->GetHandle();
+
+	//Player related variables
+	std::string name = "Racer";
+	std::vector<std::string> tours;
+	std::vector<std::string> cars;
+	std::vector<std::string> tires;
+	std::string tour_path;
+	std::string tire_path;
+	std::string car_path;
+	int ais = 0;
+	int tires_pos = 0;
+	int cars_pos = 0;
+	int tours_pos = 0;
+
+	GetTourNames(tours);
+	if (tours.size() == 0)
+	{
+		MessageBox(0, "Cannot load any map files", "error", 0);
+		return;
+	}
+	GetTireNames(tires);
+	if (tires.size() == 0)
+	{
+		MessageBox(0, "Cannot load any tire files", "error", 0);
+		return;
+	}
+	GetCarNames(cars, tours[0]);
+	if (cars.size() == 0)
+		MessageBox(0, "Cannot load any car from selected tour", "error", 0);
+	else
+		car_path = cars[0];
+
+	tour_path = tours[0];
+	tire_path = tires[0];
+
+	//TODO validating files
+	std::vector<std::string> car_parameters;
+	std::vector<std::string> tire_parameters;
+	std::vector<Text::OrdinaryText_atributes> text_atributes;
+
+	//preparing vectors for OrdinaryText function
+	for (int i = 0; i < Modifiers::car_modifiers->size(); i++)
+	{
+		text_atributes.push_back(Text::OrdinaryText_atributes::color2);
+		text_atributes.push_back(Text::OrdinaryText_atributes::endl);
+	}
+
+	//showing car parameters
+	std::vector<int> params1 = GetCarParameters(car_path);
+	for (int i = 0; i < params1.size(); i++)
+	{
+		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
+		car_parameters.push_back(std::to_string(params1[i]));
+	}
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window);
+
+	//showing tire parameters
+	auto params2 = GetTireParameters(tire_path);
+	for (int i = 0; i < params2.size(); i++)
+	{
+		tire_parameters.push_back(Modifiers::tire_modifiers[i] + ": ");//atrib names:							
+		tire_parameters.push_back(params2[i]);
+	}
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40,*main_window);
+
+	//menu segment
+	while (main_menu_position != 5 || cars.size() == 0)
+	{
+		switch (main_menu_position = Text::Choose::Veritcal(options, main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window))
+		{
+		case 0://choosing name
+		{
+			char button;
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << " < ";
+			SetConsoleTextAttribute(handle, main_window->color2);
+			std::cout << name;
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << " >";
+
+			SetConsoleTextAttribute(handle, main_window->color2);
+			int size = static_cast<int>(name.size());
+
+			do
+			{
+				button = _getch();
+
+				if (size < max_name_size && ((button >= 48 && button <= 57) || (button >= 65 && button <= 90 && GetKeyState(VK_SHIFT) != 1 && GetKeyState(VK_SHIFT) != 0) || (button >= 97 && button <= 122)))
+				{
+					name += button;
+					SetConsoleTextAttribute(handle, main_window->color2);
+					std::cout << "\b\b" << button;
+					SetConsoleTextAttribute(handle, main_window->color1);
+					std::cout << " >";
+					size++;
+				}
+				else if (size < max_name_size && button == 32 && size != 0 && name[size - 1] != 32)
+				{
+					name += ' ';
+					SetConsoleTextAttribute(handle, main_window->color2);
+					std::cout << "\b\b";
+					SetConsoleTextAttribute(handle, main_window->color1);
+					std::cout << " >";
+					size++;
+				}
+				else if (button == 8 && size > 0)
+				{
+					name.erase(size - 1, 1);
+					SetConsoleTextAttribute(handle, main_window->color1);
+					std::cout << "\b\b\b   \b\b>";
+					size--;
+				}
+
+			} while (button != 13);
+			for (int i = 0; i < size + 4; i++)
+				std::cout << "\b";
+			for (int i = 0; i < size + 4; i++)
+				std::cout << " ";
+			if (name.size() == 0)
+				name = "Racer";
+			break;
+		}
+		case 1://Number of ais
+		{
+			std::vector<std::string> text;
+
+			for (int i = 0; i <= Possible_AIs(); i++)
+				text.push_back(std::to_string(i));
+
+			ais = Text::Choose::Horizontal(text, ais, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+			break;
+		}
+		case 2://choosing tour
+		{
+			int i = tours_pos;
+			tour_path = tours[tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
+			if (i != tours_pos)
+			{
+				GetCarNames(cars, tour_path);
+				cars_pos = 0;
+				car_path = cars[cars_pos];
+				car_parameters.clear();
+				params1 = GetCarParameters(car_path);
+				for (int i = 0; i < params1.size(); i++)
+				{
+					car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
+					car_parameters.push_back(std::to_string(params1[i]) + "   ");
+				}
+				Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);
+				break;
+			}
+			break;
+		}
+		case 3://choosing car
+		{
+			GetCarNames(cars, tour_path);
+			if (cars.size() == 0)
+				MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
+			else
+			{
+				car_path = cars[cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
+				car_parameters.clear();
+				params1 = GetCarParameters(car_path);
+				for (int i = 0; i < params1.size(); i++)
+				{
+					car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
+					car_parameters.push_back(std::to_string(params1[i]) + "   ");
+				}
+				Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);
+				break;
+			}
+		}
+		case 4://choosing tires
+		{
+			tire_path = tires[tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
+			tire_parameters.clear();
+			params2 = GetTireParameters(tire_path);
+			for (int i = 0; i < params2.size(); i++)
+			{
+				tire_parameters.push_back(Modifiers::tire_modifiers[i] + ": ");
+				tire_parameters.push_back(params2[i] + "   ");
+			}
+			Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);
+			break;
+		}
+		}
+	}
+	//clearing menu afterwards
+	for (short i = 0; i < options.size(); i++)
+	{
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::TextAlign::center / 2 * (float)options[i].size()), starting_point.Y + i * (short)spacing });
+		for (int j = 0; j < options[i].size(); j++)
+			std::cout << " ";
+	}
+
+	//clearing params segment
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window, true);
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window, true);
+
+	//loading player
+
+	//loading clients/ais
+	GetParticipants(name, ais, tour_path, car_path, tire_path);
+}
 int SinglePlayer::Ranking(bool clear)
 {
 	std::vector<std::string> text;
