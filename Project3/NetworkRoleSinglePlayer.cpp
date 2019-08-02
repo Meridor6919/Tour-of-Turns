@@ -73,10 +73,10 @@ void SinglePlayer::GetParticipants(std::string name, int ais, std::string tour, 
 {
 	this->tour = tour;
 	this->ais = ais;
-	participants.emplace_back(new Participant(name, car, tire, *this));
+	participants.emplace_back(Participant(name, car, tire, *this));
 
 	for (int i = 0; i < ais; i++)
-		participants.emplace_back(new Participant(this, tour));
+		participants.emplace_back(Participant(this, tour));
 }
 
 std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
@@ -87,8 +87,8 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 
 	for (int i = 0; i < participants.size(); i++)
 	{
-		if(participants[i]->alive)
-			ret.push_back(std::make_pair(participants[i]->score, participants[i]->name));
+		if(participants[i].alive)
+			ret.push_back(std::make_pair(participants[i].score, participants[i].name));
 	}
 
 	if (ret.size() < 2)
@@ -122,21 +122,21 @@ bool SinglePlayer::GetCurrentAtribs()
 	int real_players = static_cast<int>(participants.size()) - ais;
 
 	for (int i = 0; i < participants.size(); i++)
-		participants[i]->Test(current_field, i < real_players);
+		participants[i].Test(current_field, i < real_players);
 
 	for (int i = participants.size() - 1; i >= 0; i--)
 	{
-		if (participants[i]->current_durability <= 0.0f && participants[i]->alive)
+		if (participants[i].current_durability <= 0.0f && participants[i].alive)
 		{
-			infobox->Push("RIP, " +participants[i]->name + " dezintegrated his vehichle...", "");
-			participants[i]->alive = false;
+			infobox->Push("RIP, " +participants[i].name + " dezintegrated his vehichle...", "");
+			participants[i].alive = false;
 			if (i == 0)
 			{
 				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color1);
 				SetConsoleCursorPosition(main_window->GetHandle(), { 0, 20 });
 				std::cout << " Your vehice has ";
 				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color2);
-				std::cout << static_cast<int>(participants[0]->current_durability) << " durability   ";
+				std::cout << static_cast<int>(participants[0].current_durability) << " durability   ";
 				return false;
 			}
 		}
@@ -148,28 +148,28 @@ void SinglePlayer::Attack()
 	//TODO make it more profitable to be first - being able attack from more distance
 	//TODO change attack mechanic in straight sections
 	//TODO there should be a drawback when you 
-	int ais = static_cast<int>(participants.size()) - static_cast<int>(participants[0]->alive);
+	int ais = static_cast<int>(participants.size()) - static_cast<int>(participants[0].alive);
 	std::vector<std::string> rival_name;
 	std::vector<int> rival_id;
 	HANDLE handle = main_window->GetHandle();
 
 	rival_name.push_back("Don't attack");
 	rival_id.push_back(10);
-	participants[0]->attacked = 0;
+	participants[0].attacked = 0;
 	for (int i = 1; i < participants.size(); i++)
 	{
-		if (participants[i]->score < participants[0]->score + 5 && participants[i]->score >participants[0]->score - 5 && participants[i]->alive)
+		if (participants[i].score < participants[0].score + 5 && participants[i].score >participants[0].score - 5 && participants[i].alive)
 		{
-			rival_name.push_back(participants[i]->name);
+			rival_name.push_back(participants[i].name);
 			rival_id.push_back(i);
 		}
-		participants[i]->attacked = 0;
+		participants[i].attacked = 0;
 	}
-	if (rival_id.size() != 1 && participants[0]->alive)
+	if (rival_id.size() != 1 && participants[0].alive)
 	{
 		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight()-17) }, 2, Text::TextAlign::center, true, *main_window);
 		if (rival_id[i] != 10)
-			participants[rival_id[i]]->attacked++;
+			participants[rival_id[i]].attacked++;
 	}
 
 	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); i++)
@@ -178,21 +178,21 @@ void SinglePlayer::Attack()
 		rival_id.push_back(10);
 		for (int j = 0; j < participants.size(); j++)
 		{
-			if (participants[j]->score < participants[i]->score + 5 &&participants[j]->score >participants[i]->score - 5 && participants[j]->alive)
+			if (participants[j].score < participants[i].score + 5 &&participants[j].score >participants[i].score - 5 && participants[j].alive)
 			{
-				if (participants[i] != participants[j])
+				if (&participants[i] != &participants[j])
 					rival_id.push_back(j);
 			}
 		}
 
 		int random = rand() % rival_id.size();
 		if(rival_id[random] != 10)
-			participants[rival_id[random]]->attacked++;
+			participants[rival_id[random]].attacked++;
 	}
 }
 void SinglePlayer::TakeAction()
 {
-	if (!participants[0]->alive)
+	if (!participants[0].alive)
 		return;
 
 	//player
@@ -213,7 +213,7 @@ void SinglePlayer::TakeAction()
 			{
 				//TODO durablility should affect max speed
 				//TODO add an option to bypass max speed by burning durability
-				if (participants[0]->current_speed == 0 && position == 1)
+				if (participants[0].current_speed == 0 && position == 1)
 				{
 					std::cout << " - You can't do this because you aren't moving...";
 					main_window->Pause(1500);
@@ -234,7 +234,7 @@ void SinglePlayer::TakeAction()
 					{
 						if (button == '0' && pos == 0)
 							continue;
-						else if (value * 10 + button - 48 > participants[0]->car_modifiers[CarModifiers::max_accelerating + position])
+						else if (value * 10 + button - 48 > participants[0].car_modifiers[CarModifiers::max_accelerating + position])
 							continue;
 
 						std::cout << button;
@@ -254,15 +254,15 @@ void SinglePlayer::TakeAction()
 
 					if (value > 0)
 					{
-						double speed_estimation = (participants[0]->current_speed + value * (position > 0 ? -1 : 1));
-						if (speed_estimation > static_cast<double>(participants[0]->car_modifiers[CarModifiers::max_speed])*1.25)
-							speed_estimation = static_cast<double>(participants[0]->car_modifiers[CarModifiers::max_speed])*1.25;
+						double speed_estimation = (participants[0].current_speed + value * (position > 0 ? -1 : 1));
+						if (speed_estimation > static_cast<double>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
+							speed_estimation = static_cast<double>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25;
 						else if (speed_estimation < 0)
 							speed_estimation = 0;
 
-						ShowChances((int)(100 - participants[0]->EvaluateChance(current_field, speed_estimation*0.9, false)),
+						ShowChances((int)(100 - participants[0].EvaluateChance(current_field, speed_estimation*0.9, false)),
 							(100 / (1 + speed_estimation*9.0f / 36.0f)),
-							CalculateBurning(speed_estimation - participants[0]->car_modifiers[CarModifiers::max_speed]));
+							CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]));
 					}
 					else
 					{
@@ -278,22 +278,22 @@ void SinglePlayer::TakeAction()
 				
 				if (position)
 				{
-					participants[0]->current_speed -= value;
-					if (participants[0]->current_speed < 0)
-						participants[0]->current_speed = 0;
+					participants[0].current_speed -= value;
+					if (participants[0].current_speed < 0)
+						participants[0].current_speed = 0;
 				}
 				else
 				{
-					participants[0]->current_speed += value;
+					participants[0].current_speed += value;
 				}
-				if (participants[0]->current_speed > static_cast<float>(participants[0]->car_modifiers[CarModifiers::max_speed]))
+				if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]))
 				{
-					if (participants[0]->current_speed > static_cast<float>(participants[0]->car_modifiers[CarModifiers::max_speed])*1.25)
-						participants[0]->current_speed = static_cast<float>(participants[0]->car_modifiers[CarModifiers::max_speed]*1.25);
+					if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
+						participants[0].current_speed = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]*1.25);
 
-					participants[0]->current_durability -= CalculateBurning(participants[0]->current_speed - participants[0]->car_modifiers[CarModifiers::max_speed]);
+					participants[0].current_durability -= CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
 				}
-				participants[0]->current_speed = participants[0]->current_speed*0.9f;
+				participants[0].current_speed = participants[0].current_speed*0.9f;
 				return;		
 			}
 		case 2:
@@ -302,7 +302,7 @@ void SinglePlayer::TakeAction()
 		{
 			while (true)
 			{
-				if (participants[0]->current_speed <= 0)
+				if (participants[0].current_speed <= 0)
 				{
 					std::cout << " - You can't do this because you aren't moving...";
 					main_window->Pause(1500);
@@ -313,23 +313,23 @@ void SinglePlayer::TakeAction()
 				}
 				if (position == 2)
 				{
-					double speed_estimation = participants[0]->current_speed - participants[0]->car_modifiers[CarModifiers::hand_brake_value];
+					double speed_estimation = participants[0].current_speed - participants[0].car_modifiers[CarModifiers::hand_brake_value];
 					if (speed_estimation < 0)
 						speed_estimation = 0;
 
-					ShowChances((int)(100 - participants[0]->EvaluateChance(current_field, speed_estimation*0.9, participants[0]->current_speed > 40 && current_field.size() > 1)),
-						participants[0]->current_speed > 40 && current_field.size()>1 ? 1.5 : 100 / (1 + speed_estimation*9.0f / 36.0f),
-						CalculateBurning(speed_estimation - participants[0]->car_modifiers[CarModifiers::max_speed]));
+					ShowChances((int)(100 - participants[0].EvaluateChance(current_field, speed_estimation*0.9, participants[0].current_speed > 40 && current_field.size() > 1)),
+						participants[0].current_speed > 40 && current_field.size()>1 ? 1.5 : 100 / (1 + speed_estimation*9.0f / 36.0f),
+						CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]));
 				}
 				else if (position == 3)
 				{
-					double speed_estimation = participants[0]->current_speed;
+					double speed_estimation = participants[0].current_speed;
 					if (speed_estimation < 0)
 						speed_estimation = 0;
 
-					ShowChances((int)(100 - participants[0]->EvaluateChance(current_field, participants[0]->current_speed*0.9, false)),
+					ShowChances((int)(100 - participants[0].EvaluateChance(current_field, participants[0].current_speed*0.9, false)),
 						(100 / (1 + speed_estimation*9.0f / 36.0f)),
-						CalculateBurning(speed_estimation - participants[0]->car_modifiers[CarModifiers::max_speed]));
+						CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]));
 				}
 				SetConsoleCursorPosition(window, { (short)actions[position].size() + 1,39 + 2 * position });
 				std::cout << " - Do you really want to do this ? (Y/N) ";
@@ -340,26 +340,26 @@ void SinglePlayer::TakeAction()
 				{
 					if (position == 4)
 					{
-						participants[0]->current_durability = 0;
+						participants[0].current_durability = 0;
 						return;
 					}
 					else
 					{
 						if (position == 2)
 						{
-							if (participants[0]->current_speed > 40 && current_field.size() > 1)
-								participants[0]->drift = true;
-							participants[0]->current_speed -= static_cast<float>(participants[0]->car_modifiers[CarModifiers::hand_brake_value]);
-							if (participants[0]->current_speed < 0)
-								participants[0]->current_speed = 0.0f;
+							if (participants[0].current_speed > 40 && current_field.size() > 1)
+								participants[0].drift = true;
+							participants[0].current_speed -= static_cast<float>(participants[0].car_modifiers[CarModifiers::hand_brake_value]);
+							if (participants[0].current_speed < 0)
+								participants[0].current_speed = 0.0f;
 						}
-						if (participants[0]->current_speed > static_cast<float>(participants[0]->car_modifiers[CarModifiers::max_speed]))
+						if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]))
 						{
-							if (participants[0]->current_speed > static_cast<float>(participants[0]->car_modifiers[CarModifiers::max_speed])*1.25)
-								participants[0]->current_speed = static_cast<float>(participants[0]->car_modifiers[CarModifiers::max_speed] * 1.25);
-							participants[0]->current_durability -= CalculateBurning(participants[0]->current_speed - participants[0]->car_modifiers[CarModifiers::max_speed]);
+							if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
+								participants[0].current_speed = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed] * 1.25);
+							participants[0].current_durability -= CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
 						}
-						participants[0]->current_speed = participants[0]->current_speed*0.9f;
+						participants[0].current_speed = participants[0].current_speed*0.9f;
 						return;
 					}
 				}
@@ -380,15 +380,15 @@ void SinglePlayer::GetOthersAction(int turn)
 
 	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); i++)
 	{
-		for (int j = 0; j < participants[i]->car_modifiers[CarModifiers::visibility] && j < tour.size(); j++)
+		for (int j = 0; j < participants[i].car_modifiers[CarModifiers::visibility] && j < tour.size(); j++)
 		{
 			if (tour[j].size() > 1)
 			{
-				if (atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i]->car_modifiers[CarModifiers::max_braking]) < safe_speed)
-					safe_speed = atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i]->car_modifiers[CarModifiers::max_braking]);
+				if (atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]) < safe_speed)
+					safe_speed = atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]);
 			}
 		}
-		participants[i]->TakeAction(safe_speed, (bool)tour[0].size > 1);
+		participants[i].TakeAction(safe_speed, (bool)tour[0].size > 1);
 	}
 }
 int SinglePlayer::Possible_AIs()
@@ -432,12 +432,12 @@ double SinglePlayer::CalculateBurning(double value)
 {
 	if (value < 0)
 		return 0;
-	double raw = value / participants[0]->car_modifiers[CarModifiers::max_speed];
+	double raw = value / participants[0].car_modifiers[CarModifiers::max_speed];
 
 	if (raw > 0.25)
 	{
 		raw = 0.25;
-		value = participants[0]->car_modifiers[CarModifiers::max_speed] * 0.25;
+		value = participants[0].car_modifiers[CarModifiers::max_speed] * 0.25;
 	}
 
 	double result = 0;
@@ -687,7 +687,7 @@ int SinglePlayer::Ranking(bool clear)
 			text.push_back(ranking_info[i].second);
 			text.push_back(std::to_string(ranking_info[i].first));
 			text[text.size() - 1] = text[text.size() - 1].substr(0, text[text.size() - 1].size() - 4);
-			if (ranking_info[i].second == participants[0]->name && ranking_info[i].first == participants[0]->score)
+			if (ranking_info[i].second == participants[0].name && ranking_info[i].first == participants[0].score)
 				ret = i + 1;
 		}
 	}
@@ -700,9 +700,9 @@ void SinglePlayer::Interface()
 	HANDLE window = main_window->GetHandle();
 
 	std::string possible_actions[5] = {
-		"You can speed up by (0 to " + std::to_string(static_cast<int>(participants[0]->car_modifiers[CarModifiers::max_accelerating])) + ")   ",
-		"You can slow down by (0 to " + std::to_string(static_cast<int>(participants[0]->car_modifiers[CarModifiers::max_braking])) + ")   ",
-		"Hand brake value is - " + std::to_string(static_cast<int>(participants[0]->car_modifiers[CarModifiers::hand_brake_value])) + "   ",
+		"You can speed up by (0 to " + std::to_string(static_cast<int>(participants[0].car_modifiers[CarModifiers::max_accelerating])) + ")   ",
+		"You can slow down by (0 to " + std::to_string(static_cast<int>(participants[0].car_modifiers[CarModifiers::max_braking])) + ")   ",
+		"Hand brake value is - " + std::to_string(static_cast<int>(participants[0].car_modifiers[CarModifiers::hand_brake_value])) + "   ",
 		"You can just wait if you're moving...",
 		"Remember only weak ones surrenders" };
 
@@ -710,14 +710,14 @@ void SinglePlayer::Interface()
 	SetConsoleCursorPosition(window, { 0, 16 });
 	std::cout << " You're racing as: ";
 	SetConsoleTextAttribute(window, main_window->color2);
-	std::cout << participants[0]->name;
+	std::cout << participants[0].name;
 	SetConsoleTextAttribute(window, main_window->color1);
 	SetConsoleCursorPosition(window, { 0, 18 });
 	std::cout << " Your current speed is: ";
 	SetConsoleTextAttribute(window, main_window->color2);
 
-	std::string speed = std::to_string(participants[0]->current_speed);
-	std::string durability = std::to_string(participants[0]->current_durability);
+	std::string speed = std::to_string(participants[0].current_speed);
+	std::string durability = std::to_string(participants[0].current_durability);
 	speed = speed.substr(0, speed.size() - 4);
 	durability = durability.substr(0, durability.size() - 4);
 
@@ -775,7 +775,7 @@ bool SinglePlayer::VisionBox(int turn)
 	std::string Distance[] = { "In front of you: ", "Close to you: ", "At some distance: ", "A little further: ",
 								"At a considerable distance: ", "Far ahead: ", "Barely noticeable: " };
 
-	for (int i = 0; i < participants[0]->car_modifiers[CarModifiers::visibility] && i < 7; i++)
+	for (int i = 0; i < participants[0].car_modifiers[CarModifiers::visibility] && i < 7; i++)
 	{
 		if (visible_tour.size() == i)
 		{

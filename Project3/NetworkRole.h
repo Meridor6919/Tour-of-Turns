@@ -16,7 +16,7 @@ protected:
 
 	ToT_Window *main_window;
 	std::string current_field;
-	std::vector<Participant*> participants;
+	std::vector<Participant> participants;
 	std::string tour;
 	int ais;
 

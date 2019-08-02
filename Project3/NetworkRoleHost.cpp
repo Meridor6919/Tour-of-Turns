@@ -286,9 +286,9 @@ void Host::MsgHandling(std::string msg, int client_id)
 			if (i == client_id + 1)
 				continue;
 
-			if (participants[i]->score < participants[client_id + 1]->score + 5 && participants[i]->score >participants[client_id + 1]->score - 5 && participants[i]->alive)
+			if (participants[i].score < participants[client_id + 1].score + 5 && participants[i].score >participants[client_id + 1].score - 5 && participants[i].alive)
 			{
-				strcpy(buffer, participants[i]->name.c_str());
+				strcpy(buffer, participants[i].name.c_str());
 				send((*clients)[client_id].first, buffer, 254, 0);
 				strcpy(buffer, std::to_string(i).c_str());
 				send((*clients)[client_id].first, buffer, 254, 0);
@@ -299,21 +299,21 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 9://get atribs
 	{
-		strcpy(buffer, std::to_string(participants[client_id + 1]->current_speed).c_str());
+		strcpy(buffer, std::to_string(participants[client_id + 1].current_speed).c_str());
 		send((*clients)[client_id].first, buffer, 254, 0);
-		strcpy(buffer, std::to_string(participants[client_id + 1]->current_durability).c_str());
+		strcpy(buffer, std::to_string(participants[client_id + 1].current_durability).c_str());
 		send((*clients)[client_id].first, buffer,254, 0);
-		strcpy(buffer, std::to_string(participants[client_id + 1]->score).c_str());
+		strcpy(buffer, std::to_string(participants[client_id + 1].score).c_str());
 		send((*clients)[client_id].first, buffer, 254, 0);
 
 		for (int i = 0; i < infobox->info.size(); i++)
 		{
-			std::string info = participants[0]->network_role->infobox->info[i];
+			std::string info = participants[0].network_role->infobox->info[i];
 
 			strcpy(buffer, info.substr(0, info.find("  ")).c_str());
 			send((*clients)[client_id].first, buffer, 254, 0);
 
-			strcpy(buffer, info.substr(participants[0]->network_role->infobox->info[i].find("  ") + 2, info.size() - info.find("  ")).c_str());
+			strcpy(buffer, info.substr(participants[0].network_role->infobox->info[i].find("  ") + 2, info.size() - info.find("  ")).c_str());
 			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 		send((*clients)[client_id].first, "exit", 254, 0);
@@ -342,7 +342,7 @@ void Host::GetParticipants(std::string name, int ais, std::string tour, std::str
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
 
-	participants.push_back(new Participant(name, car, tire, *this));
+	participants.push_back(Participant(name, car, tire, *this));
 
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
@@ -375,10 +375,10 @@ void Host::GetParticipants(std::string name, int ais, std::string tour, std::str
 			}
 			std::this_thread::sleep_for(ms);
 		}
-		participants.push_back(new Participant(name, car_path, tires_path, *this));
+		participants.push_back(Participant(name, car_path, tires_path, *this));
 	}
 	for (int i = 0; i < ais; i++)
-		participants.emplace_back(new Participant(this, tour));
+		participants.emplace_back(Participant(this, tour));
 	stage =1;
 }
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::string current_field)
@@ -400,7 +400,7 @@ void Host::Attack()
 
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
-		if (participants[i+1]->current_durability <= 0)
+		if (participants[i+1].current_durability <= 0)
 		{
 			continue;
 		}
@@ -418,7 +418,7 @@ void Host::Attack()
 					int target = atoi((*msgs)[j].substr(2, (*msgs)[j].size() - 2).c_str());
 					if (target < participants.size())
 					{
-						participants[target]->attacked++;
+						participants[target].attacked++;
 					}
 					msgs->erase(msgs->begin() + j);
 					attacked = true;
@@ -440,7 +440,7 @@ void Host::GetOthersAction(std::vector<std::string>& tour)
 
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
-		if (participants[i+1]->current_durability <= 0)
+		if (participants[i+1].current_durability <= 0)
 		{
 			continue;
 		}
@@ -460,20 +460,20 @@ void Host::GetOthersAction(std::vector<std::string>& tour)
 					{
 					case '0':
 					{
-						participants[i + 1]->current_speed += atoi((*msgs)[j].substr(3, (*msgs)[j].size() - 3).c_str());
-						if (participants[i + 1]->current_speed > static_cast<float>(participants[i + 1]->car_modifiers[CarModifiers::max_speed]))
-							participants[i + 1]->current_speed = static_cast<float>(participants[i + 1]->car_modifiers[CarModifiers::max_speed]);
-						participants[i + 1]->current_speed = participants[i + 1]->current_speed*0.9f;
+						participants[i + 1].current_speed += atoi((*msgs)[j].substr(3, (*msgs)[j].size() - 3).c_str());
+						if (participants[i + 1].current_speed > static_cast<float>(participants[i + 1].car_modifiers[CarModifiers::max_speed]))
+							participants[i + 1].current_speed = static_cast<float>(participants[i + 1].car_modifiers[CarModifiers::max_speed]);
+						participants[i + 1].current_speed = participants[i + 1].current_speed*0.9f;
 						msgs->erase(msgs->begin() + j);
 						action = true;
 						break;
 					}
 					case '1':
 					{
-						participants[i + 1]->current_speed -= atoi((*msgs)[j].substr(3, (*msgs)[j].size() - 3).c_str());
-						if (participants[i + 1]->current_speed < 0)
-							participants[i + 1]->current_speed = 0;
-						participants[i+1]->current_speed = participants[i+1]->current_speed*0.9f;
+						participants[i + 1].current_speed -= atoi((*msgs)[j].substr(3, (*msgs)[j].size() - 3).c_str());
+						if (participants[i + 1].current_speed < 0)
+							participants[i + 1].current_speed = 0;
+						participants[i+1].current_speed = participants[i+1].current_speed*0.9f;
 						msgs->erase(msgs->begin() + j);
 						action = true;
 						break;
@@ -484,23 +484,23 @@ void Host::GetOthersAction(std::vector<std::string>& tour)
 					{
 						if ((*msgs)[j][2] == '4')
 						{
-							participants[i+1]->current_durability = 0;
+							participants[i+1].current_durability = 0;
 							action = true;
 							msgs->erase(msgs->begin() + j);
 							break;
 						}
 
-						if (participants[i+1]->current_speed > 0)
+						if (participants[i+1].current_speed > 0)
 						{
 							if ((*msgs)[j][2] == '2')
 							{
-								if (participants[i+1]->current_speed > 40)
-									participants[i+1]->drift = true;
-								participants[i+1]->current_speed -= static_cast<float>(participants[i+1]->car_modifiers[CarModifiers::hand_brake_value]);
-								if (participants[i+1]->current_speed < 0)
-									participants[i+1]->current_speed = 0.0f;
+								if (participants[i+1].current_speed > 40)
+									participants[i+1].drift = true;
+								participants[i+1].current_speed -= static_cast<float>(participants[i+1].car_modifiers[CarModifiers::hand_brake_value]);
+								if (participants[i+1].current_speed < 0)
+									participants[i+1].current_speed = 0.0f;
 							}
-							participants[i+1]->current_speed = participants[i+1]->current_speed*0.9f;
+							participants[i+1].current_speed = participants[i+1].current_speed*0.9f;
 							action = true;
 							msgs->erase(msgs->begin() + j);
 							break;

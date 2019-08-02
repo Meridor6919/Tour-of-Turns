@@ -290,7 +290,7 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::string cu
 }
 void Client::Attack()
 {
-	if (!participants[0]->alive)
+	if (!participants[0].alive)
 		return;
 	char buffer[254] = "08";
 	send(host, buffer, 254, 0);
@@ -348,14 +348,14 @@ bool Client::GetCurrentAtribs()
 		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		return false;
 	}
-	participants[0]->current_speed = atof(buffer);
+	participants[0].current_speed = atof(buffer);
 
 	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
 		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		return false;
 	}
-	participants[0]->current_durability = atof(buffer);
+	participants[0].current_durability = atof(buffer);
 
 
 	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
@@ -363,7 +363,7 @@ bool Client::GetCurrentAtribs()
 		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 		return false;
 	}
-	participants[0]->score = atof(buffer);
+	participants[0].score = atof(buffer);
 
 	(*infobox).info.clear();
 	while (true)
@@ -387,9 +387,9 @@ bool Client::GetCurrentAtribs()
 		else
 			break;
 	}
-	if (participants[0]->current_durability <= 0.0f)
+	if (participants[0].current_durability <= 0.0f)
 	{
-		participants[0]->alive = false;
+		participants[0].alive = false;
 		return false;
 	}
 	else
@@ -403,10 +403,10 @@ void Client::GetParticipants(std::string name, int ais, std::string tour, std::s
 
 	//client don't need to know stats of other participants but he need to tell host what have he choosed
 	char buffer[254];
-	strcpy(buffer, ("51" + participants[0]->name).c_str());
+	strcpy(buffer, ("51" + participants[0].name).c_str());
 	send(host, buffer, 254, 0);
 
-	strcpy(buffer, ("52" + participants[0]->car_path).c_str());
+	strcpy(buffer, ("52" + participants[0].car_path).c_str());
 	send(host, buffer, 254, 0);
 
 	strcpy(buffer, ("53" + tire_path).c_str());
@@ -415,7 +415,7 @@ void Client::GetParticipants(std::string name, int ais, std::string tour, std::s
 }
 void Client::TakeAction()
 {
-	if (!participants[0]->alive)
+	if (!participants[0].alive)
 		return;
 
 	char buffer[254];
@@ -434,7 +434,7 @@ void Client::TakeAction()
 		case 0:
 		case 1:
 		{
-			if (participants[0]->current_speed == 0 && position == 1)
+			if (participants[0].current_speed == 0 && position == 1)
 			{
 				std::cout << " - You can't do this because you aren't moving...";
 				main_window->Pause(1500);
@@ -446,7 +446,7 @@ void Client::TakeAction()
 
 			std::cout << ": ";
 			GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-			value = Text::Choose::Numeric(participants[0]->car_modifiers[CarModifiers::max_accelerating + position], { console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y }, true, *main_window);
+			value = Text::Choose::Numeric(participants[0].car_modifiers[CarModifiers::max_accelerating + position], { console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y }, true, *main_window);
 			SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
 			std::cout << "  ";
 			if (value == 0)
@@ -471,7 +471,7 @@ void Client::TakeAction()
 				SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 41,console_screen_buffer_info.dwCursorPosition.Y });
 				if (button == 'y' || button == 'Y')
 				{
-					if (participants[0]->current_speed > 0 || position == 4)
+					if (participants[0].current_speed > 0 || position == 4)
 					{
 						strcpy(buffer, ("55" + std::to_string(position)).c_str());
 						send(host, buffer, 254, 0);
