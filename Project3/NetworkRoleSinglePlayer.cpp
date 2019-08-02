@@ -1,65 +1,48 @@
 #include "NetworkRole.h"
 
+std::vector<std::string> SinglePlayer::ReadFile(std::string path)
+{
+	std::vector<std::string> data;
+	std::fstream fvar;
+	std::string helper;
+	fvar.open(path);
+	while (getline(fvar, helper) && helper != "")
+		data.push_back(helper);
+	fvar.close();
+	return data;
+}
+
 SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
-	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,static_cast<short>(main_window.GetHeight()-12) }, 1, main_window);
+	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
+	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, main_window);
 }
-void SinglePlayer::GetTourNames(std::vector<std::string>&tours)
+std::vector<std::string> SinglePlayer::GetTourNames()
 {
-	std::fstream fvar;
-	std::string helper;
-	fvar.open("Tour.txt");
-	while (getline(fvar, helper))
-		tours.push_back(helper);
+	return this->ReadFile("Tour.txt");
 }
-void SinglePlayer::GetCarNames(std::vector<std::string>&cars, std::string tour)
+std::vector<std::string> SinglePlayer::GetCarNames(std::string tour)
 {
-	cars.clear();
-	std::fstream fvar;
-	std::string helper;
-	fvar.open(tour.c_str());
-	while (getline(fvar, helper) && helper != "")
-		cars.push_back(helper);
+	return this->ReadFile(tour);
 }
-void SinglePlayer::GetTireNames(std::vector<std::string>&tires)
+std::vector<std::string> SinglePlayer::GetTireNames()
 {
-	std::fstream fvar;
-	std::string helper;
-	fvar.open("Tire.txt");
-	while (getline(fvar, helper))
-		tires.push_back(helper);
+	return this->ReadFile("Tire.txt");
 }
 std::vector<int> SinglePlayer::GetCarParameters(std::string path)
 {
-	std::fstream fvar;
-	std::string helper;
+	std::vector<std::string> data = this->ReadFile(path);
 	std::vector<int> car_parameters;
-	fvar.open(path.c_str(), std::ios::in);
-	while (std::getline(fvar, helper))
-		car_parameters.push_back(std::atoi(helper.c_str()));
-
+	for (int i = 0; i < data.size(); i++)
+	{
+		car_parameters.push_back(atoi(data[i].c_str()));
+	}
 	return car_parameters;
 }
 std::vector<std::string> SinglePlayer::GetTireParameters(std::string path)
 {
-	std::fstream fvar;
-	std::string helper;
-	std::vector<std::string> tire_parameters;
-	fvar.open(path.c_str(), std::ios::in);
-	while (std::getline(fvar, helper))
-		tire_parameters.push_back(helper);
-
-	return tire_parameters;
-}
-void SinglePlayer::GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire)
-{
-	this->tour = tour;
-	this->ais = ais;
-	participants.emplace_back(new Participant(name, car, tire, *this));
-
-	for (int i = 0; i < ais; i++)
-		participants.emplace_back(new Participant(this, tour));
+	return this->ReadFile(path);
 }
 std::vector<std::string> SinglePlayer::GetTourParameters(int position, int visibility)
 {
@@ -69,10 +52,9 @@ std::vector<std::string> SinglePlayer::GetTourParameters(int position, int visib
 
 	fvar.open(tour.c_str());
 	do
-	{ 
+	{
 		std::getline(fvar, helper);
-	}
-	while (helper != "");
+	} while (helper != "");
 	for (int i = 0; i < position; i++)
 	{
 		std::getline(fvar, helper);
@@ -87,6 +69,16 @@ std::vector<std::string> SinglePlayer::GetTourParameters(int position, int visib
 
 	return ret;
 }
+void SinglePlayer::GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire)
+{
+	this->tour = tour;
+	this->ais = ais;
+	participants.emplace_back(new Participant(name, car, tire, *this));
+
+	for (int i = 0; i < ais; i++)
+		participants.emplace_back(new Participant(this, tour));
+}
+
 std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 {
 	std::vector<std::pair<float, std::string>> ret;
@@ -478,19 +470,19 @@ void SinglePlayer::GameLobby()
 	int cars_pos = 0;
 	int tours_pos = 0;
 
-	GetTourNames(tours);
+	tours = GetTourNames();
 	if (tours.size() == 0)
 	{
 		MessageBox(0, "Cannot load any map files", "error", 0);
 		return;
 	}
-	GetTireNames(tires);
+	tires = GetTireNames();
 	if (tires.size() == 0)
 	{
 		MessageBox(0, "Cannot load any tire files", "error", 0);
 		return;
 	}
-	GetCarNames(cars, tours[0]);
+	cars = GetCarNames(tours[0]);
 	if (cars.size() == 0)
 		MessageBox(0, "Cannot load any car from selected tour", "error", 0);
 	else
@@ -602,7 +594,7 @@ void SinglePlayer::GameLobby()
 			tour_path = tours[tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
 			if (i != tours_pos)
 			{
-				GetCarNames(cars, tour_path);
+				cars = GetCarNames(tour_path);
 				cars_pos = 0;
 				car_path = cars[cars_pos];
 				car_parameters.clear();
@@ -619,7 +611,7 @@ void SinglePlayer::GameLobby()
 		}
 		case 3://choosing car
 		{
-			GetCarNames(cars, tour_path);
+			cars = GetCarNames(tour_path);
 			if (cars.size() == 0)
 				MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
 			else

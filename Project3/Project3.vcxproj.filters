@@ -49,9 +49,6 @@
     <ClCompile Include="ToT.h">
       <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClCompile>
-    <ClCompile Include="ToT.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
-    </ClCompile>
     <ClCompile Include="InfoBox.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
@@ -84,6 +81,9 @@
     </ClCompile>
     <ClCompile Include="GeneralMultiPlayerRequestHandler.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="ToT.cpp">
+      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

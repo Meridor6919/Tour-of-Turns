@@ -6,7 +6,8 @@ Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 {
 	this->participants = participants;
 	this->main_window = &main_window;
-	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,static_cast<short>(main_window.GetHeight() - 12) }, 1, main_window);
+	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
+	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, main_window);
 	stage = 0;
 	if (!StartNetwork())
 	{
@@ -14,7 +15,7 @@ Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 		throw 1;
 	}
 }
-void Client::CloseConnection()
+Client::~Client()
 {
 	//TODO disconnects
 	char buffer[254] = "60";

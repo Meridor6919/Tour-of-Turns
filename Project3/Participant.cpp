@@ -44,8 +44,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	name = helper;
 	used_names++;
 	
-	std::vector<std::string> cars;//choosing car
-	network_role->GetCarNames(cars, tour_path);
+	std::vector<std::string> cars = network_role->GetCarNames(tour_path);
 
 	int current_best = 0;
 	int best_points = 0;
@@ -62,8 +61,7 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	this->car_modifiers = network_role->GetCarParameters(cars[current_best]);
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 
-	std::vector<std::string> tires;//choosing tires
-	network_role->GetTireNames(tires);
+	std::vector<std::string> tires = network_role->GetTireNames();
 
 	std::vector<std::string> tour = network_role->GetTourParameters(0, INT_MAX);
 	int terrain[6];

@@ -179,7 +179,6 @@ void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 		network_role->Ranking(true);
 		network_role->Ranking(false);
 	}
-	network_role->CloseConnection();
 	_getch();
 	_getch();
 	system("cls");

@@ -4,7 +4,8 @@ Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 {
 	this->participants = participants;
 	this->main_window = &main_window;
-	this->infobox = new InfoBox(10, Text::TextAlign::left, { 0,static_cast<short>(main_window.GetHeight() - 12) }, 1, main_window);
+	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
+	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, main_window);
 	stage = 0;
 	if(!StartNetwork()) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
 	{
@@ -15,7 +16,7 @@ Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 		throw 1;
 	}
 }
-void Host::CloseConnection()
+Host::~Host()
 {
 	//TODO disconnects
 	std::vector<std::string>* msgs;
@@ -202,8 +203,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 2://get cars
 	{
-		std::vector<std::string> cars;
-		GetCarNames(cars, tour);
+		std::vector<std::string> cars = GetCarNames(tour);
 
 		for (int i = 0; i < cars.size(); i++)
 		{
@@ -215,8 +215,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 3://get tires
 	{
-		std::vector<std::string> tires;
-		GetTireNames(tires);
+		std::vector<std::string> tires = GetTireNames();
 
 		for (int i = 0; i < tires.size(); i++)
 		{

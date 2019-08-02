@@ -10,27 +10,28 @@
 
 class SinglePlayer {
 
-public:
+	std::vector<std::string> ReadFile(std::string path);
+
+protected:
 
 	ToT_Window *main_window;
-	InfoBox *infobox;
 	std::string current_field;
 	std::vector<Participant*> participants;
 	std::string tour;
 	int ais;
 
-	SinglePlayer(ToT_Window &main_window);
-	virtual void CloseConnection() {};
-	virtual void GetTourNames(std::vector<std::string>&tours);
-	virtual void GetCarNames(std::vector<std::string>&cars, std::string tour);
-	virtual void GetTireNames(std::vector<std::string>&tires);
+public:
 
+	std::shared_ptr<InfoBox> infobox;
+
+	SinglePlayer(ToT_Window &main_window);
+	virtual std::vector<std::string> GetTourNames();
+	virtual std::vector<std::string> GetCarNames(std::string tour);
+	virtual std::vector<std::string> GetTireNames();
 	virtual std::vector<int> GetCarParameters(std::string path);
 	virtual std::vector<std::string> GetTireParameters(std::string path);
 	virtual std::vector<std::string> GetTourParameters(int position, int visibility);
-
 	virtual void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
-
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
 	virtual bool GetCurrentAtribs();
 	virtual void Attack();
@@ -57,7 +58,7 @@ public:
 
 	void MsgHandling(std::string msg, int client_id);
 	Host(ToT_Window &main_window);
-	void CloseConnection();
+	~Host();
 	void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
 	bool GetCurrentAtribs();
@@ -79,7 +80,7 @@ class Client : public SinglePlayer {
 public:
 
 	Client(ToT_Window &main_window);
-	void CloseConnection();
+	~Client();
 	void GetTourNames(std::vector<std::string>&tours);
 	void GetCarNames(std::vector<std::string>&cars, std::string tour);
 	void GetTireNames(std::vector<std::string>&tires);
