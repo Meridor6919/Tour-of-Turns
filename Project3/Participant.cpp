@@ -299,35 +299,25 @@ void Participant::Test(std::string field, bool show)
 	if (!alive)
 		return;
 
-	if (field.size() == 1)//if road is straight just calculate attacks;
-	{
-		int r = rand() % 8;
-		int lost = (attacked - r)*rand() % 5 * 5;
-		if (attacked > r)
-		{
-			current_speed /= attacked - r;
-			current_durability -= lost;
-			if (show)
-				network_role->infobox->Push(name + " lost " + std::to_string(lost) + " durability", ", because of enemies attacks");
-		}
-		attacked = 0;
-	}
-	else
-	{
-		const char Chelper = field[0];
-		field.erase(0, 1);
-		std::string tire = tire_modifiers[atoi(&Chelper)];
-		std::string helper = tire;
-		int find = static_cast<int>(tire.find("x"));
-		int reqired_tests = atoi(helper.erase(find, helper.size() - find).c_str());
-		int number_of_tests = atoi(tire.erase(0, find + 1).c_str());
-		int passed_tests = 0;
-		int max = 0, min = 100;
-		float local_score;
-		float formula = EvaluateChance(field, current_speed, drift);
-		
-		attacked = 0;
+	const char Chelper = field[0];
+	std::string tire = tire_modifiers[atoi(&Chelper)];
+	std::string helper = tire;
+	int find = static_cast<int>(tire.find("x"));
+	int reqired_tests = atoi(helper.erase(find, helper.size() - find).c_str());
+	int number_of_tests = atoi(tire.erase(0, find + 1).c_str());
+	int passed_tests = 0;
+	int max = 0, min = 100;
+	float local_score;
+	float formula = EvaluateChance(field, current_speed, drift);
+	
+	float dmg = 1 - 0.05*attacked;
+	current_speed *= dmg;
+	if (dmg < 1 && show)
+		network_role->infobox->Push(name + " lost " + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + " speed,", "in result of other racers behaviour");
+	attacked = 0;
 
+	if (field.size() > 1)
+	{
 		//testing algorithm
 		for (int i = 0; i < number_of_tests; i++)
 		{
@@ -412,6 +402,7 @@ float Participant::EvaluateChance(std::string field, float speed, bool drift)
 {
 	if (field.size() < 2)
 		return 0;
+	field.erase(0, 1);
 	if (speed > car_modifiers[CarModifiers::max_speed] * 1.25)
 		speed > car_modifiers[CarModifiers::max_speed] * 1.25;
 
@@ -422,14 +413,17 @@ float Participant::EvaluateChance(std::string field, float speed, bool drift)
 
 	if (drift == true)
 	{
-		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(5 * attacked);
+		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(7.5f * attacked);
 		if (base > 100.0f)
 			base = 100.0f;
-		return (speed + base) / 2;
+		float result = (speed + base) / 2;
+		if (result > (speed + base * 2) / 3)
+			result = (speed + base * 2) / 3;
+		return result;
 	}
 	else
 	{
-		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(0.15f * attacked);
+		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(5.0f * attacked);
 		if (base > 100.0f)
 			base = 100.0f;
 		return 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;

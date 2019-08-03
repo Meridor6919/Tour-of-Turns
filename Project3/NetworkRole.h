@@ -11,15 +11,14 @@
 class SinglePlayer {
 
 	std::vector<std::string> ReadFile(std::string path);
+	short take_action_position = 0;
 
 protected:
-
 	ToT_Window *main_window;
 	std::string current_field;
 	std::vector<Participant> participants;
 	std::string tour;
 	int ais;
-
 public:
 
 	std::shared_ptr<InfoBox> infobox;

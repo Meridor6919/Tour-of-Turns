@@ -22,22 +22,22 @@ int main()
 			case 0:
 			case 1:
 			{
-				GameMode_::Game(main_menu_position, game_window);
+				GameMode::Game(main_menu_position, game_window);
 				break;
 			}
 			case 2:
 			{
-				GameMode_::Ranking(game_window);
+				GameMode::Ranking(game_window);
 				break;
 			}
 			case 3:
 			{
-				GameMode_::Options(game_window);
+				GameMode::Options(game_window);
 				break;
 			}
 			case 4:
 			{
-				GameMode_::Credits(game_window);
+				GameMode::Credits(game_window);
 				break;
 			}
 			case 5:

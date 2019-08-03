@@ -96,6 +96,12 @@ int Text::Choose::Veritcal(std::vector<std::string> text, int starting_position,
 				std::cout << " ";
 		}
 	}
+	else
+	{
+		SetConsoleTextAttribute(handle, color2);
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)text_align / 2 * (float)text[starting_position].size()), starting_point.Y + (short)starting_position * (short)spacing });
+		std::cout << text[starting_position];
+	}
 	return starting_position;
 }
 int Text::Choose::Numeric(int max, COORD starting_point, bool zero_allowed, Window &main_window)

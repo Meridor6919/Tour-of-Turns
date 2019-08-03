@@ -47,7 +47,7 @@ public:
 	float current_durability;
 	SinglePlayer *network_role;
 	std::string car_path;	
-	int attacked;
+	float attacked;
 	bool drift;
 
 	Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role);	//Creating human player
