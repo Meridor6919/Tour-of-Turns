@@ -355,7 +355,6 @@ int SinglePlayer::Possible_AIs()
 {
 	return 7;
 }
-
 void SinglePlayer::ShowChances(int value, bool reset)
 {
 	double speed_estimation = (participants[0].current_speed + value);
@@ -575,7 +574,7 @@ void SinglePlayer::GameLobby()
 					car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
 					car_parameters.push_back(std::to_string(params1[i]) + "   ");
 				}
-				Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);
+				Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window);
 				break;
 			}
 			break;
@@ -595,7 +594,7 @@ void SinglePlayer::GameLobby()
 					car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
 					car_parameters.push_back(std::to_string(params1[i]) + "   ");
 				}
-				Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 18, *main_window);
+				Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window);
 				break;
 			}
 		}
@@ -609,7 +608,7 @@ void SinglePlayer::GameLobby()
 				tire_parameters.push_back(Modifiers::tire_modifiers[i] + ": ");
 				tire_parameters.push_back(params2[i] + "   ");
 			}
-			Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 36, *main_window);
+			Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window);
 			break;
 		}
 		}
