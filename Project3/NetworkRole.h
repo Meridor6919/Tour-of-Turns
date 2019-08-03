@@ -19,6 +19,9 @@ protected:
 	std::vector<Participant> participants;
 	std::string tour;
 	int ais;
+	int NumericalAction(const COORD coords);
+	int BinaryAction(const COORD coords);
+
 public:
 
 	std::shared_ptr<InfoBox> infobox;
@@ -40,7 +43,7 @@ public:
 	virtual int Ranking(bool clear);
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
-	void ShowChances(double chance_to_succeed, double estimated_time, double burned_durability, bool reset=false);
+	void ShowChances(int value, bool reset=false);
 	double CalculateBurning(double value);
 	void GameLobby();
 };

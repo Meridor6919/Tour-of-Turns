@@ -13,6 +13,87 @@ std::vector<std::string> SinglePlayer::ReadFile(const std::string path)
 	fvar.close();
 	return data;
 }
+int SinglePlayer::NumericalAction(const COORD coords)
+{
+	HANDLE window = main_window->GetHandle();
+	char button;
+	int value = 0;
+	short decimal_position = 0;
+
+	std::cout << ": ";
+	while (true)
+	{
+		button = _getch();
+		SetConsoleCursorPosition(window, {coords.X+2+decimal_position, coords.Y });
+		if (button >= '0' && button <= '9')
+		{
+			if (button == '0' && decimal_position == 0)
+			{
+				continue;
+			}
+			else if (value * 10 + button - 48 > participants[0].car_modifiers[CarModifiers::max_accelerating + take_action_position])
+			{
+				continue;
+			}
+			std::cout << button;
+			value = value * 10 + button - 48;
+			decimal_position++;
+		}
+		else if (button == '\b' && decimal_position != 0)
+		{
+			std::cout << "\b \b";
+			value /= 10;
+			decimal_position--;
+		}
+		else if (button == 13)
+		{
+			break;
+		}
+		if (value > 0)
+		{
+			ShowChances(value * (static_cast<bool>(take_action_position) ? -1 : 1));
+		}
+		else
+		{
+			ShowChances(0, true);
+		}
+	}
+	SetConsoleCursorPosition(window, coords);
+	for (int i = 0; i < decimal_position + 2; ++i)
+	{
+		std::cout << " ";
+	}
+	return value * (static_cast<bool>(take_action_position)?-1:1);
+}
+int SinglePlayer::BinaryAction(const COORD coords)
+{
+	HANDLE window = main_window->GetHandle();
+	char button;
+
+	while (true)
+	{
+		ShowChances(participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1 * static_cast<int>(take_action_position == 2));
+		SetConsoleCursorPosition(window, coords);
+		std::string text = " - Do you really want to do this ? (Y/N) ";
+		std::cout << text;
+		button = _getch();
+		SetConsoleCursorPosition(window, coords);
+		for (int i = 0; i < static_cast<int>(text.size()); ++i)
+		{
+			std::cout << " ";
+		}
+		if (button == 'y' || button == 'Y')
+		{
+			ShowChances(0, true);
+			return take_action_position;
+		}
+		else if (button == 13 || button == 27 || button == 'n' || button == 'N')
+		{
+			ShowChances(0, true);
+			return 0;
+		}
+	}
+}
 SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
@@ -184,176 +265,72 @@ void SinglePlayer::TakeAction()
 {
 	if (!participants[0].alive)
 		return;
-
 	const std::vector<std::string> actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
-	HANDLE window = main_window->GetHandle();
-	char button;
-	CONSOLE_SCREEN_BUFFER_INFO console_screen_buffer_info;
-	
+	int value;
 	while (true)
 	{
-		ShowChances(0, 0, 0, true);
-		switch (take_action_position = Text::Choose::Veritcal(actions, take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window))
+		take_action_position = Text::Choose::Veritcal(actions, take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window);
+		if (participants[0].current_speed == 0 && take_action_position % 4 != 0)
 		{
-			case 0:
-			case 1:
+			const std::string text = " - You can't do this because you aren't moving...";
+			std::cout << text;
+			main_window->Pause(1500);
+			for (int i = 0; i < static_cast<int>(text.size()); ++i)
 			{
-				int value = 0;
-				short pos = 0;
-				if (participants[0].current_speed == 0 && take_action_position == 1)
-				{
-					std::cout << " - You can't do this because you aren't moving...";
-					main_window->Pause(1500);
-					GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-					SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 49,console_screen_buffer_info.dwCursorPosition.Y });
-					std::cout << "                                                 ";
-					break;
-				}
-				std::cout << ": ";
-				while (true)
-				{
-					button = _getch();
-					SetConsoleCursorPosition(window, {static_cast<short>(actions[take_action_position].size()+3 + pos),39+2*take_action_position});
-					if (button >= '0' && button <= '9')
-					{
-						if (button == '0' && pos == 0)
-							continue;
-						else if (value * 10 + button - 48 > participants[0].car_modifiers[CarModifiers::max_accelerating + take_action_position])
-							continue;
-
-						std::cout << button;
-						value = value * 10 + button - 48;
-						pos++;
-					}
-					else if (button == '\b' && pos != 0)
-					{
-						std::cout << "\b \b";
-						value /= 10;
-						pos--;
-					}
-					else if (button == 13)
-					{
-						break;
-					}
-					if (value > 0)
-					{
-						double speed_estimation = (participants[0].current_speed + value * (take_action_position > 0 ? -1 : 1));
-						if (speed_estimation > static_cast<double>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
-							speed_estimation = static_cast<double>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25;
-						else if (speed_estimation < 0)
-							speed_estimation = 0;
-
-						ShowChances(static_cast<int>((100 - participants[0].EvaluateChance(current_field, speed_estimation*0.9, false))),
-							(100 / (1 + speed_estimation*9.0f / 36.0f)),
-							CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]));
-					}
-					else
-					{
-						ShowChances(0, 0, 0, true);
-					}
-				}
-				SetConsoleCursorPosition(window, { static_cast<short>(actions[take_action_position].size()+1),39 + 2 * take_action_position });
-				for (int i = 0; i < pos+2 ; i++)
-					std::cout << " ";
-
-				if (value == 0)
-					break;
-				
-				if (take_action_position)
-				{
-					participants[0].current_speed -= value;
-					if (participants[0].current_speed < 0)
-						participants[0].current_speed = 0;
-				}
-				else
-				{
-					participants[0].current_speed += value;
-				}
-				if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]))
-				{
-					if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
-						participants[0].current_speed = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]*1.25);
-
-					participants[0].current_durability -= CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
-				}
-				participants[0].current_speed = participants[0].current_speed*0.9f;
-				return;		
+				std::cout << "\b";
 			}
-		case 2:
-		case 3:
-		case 4:
-		{
-			while (true)
+			for (int i = 0; i < static_cast<int>(text.size()); ++i)
 			{
-				if (participants[0].current_speed <= 0 && take_action_position != 4)
-				{
-					std::cout << " - You can't do this because you aren't moving...";
-					main_window->Pause(1500);
-					GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-					SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 49,console_screen_buffer_info.dwCursorPosition.Y });
-					std::cout << "                                                 ";
-					break;
-				}
-				if (take_action_position == 2)
-				{
-					double speed_estimation = participants[0].current_speed - participants[0].car_modifiers[CarModifiers::hand_brake_value];
-					if (speed_estimation < 0)
-						speed_estimation = 0;
-
-					ShowChances(static_cast<int>((100 - participants[0].EvaluateChance(current_field, speed_estimation*0.9, participants[0].current_speed > 40 && current_field.size() > 1))),
-						participants[0].current_speed > 40 && current_field.size()>1 ? 1.5 : 100 / (1 + speed_estimation*9.0f / 36.0f),
-						CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]));
-				}
-				else if (take_action_position == 3)
-				{
-					double speed_estimation = participants[0].current_speed;
-					if (speed_estimation < 0)
-						speed_estimation = 0;
-
-					ShowChances(static_cast<int>((100 - participants[0].EvaluateChance(current_field, participants[0].current_speed*0.9, false))),
-						(100 / (1 + speed_estimation*9.0f / 36.0f)),
-						CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]));
-				}
-				SetConsoleCursorPosition(window, { static_cast<short>(actions[take_action_position].size() + 1),39 + 2 * take_action_position });
-				std::cout << " - Do you really want to do this ? (Y/N) ";
-				button = _getch();
-				SetConsoleCursorPosition(window, { static_cast<short>(actions[take_action_position].size() + 1),39 + 2 * take_action_position });
-				std::cout << "                                         ";
-				if (button == 'y' || button == 'Y')
-				{
-					if (take_action_position == 4)
-					{
-						participants[0].current_durability = 0;
-						return;
-					}
-					else
-					{
-						if (take_action_position == 2)
-						{
-							if (participants[0].current_speed > 40 && current_field.size() > 1)
-								participants[0].drift = true;
-							participants[0].current_speed -= static_cast<float>(participants[0].car_modifiers[CarModifiers::hand_brake_value]);
-							if (participants[0].current_speed < 0)
-								participants[0].current_speed = 0.0f;
-						}
-						if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]))
-						{
-							if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
-								participants[0].current_speed = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed] * 1.25);
-							participants[0].current_durability -= CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
-						}
-						participants[0].current_speed = participants[0].current_speed*0.9f;
-						return;
-					}
-				}
-				else if (button == 13 || button == 27 || button == 'n' || button == 'N')
-				{
-					break;
-				}
+				std::cout << " ";
+			}
+			continue;
+		}
+		if (take_action_position < 2)
+		{
+			value = NumericalAction({ static_cast<short>(actions[take_action_position].size() + 1), 39 + 2 * take_action_position });
+			if (value != 0)
+			{
+				break;
 			}
 		}
+		else
+		{
+			int option = BinaryAction({ static_cast<short>(actions[take_action_position].size() + 1), 39 + 2 * take_action_position });
+			if (option == 0)
+			{
+				continue;
+			}
+			else if (option == 2)
+			{
+				value = 0;
+				break;
+			}
+			else if (option == 3)
+			{
+				value = participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1;
+				break;
+			}
+			else if (option == 4)
+			{
+				participants[0].current_durability = 0;
+				return;
+			}
 		}
 	}
+	participants[0].current_speed += value;
+	if (participants[0].current_speed < 0)
+	{
+		participants[0].current_speed = 0;
+	}
+	else if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]))
+	{
+		if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
+		{
+			participants[0].current_speed = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed] * 1.25);
+		}
+		participants[0].current_durability -= CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
+	}
+	participants[0].current_speed = participants[0].current_speed*0.9f;
 }
 void SinglePlayer::GetOthersAction(int turn)
 {
@@ -379,8 +356,19 @@ int SinglePlayer::Possible_AIs()
 	return 7;
 }
 
-void SinglePlayer::ShowChances(double chance_to_succeed, double estimated_time, double burned_durability, bool reset)
+void SinglePlayer::ShowChances(int value, bool reset)
 {
+	double speed_estimation = (participants[0].current_speed + value);
+	if (speed_estimation > static_cast<double>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
+		speed_estimation = static_cast<double>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25;
+	else if (speed_estimation < 0)
+		speed_estimation = 0;
+	
+	bool drift = take_action_position == 2 && participants[0].current_speed > 40 && current_field.size() > 1;
+	float chance_to_succeed = static_cast<int>((100 - participants[0].EvaluateChance(current_field, speed_estimation*0.9, drift)));
+	float estimated_time = drift ? 1.5 : 100 / (1 + speed_estimation * 9.0f / 36.0f);
+	float burned_durability = CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]);
+
 	HANDLE window = main_window->GetHandle();
 	std::string helper;
 	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, "Chance: "},  {estimated_time, "Estimated time: "}, {burned_durability, "Durability burning: "} };
