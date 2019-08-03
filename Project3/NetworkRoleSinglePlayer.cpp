@@ -727,7 +727,7 @@ void SinglePlayer::Interface()
 }
 bool SinglePlayer::VisionBox(int turn)
 {
-	auto visible_tour = GetTourParameters(turn, visibility);
+	std::vector<std::string> visible_tour = GetTourParameters(turn, participants[0].car_modifiers[CarModifiers::visibility]);
 	int ret = true;
 
 	if (visible_tour.size() > 0)
