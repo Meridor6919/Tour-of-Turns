@@ -1,16 +1,16 @@
 #include "Window.h"
 
 
-Window::Window(char title[], int color1, int color2, int chars_in_rows, int chars_in_columns)
+Window::Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns)
 {
 	//Saving crucial data
-	strcpy(this->title, title);
+	strcpy(this->title, title.c_str());
 	this->color1 = color1;
 	this->color2 = color2;
-	window_size = { (short)chars_in_rows, (short)chars_in_columns };
-	window_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-	window_hwnd = GetConsoleWindow();
-	SetConsoleTitle(title);
+	this->window_size = { chars_in_rows, chars_in_columns };
+	this->window_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	this->window_hwnd = GetConsoleWindow();
+	SetConsoleTitle(this->title);
 	srand(static_cast<int>(time(0)));
 
 	//Automatically detecting appropriate font size
@@ -22,7 +22,7 @@ Window::Window(char title[], int color1, int color2, int chars_in_rows, int char
 
 	for(COORD c = GetLargestConsoleWindowSize(window_handle); (c.X < chars_in_rows || c.Y < chars_in_columns) && ConsoleFontInfoEx.dwFontSize.Y > 0; c = GetLargestConsoleWindowSize(window_handle))
 	{
-		ConsoleFontInfoEx.dwFontSize.Y--;
+		--ConsoleFontInfoEx.dwFontSize.Y;
 		SetCurrentConsoleFontEx(window_handle, NULL, &ConsoleFontInfoEx);
 	}
 	font_size = ConsoleFontInfoEx.dwFontSize.Y;
@@ -56,19 +56,19 @@ int Window::GetWidth()
 {
 	return window_size.X;
 }
-void Window::SetCursor(bool visible)
+void Window::SetCursor(const bool visible)
 {
 	console_cursor.bVisible = visible;
 	SetConsoleCursorInfo(window_handle, &console_cursor);
 }
-void Window::SetMusic(std::string sound_file, bool playing)
+void Window::SetMusic(const std::string sound_file, const bool playing)
 {
 	if (playing)
 		PlaySound(sound_file.c_str(), 0, SND_LOOP | SND_ASYNC);
 	else
 		PlaySound(0, 0, 0);
 }
-void Window::Pause(int miliseconds)
+void Window::Pause(const int miliseconds)
 {
 	DWORD consolesettings;
 	GetConsoleMode(window_handle, &consolesettings);

@@ -241,7 +241,7 @@ void SinglePlayer::Attack()
 	}
 	if (rival_id.size() != 1 && participants[0].alive)
 	{
-		int i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight()-17) }, 2, Text::TextAlign::center, true, *main_window);
+		short i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight()-17) }, 2, Text::TextAlign::center, true, *main_window);
 		if (rival_id[i] != 10)
 		{
 			participants[rival_id[i]].attacked+=1;
@@ -302,12 +302,12 @@ void SinglePlayer::TakeAction()
 			}
 			else if (option == 2)
 			{
-				value = 0;
+				value = participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1;
 				break;
 			}
 			else if (option == 3)
 			{
-				value = participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1;
+				value = 0;
 				break;
 			}
 			else if (option == 4)
@@ -348,7 +348,7 @@ void SinglePlayer::GetOthersAction(int turn)
 					safe_speed = atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]);
 			}
 		}
-		participants[i].TakeAction(safe_speed, (bool)tour[0].size > 1);
+		participants[i].TakeAction(safe_speed, tour[0].size() > 1);
 	}
 }
 int SinglePlayer::Possible_AIs()
@@ -357,15 +357,15 @@ int SinglePlayer::Possible_AIs()
 }
 void SinglePlayer::ShowChances(int value, bool reset)
 {
-	double speed_estimation = (participants[0].current_speed + value);
-	if (speed_estimation > static_cast<double>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
-		speed_estimation = static_cast<double>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25;
+	float speed_estimation = (participants[0].current_speed + value);
+	if (speed_estimation > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25f)
+		speed_estimation = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25f;
 	else if (speed_estimation < 0)
 		speed_estimation = 0;
 	
 	bool drift = take_action_position == 2 && participants[0].current_speed > 40 && current_field.size() > 1;
-	float chance_to_succeed = static_cast<int>((100 - participants[0].EvaluateChance(current_field, speed_estimation*0.9, drift)));
-	float estimated_time = drift ? 1.5 : 100 / (1 + speed_estimation * 9.0f / 36.0f);
+	float chance_to_succeed = static_cast<float>(static_cast<int>((100 - participants[0].EvaluateChance(current_field, speed_estimation*0.9f, drift))));
+	float estimated_time = drift ? 1.5f : 100 / (1 + speed_estimation * 9.0f / 36.0f);
 	float burned_durability = CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]);
 
 	HANDLE window = main_window->GetHandle();
@@ -398,19 +398,19 @@ void SinglePlayer::ShowChances(int value, bool reset)
 		SetConsoleTextAttribute(window, main_window->color2);
 	}
 }
-double SinglePlayer::CalculateBurning(double value)
+float SinglePlayer::CalculateBurning(float value)
 {
 	if (value < 0)
 		return 0;
-	double raw = value / participants[0].car_modifiers[CarModifiers::max_speed];
+	float raw = value / static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]);
 
-	if (raw > 0.25)
+	if (raw > 0.25f)
 	{
-		raw = 0.25;
-		value = participants[0].car_modifiers[CarModifiers::max_speed] * 0.25;
+		raw = 0.25f;
+		value = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]) * 0.25f;
 	}
 
-	double result = 0;
+	float result = 0;
 	for (int i = 1; i < raw / 0.05 + 3; i++)
 	{
 		result += i * value;

@@ -1,19 +1,23 @@
 #include "ToT_Window.h"
 
-ToT_Window::ToT_Window(char title[], int color1, int color2, int chars_in_rows, int chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
+ToT_Window::ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
 {
 	LoadFiles("Ranking.txt", "rank");
 	if (!LoadFiles("Tire.txt", "tire"))
+	{
 		MessageBox(0, "No tire files found, please reinstall your game or repair missing files", "File Error", 0);
+	}
 	if (!LoadFiles("Tour.txt", "tour"))
+	{
 		MessageBox(0, "No tour files found, please reinstall your game or repair missing files", "File Error", 0);
+	}
 }
-bool ToT_Window::LoadFiles(std::string path, std::string ext)
+bool ToT_Window::LoadFiles(std::string path, const std::string ext)
 {
 	path = "dir *." + ext + " > " + path + " /b";
 	if (system(path.c_str()))
 	{
-		//if file does't exist we need to clear error message that shows in a console window by default
+		//Clearing error message that shows in a console window by default when files not found
 		SetConsoleCursorPosition(window_handle, { 0,0 });
 		std::cout << "                       ";
 		SetConsoleCursorPosition(window_handle, { 0,0 });
@@ -21,41 +25,67 @@ bool ToT_Window::LoadFiles(std::string path, std::string ext)
 	}
 	return true;
 }
-void ToT_Window::SetHamachiConnectionFlag(bool flag)
+void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {
 	hamachi_enabled = flag;
 }
-void ToT_Window::Title(COORD starting_point, Text::TextAlign text_align)
+void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
 {
-	SetConsoleTextAttribute(window_handle, color2);
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y }); std::cout << "[ ]     _______  ___         ___      [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 1 }); std::cout << "[ ]        |    |   | |   | |   |     [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 2 }); std::cout << "[ ]        |    |   | |   | |___|     [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 3 }); std::cout << "[ ]        |    |   | |   | |  \\      [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 4 }); std::cout << "[ ]        |    |___| |___| |   \\     [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 5 }); std::cout << "[ ]                                   [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 6 }); std::cout << "[ ]                                   [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 7 }); std::cout << "[ ]                                   [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 8 }); std::cout << "[ ]                                   [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 9 }); std::cout << "[ ]                                   [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 10 }); std::cout << "[ ]   _______        ___    __   __   [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 11 }); std::cout << "[ ]      |    |   | |   |  |  | |     [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 12 }); std::cout << "[ ]      |    |   | |___|  |  | |__   [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 13 }); std::cout << "[ ]      |    |   | |  \\   |  |    |  [ ]";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42), starting_point.Y + 14 }); std::cout << "[ ]      |    |___| |   \\  |  | ___|  [ ]";
+	const std::vector<std::string> main_text = {
+		"  _______  ___         ___     ",
+		"     |    |   | |   | |   |    ",
+		"     |    |   | |   | |___|    ",
+		"     |    |   | |   | |  \\     ",
+		"     |    |___| |___| |   \\    ",
+		"                               ",
+		"                               ",
+		"                               ",
+		"                               ",
+		"                               ",
+		"_______        ___    __   __  ",
+		"   |    |   | |   |  |  | |    ",
+		"   |    |   | |___|  |  | |__  ",
+		"   |    |   | |  \\   |  |    | ",
+		"   |    |___| |   \\  |  | ___| ",
+	};
+	const std::vector<std::string> additional_text = {
+		" ___   ___",
+		"|   | |   ",
+		"|   | |_  ",
+		"|   | |   ",
+		"|___| |   ",
+	};
+	const COORD orientation_point = { starting_point.X - static_cast<short>((float)text_align / 2 * main_text[0].size()), starting_point.Y };
+	const short decoration_distance = 5;
+	std::string main_decoration = "{ }";
+	std::string additional_decoration = "*";
 
-	SetConsoleTextAttribute(window_handle, color1);
-	for (short i = 0; i < 15; i++)
+	SetConsoleTextAttribute(window_handle, color2);
+	for (short i = 0; i < static_cast<short>(main_text.size()); ++i)
 	{
-		SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42)+1, starting_point.Y+i });
-		std::cout << "*";
-		SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42)+39, starting_point.Y+i });
-		std::cout << "*";
+		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
+		std::cout << main_text[i];
 	}
-	
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42) + 17, starting_point.Y + 5 }); std::cout << " ___   ___";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42) + 17, starting_point.Y + 6 }); std::cout << "|   | |";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42) + 17, starting_point.Y + 7 }); std::cout << "|   | |_";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42) + 17, starting_point.Y + 8 }); std::cout << "|   | |";
-	SetConsoleCursorPosition(window_handle, { starting_point.X - static_cast<short>((float)text_align / 2 * 42) + 17, starting_point.Y + 9 }); std::cout << "|___| |";
+	SetConsoleTextAttribute(window_handle, color1);
+	for (short i = 0; i < static_cast<short>(additional_text.size()); ++i)
+	{
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(main_text[i].size()/2 - additional_text[i].size()/2), orientation_point.Y + i + static_cast<short>(main_text.size()) / 3 });
+		std::cout << additional_text[i];
+	}
+	SetConsoleTextAttribute(window_handle, color2);
+	for (short i = 0; i < static_cast<short>(main_text.size()); ++i)
+	{
+		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) - i % 2, orientation_point.Y + i });
+		std::cout << main_decoration;
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(main_text[i].size() + decoration_distance - 1) - i % 2, orientation_point.Y + i });
+		std::cout << main_decoration;
+	}
+	SetConsoleTextAttribute(window_handle, color1);
+	for (short i = 0; i < static_cast<short>(main_text.size()); ++i)
+	{
+		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) + 1 - i % 2, orientation_point.Y + i });
+		std::cout << additional_decoration;
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(main_text[i].size() + decoration_distance - 1) + 1 - i % 2, orientation_point.Y + i });
+		std::cout << additional_decoration;
+	}
 }

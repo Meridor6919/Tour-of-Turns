@@ -61,7 +61,7 @@ bool GeneralMultiPlayer::Client::RecvBroadcast(int max_hosts, int ms_interval)
 						auto new_record = current_hosts.find(it->first);
 						if (new_record != current_hosts.end())
 						{
-							std::swap(current_hosts[clock() + (ms_interval)*1.5], new_record->second);
+							std::swap(current_hosts[static_cast<int>(clock() + (ms_interval)*1.5f)], new_record->second);
 							current_hosts.erase(new_record);
 							finded = true;
 							break;

@@ -44,7 +44,7 @@ public:
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
 	void ShowChances(int value, bool reset=false);
-	double CalculateBurning(double value);
+	float CalculateBurning(float value);
 	void GameLobby();
 };
 

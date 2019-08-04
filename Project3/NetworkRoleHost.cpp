@@ -137,7 +137,7 @@ bool Host::StartNetwork()
 
 				while (true)
 				{
-					int kicked_player = Text::Choose::Veritcal(text, 0, { (short)main_window->GetWidth() / 2, 25 }, 3, Text::center, true, *main_window);
+					short kicked_player = Text::Choose::Veritcal(text, 0, { (short)main_window->GetWidth() / 2, 25 }, 3, Text::center, true, *main_window);
 					if (kicked_player != text.size() - 1) //if host kicked somebody
 					{
 						for (int i = 0; i < (*clients).size(); i++)

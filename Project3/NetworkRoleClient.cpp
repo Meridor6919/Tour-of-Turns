@@ -318,7 +318,7 @@ void Client::Attack()
 			break;
 	}
 	
-	int i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, 2, Text::TextAlign::center, true, *main_window);
+	short i = Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, 2, Text::TextAlign::center, true, *main_window);
 	strcpy(buffer, ("54" + id[i]).c_str());
 	send(host, buffer, 254, 0);
 }

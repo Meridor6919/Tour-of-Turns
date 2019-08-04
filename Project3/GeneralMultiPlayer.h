@@ -17,7 +17,7 @@ namespace GeneralMultiPlayer {
 	//Container that saves messages received from clients to process them when the time comes
 	class RequestHandler {
 
-		unsigned int number_of_clients;
+		int number_of_clients;
 		std::vector<std::vector<std::string>> requests;
 
 	public:
@@ -97,12 +97,12 @@ bool GeneralMultiPlayer::Host::HandleConnection(void(T::*MsgHandling)(std::strin
 	}
 	for (int i = 0; i < static_cast<int>((clients).size()); i++)
 		recv_threads.push_back(std::thread(&GeneralMultiPlayer::Host::RecvFunction<T>, this, i, MsgHandling, object));
+	return true;
 }
 template <class T>
 void  GeneralMultiPlayer::Host::RecvFunction(int client_id, void(T::*MsgHandling)(std::string, int), T* object)
 {
 	char buffer[254] = "";
-	bool result;
 	while (handling_connection)
 	{
 		if (!GeneralMultiPlayer::Recv(clients[client_id].first, buffer, 254, 0))
