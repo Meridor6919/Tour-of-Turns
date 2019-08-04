@@ -1,6 +1,6 @@
 #include "TextLib.h"
 
-int Text::Choose::Horizontal(std::vector<std::string> text, int starting_position, COORD starting_point, Text::TextAlign text_align, bool clear_after, Window &main_window)
+int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
 	int color1 = main_window.color1;
@@ -43,7 +43,7 @@ int Text::Choose::Horizontal(std::vector<std::string> text, int starting_positio
 
 	return starting_position;
 }
-int Text::Choose::Veritcal(std::vector<std::string> text, short starting_position, COORD starting_point, short spacing, Text::TextAlign text_align, bool clear_after, Window &main_window)
+int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_position, const COORD starting_point, const short spacing, const TextAlign text_align, const bool clear_after, Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
 	int color1 = main_window.color1;
@@ -53,12 +53,11 @@ int Text::Choose::Veritcal(std::vector<std::string> text, short starting_positio
 
 	//Showing text on the screen
 	SetConsoleTextAttribute(handle, color1);
-	for (short i = 0; i < text_size; i++)
+	for (short i = 0; i < text_size; ++i)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
 		std::cout << text[i];
 	}
-
 	do
 	{
 		//Changing active text's color
@@ -110,7 +109,7 @@ int Text::Choose::Veritcal(std::vector<std::string> text, short starting_positio
 	}
 	return starting_position;
 }
-int Text::Choose::Numeric(int max, COORD starting_point, bool zero_allowed, Window &main_window)
+int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_allowed, Window &main_window)
 {
 	char button;
 	int number = 0;
@@ -123,40 +122,47 @@ int Text::Choose::Numeric(int max, COORD starting_point, bool zero_allowed, Wind
 		if (button >= '0' && button <= '9')
 		{
 			if (button == '0' && pos == 0)
+			{
 				continue;
+			}
 			else if (number * 10 + button - 48 > max)
+			{
 				continue;
-
+			}
 			std::cout << button;
 			number = number * 10 + button - 48;
-			pos++;
+			++pos;
 		}
 		//erasing last number if user pressed backspace
 		if (button == '\b' && pos != 0)
 		{
 			std::cout << "\b \b";
 			number /= 10;
-			pos--;
+			--pos;
 		}
 		if (button == 13)
 		{
 			if (pos == 0 && !zero_allowed)
+			{
 				continue;
+			}
 			break;
 		}
 	}
 	//Clearing text from the screen
 	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
 	for (int i = 1; i <= number; i *= 10)
+	{
 		std::cout << " ";
+	}
 	return number;
 }
-void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::OrdinaryText_atributes> atribute, const Text::TextAlign text_align, const short spacing, const short position, Window &MainWindow, bool clearing)
+void Text::OrdinaryText(std::vector<std::string> text, const std::vector<OrdinaryText_atributes> atribute, const TextAlign text_align, const short spacing, const short position, Window &main_window, const bool clearing)
 {
-	HANDLE handle = MainWindow.GetHandle();
+	HANDLE handle = main_window.GetHandle();
 	const int text_size = static_cast<int>(text.size());
 	short current_position;
-	short starting_pos = static_cast<short>(MainWindow.GetWidth() / 2 * text_align);
+	short starting_pos = static_cast<short>(main_window.GetWidth() / 2 * text_align);
 
 
 	SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[0].size())), position });
@@ -173,24 +179,23 @@ void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Ordinar
 			}
 		}
 	}
-
 	//Showing the text
-	for (int i = 0; i < text_size; i++)
+	for (int i = 0; i < text_size; ++i)
 	{
 		if (atribute[i] == color2)
 		{
-			SetConsoleTextAttribute(handle, MainWindow.color2);
+			SetConsoleTextAttribute(handle, main_window.color2);
 		}
 		else
 		{
-			SetConsoleTextAttribute(handle, MainWindow.color1);
+			SetConsoleTextAttribute(handle, main_window.color1);
 		}
 		std::cout << text[i];
 		if (atribute[i] == endl && i < text_size - 1)
 		{
 			int next_line_size = static_cast<int>(text[i + 1].size());
 
-			for (int j = 1; atribute[i + j] != endl; j++)
+			for (int j = 1; atribute[i + j] != endl; ++j)
 			{
 				next_line_size += static_cast<int>(text[i + j + 1].size());
 			}
@@ -199,12 +204,12 @@ void Text::OrdinaryText(std::vector<std::string> text, std::vector<Text::Ordinar
 		}
 	}
 }
-void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, short vertical_spacing, const COORD starting_point, Window &main_window, bool clearing)
+void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, const bool clearing)
 {
 	HANDLE handle = main_window.GetHandle();
 	std::vector<std::string>::iterator it = text.begin();
 	int text_size = static_cast<int>(text.size());
-	for (int i = 0; i*texts_per_row < text_size; i++)
+	for (int i = 0; i*texts_per_row < text_size; ++i)
 	{
 		//Setting right color
 		if (i < painted_rows)
@@ -220,14 +225,14 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 		{
 			for (int j = 0; j < text_size; j++)
 			{
-				for (int k = 0; k < static_cast<int>(text[j].size()); k++)
+				for (int k = 0; k < static_cast<int>(text[j].size()); ++k)
 				{
 					text[j][k] = ' ';
 				}
 			}
 		}
 		//Showing the text
-		for (int j = 0; j < texts_per_row && i*texts_per_row + j < text_size; j++)
+		for (int j = 0; j < texts_per_row && i*texts_per_row + j < text_size; ++j)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X + vertical_spacing * static_cast<short>(j) + vertical_spacing / 2 - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(it->size())),
 				starting_point.Y + static_cast<short>(i * spacing) });
@@ -236,7 +241,7 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 		}
 	}
 }
-void Text::Spaces(int i)
+void Text::Spaces(const int i)
 {
 	for (int j = 0; j < i; ++j)
 	{

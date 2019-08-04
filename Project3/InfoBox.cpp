@@ -1,6 +1,6 @@
 #include "Infobox.h"
 
-InfoBox::InfoBox(int size, Text::TextAlign text_align, COORD starting_point, int spacing, Window &main_window)
+InfoBox::InfoBox(const int size, const Text::TextAlign text_align, const COORD starting_point, const int spacing, Window &main_window)
 {
 	this->size = size;
 	this->text_align = text_align;
@@ -8,7 +8,7 @@ InfoBox::InfoBox(int size, Text::TextAlign text_align, COORD starting_point, int
 	this->spacing = spacing;
 	this->main_window = &main_window;
 }
-void InfoBox::Push(std::string special_text, std::string text)
+void InfoBox::Push(const std::string special_text, const std::string text)
 {
 	//Pushing new text into infobox
 	info.push_back(special_text + "  " + text);	
@@ -26,7 +26,7 @@ void InfoBox::Push(std::string special_text, std::string text)
 		it = info.begin();
 	}
 	//Showing recent info
-	SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)text_align / 2 * (float)it->size()), starting_point.Y + (short)(info.size() - 1) * (short)spacing });
+	SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(it->size())), starting_point.Y + static_cast<short>((info.size() - 1) * spacing) });
 	SetConsoleTextAttribute(handle, main_window->color1);
 	std::cout << special_text << "  ";
 	SetConsoleTextAttribute(handle, main_window->color2);
@@ -34,9 +34,9 @@ void InfoBox::Push(std::string special_text, std::string text)
 
 	//Showing rest of elements
 	SetConsoleTextAttribute(handle, 8);
-	for (short i = 0; it != std::prev(info.end(), 1); ++it, i++)
+	for (int i = 0; it != std::prev(info.end(), 1); ++it, ++i)
 	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)text_align / 2 * (float)it->size()), starting_point.Y + i * (short)spacing });
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(it->size())), starting_point.Y + static_cast<short>(i  * spacing)});
 		std::cout << *it;
 	}
 }
@@ -45,11 +45,13 @@ void InfoBox::Clear()
 	HANDLE handle = main_window->GetHandle();
 	std::vector<std::string>::iterator it = info.begin();
 
-	for (short i = 0; it != info.end(); ++it, i++)
+	for (short i = 0; it != info.end(); ++it, ++i)
 	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)text_align / 2 * (float)it->size()), starting_point.Y + i * (short)spacing });
-		for (int j = 0; j < it->size(); j++)
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(it->size())), starting_point.Y + static_cast<short>(i  * spacing) });
+		for (int j = 0; j < it->size(); ++j)
+		{
 			std::cout << " ";
+		}
 	}
 }
 

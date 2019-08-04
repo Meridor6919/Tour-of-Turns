@@ -14,8 +14,8 @@ class InfoBox
 public:
 
 	std::vector<std::string> info;
-	InfoBox(int size, Text::TextAlign text_align, COORD starting_point, int spacing, Window &main_window);
-	void Push(std::string special_text, std::string text);
+	InfoBox(const int size, const Text::TextAlign text_align, const COORD starting_point, const int spacing, Window &main_window);
+	void Push(const std::string special_text, const std::string text);
 	void Clear();
 	
 };

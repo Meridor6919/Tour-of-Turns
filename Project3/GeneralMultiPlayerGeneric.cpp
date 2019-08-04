@@ -1,6 +1,6 @@
 #include "GeneralMultiPlayer.h"
 
-bool GeneralMultiPlayer::Recv(SOCKET socket, char * buffer, int length, int flags)
+bool GeneralMultiPlayer::Recv(SOCKET socket, char * buffer, const int length, const int flags)
 {
 	if ((recv(socket, buffer, length, flags) < 0) || (((std::string)buffer).size() > length))
 	{
