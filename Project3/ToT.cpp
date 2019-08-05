@@ -29,9 +29,9 @@ void GameMode::Credits(ToT_Window &main_window)
 }
 void GameMode::Options(ToT_Window &main_window)
 {
-	std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
+	const std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
-	COORD starting_point = { (short)main_window.GetWidth() / 2+1, 25 };
+	const COORD starting_point = { static_cast<short>(main_window.GetWidth()) / 2+1, 25 };
 	const short spacing = 3;
 	bool loop = true;
 
@@ -46,7 +46,7 @@ void GameMode::Options(ToT_Window &main_window)
 				//list of colours from 2 to 17
 				std::vector<std::string> local_text = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green",
 						"light cyan","light red","light magenta","yellow","white" };
-				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size() / 2 + 3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
+				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				
 				//erasing color that is already used by second colour
 				//program crashes when local_text.begin() is equal to local.text.end() -1 so inline if is nessesary. Substracting by 2 to synchronizewith list.
@@ -56,8 +56,10 @@ void GameMode::Options(ToT_Window &main_window)
 				//setting new colour
 				main_window.color1 = Text::Choose::Horizontal(local_text, main_window.color1 - 2 - (main_window.color1 > main_window.color2), local_starting_point, Text::TextAlign::left, true, main_window) + 2;
 				if (main_window.color1 >= main_window.color2)
-					main_window.color1++;
-				main_window.Title({ (short)main_window.GetWidth() / 2, 0 }, Text::TextAlign::center);
+				{
+					++main_window.color1;
+				}
+				main_window.Title({ static_cast<short>(main_window.GetWidth()) / 2, 0 }, Text::TextAlign::center);
 				break;
 			}
 			case 1:
@@ -65,7 +67,7 @@ void GameMode::Options(ToT_Window &main_window)
 				//list of colours from 2 to 17
 				std::vector<std::string> local_text = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green",
 						"light cyan","light red","light magenta","yellow","white" };
-				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size() / 2 + 3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
+				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				
 				//erasing color that is already used by second colour
 				//program crashes when local_text.begin() is equal to local.text.end() -1 so inline if is nessesary. Substracting by 2 to synchronizewith list.
@@ -75,38 +77,39 @@ void GameMode::Options(ToT_Window &main_window)
 				//setting new colour
 				main_window.color2 = Text::Choose::Horizontal(local_text, main_window.color2 - 2 - (main_window.color2 > main_window.color1), local_starting_point, Text::TextAlign::left, true, main_window) + 2;
 				if (main_window.color2 >= main_window.color1)
-					main_window.color2++;
-				main_window.Title({ (short)main_window.GetWidth() / 2, 0 }, Text::TextAlign::center);
+				{
+					++main_window.color2;
+				}
+				main_window.Title({ static_cast<short>(main_window.GetWidth()) / 2, 0 }, Text::TextAlign::center);
 				break;
 			}
 			case 2:
 			{
 				static bool flag = true;
-				std::vector<std::string> local_text = { "on", "off" };
-				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()/2 +3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-				
+				const std::vector<std::string> local_text = { "on", "off" };
+				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size())/2 +3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				main_window.SetMusic("test.wav", !(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
 			case 3:
 			{
 				static bool flag = false;
-				std::vector<std::string> local_text = { "on", "off" };
-				COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()/2 + 3) , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-
+				const std::vector<std::string> local_text = { "on", "off" };
+				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size())/2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				main_window.SetHamachiConnectionFlag(!(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
 			case 4:
 			{
 				HANDLE handle = main_window.GetHandle();
-
 				//clearing options
-				for (short i = 0; i < options_text.size(); i++)
+				for (short i = 0; i < static_cast<short>(options_text.size()); ++i)
 				{
-					SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::TextAlign::center / 2 * (float)options_text[i].size()), starting_point.Y + i * spacing });
-					for (int j = 0; j < options_text[i].size(); j++)
+					SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(options_text[i].size())), starting_point.Y + i * spacing });
+					for (int j = 0; j < static_cast<int>(options_text[i].size()); ++j)
+					{
 						std::cout << " ";
+					}
 				}
 				loop = false;
 			}
@@ -117,14 +120,14 @@ void GameMode::Ranking(ToT_Window &main_window)
 {
 	//TODO ranking should show players accuracy in decision making instead of showing lucky and stupid ones that scores the highest
 }
-void GameMode::Game(bool multiplayer, ToT_Window &main_window)
+void GameMode::Game(const bool multiplayer, ToT_Window &main_window)
 {
 	std::shared_ptr<SinglePlayer> network_role;
-	std::vector<std::string> options = { "Host game", "Search game", "Back" };
+	const std::vector<std::string> options = { "Host game", "Search game", "Back" };
 
 	if (multiplayer)
 	{	
-		switch (Text::Choose::Veritcal(options, 0, { (short)main_window.GetWidth() / 2, 25 }, 3, Text::TextAlign::center, true, main_window))
+		switch (Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window.GetWidth()) / 2, 25 }, 3, Text::TextAlign::center, true, main_window))
 		{
 			case 0:
 			{
@@ -182,5 +185,5 @@ void GameMode::Game(bool multiplayer, ToT_Window &main_window)
 	_getch();
 	_getch();
 	system("cls");
-	main_window.Title({ (short)main_window.GetWidth() / 2, 0 }, Text::TextAlign::center);
+	main_window.Title({ static_cast<short>(main_window.GetWidth()) / 2, 0 }, Text::TextAlign::center);
 }

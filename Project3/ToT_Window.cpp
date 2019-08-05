@@ -57,9 +57,9 @@ void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_al
 	};
 	const COORD orientation_point = { starting_point.X - static_cast<short>((float)text_align / 2 * main_text[0].size()), starting_point.Y };
 	const short decoration_distance = 5;
-	std::string main_decoration = "{ }";
-	std::string additional_decoration = "*";
-
+	const std::string main_decoration = "{ }";
+	const std::string additional_decoration = "*";
+	//Main text
 	SetConsoleTextAttribute(window_handle, color2);
 	for (short i = 0; i < static_cast<short>(main_text.size()); ++i)
 	{
@@ -72,6 +72,7 @@ void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_al
 		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(main_text[i].size()/2 - additional_text[i].size()/2), orientation_point.Y + i + static_cast<short>(main_text.size()) / 3 });
 		std::cout << additional_text[i];
 	}
+	//Decoration
 	SetConsoleTextAttribute(window_handle, color2);
 	for (short i = 0; i < static_cast<short>(main_text.size()); ++i)
 	{

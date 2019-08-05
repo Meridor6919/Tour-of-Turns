@@ -6,9 +6,9 @@
 int main()
 {
 	//TODO make maps cars and tires
-	std::string title = "Tour of Turns";
+	const std::string title = "Tour of Turns";
 	ToT_Window game_window(title, 15, 10, 200, 70);
-	std::vector<std::string> text = { "New Game ", "Multiplayer ", "Ranking ", "Options ", "Credits ", "Exit" };
+	const std::vector<std::string> text = { "New Game ", "Multiplayer ", "Ranking ", "Options ", "Credits ", "Exit" };
 	short main_menu_position = 0;
 
 	WSAData wsa_data;
