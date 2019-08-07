@@ -71,9 +71,10 @@ void Window::SetMusic(const std::string sound_file, const bool playing)
 void Window::Pause(const int miliseconds)
 {
 	DWORD consolesettings;
-	GetConsoleMode(window_handle, &consolesettings);
-	SetConsoleMode(window_handle, 0 & ~ENABLE_ECHO_INPUT);
+	HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
+	GetConsoleMode(input_handle, &consolesettings);
+	SetConsoleMode(input_handle, 0 & ~ENABLE_ECHO_INPUT);
 	Sleep(miliseconds);
-	FlushConsoleInputBuffer(window_handle);
-	SetConsoleMode(window_handle, consolesettings);
+	FlushConsoleInputBuffer(input_handle);
+	SetConsoleMode(input_handle, consolesettings);
 }
