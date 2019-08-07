@@ -11,6 +11,9 @@
 class SinglePlayer {
 
 	std::vector<std::string> ReadFile(std::string path);
+	std::string ChooseName(const std::string current_name, const int max_size);
+	void ShowTiresParameters(const std::string tire_path, bool clear = false);
+	void ShowCarParameters(const std::string tire_path, bool clear = false);
 	short take_action_position = 0;
 
 protected:
@@ -26,6 +29,7 @@ public:
 
 	std::shared_ptr<InfoBox> infobox;
 
+	void GameLobby();
 	SinglePlayer(ToT_Window &main_window);
 	virtual std::vector<std::string> GetTourNames();
 	virtual std::vector<std::string> GetCarNames(std::string tour);
@@ -44,8 +48,7 @@ public:
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
 	void ShowChances(int value, bool reset=false);
-	float CalculateBurning(float value);
-	void GameLobby();
+	
 };
 
 class Host : public SinglePlayer {

@@ -428,3 +428,23 @@ float Participant::EvaluateChance(std::string field, float speed, bool drift)
 	}
 }
 
+float Participant::CalculateBurning(float value)
+{
+	if (value < 0)
+		return 0;
+	float raw = value / static_cast<float>(car_modifiers[CarModifiers::max_speed]);
+
+	if (raw > 0.25f)
+	{
+		raw = 0.25f;
+		value = static_cast<float>(car_modifiers[CarModifiers::max_speed]) * 0.25f;
+	}
+
+	float result = 0;
+	for (int i = 1; i < raw / 0.05 + 3; i++)
+	{
+		result += i * value;
+	}
+	return result / 10;
+}
+

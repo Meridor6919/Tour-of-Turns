@@ -4,8 +4,8 @@
 class SinglePlayer;
 
 namespace Modifiers {
-	const std::string car_modifiers[] = { "max_speed","max_accelerating","max_braking","hand_brake_value","durability","visibility","turn_mod","drift_mod" };
-	const std::string tire_modifiers[] = { "asphalt","grass","gravel","sand","mud","ice" };
+	const std::vector<std::string> car_modifiers = { "max_speed","max_accelerating","max_braking","hand_brake_value","durability","visibility","turn_mod","drift_mod" };
+	const std::vector<std::string> tire_modifiers = { "asphalt","grass","gravel","sand","mud","ice" };
 }
 
 enum CarModifiers
@@ -55,4 +55,5 @@ public:
 	void TakeAction(int safe_speed, bool turn);	//ai action
 	void Test(std::string field, bool show);
 	float EvaluateChance(std::string field, float speed, bool drift);
+	float CalculateBurning(float value);
 };

@@ -13,6 +13,63 @@ std::vector<std::string> SinglePlayer::ReadFile(const std::string path)
 	fvar.close();
 	return data;
 }
+std::string SinglePlayer::ChooseName(const std::string current_name, const int max_name_size)
+{
+	char button;
+	std::string name = current_name;
+	HANDLE handle = main_window->GetHandle();
+	int name_size = static_cast<int>(name.size());
+
+	SetConsoleTextAttribute(handle, main_window->color1);
+	std::cout << " < ";
+	SetConsoleTextAttribute(handle, main_window->color2);
+	std::cout << name;
+	SetConsoleTextAttribute(handle, main_window->color1);
+	std::cout << " >";
+	SetConsoleTextAttribute(handle, main_window->color2);
+
+	do
+	{
+		button = _getch();
+		if (name_size < max_name_size && ((button >= 48 && button <= 57) || (button >= 65 && button <= 90 && GetKeyState(VK_SHIFT) != 1 && GetKeyState(VK_SHIFT) != 0) || (button >= 97 && button <= 122)))
+		{
+			name += button;
+			SetConsoleTextAttribute(handle, main_window->color2);
+			std::cout << "\b\b" << button;
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << " >";
+		}
+		else if (name_size < max_name_size && button == 32 && name_size > 0 && name[name_size - 1] != 32)
+		{
+			name += ' ';
+			SetConsoleTextAttribute(handle, main_window->color2);
+			std::cout << "\b\b" << button;
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << " >";
+		}
+		else if (button == 8 && name_size > 0)
+		{
+			name.erase(name_size - 1, 1);
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << "\b\b\b   \b\b>";
+		}
+		name_size = static_cast<int>(name.size());
+	} 
+	while (button != 13);
+	for (int i = 0; i < name_size + 4; ++i)
+	{
+		std::cout << "\b";
+	}
+	for (int i = 0; i < name_size + 4; ++i)
+	{
+		std::cout << " ";
+	}
+	if (name_size == 0)
+	{
+		name = "Racer";
+	}
+	return name;
+}
 int SinglePlayer::NumericalAction(const COORD coords)
 {
 	HANDLE window = main_window->GetHandle();
@@ -74,7 +131,7 @@ int SinglePlayer::BinaryAction(const COORD coords)
 	{
 		ShowChances(participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1 * static_cast<int>(take_action_position == 2));
 		SetConsoleCursorPosition(window, coords);
-		std::string text = " - Do you really want to do this ? (Y/N) ";
+		const std::string text = " - Do you really want to do this ? (Y/N) ";
 		std::cout << text;
 		button = _getch();
 		SetConsoleCursorPosition(window, coords);
@@ -157,11 +214,11 @@ void SinglePlayer::GetParticipants(const std::string name, const int ais, const 
 {
 	this->tour = tour;
 	this->ais = ais;
-	participants.emplace_back(Participant(name, car, tire, *this));
+	participants.emplace_back(name, car, tire, *this);
 
 	for (int i = 0; i < ais; ++i)
 	{
-		participants.emplace_back(Participant(this, tour));
+		participants.emplace_back(this, tour);
 	}
 }
 std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
@@ -174,7 +231,7 @@ std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 	{
 		if (participants[i].alive)
 		{
-			ret.push_back(std::make_pair(participants[i].score, participants[i].name));
+			ret.emplace_back(participants[i].score, participants[i].name);
 		}
 	}
 	while (flag)
@@ -287,7 +344,7 @@ void SinglePlayer::TakeAction()
 		}
 		if (take_action_position < 2)
 		{
-			value = NumericalAction({ static_cast<short>(actions[take_action_position].size() + 1), 39 + 2 * take_action_position });
+			value = NumericalAction({ static_cast<short>(actions[take_action_position].size()) + 1, 39 + 2 * take_action_position });
 			if (value != 0)
 			{
 				break;
@@ -295,7 +352,7 @@ void SinglePlayer::TakeAction()
 		}
 		else
 		{
-			int option = BinaryAction({ static_cast<short>(actions[take_action_position].size() + 1), 39 + 2 * take_action_position });
+			int option = BinaryAction({ static_cast<short>(actions[take_action_position].size()) + 1, 39 + 2 * take_action_position });
 			if (option == 0)
 			{
 				continue;
@@ -303,6 +360,7 @@ void SinglePlayer::TakeAction()
 			else if (option == 2)
 			{
 				value = participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1;
+				participants[0].drift = true;
 				break;
 			}
 			else if (option == 3)
@@ -324,28 +382,28 @@ void SinglePlayer::TakeAction()
 	}
 	else if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]))
 	{
-		if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25)
+		if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25f)
 		{
-			participants[0].current_speed = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed] * 1.25);
+			participants[0].current_speed = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed] * 1.25f);
 		}
-		participants[0].current_durability -= CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
+		participants[0].current_durability -= participants[0].CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
 	}
 	participants[0].current_speed = participants[0].current_speed*0.9f;
 }
-void SinglePlayer::GetOthersAction(int turn)
+void SinglePlayer::GetOthersAction(const int turn)
 {
-	auto tour = GetTourParameters(turn, 7);
+	const auto tour = GetTourParameters(turn, 7);
 	int safe_speed = INT32_MAX;
 	std::string helper;
 
-	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); i++)
+	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); ++i)
 	{
-		for (int j = 0; j < participants[i].car_modifiers[CarModifiers::visibility] && j < tour.size(); j++)
+		for (int j = 0; j < participants[i].car_modifiers[CarModifiers::visibility] && j < static_cast<int>(tour.size()); ++j)
 		{
-			if (tour[j].size() > 1)
+			if (static_cast<int>(tour[j].size()) > 1)
 			{
-				if (atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]) < safe_speed)
-					safe_speed = atoi(tour[j].substr(1, tour[j].size() - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]);
+				if (atoi(tour[j].substr(1, static_cast<int>(tour[j].size()) - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]) < safe_speed)
+					safe_speed = atoi(tour[j].substr(1, static_cast<int>(tour[j].size()) - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]);
 			}
 		}
 		participants[i].TakeAction(safe_speed, tour[0].size() > 1);
@@ -355,18 +413,21 @@ int SinglePlayer::Possible_AIs()
 {
 	return 7;
 }
-void SinglePlayer::ShowChances(int value, bool reset)
+void SinglePlayer::ShowChances(const int value, const bool reset)
 {
-	float speed_estimation = (participants[0].current_speed + value);
+	float speed_estimation = (participants[0].current_speed + static_cast<float>(value));
 	if (speed_estimation > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25f)
+	{
 		speed_estimation = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25f;
+	}
 	else if (speed_estimation < 0)
+	{
 		speed_estimation = 0;
-	
-	bool drift = take_action_position == 2 && participants[0].current_speed > 40 && current_field.size() > 1;
-	float chance_to_succeed = static_cast<float>(static_cast<int>((100 - participants[0].EvaluateChance(current_field, speed_estimation*0.9f, drift))));
-	float estimated_time = drift ? 1.5f : 100 / (1 + speed_estimation * 9.0f / 36.0f);
-	float burned_durability = CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]);
+	}
+	bool drift = take_action_position == 2 && participants[0].current_speed > 40.0f && current_field.size() > 1;
+	float chance_to_succeed = static_cast<float>(static_cast<int>((100.0f - participants[0].EvaluateChance(current_field, speed_estimation*0.9f, drift))));
+	float estimated_time = drift ? 1.5f : 100.0f / (1.0f + speed_estimation * 9.0f / 36.0f);
+	float burned_durability = participants[0].CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]);
 
 	HANDLE window = main_window->GetHandle();
 	std::string helper;
@@ -374,22 +435,24 @@ void SinglePlayer::ShowChances(int value, bool reset)
 
 	if (!reset)
 	{
-		for (short i = 0; i < values.size(); i++)
+		for (short i = 0; i < values.size(); ++i)
 		{
 			if (values[i].first < 0.01)
+			{
 				values[i].first = 0;
+			}
 			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 27 - i) });
 			SetConsoleTextAttribute(window, main_window->color1);
 			std::cout << values[i].second;
 			SetConsoleTextAttribute(window, main_window->color2);
 			helper = std::to_string(values[i].first);
-			helper = helper.substr(0, helper.size() - 4);
+			helper = helper.substr(0, static_cast<int>(helper.size()) - 4);
 			std::cout << helper << "              ";
 		}
 	}
 	else
 	{
-		for (short i = 0; i < values.size(); i++)
+		for (short i = 0; i < values.size(); ++i)
 		{
 			SetConsoleTextAttribute(window, main_window->color1);
 			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 27 - i) });
@@ -398,283 +461,186 @@ void SinglePlayer::ShowChances(int value, bool reset)
 		SetConsoleTextAttribute(window, main_window->color2);
 	}
 }
-float SinglePlayer::CalculateBurning(float value)
+void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
 {
-	if (value < 0)
-		return 0;
-	float raw = value / static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]);
-
-	if (raw > 0.25f)
+	std::vector<std::string> params2 = GetTireParameters(tire_path);
+	std::vector<std::string> tire_parameters;
+	std::vector<Text::OrdinaryText_atributes> text_atributes;
+	for (int i = 0; i < static_cast<int>(Modifiers::tire_modifiers.size()); ++i)
 	{
-		raw = 0.25f;
-		value = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]) * 0.25f;
+		text_atributes.push_back(Text::OrdinaryText_atributes::color2);
+		text_atributes.push_back(Text::OrdinaryText_atributes::endl);
 	}
-
-	float result = 0;
-	for (int i = 1; i < raw / 0.05 + 3; i++)
+	for (int i = 0; i < static_cast<int>(params2.size()); ++i)
 	{
-		result += i * value;
+		tire_parameters.push_back(Modifiers::tire_modifiers[i] + ": ");
+		tire_parameters.push_back(params2[i] + "      ");
 	}
-	return result/10;
+	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window, clear);
+}
+void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear)
+{
+	std::vector<int> params1 = GetCarParameters(car_path);
+	std::vector<std::string> car_parameters;
+	std::vector<Text::OrdinaryText_atributes> text_atributes;
+	for (int i = 0; i < static_cast<int>(Modifiers::car_modifiers.size()); ++i)
+	{
+		text_atributes.push_back(Text::OrdinaryText_atributes::color2);
+		text_atributes.push_back(Text::OrdinaryText_atributes::endl);
+	}
+	for (int i = 0; i < static_cast<int>(params1.size()); ++i)
+	{
+		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
+		car_parameters.push_back(std::to_string(params1[i]) + "      ");
+	}
+	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window, clear);
 }
 void SinglePlayer::GameLobby()
 {
 	//Lobby parameters
-	std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
-	COORD starting_point = { (short)main_window->GetWidth() / 2, 25 };
+	const std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
+	COORD starting_point = { static_cast<short>(main_window->GetWidth()) / 2, 25 };
 	const short spacing = 3;
 	short main_menu_position = 0;
-	const int max_name_size = 14;
 	HANDLE handle = main_window->GetHandle();
-
-	//Player related variables
 	std::string name = "Racer";
-	std::vector<std::string> tours;
-	std::vector<std::string> cars;
-	std::vector<std::string> tires;
-	std::string tour_path;
-	std::string tire_path;
-	std::string car_path;
+	const std::vector<std::string> tours = GetTourNames();
+	const std::vector<std::string> tires = GetTireNames();
+	std::vector<std::string> cars = GetCarNames(tours[0]);
 	int ais = 0;
 	int tires_pos = 0;
 	int cars_pos = 0;
 	int tours_pos = 0;
 
-	tours = GetTourNames();
-	if (tours.size() == 0)
+	if (static_cast<int>(tours.size()) == 0)
 	{
 		MessageBox(0, "Cannot load any map files", "error", 0);
 		return;
 	}
-	tires = GetTireNames();
-	if (tires.size() == 0)
+	if (static_cast<int>(tires.size()) == 0)
 	{
 		MessageBox(0, "Cannot load any tire files", "error", 0);
 		return;
 	}
-	cars = GetCarNames(tours[0]);
-	if (cars.size() == 0)
+	if (static_cast<int>(cars.size()) == 0)
+	{
 		MessageBox(0, "Cannot load any car from selected tour", "error", 0);
-	else
-		car_path = cars[0];
-
-	tour_path = tours[0];
-	tire_path = tires[0];
-
-	//TODO validating files
-	std::vector<std::string> car_parameters;
-	std::vector<std::string> tire_parameters;
-	std::vector<Text::OrdinaryText_atributes> text_atributes;
-
-	//preparing vectors for OrdinaryText function
-	for (int i = 0; i < Modifiers::car_modifiers->size(); i++)
-	{
-		text_atributes.push_back(Text::OrdinaryText_atributes::color2);
-		text_atributes.push_back(Text::OrdinaryText_atributes::endl);
+		return;
 	}
+	ShowCarParameters(cars[cars_pos]);
+	ShowTiresParameters(tires[tires_pos]);
 
-	//showing car parameters
-	std::vector<int> params1 = GetCarParameters(car_path);
-	for (int i = 0; i < params1.size(); i++)
-	{
-		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
-		car_parameters.push_back(std::to_string(params1[i]));
-	}
-	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window);
-
-	//showing tire parameters
-	auto params2 = GetTireParameters(tire_path);
-	for (int i = 0; i < params2.size(); i++)
-	{
-		tire_parameters.push_back(Modifiers::tire_modifiers[i] + ": ");//atrib names:							
-		tire_parameters.push_back(params2[i]);
-	}
-	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40,*main_window);
-
-	//menu segment
-	while (main_menu_position != 5 || cars.size() == 0)
+	while (main_menu_position != 5 || static_cast<int>(cars.size()) == 0)
 	{
 		switch (main_menu_position = Text::Choose::Veritcal(options, main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window))
 		{
-		case 0://choosing name
-		{
-			char button;
-			SetConsoleTextAttribute(handle, main_window->color1);
-			std::cout << " < ";
-			SetConsoleTextAttribute(handle, main_window->color2);
-			std::cout << name;
-			SetConsoleTextAttribute(handle, main_window->color1);
-			std::cout << " >";
-
-			SetConsoleTextAttribute(handle, main_window->color2);
-			int size = static_cast<int>(name.size());
-
-			do
+			case 0://choosing name
 			{
-				button = _getch();
-
-				if (size < max_name_size && ((button >= 48 && button <= 57) || (button >= 65 && button <= 90 && GetKeyState(VK_SHIFT) != 1 && GetKeyState(VK_SHIFT) != 0) || (button >= 97 && button <= 122)))
-				{
-					name += button;
-					SetConsoleTextAttribute(handle, main_window->color2);
-					std::cout << "\b\b" << button;
-					SetConsoleTextAttribute(handle, main_window->color1);
-					std::cout << " >";
-					size++;
-				}
-				else if (size < max_name_size && button == 32 && size != 0 && name[size - 1] != 32)
-				{
-					name += ' ';
-					SetConsoleTextAttribute(handle, main_window->color2);
-					std::cout << "\b\b";
-					SetConsoleTextAttribute(handle, main_window->color1);
-					std::cout << " >";
-					size++;
-				}
-				else if (button == 8 && size > 0)
-				{
-					name.erase(size - 1, 1);
-					SetConsoleTextAttribute(handle, main_window->color1);
-					std::cout << "\b\b\b   \b\b>";
-					size--;
-				}
-
-			} while (button != 13);
-			for (int i = 0; i < size + 4; i++)
-				std::cout << "\b";
-			for (int i = 0; i < size + 4; i++)
-				std::cout << " ";
-			if (name.size() == 0)
-				name = "Racer";
-			break;
-		}
-		case 1://Number of ais
-		{
-			std::vector<std::string> text;
-
-			for (int i = 0; i <= Possible_AIs(); i++)
-				text.push_back(std::to_string(i));
-
-			ais = Text::Choose::Horizontal(text, ais, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
-			break;
-		}
-		case 2://choosing tour
-		{
-			int i = tours_pos;
-			tour_path = tours[tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
-			if (i != tours_pos)
-			{
-				cars = GetCarNames(tour_path);
-				cars_pos = 0;
-				car_path = cars[cars_pos];
-				car_parameters.clear();
-				params1 = GetCarParameters(car_path);
-				for (int i = 0; i < params1.size(); i++)
-				{
-					car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
-					car_parameters.push_back(std::to_string(params1[i]) + "   ");
-				}
-				Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window);
+				name = ChooseName(name, 14);
 				break;
 			}
-			break;
-		}
-		case 3://choosing car
-		{
-			cars = GetCarNames(tour_path);
-			if (cars.size() == 0)
-				MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
-			else
+			case 1://Number of ais
 			{
-				car_path = cars[cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
-				car_parameters.clear();
-				params1 = GetCarParameters(car_path);
-				for (int i = 0; i < params1.size(); i++)
+				std::vector<std::string> text;
+
+				for (int i = 0; i <= Possible_AIs(); ++i)
 				{
-					car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
-					car_parameters.push_back(std::to_string(params1[i]) + "   ");
+					text.push_back(std::to_string(i));
 				}
-				Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window);
+				ais = Text::Choose::Horizontal(text, ais, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 				break;
 			}
-		}
-		case 4://choosing tires
-		{
-			tire_path = tires[tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + (short)options[main_menu_position].size() / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window)];
-			tire_parameters.clear();
-			params2 = GetTireParameters(tire_path);
-			for (int i = 0; i < params2.size(); i++)
+			case 2://choosing tour
 			{
-				tire_parameters.push_back(Modifiers::tire_modifiers[i] + ": ");
-				tire_parameters.push_back(params2[i] + "   ");
+				int i = tours_pos;
+				tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+				if (i != tours_pos)
+				{
+					cars = GetCarNames(tours[tours_pos]);
+					cars_pos = 0;
+					ShowCarParameters(cars[cars_pos]);
+					break;
+				}
+				break;
 			}
-			Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window);
-			break;
-		}
+			case 3://choosing car
+			{
+				cars = GetCarNames(tours[tours_pos]);
+				if (static_cast<int>(cars.size()) == 0)
+				{
+					MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
+				}
+				else
+				{
+					cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+					ShowCarParameters(cars[cars_pos]);
+					break;
+				}
+			}
+			case 4://choosing tires
+			{
+				tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+				ShowTiresParameters(tires[tires_pos]);
+				break;
+			}
 		}
 	}
-	//clearing menu afterwards
-	for (short i = 0; i < options.size(); i++)
+	for (int i = 0; i < static_cast<int>(options.size()); ++i)
 	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>((float)Text::TextAlign::center / 2 * (float)options[i].size()), starting_point.Y + i * (short)spacing });
-		for (int j = 0; j < options[i].size(); j++)
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(options[i].size())), starting_point.Y + static_cast<short>(i * spacing) });
+		for (int j = 0; j < static_cast<int>(options[i].size()); ++j)
+		{
 			std::cout << " ";
+		}
 	}
-
-	//clearing params segment
-	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window, true);
-	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window, true);
-
-	//loading player
-
-	//loading clients/ais
-	GetParticipants(name, ais, tour_path, car_path, tire_path);
+	ShowCarParameters(tires[tires_pos], true);
+	ShowCarParameters(cars[cars_pos], true);
+	GetParticipants(name, ais, tours[tours_pos], cars[cars_pos], tires[tires_pos]);
 }
-int SinglePlayer::Ranking(bool clear)
+int SinglePlayer::Ranking(const bool clear)
 {
-	std::vector<std::string> text;
-	text.push_back("PLACE");
-	text.push_back("RACER");
-	text.push_back("SCORE");
+	std::vector<std::string> text = { "PLACE", "RACER", "SCORE" };
 	int ret = 0;
 
 	if (clear)
 	{
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < 8; ++i)
 		{
 			text.push_back(" ");
 			text.push_back("                             ");
 			text.push_back("         ");
-
 		}
 	}
 	else
 	{
 		auto ranking_info = GetRankingInfo();
-		for (int i = 0; i < ranking_info.size(); i++)
+		for (int i = 0; i < static_cast<int>(ranking_info.size()); ++i)
 		{
 			text.push_back(std::to_string(i + 1));
 			text.push_back(ranking_info[i].second);
 			text.push_back(std::to_string(ranking_info[i].first));
-			text[text.size() - 1] = text[text.size() - 1].substr(0, text[text.size() - 1].size() - 4);
+			const int text_size = static_cast<int>(text.size());
+			text[text_size - 1] = text[text_size - 1].substr(0, static_cast<int>(text[text_size - 1].size()) - 4);
 			if (ranking_info[i].second == participants[0].name && ranking_info[i].first == participants[0].score)
 				ret = i + 1;
 		}
 	}
 	Text::TableText(text, 1, 3, 2, 16, { static_cast<short>(main_window->GetWidth() - 55), 16 }, *main_window, clear);
-
 	return ret;	//returning players place
 }
 void SinglePlayer::Interface()
 {
 	HANDLE window = main_window->GetHandle();
-
-	std::string possible_actions[5] = {
+	const std::string possible_actions[5] = {
 		"You can speed up by (0 to " + std::to_string(static_cast<int>(participants[0].car_modifiers[CarModifiers::max_accelerating])) + ")   ",
 		"You can slow down by (0 to " + std::to_string(static_cast<int>(participants[0].car_modifiers[CarModifiers::max_braking])) + ")   ",
 		"Hand brake value is - " + std::to_string(static_cast<int>(participants[0].car_modifiers[CarModifiers::hand_brake_value])) + "   ",
 		"You can just wait if you're moving...",
 		"Remember only weak ones surrenders" };
+	std::string speed = std::to_string(participants[0].current_speed);
+	std::string durability = std::to_string(participants[0].current_durability);
+	speed = speed.substr(0, static_cast<int>(speed.size()) - 4);
+	durability = durability.substr(0, static_cast<int>(durability.size()) - 4);
 
 	SetConsoleTextAttribute(window, main_window->color1);
 	SetConsoleCursorPosition(window, { 0, 16 });
@@ -685,12 +651,6 @@ void SinglePlayer::Interface()
 	SetConsoleCursorPosition(window, { 0, 18 });
 	std::cout << " Your current speed is: ";
 	SetConsoleTextAttribute(window, main_window->color2);
-
-	std::string speed = std::to_string(participants[0].current_speed);
-	std::string durability = std::to_string(participants[0].current_durability);
-	speed = speed.substr(0, speed.size() - 4);
-	durability = durability.substr(0, durability.size() - 4);
-
 	std::cout << speed << "     ";
 	SetConsoleTextAttribute(window, main_window->color1);
 	SetConsoleCursorPosition(window, { 0, 20 });
@@ -699,36 +659,36 @@ void SinglePlayer::Interface()
 	std::cout << durability << " durability   ";
 
 	SetConsoleTextAttribute(window, 8);
-	for (int i = 0; i < 5; i++)
+	for (short i = 0; i < 5; ++i)
 	{
-		SetConsoleCursorPosition(window, { 2, static_cast<short>(40 + i * 2) });
+		SetConsoleCursorPosition(window, { 2, 40 + i * 2 });
 		std::cout << possible_actions[i];
 	}
-	SetConsoleCursorPosition(window, { 0, static_cast<short>(main_window->GetHeight() - 15) });
+	const std::string border = "________________________________________________________  ";
+	const std::vector<std::tuple<std::string, COORD, short>> boxes = { {"Infobox  ", {0, static_cast<short>(main_window->GetHeight() - 15)}, 12 },
+				{ "Attack box", {static_cast<short>(main_window->GetWidth() - static_cast<short>(border.size())), static_cast<short>(main_window->GetHeight() - 20) }, 17},
+				{"Chance of succeeding",  { static_cast<short>(main_window->GetWidth() - static_cast<short>(border.size())), static_cast<short>(main_window->GetHeight() - 31) }, 7 } };
+	
+
 	SetConsoleTextAttribute(window, main_window->color2);
-	std::cout << "                          Infobox                         " << std::endl;
-	std::cout << "----------------------------------------------------------";
-	SetConsoleCursorPosition(window, { 0, static_cast<short>(main_window->GetHeight() - 1) });
-	std::cout << "----------------------------------------------------------";
-
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 34), static_cast<short>(main_window->GetHeight() - 20) });
-	std::cout << "Attack Box";
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 19) });
-	std::cout << "---------------------------------------------";
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 1) });
-	std::cout << "---------------------------------------------";
-
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 39), static_cast<short>(main_window->GetHeight() - 31) });
-	std::cout << "Chance of succeeding";
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 30) });
-	std::cout << "---------------------------------------------";
-	SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 22) });
-	std::cout << "---------------------------------------------";
+	for (int i = 0; i < static_cast<int>(boxes.size()); ++i)
+	{
+		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X + static_cast<short>(border.size())/2 - static_cast<short>(std::get<0>(boxes[i]).size())/2, std::get<1>(boxes[i]).Y});
+		std::cout << std::get<0>(boxes[i]);
+		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X, std::get<1>(boxes[i]).Y + 1});
+		std::cout << border;
+		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X, std::get<1>(boxes[i]).Y + std::get<2>(boxes[i]) + 2 });
+		std::cout << border;
+	}
 }
-bool SinglePlayer::VisionBox(int turn)
+bool SinglePlayer::VisionBox(const int turn)
 {
-	std::vector<std::string> visible_tour = GetTourParameters(turn, participants[0].car_modifiers[CarModifiers::visibility]);
+	const std::vector<std::string> visible_tour = GetTourParameters(turn, participants[0].car_modifiers[CarModifiers::visibility]);
 	int ret = true;
+	HANDLE window = main_window->GetHandle();
+	std::string helper;
+	const std::vector<std::string> distance = { "In front of you: ", "Close to you: ", "At some distance: ", "A little further: ",
+								"At a considerable distance: ", "Far ahead: ", "Barely noticeable: " };
 
 	if (visible_tour.size() > 0)
 	{
@@ -739,83 +699,98 @@ bool SinglePlayer::VisionBox(int turn)
 		current_field = "0";
 		ret = false;
 	}
-
-	HANDLE window = main_window->GetHandle();
-	std::string helper;
-	std::string Distance[] = { "In front of you: ", "Close to you: ", "At some distance: ", "A little further: ",
-								"At a considerable distance: ", "Far ahead: ", "Barely noticeable: " };
-
-	for (int i = 0; i < participants[0].car_modifiers[CarModifiers::visibility] && i < 7; i++)
+	for (short i = 0; i < participants[0].car_modifiers[CarModifiers::visibility] && i < static_cast<short>(distance.size()); ++i)
 	{
-		if (visible_tour.size() == i)
+		if (static_cast<int>(visible_tour.size()) == i)
 		{
-			SetConsoleCursorPosition(window, { 1,static_cast<short>(24 + 2 * i) });
+			SetConsoleCursorPosition(window, { 1,24 + 2 * i });
 			SetConsoleTextAttribute(window, main_window->color1);
-			std::cout << Distance[i];
+			std::cout << distance[i];
 			SetConsoleTextAttribute(window, main_window->color2);
 			std::cout << "META                                              ";
-			SetConsoleCursorPosition(window, { 1,static_cast<short>(26 + 2 * i) });
+			SetConsoleCursorPosition(window, { 1,26 + 2 * i });
 			std::cout << "                                                   ";
 			break;
 		}
-
 		helper = visible_tour[i];
-
 		SetConsoleTextAttribute(window, main_window->color1);
-		SetConsoleCursorPosition(window, { 1,static_cast<short>(24 + 2 * i) });
-		std::cout << Distance[i];
+		SetConsoleCursorPosition(window, { 1,24 + 2 *i });
+		std::cout << distance[i];
 		SetConsoleTextAttribute(window, main_window->color2);
-
 		switch (visible_tour[i][0])
 		{
-		case '0':
-		{
-			if (visible_tour[i].size() > 1)
-				std::cout << "Turn on asphalt - safe speed is around " << helper.erase(0, 1) << "          ";
-			else
-				std::cout << "Straight road, terrain is asphalt" << "                    ";
-			break;
-		}
-		case '1':
-		{
-			if (visible_tour[i].size() > 1)
-				std::cout << "Turn on grass - safe speed is around " << helper.erase(0, 1) << "          ";
-			else
-				std::cout << "Straight grassy road" << "                    ";
-			break;
-		}
-		case '2':
-		{
-			if (visible_tour[i].size() > 1)
-				std::cout << "Turn on gravel - safe speed is around " << helper.erase(0, 1) << "          ";
-			else
-				std::cout << "Straight road, gravel" << "                    ";
-			break;
-		}
-		case '3':
-		{
-			if (visible_tour[i].size() > 1)
-				std::cout << "Turn on sand - safe speed is around " << helper.erase(0, 1) << "          ";
-			else
-				std::cout << "Linear part of tour, but sandy" << "                    ";
-			break;
-		}
-		case '4':
-		{
-			if (visible_tour[i].size() > 1)
-				std::cout << "Turn on mud - safe speed is around " << helper.erase(0, 1) << "          ";
-			else
-				std::cout << "Muddy road, without turn" << "                    ";
-			break;
-		}
-		case '5':
-		{
-			if (visible_tour[i].size() > 1)
-				std::cout << "Turn on ice - safe speed is around " << helper.erase(0, 1) << "          ";
-			else
-				std::cout << "Slippery road with ice" << "                    ";
-			break;
-		}
+			case '0':
+			{
+				if (static_cast<int>(visible_tour[i].size()) > 1)
+				{
+					std::cout << "Turn on asphalt - safe speed is around " << helper.erase(0, 1) << "          ";
+				}
+				else
+				{
+					std::cout << "Straight road, terrain is asphalt" << "                    ";
+				}
+				break;
+			}
+			case '1':
+			{
+				if (static_cast<int>(visible_tour[i].size()) > 1)
+				{
+					std::cout << "Turn on grass - safe speed is around " << helper.erase(0, 1) << "          ";
+				}
+				else
+				{
+					std::cout << "Straight grassy road" << "                    ";
+				}
+				break;
+			}
+			case '2':
+			{
+				if (static_cast<int>(visible_tour[i].size()) > 1)
+				{
+					std::cout << "Turn on gravel - safe speed is around " << helper.erase(0, 1) << "          ";
+				}
+				else
+				{
+					std::cout << "Straight road, gravel" << "                    ";
+				}
+				break;
+			}
+			case '3':
+			{
+				if (static_cast<int>(visible_tour[i].size()) > 1)
+				{
+					std::cout << "Turn on sand - safe speed is around " << helper.erase(0, 1) << "          ";
+				}
+				else
+				{
+					std::cout << "Linear part of tour, but sandy" << "                    ";
+				}
+				break;
+			}
+			case '4':
+			{
+				if (static_cast<int>(visible_tour[i].size()) > 1)
+				{
+					std::cout << "Turn on mud - safe speed is around " << helper.erase(0, 1) << "          ";
+				}
+				else
+				{
+					std::cout << "Muddy road, without turn" << "                    ";
+				}
+				break;
+			}
+			case '5':
+			{
+				if (static_cast<int>(visible_tour[i].size()) > 1)
+				{
+					std::cout << "Turn on ice - safe speed is around " << helper.erase(0, 1) << "          ";
+				}
+				else
+				{
+					std::cout << "Slippery road with ice" << "                    ";
+				}
+				break;
+			}
 		}
 	}
 	return ret;
