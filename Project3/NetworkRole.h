@@ -48,7 +48,6 @@ public:
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
 	void ShowChances(int value, bool reset=false);
-	
 };
 
 class Host : public SinglePlayer {

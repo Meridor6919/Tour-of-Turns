@@ -1,54 +1,75 @@
 #include "Participant.h"
 #include "NetworkRole.h"
 
-
-Participant::Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role)
+Participant::Participant(const std::string name, const std::string car_path, const std::string tire_path, SinglePlayer &network_role)
 {
-	alive = true;
-	ai_type = 0;
 	this->name = name;
 	this->car_path = car_path;
 	this->network_role = &network_role;
 	this->car_modifiers = network_role.GetCarParameters(car_path);
 	this->tire_modifiers = network_role.GetTireParameters(tire_path);
-	this->current_speed = 0.0f;
-	this->score = 0.0f;
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
-	this->attacked = 0;
 }
-
-Participant::Participant(SinglePlayer * network_role, std::string tour_path)
+Participant::Participant(const int id, const std::string tour_path, SinglePlayer &network_role)
 {
-	alive = true;
-	this->network_role = network_role;
-	this->current_speed = 0.0f;
-	this->score = 0.0f;
-	this->attacked = 0;
-	const int number_of_names = 25;
-
-	static std::string names[number_of_names] =
-	{ "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
-	"John Hill", "Andrew Anderson", "Jane Turning", "Lester King", "Drew McNeil", "Sam Samson","Gaston Reveneu", "Roman Torbon",
-	"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic", "Blu Apostrof" };	//possible ai names (if added you need to change const number below)
-	std::string BestCarPath;
-	std::string BestTirePath;
-	std::string helper;
-
-	ai_type = rand() % 3+1;
-
-	static int used_names = 0;
-	int RandomName = rand() % (number_of_names-1 - used_names);//choosing name
-
-	helper = names[RandomName];
-	names[RandomName] = names[number_of_names-1 - used_names];
-	name = helper;
-	used_names++;
+	this->network_role = &network_role;
+	GetRandomName(id);
+	GetOptimalCar(tour_path);
+	GetOptimalTires();
+}
+float Participant::TiresPoints(const int terrain[], const std::string tires_path)
+{
+	std::function <float(int)> factorial;
+	factorial = [&factorial](int i) -> float {
+		if (i > 1)
+		{
+			return static_cast<float>(i) * factorial(i - 1);
+		}
+		else
+		{
+			return 1.0f;
+		}
+	};
+	const std::vector<std::string>tires_atrib = network_role->GetTireParameters(tires_path);
+	float total_points = 0.0f;
+	int x;
+	int y;
 	
-	std::vector<std::string> cars = network_role->GetCarNames(tour_path);
+	for (int i = 0; i < static_cast<int>(tires_atrib.size()); ++i)
+	{
 
+		for (int j = 0; j < static_cast<int>(tires_atrib[i].size()); ++j)
+		{
+			if (tires_atrib[i][j] == 'x')
+			{
+				x = static_cast<int>(atoi(tires_atrib[i].substr(0, j).c_str()));
+				y = static_cast<int>(atoi(tires_atrib[i].substr(j, static_cast<int>(tires_atrib[i].size()) - j).c_str()));
+			}
+		}
+		for (int j = 0; j <= y - x; ++x)
+		{
+			total_points += factorial(y) / factorial(y - x)*factorial(x) * pow(0.5f, x) * pow(0.5f, y - x) * static_cast<float>(terrain[i]);
+		}
+	}
+	return total_points;
+}
+void Participant::GetRandomName(const int id)
+{
+	static std::vector<std::string> names = { "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
+		"John Hill", "Andrew Anderson", "Jane Turning", "Lester King", "Drew McNeil", "Sam Samson","Gaston Reveneu", "Roman Torbon",
+		"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic", "Blu Apostrof" };
+
+	const int name_id = rand() % (static_cast<int>(names.size()) - id);
+	name = std::move(names[name_id]);
+	names[name_id] = std::move(names[static_cast<int>(names.size()) - 1 - id]);
+	names[static_cast<int>(names.size()) - 1 - id] = name;
+}
+void Participant::GetOptimalCar(const std::string tour_path)
+{
+	const std::vector<std::string> cars = network_role->GetCarNames(tour_path);
 	int current_best = 0;
 	int best_points = 0;
-	for (int i = 0; i < cars.size(); i++)
+	for (int i = 0; i < static_cast<int>(cars.size()); ++i)
 	{
 		int j = CarPoints(cars[i]);
 		if (j > best_points)
@@ -60,19 +81,23 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	this->car_path = cars[current_best];
 	this->car_modifiers = network_role->GetCarParameters(cars[current_best]);
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
-
+}
+void Participant::GetOptimalTires()
+{
 	std::vector<std::string> tires = network_role->GetTireNames();
-
 	std::vector<std::string> tour = network_role->GetTourParameters(0, INT_MAX);
 	int terrain[6];
 	memset(terrain, 0, 6);
-	for (int i = 0; i < tour.size(); i++)
-		terrain[static_cast<int>(tour[i][0])-48] ++;
-
-	
-	current_best = 0;
-	best_points = 0;
-	for (int i = 0; i < tires.size(); i++)
+	for (int i = 0; i < static_cast<int>(tour.size()); ++i)
+	{
+		if (static_cast<int>(tour[i].size()) > 1)
+		{
+			++terrain[static_cast<int>(tour[i][0]) - 48];
+		}
+	}
+	int current_best = 0;
+	int best_points = 0;
+	for (int i = 0; i < static_cast<int>(tires.size()); ++i)
 	{
 		int j = TiresPoints(terrain, tires[i]);
 		if (j > best_points)
@@ -83,224 +108,71 @@ Participant::Participant(SinglePlayer * network_role, std::string tour_path)
 	}
 	this->tire_modifiers = network_role->GetTireParameters(tires[current_best]);
 }
-int Participant::TiresPoints(int terrain[], std::string tires_path)
-{
-	std::function <int(int)> factorial;
-	factorial = [&factorial](int i) -> int {
-		if (i > 1)
-			return i * factorial(i - 1);
-		else
-			return 1;
-	};
-	auto power = [](float number, int power) {
-		float ret = 1;
-
-		for (int i = 0; i < power; i++)
-			ret *= number;
-
-		return ret;
-	};
-
-	float total_points = 0.0f;
-	int x, y;
-	std::string helper;
-
-	std::vector<std::string>tires_atrib = network_role->GetTireParameters(tires_path);
-	for (int i = 0; i < tires_atrib.size(); i++)	//algorithm that uses probability to evaluate tire rating
-	{
-
-		for (int j = 0; j < tires_atrib[i].size(); j++)
-		{
-			if (tires_atrib[i][j] == 'x')
-			{
-				x = static_cast<int>(atoi(tires_atrib[i].substr(0, j).c_str()));
-				y = static_cast<int>(atoi(tires_atrib[i].substr(j, tires_atrib[i].size() - j).c_str()));
-			}
-		}
-		for (int i2 = 0; i2 <= y - x; x++)
-		{
-			total_points += (factorial(y) / (factorial(y - x)*factorial(x)) * power(0.5f, x) * power(0.5f, y - x) * terrain[i]);
-		}
-	}
-	return static_cast<int>(total_points);
-}
-int Participant::CarPoints(std::string cars_path)
+int Participant::CarPoints(const std::string cars_path)
 {
 	std::vector<int> car_params;
-	int total_points = 0;
+	float total_points = 0;
+	int result;
 	car_params = network_role->GetCarParameters(cars_path);
-	for (int i = 0; i < car_params.size(); i++)	//AI parameters rating
-	{
-		switch (i)
-		{
-			case CarModifiers::max_accelerating:
-			{
-				if (ai_type == 3)
-					total_points += car_params[i] * 10;
-				else
-					total_points += car_params[i] * 5;
-				break;
-			}
-			case CarModifiers::max_speed:
-			{
-				if (ai_type == 1 && car_params[i] > 200)
-					total_points += 200 + car_params[i] - 200 / 5;
-				else if (ai_type == 2 && car_params[i] > 150)
-					total_points += 150 + car_params[i] - 150 / 5;
-				else
-					total_points += car_params[i];
-				break;
-			}
-			case CarModifiers::max_braking:
-			{
-				if (ai_type == 1 && car_params[i] > 50)
-					total_points += 50;
-				else if (ai_type == 2 && car_params[i] > 30)
-					total_points += 30;
-				else if (ai_type != 3)
-					total_points += car_params[i];
-				break;
-			}
-			case CarModifiers::hand_brake_value:
-			{
-				if (ai_type == 1 && car_params[i] > 50)
-					total_points += 50;
-				else if (ai_type == 2)
-					total_points -= car_params[i] * 5;
-				else if (ai_type != 3)
-					total_points += car_params[i];
-				break;
-			}
-			case CarModifiers::durability:
-			{
-				if (car_params[i] < 100)
-					total_points += car_params[i];
-				else if (car_params[i] < 200)
-					total_points += 100 + (car_params[i] - 100) / 2;
-				else if (car_params[i] < 400)
-					total_points += 150 + (car_params[i] - 200) / 10;
-				else
-					total_points += 175;
 
-				break;
-			}
-			case CarModifiers::visibility:
-			{
-				total_points += car_params[i] * 10;
-				break;
-			}
-			case CarModifiers::turn_mod:
-			{
-				if (ai_type == 1 || ai_type == 3)
-					total_points += (car_params[i] - 100) * 3;
-				else
-					total_points += (car_params[i] - 100) / 2;
-				break;
-			}
-			case CarModifiers::drift_mod:
-			{
-				if (ai_type == 2)
-					total_points += (car_params[i] - 100) * 5;
-				else
-					total_points += (car_params[i] - 100);
-				break;
-			}
-		}
+	result = car_params[CarModifiers::max_accelerating] - car_params[CarModifiers::max_speed] > 0 ? car_params[CarModifiers::max_speed] : car_params[CarModifiers::max_accelerating];
+	total_points += static_cast<float>(result);
+
+	result = car_params[CarModifiers::max_speed] - car_params[CarModifiers::max_accelerating] * 4 > 0 ? car_params[CarModifiers::max_accelerating] * 4 : car_params[CarModifiers::max_speed];
+	total_points += static_cast<float>(result) * 0.2f;
+
+	result = car_params[CarModifiers::max_braking] - car_params[CarModifiers::max_accelerating] > 0 ? car_params[CarModifiers::max_accelerating] : car_params[CarModifiers::max_braking];
+	total_points += static_cast<float>(result) * 0.2f;
+
+	result = 200 - 5 * (car_params[CarModifiers::hand_brake_value] - 20) * static_cast<int>(car_params[CarModifiers::hand_brake_value] > 20);
+	total_points += static_cast<float>(result * static_cast<int>(result > 0))*0.1f;
+	
+	float value = static_cast<float>(car_params[CarModifiers::max_speed] + car_params[CarModifiers::max_accelerating]);
+	float raw = value / static_cast<float>(car_params[CarModifiers::max_speed]);
+	if (raw > 0.25f)
+	{
+		raw = 0.25f;
+		value = static_cast<float>(car_params[CarModifiers::max_speed]) * 0.25f;
 	}
-	return total_points;
-	return 0;
+	float durability = 0;
+	for (float i = 1.0f; i < raw / 0.05 + 3.0f; i += 1.0f)
+	{
+		durability += i * value;
+	}
+	total_points += static_cast<float>(car_params[CarModifiers::durability]) / durability * 10.0f;
+
+	total_points += static_cast<float>(car_params[CarModifiers::visibility]*5.0f);
+	total_points *= static_cast<float>(car_params[CarModifiers::turn_mod])/100.0f;
+	total_points *= static_cast<float>(car_params[CarModifiers::drift_mod])/100.0f;
+
+	return static_cast<int>(total_points * (1.0f + static_cast<float>(rand() % 20) / 100.0f));
 }
-void Participant::TakeAction(int safe_speed, bool turn) {
-	//TODO improve AI
-	switch (ai_type)
+void Participant::TakeAction(const int turn)
+{
+	//AI LOGIC
+
+	if (current_speed < 0)
 	{
-	case 3://speedy guy
+		current_speed = 0;
+	}
+	else if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed]))
 	{
-		if (current_durability < current_speed * 2.0f && current_speed>static_cast<float>(safe_speed) * 2.0f / 3.0f)
+		if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.25f)
 		{
-			current_speed -= static_cast<float>(car_modifiers[CarModifiers::hand_brake_value]);
-			if (current_speed == 0.0f)
-				current_speed = static_cast<float>(safe_speed) * 0.7f + static_cast<float>(rand() % 5 - 2);
+			current_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed] * 1.25f);
 		}
-		else if (turn && current_speed > 40 && rand() % 2 == 1)
-		{
-			drift = true;
-			current_speed -= static_cast<float>(car_modifiers[CarModifiers::hand_brake_value]);
-		}
-		else
-		{
-			current_speed += static_cast<float>(car_modifiers[CarModifiers::max_accelerating]);
-			if (current_speed > static_cast<float>(safe_speed)*1.4f)
-				current_speed = static_cast<float>(safe_speed) * 1.4f + static_cast<float>(rand() % 5 - 2);
-
-		}
-		break;
+		current_durability -= CalculateBurning(current_speed - car_modifiers[CarModifiers::max_speed]);
 	}
-	case 2://drifter
-	{
-		if (turn && current_speed > 40)
-		{
-			drift = true;
-			current_speed -= static_cast<float>(car_modifiers[CarModifiers::hand_brake_value]);
-		}
-		else if (current_durability < current_speed * 2.0f && current_speed > static_cast<float>(safe_speed) * 0.7)
-		{
-			current_speed -= static_cast<float>(car_modifiers[CarModifiers::max_braking]);
-
-			if (current_speed < static_cast<float>(safe_speed) * 0.7f)
-				current_speed = static_cast<float>(safe_speed) * 0.7f + static_cast<float>(rand() % 5 - 2);
-		}
-		else if (current_speed > static_cast<float>(safe_speed)*1.4f)
-		{
-			current_speed -= static_cast<float>(car_modifiers[CarModifiers::max_braking]);
-			if (current_speed < safe_speed * 1.4f)
-				current_speed = static_cast<float>(safe_speed) * 1.4f + static_cast<float>(rand() % 5 - 2);
-		}
-		else
-			current_speed += static_cast<float>(car_modifiers[CarModifiers::max_accelerating]);
-
-		break;
-	}
-	case 1://safe guy
-	{
-		if (turn && current_speed > 40 && current_speed < 150 && rand() % 2 == 1)
-		{
-			drift = true;
-			current_speed -= static_cast<float>(car_modifiers[CarModifiers::hand_brake_value]);
-		}
-		else if (current_durability < current_speed * 2 || current_speed>safe_speed*1.1)
-		{
-			current_speed -= static_cast<float>(car_modifiers[CarModifiers::max_braking]);
-
-			if (current_speed < safe_speed)
-				current_speed = static_cast<float>(safe_speed + rand() % 5 - 2);
-		}
-		else
-		{
-			current_speed += static_cast<float>(car_modifiers[CarModifiers::max_accelerating]);
-			if (current_speed > safe_speed)
-				current_speed = static_cast<float>(safe_speed + rand() % 5 - 2);
-		}
-
-		break;
-	}
-	}
-	if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed]))
-		current_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed]);
-
-	else if (current_speed < 0.0f)
-		current_speed = 0.0f;
-
-	current_speed = static_cast<float>(current_speed)*0.9f;
+	current_speed = current_speed*0.9f;
 }
-
 void Participant::Test(std::string field, bool show)
 {
 	if (!alive)
+	{
 		return;
-
-	const char Chelper = field[0];
-	std::string tire = tire_modifiers[atoi(&Chelper)];
+	}
+	const char terrain = field[0];
+	std::string tire = tire_modifiers[atoi(&terrain)];
 	std::string helper = tire;
 	int find = static_cast<int>(tire.find("x"));
 	int reqired_tests = atoi(helper.erase(find, helper.size() - find).c_str());
@@ -309,17 +181,19 @@ void Participant::Test(std::string field, bool show)
 	int max = 0, min = 100;
 	float local_score;
 	float formula = EvaluateChance(field, current_speed, drift);
-	
+
 	float dmg = 1.0f - 0.05f*attacked;
 	current_speed *= dmg;
 	if (dmg < 1 && show)
+	{
 		network_role->infobox->Push(name + " lost " + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + " speed,", "in result of other racers behaviour");
+	}
 	attacked = 0;
 
-	if (field.size() > 1)
+	if (static_cast<int>(field.size()) > 1)
 	{
 		//testing algorithm
-		for (int i = 0; i < number_of_tests; i++)
+		for (int i = 0; i < number_of_tests; ++i)
 		{
 			local_score = static_cast<float>(rand() % 100) + static_cast<float>(rand() % 100 + 1) / 100.0f;
 
@@ -328,7 +202,7 @@ void Participant::Test(std::string field, bool show)
 				if (local_score > max)
 					max = static_cast<int>(local_score);
 
-				passed_tests++;
+				++passed_tests;
 			}
 			else if (local_score < min)
 			{
@@ -339,112 +213,185 @@ void Participant::Test(std::string field, bool show)
 		if (passed_tests >= reqired_tests)
 		{
 			if (show)
+			{
 				network_role->infobox->Push(name + " have manage to turn, ", "required - " + std::to_string(static_cast<int>(formula)) + " highest roll - " + std::to_string(max));
+			}
 		}
 		else
 		{
 			if (show)
+			{
 				network_role->infobox->Push(name + " had mistaken, ", "required - " + std::to_string(static_cast<int>(formula)) + " lowest roll - " + std::to_string(min));
-
+			}
 			if (formula > static_cast<float>(min + 50))
 			{
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 50.0f;
 				if (show)
+				{
 					network_role->infobox->Push(name + " badly crashed !!! ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 50)) + " durability");
-				current_speed = 0;
+				}
+				current_speed = 0.0f;
 			}
 			else if (formula > static_cast<float>(min + 40))
 			{
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f;
 				if (show)
+				{
 					network_role->infobox->Push(name + " crashed !!!, ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f)) + " durability");
-				current_speed = 0;
+				}
+				current_speed = 0.0f;
 			}
 			else if (formula > static_cast<float>(min + 30))
 			{
 				current_durability -= current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f;
 				if (show)
+				{
 					network_role->infobox->Push(name + " had an dangerous accident, ", name + " lost " + std::to_string(static_cast<int>(current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f)) + " durability");
-				current_speed /= 10;
+				}
+				current_speed /= 10.0f;
 			}
 			else if (formula > static_cast<float>(min + 20))
 			{
 				current_durability -= current_speed;
 				if (show)
+				{
 					network_role->infobox->Push(name + " got off the route, ", name + " lost " + std::to_string(static_cast<int>(current_speed)) + " durability");
-				current_speed /= 5;
+				}
+				current_speed /= 5.0f;
 			}
 			else if (formula > static_cast<float>(min + 10))
 			{
 				current_durability -= current_speed / 2.0f;
 				if (show)
+				{
 					network_role->infobox->Push(name + " fell into a dangerous slip, ", name + " lost " + std::to_string(static_cast<int>(current_speed / 2.0f)) + " durability");
-				current_speed /= 2;
+				}
+				current_speed /= 2.0f;
 			}
 			else
 			{
 				current_speed = static_cast<float>(current_speed) / 1.2f;
 				if (show)
+				{
 					network_role->infobox->Push(name + " slipped, ", name + " lost a little bit of speed");
+				}
 			}
 		}
 	}
-	if (drift == true)	//drift score
+	if (drift == true)
 	{
 		drift = false;
 		score += 1.5;
 	}
-	else	//normal socre
-		score += 100 / (1 + current_speed * 10.0f / 36.0f);
+	else
+	{
+		score += 100.0f / (1.0f + current_speed * 10.0f / 36.0f);
+	}
 }
-
 float Participant::EvaluateChance(std::string field, float speed, bool drift)
 {
-	if (field.size() < 2)
-		return 0;
-	field.erase(0, 1);
+	if (static_cast<int>(field.size()) < 2)
+	{
+		return 0.0f;
+	}
+	float base = (speed / static_cast<float>(atof(field.c_str())) -1) * 100.0f + speed - static_cast<float>(atof(field.c_str()));
 
-	float base = (static_cast<float>(speed) - static_cast<float>(atof(field.c_str()))) / static_cast<float>(atof(field.c_str())) * 100 + static_cast<float>(speed) - static_cast<float>(atof(field.c_str()));
-
-	if (base < 0)
-		base = 0;
-
+	if (base < 0.0f)
+	{
+		base = 0.0f;
+	}
 	if (drift == true)
 	{
-		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::drift_mod]) + static_cast<float>(7.5f * attacked);
+		base /= (static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - 7.5f * attacked)/100.0f;
 		if (base > 100.0f)
+		{
 			base = 100.0f;
-		float result = (speed + base) / 2;
-		if (result > (speed + base * 2) / 3)
-			result = (speed + base * 2) / 3;
+		}
+		float result = (speed + base) / 2.0f;
+		if (base < speed)
+		{
+			result = (speed + base * 2.0f) / 3.0f;
+		}
+		if (result > 100.0f)
+		{
+			result = 100.0f;
+		}
 		return result;
 	}
 	else
 	{
-		base *= 100.0f / static_cast<float>(car_modifiers[CarModifiers::turn_mod]) + static_cast<float>(5.0f * attacked);
+		base /= (static_cast<float>(car_modifiers[CarModifiers::turn_mod]) - 5.0f * attacked) / 100.0f;
 		if (base > 100.0f)
+		{
 			base = 100.0f;
-		return 1.0f / 3.0f*sqrt(10000.0f - (100.0f - base)*(100.0f - base)) + 2.0f / 3.0f*base;
+		}
+		return (sqrt(base * -base + 200.0f * base) + 2.0f * base)/3.0f;
 	}
 }
+float Participant::EvaluateSpeed(std::string field, float chance, bool drift)
+{
+	if (static_cast<int>(field.size()) < 2)
+	{
+		return 0.0f;
+	}
+	field.erase(0, 1);
 
+	if (drift)
+	{
+		float result = (2.0f * chance*(static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - (7.5f * attacked)) + 10000.0f + 100.0f * static_cast<float>(atof(field.c_str()))) /
+			(10000.0f / static_cast<float>(atof(field.c_str())) + 100.0f + static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - 7.5f*attacked);
+		float secondary_result = (3.0f * chance*(static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - (7.5f * attacked)) + 20000.0f + 200.0f * static_cast<float>(atof(field.c_str()))) /
+			(20000.0f / static_cast<float>(atof(field.c_str())) + 200.0f + static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - 7.5f*attacked);
+	
+		if (secondary_result > result)
+		{
+			result = secondary_result;
+		}
+		float base = ((result / static_cast<float>(atof(field.c_str())) - 1.0f) * 100.0f + result - static_cast<float>(atof(field.c_str()))) / 
+			((static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - (7.5f * attacked)) / 100.0f);
+
+		if (base > 100)
+		{
+			result = 2.0f * chance - 100.0f;
+		}
+		else if (base < 0)
+		{
+			result = 3.0f * chance;
+		}
+		return result;
+	}
+	else
+	{
+		float delta = (200.0f + 12.0f * chance)*(200.0f + 12.0f * chance) - 180.0f * chance*chance;
+		float base = (-(200.0f + 12.0f * chance) + sqrt(delta)) / -10.0f;
+		float secondary_base = (-(200.0f + 12.0f * chance) - sqrt(delta)) / -10.0f;
+		if (base > secondary_base)
+		{
+			base = secondary_base;
+		}
+		base = base * ((static_cast<float>(car_modifiers[CarModifiers::turn_mod]) - (5.0f * attacked)) / 100.0f);
+
+		return static_cast<float>(atof(field.c_str())) + base / (100.0f / static_cast<float>(atof(field.c_str())) + 1.0f);
+	}
+}
 float Participant::CalculateBurning(float value)
 {
-	if (value < 0)
-		return 0;
 	float raw = value / static_cast<float>(car_modifiers[CarModifiers::max_speed]);
+	float result = 0.0f;
 
+	if (value < 0.0f)
+	{
+		return 0.0f;
+	}
 	if (raw > 0.25f)
 	{
 		raw = 0.25f;
 		value = static_cast<float>(car_modifiers[CarModifiers::max_speed]) * 0.25f;
 	}
-
-	float result = 0;
-	for (int i = 1; i < raw / 0.05 + 3; i++)
+	for (float i = 1.0f; i < raw / 0.05 + 3; i += 1.0f)
 	{
 		result += i * value;
 	}
-	return result / 10;
+	return result / 10.0f;
 }
 

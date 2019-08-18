@@ -218,7 +218,7 @@ void SinglePlayer::GetParticipants(const std::string name, const int ais, const 
 
 	for (int i = 0; i < ais; ++i)
 	{
-		participants.emplace_back(this, tour);
+		participants.emplace_back(i, tour, *this);
 	}
 }
 std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
@@ -392,21 +392,9 @@ void SinglePlayer::TakeAction()
 }
 void SinglePlayer::GetOthersAction(const int turn)
 {
-	const auto tour = GetTourParameters(turn, 7);
-	int safe_speed = INT32_MAX;
-	std::string helper;
-
 	for (int i = static_cast<int>(participants.size()) - ais; i < static_cast<int>(participants.size()); ++i)
 	{
-		for (int j = 0; j < participants[i].car_modifiers[CarModifiers::visibility] && j < static_cast<int>(tour.size()); ++j)
-		{
-			if (static_cast<int>(tour[j].size()) > 1)
-			{
-				if (atoi(tour[j].substr(1, static_cast<int>(tour[j].size()) - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]) < safe_speed)
-					safe_speed = atoi(tour[j].substr(1, static_cast<int>(tour[j].size()) - 1).c_str()) + (j*participants[i].car_modifiers[CarModifiers::max_braking]);
-			}
-		}
-		participants[i].TakeAction(safe_speed, tour[0].size() > 1);
+		participants[i].TakeAction(turn);
 	}
 }
 int SinglePlayer::Possible_AIs()
@@ -593,7 +581,7 @@ void SinglePlayer::GameLobby()
 			std::cout << " ";
 		}
 	}
-	ShowCarParameters(tires[tires_pos], true);
+	ShowTiresParameters(tires[tires_pos], true);
 	ShowCarParameters(cars[cars_pos], true);
 	GetParticipants(name, ais, tours[tours_pos], cars[cars_pos], tires[tires_pos]);
 }

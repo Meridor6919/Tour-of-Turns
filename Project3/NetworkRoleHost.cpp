@@ -378,7 +378,7 @@ void Host::GetParticipants(std::string name, int ais, std::string tour, std::str
 		participants.push_back(Participant(name, car_path, tires_path, *this));
 	}
 	for (int i = 0; i < ais; i++)
-		participants.emplace_back(Participant(this, tour));
+		participants.emplace_back(i, tour, *this);
 	stage =1;
 }
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::string current_field)
