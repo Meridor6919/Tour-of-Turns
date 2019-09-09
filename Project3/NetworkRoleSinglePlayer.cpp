@@ -159,19 +159,19 @@ SinglePlayer::SinglePlayer(ToT_Window &main_window)
 }
 std::vector<std::string> SinglePlayer::GetTourNames()
 {
-	return this->ReadFile("Tour.txt");
+	return this->ReadFile("Maps\\Tour.txt");
 }
 std::vector<std::string> SinglePlayer::GetCarNames(const std::string tour)
 {
-	return this->ReadFile(tour);
+	return this->ReadFile("Maps\\" + tour);
 }
 std::vector<std::string> SinglePlayer::GetTireNames()
 {
-	return this->ReadFile("Tire.txt");
+	return this->ReadFile("Tires\\Tire.txt");
 }
 std::vector<int> SinglePlayer::GetCarParameters(const std::string path)
 {
-	std::vector<std::string> data = this->ReadFile(path);
+	std::vector<std::string> data = this->ReadFile("Cars\\" + path);
 	std::vector<int> car_parameters;
 	for (int i = 0; i < static_cast<int>(data.size()); ++i)
 	{
@@ -181,7 +181,7 @@ std::vector<int> SinglePlayer::GetCarParameters(const std::string path)
 }
 std::vector<std::string> SinglePlayer::GetTireParameters(const std::string path)
 {
-	return this->ReadFile(path);
+	return this->ReadFile("Tires\\" + path);
 }
 std::vector<std::string> SinglePlayer::GetTourParameters(const int position, const int visibility)
 {
@@ -189,7 +189,7 @@ std::vector<std::string> SinglePlayer::GetTourParameters(const int position, con
 	std::fstream fvar;
 	std::string helper;
 
-	fvar.open(tour.c_str());
+	fvar.open(("Maps\\" + tour).c_str());
 	do
 	{
 		std::getline(fvar, helper);

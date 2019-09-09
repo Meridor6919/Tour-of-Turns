@@ -2,20 +2,20 @@
 
 ToT_Window::ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
 {
-	LoadFiles("Ranking.txt", "rank");
-	if (!LoadFiles("Tire.txt", "tire"))
+	LoadFiles("Maps", "Maps\\Ranking.txt", "rank");
+	if (!LoadFiles("Tires", "Tires\\Tire.txt", "tire"))
 	{
 		MessageBox(0, "No tire files found, please reinstall your game or repair missing files", "File Error", 0);
 	}
-	if (!LoadFiles("Tour.txt", "tour"))
+	if (!LoadFiles("Maps", "Maps\\Tour.txt", "tour"))
 	{
 		MessageBox(0, "No tour files found, please reinstall your game or repair missing files", "File Error", 0);
 	}
 }
-bool ToT_Window::LoadFiles(std::string path, const std::string ext)
+bool ToT_Window::LoadFiles(std::string src_path, std::string dst_path, const std::string ext)
 {
-	path = "dir *." + ext + " > " + path + " /b";
-	if (system(path.c_str()))
+	dst_path = "dir " + src_path + "\\*." + ext + " > " + dst_path + " /b";
+	if (system(dst_path.c_str()))
 	{
 		//Clearing error message that shows in a console window by default when files not found
 		SetConsoleCursorPosition(window_handle, { 0,0 });
