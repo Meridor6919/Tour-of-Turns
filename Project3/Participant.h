@@ -32,9 +32,9 @@ enum TireModifiers
 class Participant 
 {
 private:
-	int CarPoints(std::string car_path);
-	float TiresPoints(const int terrain[], std::string tires_path);
-	void GetRandomName(int id);
+	int CarPoints(const std::string car_path);
+	float TiresPoints(const int terrain[], const std::string tires_path);
+	void GetRandomName(const int id);
 	void GetOptimalCar(const std::string tour_path);
 	void GetOptimalTires();
 
@@ -51,12 +51,12 @@ public:
 	float attacked = 0.0f;
 	bool drift = false;
 
-	Participant(std::string name, std::string car_path, std::string tire_path, SinglePlayer &network_role);	//Creating human player
-	Participant(int id, std::string tour_path, SinglePlayer &network_role);	//creating AI
+	Participant(const std::string name, const std::string car_path, const std::string tire_path, SinglePlayer &network_role);
+	Participant(const int id, const std::string tour_path, SinglePlayer &network_role);
 	Participant() = delete;
-	void TakeAction(const int turn);	//ai action
-	void Test(std::string field, bool show);
-	float EvaluateChance(std::string field, float speed, bool drift);
+	void TakeAction(const int turn);
+	void Test(const std::string field, const bool show);
+	float EvaluateChance(std::string field, const float speed, const bool drift);
 	float CalculateBurning(float value);
-	float EvaluateSpeed(std::string field, float chance, bool drift);
+	float EvaluateSpeed(std::string field, const float chance, const bool drift);
 };
