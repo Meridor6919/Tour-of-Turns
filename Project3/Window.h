@@ -26,6 +26,6 @@ public:
 	HANDLE GetHandle();
 	HWND GetHWND();
 	void SetCursor(const bool visible);
-	void SetMusic(const std::string sound_file,const bool playing);
+	virtual void SetMusic(const std::string sound_file,const bool playing);
 	void Pause(const int miliseconds);
 };

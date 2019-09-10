@@ -23,11 +23,17 @@ bool ToT_Window::LoadFiles(std::string src_path, std::string dst_path, const std
 		SetConsoleCursorPosition(window_handle, { 0,0 });
 		return false;
 	}
+	LoadAtributes();
 	return true;
 }
 void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {
 	hamachi_enabled = flag;
+}
+void ToT_Window::SetMusic(const std::string sound_file, const bool playing)
+{
+	music_enabled = playing;
+	Window::SetMusic(sound_file, playing);
 }
 void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
 {
@@ -89,4 +95,28 @@ void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_al
 		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(main_text[i].size() + decoration_distance - 1) + 1 - i % 2, orientation_point.Y + i });
 		std::cout << additional_decoration;
 	}
+}
+void ToT_Window::LoadAtributes()
+{
+	std::fstream fvar;
+	fvar.open("Game_Files\\config.txt", std::ios::in);
+	fvar >> color1;
+	fvar >> color2;
+	fvar >> music_enabled;
+	fvar >> hamachi_enabled;
+	fvar.close();
+
+	SetMusic("Game_Files\\test.wav", music_enabled);
+}
+
+void ToT_Window::SaveAtributes()
+{
+	std::fstream fvar;
+	fvar.open("Game_Files\\config.txt");
+	fvar << color1 <<"\n";
+	fvar << color2 << "\n";;
+	fvar << music_enabled << "\n";;
+	fvar << hamachi_enabled << "\n";;
+
+	fvar.close();
 }

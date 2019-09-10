@@ -85,18 +85,16 @@ void GameMode::Options(ToT_Window &main_window)
 			}
 			case 2:
 			{
-				static bool flag = true;
 				const std::vector<std::string> local_text = { "on", "off" };
 				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size())/2 +3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-				main_window.SetMusic("Game_Files\\test.wav", !(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
+				main_window.SetMusic("Game_Files\\test.wav", !(Text::Choose::Horizontal(local_text, !main_window.GetMusic(), local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
 			case 3:
 			{
-				static bool flag = false;
 				const std::vector<std::string> local_text = { "on", "off" };
 				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size())/2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-				main_window.SetHamachiConnectionFlag(!(flag = Text::Choose::Horizontal(local_text, flag, local_starting_point, Text::TextAlign::left, true, main_window)));
+				main_window.SetHamachiConnectionFlag(!(Text::Choose::Horizontal(local_text, main_window.GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
 			case 4:
@@ -115,6 +113,7 @@ void GameMode::Options(ToT_Window &main_window)
 			}
 		}
 	}
+	main_window.SaveAtributes();
 }
 void GameMode::Ranking(ToT_Window &main_window)
 {
