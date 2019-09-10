@@ -105,5 +105,8 @@
     <ClInclude Include="Infobox.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

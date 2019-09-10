@@ -2,6 +2,7 @@
 #include <fstream>
 #include "NetworkRole.h"
 #include "ToT_Window.h"
+#include "Constants.h"
 
 namespace GameMode {
 	void Game(const bool multiplayer, ToT_Window &main_window);

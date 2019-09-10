@@ -3,6 +3,7 @@
 #include "TextLib.h"
 #include <iostream>
 #include <fstream>
+#include "Constants.h"
 
 class ToT_Window : public Window
 {
@@ -10,6 +11,7 @@ protected:
 	bool hamachi_enabled;
 	bool music_enabled;
 	void LoadAtributes();
+
 public:
 	ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
 	//writes list of all files with ext extension to file with specified path.

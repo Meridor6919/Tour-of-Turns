@@ -2,12 +2,12 @@
 
 ToT_Window::ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
 {
-	LoadFiles("Maps", "Maps\\Ranking.txt", "rank");
-	if (!LoadFiles("Tires", "Tires\\Tire.txt", "tire"))
+	LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking);
+	if (!LoadFiles(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
 	{
 		MessageBox(0, "No tire files found, please reinstall your game or repair missing files", "File Error", 0);
 	}
-	if (!LoadFiles("Maps", "Maps\\Tour.txt", "tour"))
+	if (!LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
 	{
 		MessageBox(0, "No tour files found, please reinstall your game or repair missing files", "File Error", 0);
 	}
@@ -99,20 +99,20 @@ void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_al
 void ToT_Window::LoadAtributes()
 {
 	std::fstream fvar;
-	fvar.open("Game_Files\\config.txt", std::ios::in);
+	fvar.open(FolderName::main + "\\" + FileName::config, std::ios::in);
 	fvar >> color1;
 	fvar >> color2;
 	fvar >> music_enabled;
 	fvar >> hamachi_enabled;
 	fvar.close();
 
-	SetMusic("Game_Files\\test.wav", music_enabled);
+	SetMusic(FolderName::main + "\\" + FileName::music, music_enabled);
 }
 
 void ToT_Window::SaveAtributes()
 {
 	std::fstream fvar;
-	fvar.open("Game_Files\\config.txt");
+	fvar.open(FolderName::main + "\\" + FileName::config);
 	fvar << color1 <<"\n";
 	fvar << color2 << "\n";;
 	fvar << music_enabled << "\n";;
