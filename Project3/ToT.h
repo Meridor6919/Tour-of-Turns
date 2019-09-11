@@ -4,7 +4,8 @@
 #include "ToT_Window.h"
 #include "Constants.h"
 
-namespace GameMode {
+namespace GameMode 
+{
 	void Game(const bool multiplayer, ToT_Window &main_window);
 	void Credits(ToT_Window &main_window);
 	void Options(ToT_Window &main_window);

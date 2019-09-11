@@ -23,3 +23,13 @@ namespace ExtName
 	const std::string tire = "tire";
 	const std::string ranking = "rank";
 }
+namespace Error_Msg
+{
+	const std::string missing_file = "files not found, please reinstall your game or repair missing files";
+	const std::string ranking_not_present = "There are no ranking files";
+}
+namespace Error_Title
+{
+	const std::string missing_file = "Missing Files";
+
+}

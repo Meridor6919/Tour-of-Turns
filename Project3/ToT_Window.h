@@ -10,6 +10,9 @@ class ToT_Window : public Window
 protected:
 	bool hamachi_enabled;
 	bool music_enabled;
+	bool playable;
+	bool ranking_found;
+
 	void LoadAtributes();
 
 public:
@@ -22,4 +25,6 @@ public:
 	void Title(const COORD starting_point, const Text::TextAlign text_align);
 	bool GetHamachiConnectionFlag() { return hamachi_enabled; }
 	bool GetMusic() { return music_enabled; }
+	bool IsPlayable() { return playable; }
+	bool RankingFound() { return ranking_found; }
 };

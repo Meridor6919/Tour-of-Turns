@@ -77,17 +77,17 @@ void GeneralMultiPlayer::Host::AcceptClients(const int max)
 		SOCKET temp = accept(sock, reinterpret_cast<sockaddr*>(&sock_addr), &addr_size);
 		if (temp != INVALID_SOCKET && accepting_running)
 		{
-			bool good = true;
+			bool playable = true;
 
 			if (static_cast<int>(clients.size()) >= max)
 			{
-				good = false;
+				playable = false;
 			}
 			for (int i = 0; i < static_cast<int>(clients.size()); ++i)
 			{
 				if (sock_addr.sin_addr.s_addr == clients[i].second.sin_addr.s_addr)
 				{
-					good = false;
+					playable = false;
 					break;
 				}
 			}
@@ -95,11 +95,11 @@ void GeneralMultiPlayer::Host::AcceptClients(const int max)
 			{
 				if (black_list[i].sin_addr.s_addr == sock_addr.sin_addr.s_addr)
 				{
-					good = false;
+					playable = false;
 					break;
 				}
 			}
-			if (good)
+			if (playable)
 			{
 				clients.push_back(std::make_pair(temp, sock_addr));
 				accept(clients[static_cast<int>(clients.size()) - 1].first, reinterpret_cast<sockaddr*>(&sock_addr), &addr_size);

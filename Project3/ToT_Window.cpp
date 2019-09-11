@@ -2,15 +2,23 @@
 
 ToT_Window::ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
 {
-	LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking);
+	playable = true;
+	ranking_found = true;
+	if (!LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
+	{
+		ranking_found = false;
+	}
 	if (!LoadFiles(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
 	{
-		MessageBox(0, "No tire files found, please reinstall your game or repair missing files", "File Error", 0);
+		MessageBox(0, (ExtName::tire +" "+ Error_Msg::missing_file).c_str(), Error_Title::missing_file.c_str(), 0);
+		playable = false;
 	}
 	if (!LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
 	{
-		MessageBox(0, "No tour files found, please reinstall your game or repair missing files", "File Error", 0);
+		MessageBox(0, (ExtName::tour + " " + Error_Msg::missing_file).c_str(), Error_Title::missing_file.c_str(), 0);
+		playable = false;
 	}
+
 }
 bool ToT_Window::LoadFiles(std::string src_path, std::string dst_path, const std::string ext)
 {

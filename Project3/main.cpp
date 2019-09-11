@@ -22,12 +22,26 @@ int main()
 			case 0:
 			case 1:
 			{
-				GameMode::Game(main_menu_position, game_window);
+				if (game_window.IsPlayable())
+				{
+					GameMode::Game(main_menu_position, game_window);
+				}
+				else
+				{
+					MessageBox(0, (Error_Msg::missing_file).c_str(), Error_Title::missing_file.c_str(), 0);
+				}
 				break;
 			}
 			case 2:
 			{
-				GameMode::Ranking(game_window);
+				if (game_window.RankingFound())
+				{
+					GameMode::Ranking(game_window);
+				}
+				else
+				{
+					MessageBox(0, (Error_Msg::ranking_not_present).c_str(), Error_Title::missing_file.c_str(), 0);
+				}
 				break;
 			}
 			case 3:
