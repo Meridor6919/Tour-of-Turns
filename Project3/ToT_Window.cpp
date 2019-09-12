@@ -6,6 +6,9 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	ranking_found = true;
 	hamachi_enabled = true;
 	music_enabled = true;
+	default_ais = 0;
+	default_name = "Racer";
+
 	if (!LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
 	{
 		ranking_found = false;
@@ -106,6 +109,14 @@ void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_al
 		std::cout << additional_decoration;
 	}
 }
+void ToT_Window::SetDefaultAIs(int number_of_ais)
+{
+	default_ais = number_of_ais;
+}
+void ToT_Window::SetDefaultName(std::string name)
+{
+	default_name = name;
+}
 void ToT_Window::LoadAtributes()
 {
 	std::fstream fvar;
@@ -114,6 +125,8 @@ void ToT_Window::LoadAtributes()
 	fvar >> color2;
 	fvar >> music_enabled;
 	fvar >> hamachi_enabled;
+	fvar >> default_ais;
+	fvar >> default_name;
 	fvar.close();
 
 	SetMusic(FolderName::main + "\\" + FileName::music, music_enabled);
@@ -127,6 +140,7 @@ void ToT_Window::SaveAtributes()
 	fvar << color2 << "\n";;
 	fvar << music_enabled << "\n";;
 	fvar << hamachi_enabled << "\n";;
-
+	fvar << default_ais <<"\n";
+	fvar << default_name << "\n";
 	fvar.close();
 }

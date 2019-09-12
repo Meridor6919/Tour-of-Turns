@@ -10,6 +10,8 @@ class ToT_Window : public Window
 protected:
 	bool hamachi_enabled;
 	bool music_enabled;
+	int default_ais;
+	std::string default_name;
 	bool playable;
 	bool ranking_found;
 
@@ -23,8 +25,12 @@ public:
 	void SetHamachiConnectionFlag(const bool flag);
 	void SetMusic(const std::string sound_file, const bool playing);
 	void Title(const COORD starting_point, const Text::TextAlign text_align);
+	void SetDefaultAIs(int number_of_ais);
+	void SetDefaultName(std::string name);
 	bool GetHamachiConnectionFlag() { return hamachi_enabled; }
 	bool GetMusic() { return music_enabled; }
 	bool IsPlayable() { return playable; }
 	bool RankingFound() { return ranking_found; }
+	int DefaultAis() { return default_ais; }
+	std::string DefaultName() { return default_name; }
 };
