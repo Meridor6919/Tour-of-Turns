@@ -4,6 +4,8 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 {
 	playable = true;
 	ranking_found = true;
+	hamachi_enabled = true;
+	music_enabled = true;
 	if (!LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
 	{
 		ranking_found = false;
