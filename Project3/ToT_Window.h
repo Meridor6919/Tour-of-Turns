@@ -16,11 +16,22 @@ protected:
 	bool ranking_found;
 
 	void LoadAtributes();
+	bool ValidateGameFiles();
+	bool ValidateTourFiles();
+	bool ValidateCarFiles();
+	bool ValidateTireFiles();
+	std::vector<std::string> ReadFile(std::string path);
+	
 
 public:
+	std::vector<std::string> GetTourNames();
+	std::vector<std::string> GetCarNames(std::string tour);
+	std::vector<std::string> GetTireNames();
+	std::vector<int> GetCarParameters(std::string path);
+	std::vector<std::string> GetTireParameters(std::string path);
+	std::vector<std::string> GetTourParameters(std::string tour, int position, int visibility);
 	ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
-	//writes list of all files with ext extension to file with specified path.
-	bool LoadFiles(std::string src_path, std::string dst_path, const std::string ext);
+	bool SaveFileNames(std::string src_path, std::string dst_path, const std::string ext);
 	void SaveAtributes();
 	void SetHamachiConnectionFlag(const bool flag);
 	void SetMusic(const std::string sound_file, const bool playing);

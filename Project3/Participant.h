@@ -3,32 +3,6 @@
 
 class SinglePlayer;
 
-namespace Modifiers {
-	const std::vector<std::string> car_modifiers = { "max_speed","max_accelerating","max_braking","hand_brake_value","durability","visibility","turn_mod","drift_mod" };
-	const std::vector<std::string> tire_modifiers = { "asphalt","grass","gravel","sand","mud","ice" };
-}
-
-enum CarModifiers
-{
-	max_speed,
-	max_accelerating,
-	max_braking,
-	hand_brake_value,
-	durability,
-	visibility,
-	turn_mod,
-	drift_mod
-};
-enum TireModifiers
-{
-	asphalt,
-	grass,
-	gravel,
-	sand,
-	mud,
-	ice
-};
-
 class Participant 
 {
 private:

@@ -6,8 +6,8 @@ Participant::Participant(const std::string name, const std::string car_path, con
 	this->name = name;
 	this->car_path = car_path;
 	this->network_role = &network_role;
-	this->car_modifiers = network_role.GetCarParameters(car_path);
-	this->tire_modifiers = network_role.GetTireParameters(tire_path);
+	this->car_modifiers = network_role.GetWindowPtr()->GetCarParameters(car_path);
+	this->tire_modifiers = network_role.GetWindowPtr()->GetTireParameters(tire_path);
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 }
 Participant::Participant(const int id, const std::string tour_path, SinglePlayer &network_role)
@@ -30,7 +30,7 @@ float Participant::TiresPoints(const int terrain[], const std::string tires_path
 			return 1.0f;
 		}
 	};
-	const std::vector<std::string>tires_atrib = network_role->GetTireParameters(tires_path);
+	const std::vector<std::string>tires_atrib = network_role->GetWindowPtr()->GetTireParameters(tires_path);
 	float total_points = 0.0f;
 	int x;
 	int y;
@@ -43,7 +43,7 @@ float Participant::TiresPoints(const int terrain[], const std::string tires_path
 			if (tires_atrib[i][j] == 'x')
 			{
 				x = static_cast<int>(atoi(tires_atrib[i].substr(0, j).c_str()));
-				y = static_cast<int>(atoi(tires_atrib[i].substr(j, static_cast<int>(tires_atrib[i].size()) - j).c_str()));
+				y = static_cast<int>(atoi(tires_atrib[i].substr(j+1, static_cast<int>(tires_atrib[i].size()) - j-j).c_str()));
 			}
 		}
 		for (int j = 0; j <= y - x; ++x)
@@ -66,7 +66,7 @@ void Participant::GetRandomName(const int id)
 }
 void Participant::GetOptimalCar(const std::string tour_path)
 {
-	const std::vector<std::string> cars = network_role->GetCarNames(tour_path);
+	const std::vector<std::string> cars = network_role->GetWindowPtr()->GetCarNames(tour_path);
 	int current_best = 0;
 	int best_points = 0;
 	for (int i = 0; i < static_cast<int>(cars.size()); ++i)
@@ -79,13 +79,13 @@ void Participant::GetOptimalCar(const std::string tour_path)
 		}
 	}
 	this->car_path = cars[current_best];
-	this->car_modifiers = network_role->GetCarParameters(cars[current_best]);
+	this->car_modifiers = network_role->GetWindowPtr()->GetCarParameters(cars[current_best]);
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
 }
 void Participant::GetOptimalTires()
 {
-	std::vector<std::string> tires = network_role->GetTireNames();
-	std::vector<std::string> tour = network_role->GetTourParameters(0, INT_MAX);
+	std::vector<std::string> tires = network_role->GetWindowPtr()->GetTireNames();
+	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->tour, 0, INT_MAX);
 	int terrain[6];
 	memset(terrain, 0, 6);
 	for (int i = 0; i < static_cast<int>(tour.size()); ++i)
@@ -106,14 +106,14 @@ void Participant::GetOptimalTires()
 			current_best = i;
 		}
 	}
-	this->tire_modifiers = network_role->GetTireParameters(tires[current_best]);
+	this->tire_modifiers = network_role->GetWindowPtr()->GetTireParameters(tires[current_best]);
 }
 int Participant::CarPoints(const std::string cars_path)
 {
 	std::vector<int> car_params;
 	float total_points = 0.0f;
 	int result;
-	car_params = network_role->GetCarParameters(cars_path);
+	car_params = network_role->GetWindowPtr()->GetCarParameters(cars_path);
 
 	result = car_params[CarModifiers::max_accelerating] - car_params[CarModifiers::max_speed] > 0 ? car_params[CarModifiers::max_speed] : car_params[CarModifiers::max_accelerating];
 	total_points += static_cast<float>(result);
@@ -150,7 +150,7 @@ int Participant::CarPoints(const std::string cars_path)
 void Participant::TakeAction(const int turn)
 {
 	//AI LOGIC TO CHANGE
-	std::vector<std::string> tour = network_role->GetTourParameters(turn, car_modifiers[CarModifiers::visibility]);
+	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->tour,turn, car_modifiers[CarModifiers::visibility]);
 	
 	float safe_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.0f;
 	float risk = 40.0f;

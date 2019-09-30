@@ -163,26 +163,28 @@ void GameMode::Game(const bool multiplayer, ToT_Window &main_window)
 	{
 		network_role = std::make_shared<SinglePlayer>(main_window);
 	}
-	network_role->GameLobby();
-	network_role->Interface();
-	network_role->Ranking(false);
-
-	for (int turn = 0; network_role->VisionBox(turn); turn++)
+	if (network_role->GameLobby())
 	{
-		//attacking start with second turn 
-		if (turn > 0)
-		{
-			network_role->Attack();
-		}
-		network_role->TakeAction();
-		network_role->GetOthersAction(turn);
-		network_role->GetCurrentAtribs();
 		network_role->Interface();
-		network_role->Ranking(true);
 		network_role->Ranking(false);
+
+		for (int turn = 0; network_role->VisionBox(turn); turn++)
+		{
+			//attacking start with second turn 
+			if (turn > 0)
+			{
+				network_role->Attack();
+			}
+			network_role->TakeAction();
+			network_role->GetOthersAction(turn);
+			network_role->GetCurrentAtribs();
+			network_role->Interface();
+			network_role->Ranking(true);
+			network_role->Ranking(false);
+		}
+		_getch();
+		_getch();
 	}
-	_getch();
-	_getch();
 	system("cls");
 	main_window.Title({ static_cast<short>(main_window.GetWidth()) / 2, 0 }, Text::TextAlign::center);
 }

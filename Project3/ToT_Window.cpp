@@ -9,23 +9,28 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	default_ais = 0;
 	default_name = "Racer";
 
-	if (!LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
+	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
 	{
 		ranking_found = false;
 	}
-	if (!LoadFiles(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
+	if (!SaveFileNames(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
 	{
 		MessageBox(0, (ExtName::tire +" "+ Error_Msg::missing_file).c_str(), Error_Title::missing_file.c_str(), 0);
 		playable = false;
 	}
-	if (!LoadFiles(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
+	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
 	{
 		MessageBox(0, (ExtName::tour + " " + Error_Msg::missing_file).c_str(), Error_Title::missing_file.c_str(), 0);
 		playable = false;
 	}
+	if (!ValidateGameFiles())
+	{
+		playable = false;
+	}
+	LoadAtributes();
 
 }
-bool ToT_Window::LoadFiles(std::string src_path, std::string dst_path, const std::string ext)
+bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const std::string ext)
 {
 	dst_path = "dir " + src_path + "\\*." + ext + " > " + dst_path + " /b";
 	if (system(dst_path.c_str()))
@@ -36,7 +41,6 @@ bool ToT_Window::LoadFiles(std::string src_path, std::string dst_path, const std
 		SetConsoleCursorPosition(window_handle, { 0,0 });
 		return false;
 	}
-	LoadAtributes();
 	return true;
 }
 void ToT_Window::SetHamachiConnectionFlag(const bool flag)
@@ -129,7 +133,146 @@ void ToT_Window::LoadAtributes()
 	fvar >> default_name;
 	fvar.close();
 
+	if (color1 < 0 || color1 > 15)
+	{
+		color1 = 15;
+	}
+	if (color2 < 0 || color2 > 15)
+	{
+		color2 = 10;
+	}
+	if (default_ais < 0 || default_ais > 7)
+	{
+		default_ais = 7;
+	}
+	if (default_name.size() < 1 || default_name.size() < 14)
+	{
+		default_name = "Racer";
+	}
 	SetMusic(FolderName::main + "\\" + FileName::music, music_enabled);
+}
+
+bool ToT_Window::ValidateGameFiles()
+{
+	return ValidateCarFiles()*ValidateTireFiles()*ValidateTourFiles();
+}
+
+bool ToT_Window::ValidateTourFiles()
+{
+	std::vector<std::string> tours = GetTourNames();
+	bool invalid = false;
+
+	if (static_cast<int>(tours.size()) == 0)
+	{
+		invalid = true;
+	}
+	for (int i = 0; i < static_cast<int>(tours.size()); ++i)
+	{
+		std::vector<std::string> params = GetTourParameters(tours[i], 0, INT_MAX);
+		if (static_cast<int>(params.size()) < 1)
+		{
+			invalid = true;
+		}
+		for (int j = 0; j < static_cast<int>(params.size()); ++j)
+		{
+			if (params[j][0] - 48 < 0 || params[j][0] - 48 > TireModifiers::last)
+			{
+				invalid = true;
+			}
+			else if (static_cast<int>(params[j].size()) > 5)
+			{
+				invalid = true;
+			}
+			else if (static_cast<int>(params[j].size()) != 1 && atoi(params[j].substr(1, static_cast<int>(params[j].size()) - 1).c_str()) < 1)
+			{
+				invalid = true;
+			}
+		}
+	}
+	if (invalid)
+	{
+		MessageBox(0, (FolderName::car + " " + Error_Msg::corrupted_file).c_str(), Error_Title::corrupted_file.c_str(), 0);
+		return false;
+	}
+	return true;
+}
+
+bool ToT_Window::ValidateCarFiles()
+{
+	std::vector<std::string> tours = GetTourNames();
+	bool invalid = false;
+
+	for (int i = 0; i < static_cast<int>(tours.size()); ++i)
+	{
+		std::vector<std::string> cars = GetCarNames(tours[i]);
+		if (static_cast<int>(cars.size()) == 0)
+		{
+			invalid = true;
+		}
+		for (int j = 0; j < static_cast<int>(cars.size()); ++j)
+		{
+			std::vector<int> params = GetCarParameters(cars[j]);
+			if (static_cast<int>(params.size()) != CarModifiers::last)
+			{
+				invalid = true;
+			}
+			for (int j = 0; j < CarModifiers::last; ++j)
+			{
+				if (params[j] < 1)
+				{
+					invalid = true;
+				}
+			}
+		}
+	}
+	if (invalid)
+	{
+		MessageBox(0, (FolderName::car + " " + Error_Msg::corrupted_file).c_str(), Error_Title::corrupted_file.c_str(), 0);
+		return false;
+	}
+	return true;
+}
+
+bool ToT_Window::ValidateTireFiles()
+{
+	std::vector<std::string> tires = GetTireNames();
+	bool invalid = false;
+	int x = 0;
+	int y = 0;
+
+	if (static_cast<int>(tires.size()) == 0)
+	{
+		invalid = true;
+	}
+	for (int i = 0; i < static_cast<int>(tires.size()); ++i)
+	{
+		std::vector<std::string> params = GetTireParameters(tires[i]);
+		if (static_cast<int>(params.size()) != TireModifiers::last)
+		{
+			invalid = true;
+		}
+		for (int j = 0; j < TireModifiers::last; ++j)
+		{
+			for (int k = 0; k < static_cast<int>(params[j].size()); ++k)
+			{
+				if (params[j][k] == 'x')
+				{
+					x = static_cast<int>(atoi(params[j].substr(0, k).c_str()));
+					y = static_cast<int>(atoi(params[j].substr(k+1, static_cast<int>(params[j].size()) - k - 1).c_str()));
+				}
+			}
+		}
+		if (x*y == 0 || x > y)
+		{
+			invalid = true;
+		}
+	}
+	if (invalid)
+	{
+		MessageBox(0, (FolderName::tire + " " + Error_Msg::corrupted_file).c_str(), Error_Title::corrupted_file.c_str(), 0);
+		return false;
+	}
+	return true;
 }
 
 void ToT_Window::SaveAtributes()
@@ -143,4 +286,71 @@ void ToT_Window::SaveAtributes()
 	fvar << default_ais <<"\n";
 	fvar << default_name << "\n";
 	fvar.close();
+}
+std::vector<std::string> ToT_Window::GetTourNames()
+{
+	return ReadFile(FolderName::tour + "\\" + FileName::tour);
+}
+std::vector<std::string> ToT_Window::GetCarNames(const std::string tour)
+{
+	return ReadFile(FolderName::tour + "\\" + tour);
+}
+std::vector<std::string> ToT_Window::GetTireNames()
+{
+	return ReadFile(FolderName::tire + "\\" + FileName::tire);
+}
+std::vector<int> ToT_Window::GetCarParameters(const std::string path)
+{
+	std::vector<std::string> data = ReadFile(FolderName::car + "\\" + path);
+	std::vector<int> car_parameters;
+	for (int i = 0; i < static_cast<int>(data.size()); ++i)
+	{
+		if (atoi(data[i].c_str()) < 1 || atoi(data[i].c_str()))
+			car_parameters.push_back(atoi(data[i].c_str()));
+
+	}
+	return car_parameters;
+}
+std::vector<std::string> ToT_Window::GetTireParameters(const std::string path)
+{
+	return ReadFile(FolderName::tire + "\\" + path);
+}
+std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int position, const int visibility)
+{
+	std::vector<std::string> ret;
+	std::fstream fvar;
+	std::string helper;
+
+	fvar.open((FolderName::tour + "\\" + tour).c_str());
+	do
+	{
+		std::getline(fvar, helper);
+	} while (helper != "");
+	for (int i = 0; i < position; ++i)
+	{
+		std::getline(fvar, helper);
+	}
+	for (int i = 0; i < visibility; ++i)
+	{
+		if (!std::getline(fvar, helper))
+		{
+			break;
+		}
+		ret.push_back(helper);
+	}
+	fvar.close();
+	return ret;
+}
+std::vector<std::string> ToT_Window::ReadFile(const std::string path)
+{
+	std::vector<std::string> data;
+	std::fstream fvar;
+	std::string helper;
+	fvar.open(path);
+	while (getline(fvar, helper) && helper != "")
+	{
+		data.push_back(helper);
+	}
+	fvar.close();
+	return data;
 }

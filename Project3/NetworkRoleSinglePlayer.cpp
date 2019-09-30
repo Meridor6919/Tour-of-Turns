@@ -1,18 +1,5 @@
 #include "NetworkRole.h"
 
-std::vector<std::string> SinglePlayer::ReadFile(const std::string path)
-{
-	std::vector<std::string> data;
-	std::fstream fvar;
-	std::string helper;
-	fvar.open(path);
-	while (getline(fvar, helper) && helper != "")
-	{
-		data.push_back(helper);
-	}
-	fvar.close();
-	return data;
-}
 std::string SinglePlayer::ChooseName(const std::string current_name, const int max_name_size)
 {
 	char button;
@@ -156,59 +143,6 @@ SinglePlayer::SinglePlayer(ToT_Window &main_window)
 	this->main_window = &main_window;
 	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
 	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, main_window);
-}
-std::vector<std::string> SinglePlayer::GetTourNames()
-{
-	return this->ReadFile(FolderName::tour + "\\" + FileName::tour);
-}
-std::vector<std::string> SinglePlayer::GetCarNames(const std::string tour)
-{
-	return this->ReadFile(FolderName::tour + "\\" + tour);
-}
-std::vector<std::string> SinglePlayer::GetTireNames()
-{
-	return this->ReadFile(FolderName::tire + "\\" + FileName::tire);
-}
-std::vector<int> SinglePlayer::GetCarParameters(const std::string path)
-{
-	std::vector<std::string> data = this->ReadFile(FolderName::car + "\\" + path);
-	std::vector<int> car_parameters;
-	for (int i = 0; i < static_cast<int>(data.size()); ++i)
-	{
-		car_parameters.push_back(atoi(data[i].c_str()));
-	}
-	return car_parameters;
-}
-std::vector<std::string> SinglePlayer::GetTireParameters(const std::string path)
-{
-	return this->ReadFile(FolderName::tire + "\\" + path);
-}
-std::vector<std::string> SinglePlayer::GetTourParameters(const int position, const int visibility)
-{
-	std::vector<std::string> ret;
-	std::fstream fvar;
-	std::string helper;
-
-	fvar.open((FolderName::tour + "\\" + tour).c_str());
-	do
-	{
-		std::getline(fvar, helper);
-	} 
-	while (helper != "");
-	for (int i = 0; i < position; ++i)
-	{
-		std::getline(fvar, helper);
-	}
-	for (int i = 0; i < visibility; ++i)
-	{
-		if (!std::getline(fvar, helper))
-		{
-			break;
-		}
-		ret.push_back(helper);
-	}
-	fvar.close();
-	return ret;
 }
 void SinglePlayer::GetParticipants(const std::string name, const int ais, const std::string tour, const std::string car, const std::string tire)
 {
@@ -451,7 +385,7 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 }
 void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
 {
-	std::vector<std::string> params2 = GetTireParameters(tire_path);
+	std::vector<std::string> params2 = main_window->GetTireParameters(tire_path);
 	std::vector<std::string> tire_parameters;
 	std::vector<Text::OrdinaryText_atributes> text_atributes;
 	for (int i = 0; i < static_cast<int>(Modifiers::tire_modifiers.size()); ++i)
@@ -468,7 +402,7 @@ void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
 }
 void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear)
 {
-	std::vector<int> params1 = GetCarParameters(car_path);
+	std::vector<int> params1 = main_window->GetCarParameters(car_path);
 	std::vector<std::string> car_parameters;
 	std::vector<Text::OrdinaryText_atributes> text_atributes;
 	for (int i = 0; i < static_cast<int>(Modifiers::car_modifiers.size()); ++i)
@@ -483,7 +417,7 @@ void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clea
 	}
 	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window, clear);
 }
-void SinglePlayer::GameLobby()
+bool SinglePlayer::GameLobby()
 {
 	//Lobby parameters
 	const std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
@@ -492,29 +426,14 @@ void SinglePlayer::GameLobby()
 	short main_menu_position = 0;
 	HANDLE handle = main_window->GetHandle();
 	std::string name = main_window->DefaultName();
-	const std::vector<std::string> tours = GetTourNames();
-	const std::vector<std::string> tires = GetTireNames();
-	std::vector<std::string> cars = GetCarNames(tours[0]);
+	const std::vector<std::string> tours = main_window->GetTourNames();
+	const std::vector<std::string> tires = main_window->GetTireNames();
+	std::vector<std::string> cars = main_window->GetCarNames(tours[0]);
 	int ais = main_window->DefaultAis();
 	int tires_pos = 0;
 	int cars_pos = 0;
 	int tours_pos = 0;
 
-	if (static_cast<int>(tours.size()) == 0)
-	{
-		MessageBox(0, "Cannot load any map files", "error", 0);
-		return;
-	}
-	if (static_cast<int>(tires.size()) == 0)
-	{
-		MessageBox(0, "Cannot load any tire files", "error", 0);
-		return;
-	}
-	if (static_cast<int>(cars.size()) == 0)
-	{
-		MessageBox(0, "Cannot load any car from selected tour", "error", 0);
-		return;
-	}
 	ShowCarParameters(cars[cars_pos]);
 	ShowTiresParameters(tires[tires_pos]);
 
@@ -544,7 +463,7 @@ void SinglePlayer::GameLobby()
 				tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 				if (i != tours_pos)
 				{
-					cars = GetCarNames(tours[tours_pos]);
+					cars = main_window->GetCarNames(tours[tours_pos]);
 					cars_pos = 0;
 					ShowCarParameters(cars[cars_pos]);
 					break;
@@ -553,7 +472,7 @@ void SinglePlayer::GameLobby()
 			}
 			case 3://choosing car
 			{
-				cars = GetCarNames(tours[tours_pos]);
+				cars = main_window->GetCarNames(tours[tours_pos]);
 				if (static_cast<int>(cars.size()) == 0)
 				{
 					MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
@@ -587,6 +506,7 @@ void SinglePlayer::GameLobby()
 	ShowTiresParameters(tires[tires_pos], true);
 	ShowCarParameters(cars[cars_pos], true);
 	GetParticipants(name, ais, tours[tours_pos], cars[cars_pos], tires[tires_pos]);
+	return true;
 }
 int SinglePlayer::Ranking(const bool clear)
 {
@@ -674,7 +594,7 @@ void SinglePlayer::Interface()
 }
 bool SinglePlayer::VisionBox(const int turn)
 {
-	const std::vector<std::string> visible_tour = GetTourParameters(turn, participants[0].car_modifiers[CarModifiers::visibility]);
+	const std::vector<std::string> visible_tour = main_window->GetTourParameters(tour, turn, participants[0].car_modifiers[CarModifiers::visibility]);
 	int ret = true;
 	HANDLE window = main_window->GetHandle();
 	std::string helper;

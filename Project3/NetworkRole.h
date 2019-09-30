@@ -10,7 +10,6 @@
 
 class SinglePlayer {
 
-	std::vector<std::string> ReadFile(std::string path);
 	std::string ChooseName(const std::string current_name, const int max_size);
 	void ShowTiresParameters(const std::string tire_path, bool clear = false);
 	void ShowCarParameters(const std::string tire_path, bool clear = false);
@@ -20,7 +19,7 @@ protected:
 	ToT_Window *main_window;
 	std::string current_field;
 	std::vector<Participant> participants;
-	std::string tour;
+	
 	int ais;
 	int NumericalAction(const COORD coords);
 	int BinaryAction(const COORD coords);
@@ -28,15 +27,11 @@ protected:
 public:
 
 	std::shared_ptr<InfoBox> infobox;
+	std::string tour;
 
-	void GameLobby();
+	bool GameLobby();
 	SinglePlayer(ToT_Window &main_window);
-	virtual std::vector<std::string> GetTourNames();
-	virtual std::vector<std::string> GetCarNames(std::string tour);
-	virtual std::vector<std::string> GetTireNames();
-	virtual std::vector<int> GetCarParameters(std::string path);
-	virtual std::vector<std::string> GetTireParameters(std::string path);
-	virtual std::vector<std::string> GetTourParameters(int position, int visibility);
+	ToT_Window* GetWindowPtr() { return main_window; }
 	virtual void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
 	virtual bool GetCurrentAtribs();

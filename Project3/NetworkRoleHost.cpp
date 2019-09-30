@@ -203,7 +203,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 2://get cars
 	{
-		std::vector<std::string> cars = GetCarNames(tour);
+		std::vector<std::string> cars = main_window->GetCarNames(tour);
 
 		for (int i = 0; i < cars.size(); i++)
 		{
@@ -215,7 +215,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 3://get tires
 	{
-		std::vector<std::string> tires = GetTireNames();
+		std::vector<std::string> tires = main_window->GetTireNames();
 
 		for (int i = 0; i < tires.size(); i++)
 		{
@@ -227,7 +227,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	case 4://get tour params
 	{
-		std::vector<std::string> ret = GetTourParameters(0, INT_MAX);
+		std::vector<std::string> ret = main_window->GetTourParameters(tour, 0, INT_MAX);
 
 		for (int i = 0; i < ret.size(); i++)
 		{
@@ -241,7 +241,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	case 5://get car params
 	{
 		std::vector<int> car_params;
-		car_params = GetCarParameters(msg);
+		car_params = main_window->GetCarParameters(msg);
 
 		for (int i = 0; i < car_params.size(); i++)
 		{
@@ -253,7 +253,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 	case 6://get tires params
 	{
 		std::vector<std::string> tires_params;
-		tires_params = GetTireParameters(msg);
+		tires_params = main_window->GetTireParameters(msg);
 
 		for (int i = 0; i < tires_params.size(); i++)
 		{

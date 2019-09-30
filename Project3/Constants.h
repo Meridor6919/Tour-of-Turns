@@ -1,6 +1,38 @@
 #pragma once
 #include <string>
 
+namespace Modifiers {
+	const std::vector<std::string> car_modifiers = { "max_speed","max_accelerating","max_braking","hand_brake_value","durability","visibility","turn_mod","drift_mod" };
+	const std::vector<std::string> tire_modifiers = { "asphalt","grass","gravel","sand","mud","ice" };
+}
+namespace CarModifiers
+{
+	enum
+	{
+		max_speed,
+		max_accelerating,
+		max_braking,
+		hand_brake_value,
+		durability,
+		visibility,
+		turn_mod,
+		drift_mod,
+		last
+	};
+}
+namespace TireModifiers
+{
+	enum
+	{
+		asphalt,
+		grass,
+		gravel,
+		sand,
+		mud,
+		ice,
+		last
+	};
+}
 namespace FolderName
 {
 	const std::string tour = "Maps";
@@ -27,9 +59,11 @@ namespace Error_Msg
 {
 	const std::string missing_file = "files not found, please reinstall your game or repair missing files";
 	const std::string ranking_not_present = "There are no ranking files";
+	const std::string corrupted_file = " cannot be read, please repair or delete corrupted files";
 }
 namespace Error_Title
 {
 	const std::string missing_file = "Missing Files";
+	const std::string corrupted_file = "Corupted Files";
 
 }
