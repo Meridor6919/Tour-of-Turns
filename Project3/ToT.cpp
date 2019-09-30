@@ -13,7 +13,7 @@ void GameMode::Credits(ToT_Window &main_window)
 		"He was patiently listening what problems do I have with ToT and the most important he gave me a main idea of the game.",
 		"Marek Loek ",
 		"for making an icon image and inspiring me to hard work.",
-		"Marcin Marzec ",
+		"Marcel Marzec ",
 		"for giving me inspiration.",
 		"I admire how much work he put in Pan Zniszczenia map for HoMM3 based on Diablo 2 universum.",
 		"Miroslaw Zelent ",
