@@ -57,12 +57,14 @@ namespace ExtName
 }
 namespace Error_Msg
 {
-	const std::string missing_file = "files not found, please reinstall your game or repair missing files";
+	const std::string unplayable = "You can't start new race with current game state, please repair files or reinstall game";
+	const std::string missing_file = "Files not found, please reinstall your game or repair missing files";
 	const std::string ranking_not_present = "There are no ranking files";
 	const std::string corrupted_file = " cannot be read, please repair or delete corrupted files";
 }
 namespace Error_Title
 {
+	const std::string unplayable = "Unplayable Game";
 	const std::string missing_file = "Missing Files";
 	const std::string corrupted_file = "Corupted Files";
 

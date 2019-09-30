@@ -145,7 +145,7 @@ void ToT_Window::LoadAtributes()
 	{
 		default_ais = 7;
 	}
-	if (default_name.size() < 1 || default_name.size() < 14)
+	if (default_name.size() < 1 || default_name.size() > 14)
 	{
 		default_name = "Racer";
 	}
@@ -172,20 +172,24 @@ bool ToT_Window::ValidateTourFiles()
 		if (static_cast<int>(params.size()) < 1)
 		{
 			invalid = true;
+			break;
 		}
 		for (int j = 0; j < static_cast<int>(params.size()); ++j)
 		{
 			if (params[j][0] - 48 < 0 || params[j][0] - 48 > TireModifiers::last)
 			{
 				invalid = true;
+				break;
 			}
 			else if (static_cast<int>(params[j].size()) > 5)
 			{
 				invalid = true;
+				break;
 			}
 			else if (static_cast<int>(params[j].size()) != 1 && atoi(params[j].substr(1, static_cast<int>(params[j].size()) - 1).c_str()) < 1)
 			{
 				invalid = true;
+				break;
 			}
 		}
 	}
@@ -208,6 +212,7 @@ bool ToT_Window::ValidateCarFiles()
 		if (static_cast<int>(cars.size()) == 0)
 		{
 			invalid = true;
+			break;
 		}
 		for (int j = 0; j < static_cast<int>(cars.size()); ++j)
 		{
@@ -215,12 +220,14 @@ bool ToT_Window::ValidateCarFiles()
 			if (static_cast<int>(params.size()) != CarModifiers::last)
 			{
 				invalid = true;
+				break;
 			}
 			for (int j = 0; j < CarModifiers::last; ++j)
 			{
 				if (params[j] < 1)
 				{
 					invalid = true;
+					break;
 				}
 			}
 		}
@@ -250,6 +257,7 @@ bool ToT_Window::ValidateTireFiles()
 		if (static_cast<int>(params.size()) != TireModifiers::last)
 		{
 			invalid = true;
+			break;
 		}
 		for (int j = 0; j < TireModifiers::last; ++j)
 		{
@@ -265,6 +273,7 @@ bool ToT_Window::ValidateTireFiles()
 		if (x*y == 0 || x > y)
 		{
 			invalid = true;
+			break;
 		}
 	}
 	if (invalid)

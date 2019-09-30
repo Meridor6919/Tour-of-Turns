@@ -28,7 +28,7 @@ int main()
 				}
 				else
 				{
-					MessageBox(0, (Error_Msg::missing_file).c_str(), Error_Title::missing_file.c_str(), 0);
+					MessageBox(0, (Error_Msg::unplayable).c_str(), Error_Title::unplayable.c_str(), 0);
 				}
 				break;
 			}
