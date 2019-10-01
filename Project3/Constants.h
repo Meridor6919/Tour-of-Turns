@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 
-namespace VectorOfStrings {
+namespace VectorOfStrings 
+{
 	const std::vector<std::string> car_modifiers = { "max_speed","max_accelerating","max_braking","hand_brake_value","durability","visibility","turn_mod","drift_mod" };
 	const std::vector<std::string> tire_modifiers = { "asphalt","grass","gravel","sand","mud","ice" };
 	const std::vector<std::string> main_menu_options = { "New Game ", "Multiplayer ", "Ranking ", "Options ", "Credits ", "Exit" };
@@ -25,6 +26,35 @@ namespace VectorOfStrings {
 		"Miroslaw Zelent ",
 		"for getting me interested in programming"
 	};
+	const std::vector<std::string> title_main = {
+		"  _______  ___         ___     ",
+		"     |    |   | |   | |   |    ",
+		"     |    |   | |   | |___|    ",
+		"     |    |   | |   | |  \\     ",
+		"     |    |___| |___| |   \\    ",
+		"                               ",
+		"                               ",
+		"                               ",
+		"                               ",
+		"                               ",
+		"_______        ___    __   __  ",
+		"   |    |   | |   |  |  | |    ",
+		"   |    |   | |___|  |  | |__  ",
+		"   |    |   | |  \\   |  |    | ",
+		"   |    |___| |   \\  |  | ___| ",
+	};
+	const std::vector<std::string> title_additional = {
+		" ___   ___",
+		"|   | |   ",
+		"|   | |_  ",
+		"|   | |   ",
+		"|___| |   ",
+	};
+}
+namespace String 
+{
+	const std::string default_name = "Racer";
+
 }
 namespace CarModifiers
 {

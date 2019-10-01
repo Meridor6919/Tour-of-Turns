@@ -4,10 +4,6 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 {
 	playable = true;
 	ranking_found = true;
-	hamachi_enabled = true;
-	music_enabled = true;
-	default_ais = 0;
-	default_name = "Racer";
 
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
 	{
@@ -28,109 +24,21 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 		playable = false;
 	}
 	LoadAtributes();
-
-}
-bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const std::string ext)
-{
-	dst_path = "dir " + src_path + "\\*." + ext + " > " + dst_path + " /b";
-	if (system(dst_path.c_str()))
-	{
-		//Clearing error message that shows in a console window by default when files not found
-		SetConsoleCursorPosition(window_handle, { 0,0 });
-		std::cout << "                       ";
-		SetConsoleCursorPosition(window_handle, { 0,0 });
-		return false;
-	}
-	return true;
-}
-void ToT_Window::SetHamachiConnectionFlag(const bool flag)
-{
-	hamachi_enabled = flag;
-}
-void ToT_Window::SetMusic(const std::string sound_file, const bool playing)
-{
-	music_enabled = playing;
-	Window::SetMusic(sound_file, playing);
-}
-void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
-{
-	const std::vector<std::string> main_text = {
-		"  _______  ___         ___     ",
-		"     |    |   | |   | |   |    ",
-		"     |    |   | |   | |___|    ",
-		"     |    |   | |   | |  \\     ",
-		"     |    |___| |___| |   \\    ",
-		"                               ",
-		"                               ",
-		"                               ",
-		"                               ",
-		"                               ",
-		"_______        ___    __   __  ",
-		"   |    |   | |   |  |  | |    ",
-		"   |    |   | |___|  |  | |__  ",
-		"   |    |   | |  \\   |  |    | ",
-		"   |    |___| |   \\  |  | ___| ",
-	};
-	const std::vector<std::string> additional_text = {
-		" ___   ___",
-		"|   | |   ",
-		"|   | |_  ",
-		"|   | |   ",
-		"|___| |   ",
-	};
-	const COORD orientation_point = { starting_point.X - static_cast<short>((float)text_align / 2 * main_text[0].size()), starting_point.Y };
-	const short decoration_distance = 5;
-	const std::string main_decoration = "{ }";
-	const std::string additional_decoration = "*";
-	//Main text
-	SetConsoleTextAttribute(window_handle, color2);
-	for (short i = 0; i < static_cast<short>(main_text.size()); ++i)
-	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
-		std::cout << main_text[i];
-	}
-	SetConsoleTextAttribute(window_handle, color1);
-	for (short i = 0; i < static_cast<short>(additional_text.size()); ++i)
-	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(main_text[i].size()/2 - additional_text[i].size()/2), orientation_point.Y + i + static_cast<short>(main_text.size()) / 3 });
-		std::cout << additional_text[i];
-	}
-	//Decoration
-	SetConsoleTextAttribute(window_handle, color2);
-	for (short i = 0; i < static_cast<short>(main_text.size()); ++i)
-	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) - i % 2, orientation_point.Y + i });
-		std::cout << main_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(main_text[i].size() + decoration_distance - 1) - i % 2, orientation_point.Y + i });
-		std::cout << main_decoration;
-	}
-	SetConsoleTextAttribute(window_handle, color1);
-	for (short i = 0; i < static_cast<short>(main_text.size()); ++i)
-	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) + 1 - i % 2, orientation_point.Y + i });
-		std::cout << additional_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(main_text[i].size() + decoration_distance - 1) + 1 - i % 2, orientation_point.Y + i });
-		std::cout << additional_decoration;
-	}
-}
-void ToT_Window::SetDefaultAIs(int number_of_ais)
-{
-	default_ais = number_of_ais;
-}
-void ToT_Window::SetDefaultName(std::string name)
-{
-	default_name = name;
 }
 void ToT_Window::LoadAtributes()
 {
+	hamachi_enabled = true;
+	music_enabled = true;
+	ais = 0;
+
 	std::fstream fvar;
 	fvar.open(FolderName::main + "\\" + FileName::config, std::ios::in);
 	fvar >> color1;
 	fvar >> color2;
 	fvar >> music_enabled;
 	fvar >> hamachi_enabled;
-	fvar >> default_ais;
-	fvar >> default_name;
+	fvar >> ais;
+	fvar >> name;
 	fvar.close();
 
 	if (color1 < 0 || color1 > 15)
@@ -141,22 +49,20 @@ void ToT_Window::LoadAtributes()
 	{
 		color2 = 10;
 	}
-	if (default_ais < 0 || default_ais > 7)
+	if (ais < 0 || ais > 7)
 	{
-		default_ais = 7;
+		ais = 7;
 	}
-	if (default_name.size() < 1 || default_name.size() > 14)
+	if (name.size() < 1 || name.size() > 14)
 	{
-		default_name = "Racer";
+		name = String::default_name;
 	}
 	SetMusic(FolderName::main + "\\" + FileName::music, music_enabled);
 }
-
 bool ToT_Window::ValidateGameFiles()
 {
 	return ValidateCarFiles()*ValidateTireFiles()*ValidateTourFiles();
 }
-
 bool ToT_Window::ValidateTourFiles()
 {
 	std::vector<std::string> tours = GetTourNames();
@@ -200,7 +106,6 @@ bool ToT_Window::ValidateTourFiles()
 	}
 	return true;
 }
-
 bool ToT_Window::ValidateCarFiles()
 {
 	std::vector<std::string> tours = GetTourNames();
@@ -239,7 +144,6 @@ bool ToT_Window::ValidateCarFiles()
 	}
 	return true;
 }
-
 bool ToT_Window::ValidateTireFiles()
 {
 	std::vector<std::string> tires = GetTireNames();
@@ -266,7 +170,7 @@ bool ToT_Window::ValidateTireFiles()
 				if (params[j][k] == 'x')
 				{
 					x = static_cast<int>(atoi(params[j].substr(0, k).c_str()));
-					y = static_cast<int>(atoi(params[j].substr(k+1, static_cast<int>(params[j].size()) - k - 1).c_str()));
+					y = static_cast<int>(atoi(params[j].substr(k + 1, static_cast<int>(params[j].size()) - k - 1).c_str()));
 				}
 			}
 		}
@@ -283,18 +187,31 @@ bool ToT_Window::ValidateTireFiles()
 	}
 	return true;
 }
-
-void ToT_Window::SaveAtributes()
+std::vector<std::string> ToT_Window::ReadFile(const std::string path)
 {
+	std::vector<std::string> data;
 	std::fstream fvar;
-	fvar.open(FolderName::main + "\\" + FileName::config);
-	fvar << color1 <<"\n";
-	fvar << color2 << "\n";;
-	fvar << music_enabled << "\n";;
-	fvar << hamachi_enabled << "\n";;
-	fvar << default_ais <<"\n";
-	fvar << default_name << "\n";
+	std::string helper;
+	fvar.open(path);
+	while (getline(fvar, helper) && helper != "")
+	{
+		data.push_back(std::move(helper));
+	}
 	fvar.close();
+	return data;
+}
+bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const std::string ext)
+{
+	dst_path = "dir " + src_path + "\\*." + ext + " > " + dst_path + " /b";
+	if (system(dst_path.c_str()))
+	{
+		//Clearing error message that shows in a console window by default when files not found
+		SetConsoleCursorPosition(window_handle, { 0,0 });
+		std::cout << "                       ";
+		SetConsoleCursorPosition(window_handle, { 0,0 });
+		return false;
+	}
+	return true;
 }
 std::vector<std::string> ToT_Window::GetTourNames()
 {
@@ -308,22 +225,6 @@ std::vector<std::string> ToT_Window::GetTireNames()
 {
 	return ReadFile(FolderName::tire + "\\" + FileName::tire);
 }
-std::vector<int> ToT_Window::GetCarParameters(const std::string path)
-{
-	std::vector<std::string> data = ReadFile(FolderName::car + "\\" + path);
-	std::vector<int> car_parameters;
-	for (int i = 0; i < static_cast<int>(data.size()); ++i)
-	{
-		if (atoi(data[i].c_str()) < 1 || atoi(data[i].c_str()))
-			car_parameters.push_back(atoi(data[i].c_str()));
-
-	}
-	return car_parameters;
-}
-std::vector<std::string> ToT_Window::GetTireParameters(const std::string path)
-{
-	return ReadFile(FolderName::tire + "\\" + path);
-}
 std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int position, const int visibility)
 {
 	std::vector<std::string> ret;
@@ -334,7 +235,8 @@ std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int pos
 	do
 	{
 		std::getline(fvar, helper);
-	} while (helper != "");
+	} 
+	while (helper != "");
 	for (int i = 0; i < position; ++i)
 	{
 		std::getline(fvar, helper);
@@ -345,21 +247,91 @@ std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int pos
 		{
 			break;
 		}
-		ret.push_back(helper);
+		ret.push_back(std::move(helper));
 	}
 	fvar.close();
 	return ret;
 }
-std::vector<std::string> ToT_Window::ReadFile(const std::string path)
+std::vector<int> ToT_Window::GetCarParameters(const std::string path)
 {
-	std::vector<std::string> data;
-	std::fstream fvar;
-	std::string helper;
-	fvar.open(path);
-	while (getline(fvar, helper) && helper != "")
+	std::vector<std::string> data = ReadFile(FolderName::car + "\\" + path);
+	std::vector<int> car_parameters;
+	for (int i = 0; i < static_cast<int>(data.size()); ++i)
 	{
-		data.push_back(helper);
+		if (atoi(data[i].c_str()) < 1 || atoi(data[i].c_str()))
+		{
+			car_parameters.push_back(atoi(data[i].c_str()));
+		}
 	}
+	return car_parameters;
+}
+std::vector<std::string> ToT_Window::GetTireParameters(const std::string path)
+{
+	return ReadFile(FolderName::tire + "\\" + path);
+}
+void ToT_Window::SaveAtributes()
+{
+	std::fstream fvar;
+	fvar.open(FolderName::main + "\\" + FileName::config);
+	fvar << color1 << "\n";
+	fvar << color2 << "\n";;
+	fvar << music_enabled << "\n";;
+	fvar << hamachi_enabled << "\n";;
+	fvar << ais << "\n";
+	fvar << name << "\n";
 	fvar.close();
-	return data;
+}
+void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
+{
+	const COORD orientation_point = { starting_point.X - static_cast<short>((float)text_align / 2 * VectorOfStrings::title_main[0].size()), starting_point.Y };
+	const short decoration_distance = 5;
+	const std::string main_decoration = "{ }";
+	const std::string additional_decoration = "*";
+	//Main text
+	SetConsoleTextAttribute(window_handle, color2);
+	for (short i = 0; i < static_cast<short>(VectorOfStrings::title_main.size()); ++i)
+	{
+		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
+		std::cout << VectorOfStrings::title_main[i];
+	}
+	SetConsoleTextAttribute(window_handle, color1);
+	for (short i = 0; i < static_cast<short>(VectorOfStrings::title_additional.size()); ++i)
+	{
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(VectorOfStrings::title_main[i].size() / 2 - VectorOfStrings::title_additional[i].size() / 2), orientation_point.Y + i + static_cast<short>(VectorOfStrings::title_main.size()) / 3 });
+		std::cout << VectorOfStrings::title_additional[i];
+	}
+	//Decoration
+	SetConsoleTextAttribute(window_handle, color2);
+	for (short i = 0; i < static_cast<short>(VectorOfStrings::title_main.size()); ++i)
+	{
+		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) - i % 2, orientation_point.Y + i });
+		std::cout << main_decoration;
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(VectorOfStrings::title_main[i].size() + decoration_distance - 1) - i % 2, orientation_point.Y + i });
+		std::cout << main_decoration;
+	}
+	SetConsoleTextAttribute(window_handle, color1);
+	for (short i = 0; i < static_cast<short>(VectorOfStrings::title_main.size()); ++i)
+	{
+		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) + 1 - i % 2, orientation_point.Y + i });
+		std::cout << additional_decoration;
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(VectorOfStrings::title_main[i].size() + decoration_distance - 1) + 1 - i % 2, orientation_point.Y + i });
+		std::cout << additional_decoration;
+	}
+}
+void ToT_Window::SetHamachiConnectionFlag(const bool flag)
+{
+	hamachi_enabled = flag;
+}
+void ToT_Window::SetMusic(const std::string sound_file, const bool playing)
+{
+	music_enabled = playing;
+	Window::SetMusic(sound_file, playing);
+}
+void ToT_Window::SetAIs(int number_of_ais)
+{
+	ais = number_of_ais;
+}
+void ToT_Window::SetName(std::string name)
+{
+	this->name = name;
 }

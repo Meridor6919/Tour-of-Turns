@@ -25,7 +25,6 @@ void GameMode::Options(ToT_Window &main_window)
 		{
 			case 0:
 			{
-
 				//list of colours from 2 to 17
 				std::vector<std::string> local_text = VectorOfStrings::game_options_colors;
 				const COORD local_starting_point = { starting_point.X + static_cast<short>(VectorOfStrings::game_options_options[main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };

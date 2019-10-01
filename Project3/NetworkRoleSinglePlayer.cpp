@@ -423,11 +423,11 @@ bool SinglePlayer::GameLobby()
 	const short spacing = 3;
 	short main_menu_position = 0;
 	HANDLE handle = main_window->GetHandle();
-	std::string name = main_window->DefaultName();
+	std::string name = main_window->GetName();
 	const std::vector<std::string> tours = main_window->GetTourNames();
 	const std::vector<std::string> tires = main_window->GetTireNames();
 	std::vector<std::string> cars = main_window->GetCarNames(tours[0]);
-	int ais = main_window->DefaultAis();
+	int ais = main_window->GetAIs();
 	int tires_pos = 0;
 	int cars_pos = 0;
 	int tours_pos = 0;
@@ -490,8 +490,8 @@ bool SinglePlayer::GameLobby()
 			std::cout << " ";
 		}
 	}
-	main_window->SetDefaultAIs(ais);
-	main_window->SetDefaultName(name);
+	main_window->SetAIs(ais);
+	main_window->SetName(name);
 	main_window->SaveAtributes();
 	ShowTiresParameters(tires[tires_pos], true);
 	ShowCarParameters(cars[cars_pos], true);
