@@ -10,29 +10,25 @@
 
 class SinglePlayer {
 
-	std::string ChooseName(const std::string current_name, const int max_size);
-	void ShowTiresParameters(const std::string tire_path, bool clear = false);
-	void ShowCarParameters(const std::string tire_path, bool clear = false);
-	short take_action_position = 0;
-
 protected:
 	ToT_Window *main_window;
 	std::string current_field;
 	std::vector<Participant> participants;
-	
-	int ais;
-	int NumericalAction(const COORD coords);
-	int BinaryAction(const COORD coords);
-
-public:
-
-	std::shared_ptr<InfoBox> infobox;
+	short take_action_position = 0;
 	std::string tour;
 
-	bool GameLobby();
+	int NumericalAction(const COORD coords);
+	int BinaryAction(const COORD coords);
+	std::string ChooseName(const std::string current_name, const int max_size);
+	void ShowCarParameters(const std::string tire_path, bool clear = false);
+	void ShowTiresParameters(const std::string tire_path, bool clear = false);
+
+public:
+	std::shared_ptr<InfoBox> infobox;
+	
 	SinglePlayer(ToT_Window &main_window);
-	ToT_Window* GetWindowPtr() { return main_window; }
-	virtual void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
+	bool GameLobby();
+	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
 	virtual bool GetCurrentAtribs();
 	virtual void Attack();
@@ -43,6 +39,8 @@ public:
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
 	void ShowChances(int value, bool reset=false);
+	ToT_Window* GetWindowPtr() { return main_window; }
+	std::string GetTour() { return tour; }
 };
 
 class Host : public SinglePlayer {
@@ -58,7 +56,7 @@ public:
 	void MsgHandling(std::string msg, int client_id);
 	Host(ToT_Window &main_window);
 	~Host();
-	void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
+	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
 	bool GetCurrentAtribs();
 	void Attack();
@@ -86,7 +84,7 @@ public:
 	std::vector<int> GetCarParameters(std::string path);
 	std::vector<std::string> GetTireParameters(std::string path);
 	std::vector<std::string> GetTourParameters(std::string path);
-	void GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire);
+	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
 	bool GetCurrentAtribs();
 	void Attack();

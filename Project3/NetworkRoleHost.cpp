@@ -333,11 +333,10 @@ void Host::MsgHandling(std::string msg, int client_id)
 	}
 	}
 }
-void Host::GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire)
+void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
 	//TODO validate this
 	this->tour = tour;
-	this->ais = ais;
 	host->HandleConnection<Host>(&Host::MsgHandling, this);
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
@@ -377,7 +376,7 @@ void Host::GetParticipants(std::string name, int ais, std::string tour, std::str
 		}
 		participants.push_back(Participant(name, car_path, tires_path, *this));
 	}
-	for (int i = 0; i < ais; i++)
+	for (int i = 0; i < main_window->GetAIs(); i++)
 		participants.emplace_back(i, tour, *this);
 	stage =1;
 }

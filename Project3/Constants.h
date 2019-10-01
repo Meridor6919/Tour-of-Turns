@@ -10,6 +10,15 @@ namespace VectorOfStrings
 	const std::vector<std::string> game_mode_options = { "Host game", "Search game", "Back" };
 	const std::vector<std::string> game_options_options = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	const std::vector<std::string> game_options_colors = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green", "light cyan","light red","light magenta","yellow","white" };
+	const std::vector<std::string> race_actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
+	const std::vector<std::string> race_chances = { "Chance: ", "Estimated time: ", "Durability burning: " };
+	const std::vector<std::string> race_ranking = { "PLACE", "RACER", "SCORE" };
+	const std::vector<std::string> race_interface = { "You can speed up by (0 to " , "You can slow down by (0 to " , "Hand brake value is - ", "You can just wait if you're moving..." ,"Remember only weak ones surrenders" };
+	const std::vector<std::string> race_attribs = { " You're racing as: ",  " Your current speed is: ", " Your vehice has ", " durability   " };
+	const std::vector<std::string> race_distance = { "In front of you: ", "Close to you: ", "At some distance: ", "A little further: ", "At a considerable distance: ", "Far ahead: ", "Barely noticeable: " };
+	const std::vector<std::string> race_boxes = { "Infobox  " , "Attack box" , "Chance of succeeding" };
+	const std::vector<std::string> race_infobox = { "Turn on asphalt - safe speed is around ", "Straight road, terrain is asphalt", "Turn on grass - safe speed is around ", "Straight grassy road" , "Turn on gravel - safe speed is around " ,
+	"Straight road, gravel", "Turn on sand - safe speed is around ", "Linear part of tour, but sandy",  "Turn on mud - safe speed is around ", "Muddy road, without turn" , "Turn on ice - safe speed is around ", "Slippery road with ice" };
 	const std::vector<std::string> on_off = { "on", "off" };
 	const std::vector<std::string> credits = {
 		"Hello I am Michal Balicki and I am really happy that you are playing my game.",
@@ -54,6 +63,12 @@ namespace VectorOfStrings
 namespace String 
 {
 	const std::string default_name = "Racer";
+	const std::string action_confirm = " - Do you really want to do this ? (Y/N) ";
+	const std::string infobox_RIP1 = "RIP, ";
+	const std::string infobox_RIP2 = " dezintegrated his vehichle...";
+	const std::string attack = "Don't attack";
+	const std::string unable_to_move = " - You can't do this because you aren't moving...";
+	const std::string meta = "META";
 
 }
 namespace CarModifiers

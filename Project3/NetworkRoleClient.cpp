@@ -397,9 +397,9 @@ bool Client::GetCurrentAtribs()
 		return true;
 	}
 }
-void Client::GetParticipants(std::string name, int ais, std::string tour, std::string car, std::string tire)
+void Client::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
-	SinglePlayer::GetParticipants(name, 0, tour, car, tire);
+	SinglePlayer::GetParticipants(name, tour, car, tire);
 
 	//client don't need to know stats of other participants but he need to tell host what have he choosed
 	char buffer[254];

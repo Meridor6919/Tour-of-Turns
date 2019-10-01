@@ -85,7 +85,7 @@ void Participant::GetOptimalCar(const std::string tour_path)
 void Participant::GetOptimalTires()
 {
 	std::vector<std::string> tires = network_role->GetWindowPtr()->GetTireNames();
-	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->tour, 0, INT_MAX);
+	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->GetTour(), 0, INT_MAX);
 	int terrain[6];
 	memset(terrain, 0, 6);
 	for (int i = 0; i < static_cast<int>(tour.size()); ++i)
@@ -150,7 +150,7 @@ int Participant::CarPoints(const std::string cars_path)
 void Participant::TakeAction(const int turn)
 {
 	//AI LOGIC TO CHANGE
-	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->tour,turn, car_modifiers[CarModifiers::visibility]);
+	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->GetTour(),turn, car_modifiers[CarModifiers::visibility]);
 	
 	float safe_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.0f;
 	float risk = 40.0f;
