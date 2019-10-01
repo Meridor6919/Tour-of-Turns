@@ -388,14 +388,14 @@ void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
 	std::vector<std::string> params2 = main_window->GetTireParameters(tire_path);
 	std::vector<std::string> tire_parameters;
 	std::vector<Text::OrdinaryText_atributes> text_atributes;
-	for (int i = 0; i < static_cast<int>(Modifiers::tire_modifiers.size()); ++i)
+	for (int i = 0; i < static_cast<int>(VectorOfStrings::tire_modifiers.size()); ++i)
 	{
 		text_atributes.push_back(Text::OrdinaryText_atributes::color2);
 		text_atributes.push_back(Text::OrdinaryText_atributes::endl);
 	}
 	for (int i = 0; i < static_cast<int>(params2.size()); ++i)
 	{
-		tire_parameters.push_back(Modifiers::tire_modifiers[i] + ": ");
+		tire_parameters.push_back(VectorOfStrings::tire_modifiers[i] + ": ");
 		tire_parameters.push_back(params2[i] + "      ");
 	}
 	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window, clear);
@@ -405,22 +405,20 @@ void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clea
 	std::vector<int> params1 = main_window->GetCarParameters(car_path);
 	std::vector<std::string> car_parameters;
 	std::vector<Text::OrdinaryText_atributes> text_atributes;
-	for (int i = 0; i < static_cast<int>(Modifiers::car_modifiers.size()); ++i)
+	for (int i = 0; i < static_cast<int>(VectorOfStrings::car_modifiers.size()); ++i)
 	{
 		text_atributes.push_back(Text::OrdinaryText_atributes::color2);
 		text_atributes.push_back(Text::OrdinaryText_atributes::endl);
 	}
 	for (int i = 0; i < static_cast<int>(params1.size()); ++i)
 	{
-		car_parameters.push_back(Modifiers::car_modifiers[i] + ": ");
+		car_parameters.push_back(VectorOfStrings::car_modifiers[i] + ": ");
 		car_parameters.push_back(std::to_string(params1[i]) + "      ");
 	}
 	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window, clear);
 }
 bool SinglePlayer::GameLobby()
 {
-	//Lobby parameters
-	const std::vector<std::string> options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
 	COORD starting_point = { static_cast<short>(main_window->GetWidth()) / 2, 25 };
 	const short spacing = 3;
 	short main_menu_position = 0;
@@ -439,7 +437,7 @@ bool SinglePlayer::GameLobby()
 
 	while (main_menu_position != 5 || static_cast<int>(cars.size()) == 0)
 	{
-		switch (main_menu_position = Text::Choose::Veritcal(options, main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window))
+		switch (main_menu_position = Text::Choose::Veritcal(VectorOfStrings::game_lobby_options, main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window))
 		{
 			case 0://choosing name
 			{
@@ -454,13 +452,13 @@ bool SinglePlayer::GameLobby()
 				{
 					text.push_back(std::to_string(i));
 				}
-				ais = Text::Choose::Horizontal(text, ais, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+				ais = Text::Choose::Horizontal(text, ais, { starting_point.X + static_cast<short>(VectorOfStrings::game_lobby_options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 				break;
 			}
 			case 2://choosing tour
 			{
 				int i = tours_pos;
-				tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+				tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + static_cast<short>(VectorOfStrings::game_lobby_options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 				if (i != tours_pos)
 				{
 					cars = main_window->GetCarNames(tours[tours_pos]);
@@ -472,30 +470,22 @@ bool SinglePlayer::GameLobby()
 			}
 			case 3://choosing car
 			{
-				cars = main_window->GetCarNames(tours[tours_pos]);
-				if (static_cast<int>(cars.size()) == 0)
-				{
-					MessageBoxA(0, "Cannot load any car from selected tour", "error", 0);
-				}
-				else
-				{
-					cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
-					ShowCarParameters(cars[cars_pos]);
-					break;
-				}
+				cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + static_cast<short>(VectorOfStrings::game_lobby_options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+				ShowCarParameters(cars[cars_pos]);
+				break;
 			}
 			case 4://choosing tires
 			{
-				tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + static_cast<short>(options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+				tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + static_cast<short>(VectorOfStrings::game_lobby_options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 				ShowTiresParameters(tires[tires_pos]);
 				break;
 			}
 		}
 	}
-	for (int i = 0; i < static_cast<int>(options.size()); ++i)
+	for (int i = 0; i < static_cast<int>(VectorOfStrings::game_lobby_options.size()); ++i)
 	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(options[i].size())), starting_point.Y + static_cast<short>(i * spacing) });
-		for (int j = 0; j < static_cast<int>(options[i].size()); ++j)
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(VectorOfStrings::game_lobby_options[i].size())), starting_point.Y + static_cast<short>(i * spacing) });
+		for (int j = 0; j < static_cast<int>(VectorOfStrings::game_lobby_options[i].size()); ++j)
 		{
 			std::cout << " ";
 		}

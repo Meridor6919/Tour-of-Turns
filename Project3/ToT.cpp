@@ -3,33 +3,16 @@
 void GameMode::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
-
-	std::vector<std::string> credits = {
-		"Hello I am Michal Balicki and I am really happy that you are playing my game.",
-		"Tour of Turns was my first real project in my programming way and I hope you like it.",
-		"I would like to thank people who helped me with this project.",
-		"Krystian Grzegorzewicz ",
-		"without him the game wouldn't be created.",
-		"He was patiently listening what problems do I have with ToT and the most important he gave me a main idea of the game.",
-		"Marek Loek ",
-		"for making an icon image and inspiring me to hard work.",
-		"Marcel Marzec ",
-		"for giving me inspiration.",
-		"I admire how much work he put in Pan Zniszczenia map for HoMM3 based on Diablo 2 universum.",
-		"Miroslaw Zelent ",
-		"for getting me interested in programming"
-	};
-	std::vector<Text::OrdinaryText_atributes> credits_atribute = { Text::endl, Text::endl, Text::endl, Text::color2, Text::endl,
+	const std::vector<Text::OrdinaryText_atributes> credits_atribute = { Text::endl, Text::endl, Text::endl, Text::color2, Text::endl,
 												Text::endl, Text::color2, Text::endl, Text::color2, Text::endl,
 												Text::endl, Text::color2, Text::endl };
 
-	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 25, main_window);
+	OrdinaryText(VectorOfStrings::credits, credits_atribute, Text::TextAlign::center, 3, 25, main_window);
 	_getch();
-	OrdinaryText(credits, credits_atribute, Text::TextAlign::center, 3, 25, main_window, true);
+	OrdinaryText(VectorOfStrings::credits, credits_atribute, Text::TextAlign::center, 3, 25, main_window, true);
 }
 void GameMode::Options(ToT_Window &main_window)
 {
-	const std::vector<std::string> options_text = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	int main_menu_position = 0;
 	const COORD starting_point = { static_cast<short>(main_window.GetWidth()) / 2+1, 25 };
 	const short spacing = 3;
@@ -38,15 +21,14 @@ void GameMode::Options(ToT_Window &main_window)
 	while (loop)
 	{
 		//text allign is also needed in clearing so beware if changing them
-		switch (main_menu_position = Text::Choose::Veritcal(options_text, main_menu_position, starting_point, spacing, Text::TextAlign::center, false, main_window))
+		switch (main_menu_position = Text::Choose::Veritcal(VectorOfStrings::game_options_options, main_menu_position, starting_point, spacing, Text::TextAlign::center, false, main_window))
 		{
 			case 0:
 			{
 
 				//list of colours from 2 to 17
-				std::vector<std::string> local_text = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green",
-						"light cyan","light red","light magenta","yellow","white" };
-				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
+				std::vector<std::string> local_text = VectorOfStrings::game_options_colors;
+				const COORD local_starting_point = { starting_point.X + static_cast<short>(VectorOfStrings::game_options_options[main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				
 				//erasing color that is already used by second colour
 				//program crashes when local_text.begin() is equal to local.text.end() -1 so inline if is nessesary. Substracting by 2 to synchronizewith list.
@@ -65,9 +47,8 @@ void GameMode::Options(ToT_Window &main_window)
 			case 1:
 			{
 				//list of colours from 2 to 17
-				std::vector<std::string> local_text = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green",
-						"light cyan","light red","light magenta","yellow","white" };
-				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
+				std::vector<std::string> local_text = VectorOfStrings::game_options_colors;
+				const COORD local_starting_point = { starting_point.X + static_cast<short>(VectorOfStrings::game_options_options[main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				
 				//erasing color that is already used by second colour
 				//program crashes when local_text.begin() is equal to local.text.end() -1 so inline if is nessesary. Substracting by 2 to synchronizewith list.
@@ -85,26 +66,25 @@ void GameMode::Options(ToT_Window &main_window)
 			}
 			case 2:
 			{
-				const std::vector<std::string> local_text = { "on", "off" };
-				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size())/2 +3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-				main_window.SetMusic(FolderName::main + "\\" + FileName::music, !(Text::Choose::Horizontal(local_text, !main_window.GetMusic(), local_starting_point, Text::TextAlign::left, true, main_window)));
+				const COORD local_starting_point = { starting_point.X + static_cast<short>(VectorOfStrings::game_options_options[main_menu_position].size())/2 +3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
+				main_window.SetMusic(FolderName::main + "\\" + FileName::music, !(Text::Choose::Horizontal(VectorOfStrings::on_off, !main_window.GetMusic(), local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
 			case 3:
 			{
-				const std::vector<std::string> local_text = { "on", "off" };
-				const COORD local_starting_point = { starting_point.X + static_cast<short>(options_text[main_menu_position].size())/2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-				main_window.SetHamachiConnectionFlag(!(Text::Choose::Horizontal(local_text, !main_window.GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, true, main_window)));
+				
+				const COORD local_starting_point = { starting_point.X + static_cast<short>(VectorOfStrings::game_options_options[main_menu_position].size())/2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
+				main_window.SetHamachiConnectionFlag(!(Text::Choose::Horizontal(VectorOfStrings::on_off, !main_window.GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
 			case 4:
 			{
 				HANDLE handle = main_window.GetHandle();
 				//clearing options
-				for (short i = 0; i < static_cast<short>(options_text.size()); ++i)
+				for (short i = 0; i < static_cast<short>(VectorOfStrings::game_options_options.size()); ++i)
 				{
-					SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(options_text[i].size())), starting_point.Y + i * spacing });
-					for (int j = 0; j < static_cast<int>(options_text[i].size()); ++j)
+					SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(VectorOfStrings::game_options_options[i].size())), starting_point.Y + i * spacing });
+					for (int j = 0; j < static_cast<int>(VectorOfStrings::game_options_options[i].size()); ++j)
 					{
 						std::cout << " ";
 					}
@@ -122,11 +102,10 @@ void GameMode::Ranking(ToT_Window &main_window)
 void GameMode::Game(const bool multiplayer, ToT_Window &main_window)
 {
 	std::shared_ptr<SinglePlayer> network_role;
-	const std::vector<std::string> options = { "Host game", "Search game", "Back" };
 
 	if (multiplayer)
 	{	
-		switch (Text::Choose::Veritcal(options, 0, { static_cast<short>(main_window.GetWidth()) / 2, 25 }, 3, Text::TextAlign::center, true, main_window))
+		switch (Text::Choose::Veritcal(VectorOfStrings::game_mode_options, 0, { static_cast<short>(main_window.GetWidth()) / 2, 25 }, 3, Text::TextAlign::center, true, main_window))
 		{
 			case 0:
 			{
