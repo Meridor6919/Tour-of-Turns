@@ -8,14 +8,14 @@
 #include "Infobox.h"
 #include "Participant.h"
 
-class SinglePlayer {
-
+class SinglePlayer 
+{
 protected:
 	ToT_Window *main_window;
-	std::string current_field;
 	std::vector<Participant> participants;
-	short take_action_position = 0;
+	std::string current_field;
 	std::string tour;
+	short take_action_position = 0;
 
 	int NumericalAction(const COORD coords);
 	int BinaryAction(const COORD coords);

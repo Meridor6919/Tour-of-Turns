@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace VectorOfStrings 
+namespace VectorOfStrings
 {
 	const std::vector<std::string> car_modifiers = { "max_speed","max_accelerating","max_braking","hand_brake_value","durability","visibility","turn_mod","drift_mod" };
 	const std::vector<std::string> tire_modifiers = { "asphalt","grass","gravel","sand","mud","ice" };
@@ -19,6 +19,10 @@ namespace VectorOfStrings
 	const std::vector<std::string> race_boxes = { "Infobox  " , "Attack box" , "Chance of succeeding" };
 	const std::vector<std::string> race_infobox = { "Turn on asphalt - safe speed is around ", "Straight road, terrain is asphalt", "Turn on grass - safe speed is around ", "Straight grassy road" , "Turn on gravel - safe speed is around " ,
 	"Straight road, gravel", "Turn on sand - safe speed is around ", "Linear part of tour, but sandy",  "Turn on mud - safe speed is around ", "Muddy road, without turn" , "Turn on ice - safe speed is around ", "Slippery road with ice" };
+	const std::vector<std::string> participant_names = { "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
+	"John Hill", "Andrew Anderson", "Jane Turning", "Lester King", "Drew McNeil", "Sam Samson", "Gaston Reveneu", "Roman Torbon",
+	"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic", "Blu Apostrof" };
+	const std::vector<std::string> participant_infobox = { " have manage to turn, ", " had mistaken, ", " badly crashed !!! ", " crashed !!!, " ," had an dangerous accident, " ," got off the route, " ," fell into a dangerous slip, " ," slipped, " };
 	const std::vector<std::string> on_off = { "on", "off" };
 	const std::vector<std::string> credits = {
 		"Hello I am Michal Balicki and I am really happy that you are playing my game.",
@@ -60,7 +64,7 @@ namespace VectorOfStrings
 		"|___| |   ",
 	};
 }
-namespace String 
+namespace String
 {
 	const std::string default_name = "Racer";
 	const std::string action_confirm = " - Do you really want to do this ? (Y/N) ";
@@ -69,6 +73,12 @@ namespace String
 	const std::string attack = "Don't attack";
 	const std::string unable_to_move = " - You can't do this because you aren't moving...";
 	const std::string meta = "META";
+	const std::string lost = " lost ";
+	const std::string required = "required - ";
+	const std::string high_roll = " highest roll - ";
+	const std::string low_roll = " lowest roll - ";
+	const std::string behaviour = "in result of other racers behaviour";
+	const std::string speed = " speed,";
 
 }
 namespace CarModifiers
