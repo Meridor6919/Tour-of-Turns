@@ -11,6 +11,8 @@ private:
 	void GetRandomName(const int id);
 	void GetOptimalCar(const std::string tour_path);
 	void GetOptimalTires();
+	template <class T>
+	T PowerInt(T number, int power);
 
 public:
 	bool alive = true;
@@ -34,3 +36,4 @@ public:
 	float CalculateBurning(float value);
 	float EvaluateSpeed(std::string field, const float chance, const bool drift);
 };
+

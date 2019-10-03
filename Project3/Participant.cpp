@@ -48,7 +48,7 @@ float Participant::TiresPoints(const int terrain[], const std::string tires_path
 		}
 		for (int j = 0; j <= y - x; ++x)
 		{
-			total_points += factorial(y) / factorial(y - x)*factorial(x) * pow(0.5f, x) * pow(0.5f, y - x) * static_cast<float>(terrain[i]);
+			total_points += factorial(y) / factorial(y - x)*factorial(x) * PowerInt(0.5f, x) * PowerInt(0.5f, y - x) * static_cast<float>(terrain[i]);
 		}
 	}
 	return total_points;
@@ -105,6 +105,16 @@ void Participant::GetOptimalTires()
 	}
 	this->tire_modifiers = network_role->GetWindowPtr()->GetTireParameters(tires[current_best]);
 }
+template<class T>
+inline T Participant::PowerInt(T number, int power)
+{
+	T value = 1;
+	for (int i = 0; i < power; i++)
+	{
+		value *= number;
+	}
+	return value;
+}
 int Participant::CarPoints(const std::string cars_path)
 {
 	std::vector<int> car_params;
@@ -146,7 +156,7 @@ int Participant::CarPoints(const std::string cars_path)
 }
 void Participant::TakeAction(const int turn)
 {
-	//AI LOGIC TO CHANGE
+	
 	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->GetTour(), turn, car_modifiers[CarModifiers::visibility]);
 
 	float safe_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.0f;
