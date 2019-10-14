@@ -156,7 +156,6 @@ int Participant::CarPoints(const std::string cars_path)
 }
 void Participant::TakeAction(const int turn)
 {
-	
 	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->GetTour(), turn, car_modifiers[CarModifiers::visibility]);
 
 	float safe_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.0f;
@@ -166,10 +165,10 @@ void Participant::TakeAction(const int turn)
 	{
 		if (static_cast<int>(tour[i].size()) > 1)
 		{
-			float normal_speed = EvaluateSpeed(tour[i], risk, false) / 0.9f;
+			float normal_speed = EvaluateSpeed(tour[i], risk, false) / Game_values::friction_scalar;
 			for (int j = 0; j < i; ++j)
 			{
-				normal_speed = (normal_speed + static_cast<float>(car_modifiers[CarModifiers::max_braking])) / 0.9f;
+				normal_speed = (normal_speed + static_cast<float>(car_modifiers[CarModifiers::max_braking])) / Game_values::friction_scalar;
 			}
 			if (normal_speed < safe_speed)
 			{
@@ -191,7 +190,7 @@ void Participant::TakeAction(const int turn)
 		}
 		current_durability -= CalculateBurning(current_speed - car_modifiers[CarModifiers::max_speed]);
 	}
-	current_speed = current_speed * 0.9f;
+	current_speed = current_speed * Game_values::friction_scalar;
 }
 void Participant::Test(const std::string field, const bool show)
 {
@@ -299,7 +298,7 @@ void Participant::Test(const std::string field, const bool show)
 	if (drift == true)
 	{
 		drift = false;
-		score += 1.5f;
+		score += Game_values::drift_value;
 	}
 	else
 	{
@@ -382,14 +381,7 @@ float Participant::EvaluateSpeed(std::string field, const float chance, const bo
 	else
 	{
 		float delta = (200.0f + 12.0f * chance)*(200.0f + 12.0f * chance) - 180.0f * chance*chance;
-		float base = (-(200.0f + 12.0f * chance) + sqrt(delta)) / -10.0f;
-		float secondary_base = (-(200.0f + 12.0f * chance) - sqrt(delta)) / -10.0f;
-		if (base > secondary_base)
-		{
-			base = secondary_base;
-		}
-		base = base * ((static_cast<float>(car_modifiers[CarModifiers::turn_mod]) - (5.0f * attacked)) / 100.0f);
-
+		float base = (-(200.0f + 12.0f * chance) + sqrt(delta)) / -10.0f*((static_cast<float>(car_modifiers[CarModifiers::turn_mod]) - (5.0f * attacked)) / 100.0f);
 		return static_cast<float>(atof(field.c_str())) + base / (100.0f / static_cast<float>(atof(field.c_str())) + 1.0f);
 	}
 }

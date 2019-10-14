@@ -50,6 +50,7 @@ int SinglePlayer::NumericalAction(const COORD coords)
 	{
 		std::cout << " ";
 	}
+	ShowChances(0, true);
 	return value * (static_cast<bool>(take_action_position) ? -1 : 1);
 }
 int SinglePlayer::BinaryAction(const COORD coords)
@@ -59,7 +60,7 @@ int SinglePlayer::BinaryAction(const COORD coords)
 
 	while (true)
 	{
-		ShowChances(participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1 * static_cast<int>(take_action_position == 2));
+		ShowChances(participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1 * static_cast<int>(take_action_position == 2), take_action_position == 4);
 		SetConsoleCursorPosition(window, coords);
 		std::cout << String::action_confirm;
 		button = _getch();
@@ -437,7 +438,7 @@ void SinglePlayer::TakeAction()
 		}
 		participants[0].current_durability -= participants[0].CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
 	}
-	participants[0].current_speed = participants[0].current_speed*0.9f;
+	participants[0].current_speed = participants[0].current_speed*Game_values::friction_scalar;
 }
 void SinglePlayer::GetOthersAction(const int turn)
 {
@@ -461,14 +462,16 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 	{
 		speed_estimation = 0;
 	}
-	bool drift = take_action_position == 2 && participants[0].current_speed > 40.0f && current_field.size() > 1;
-	float chance_to_succeed = static_cast<float>(static_cast<int>((100.0f - participants[0].EvaluateChance(current_field, speed_estimation*0.9f, drift))));
-	float estimated_time = drift ? 1.5f : 100.0f / (1.0f + speed_estimation * 9.0f / 36.0f);
 	float burned_durability = participants[0].CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]);
-
+	speed_estimation *= Game_values::friction_scalar;
+	bool drift = take_action_position == 2 && participants[0].current_speed > 40.0f && current_field.size() > 1;
+	float chance_to_succeed = static_cast<float>(static_cast<int>((100.0f - participants[0].EvaluateChance(current_field, speed_estimation, drift))));
+	float estimated_time = drift ? Game_values::drift_value : 100.0f / (1.0f + speed_estimation * 10.0f / 36.0f);
+	
 	HANDLE window = main_window->GetHandle();
 	std::string helper;
-	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, VectorOfStrings::race_chances[0]},  {estimated_time, VectorOfStrings::race_chances[1]}, {burned_durability, VectorOfStrings::race_chances[2]} };
+	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, VectorOfStrings::race_chances[0]},  {estimated_time, VectorOfStrings::race_chances[1]}, 
+														{burned_durability, VectorOfStrings::race_chances[2]}, {speed_estimation, VectorOfStrings::race_chances[3]} };
 
 	if (!reset)
 	{
@@ -478,7 +481,7 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 			{
 				values[i].first = 0;
 			}
-			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 27 - i) });
+			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 28 + i) });
 			SetConsoleTextAttribute(window, main_window->color1);
 			std::cout << values[i].second;
 			SetConsoleTextAttribute(window, main_window->color2);
@@ -492,7 +495,7 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 		for (short i = 0; i < values.size(); ++i)
 		{
 			SetConsoleTextAttribute(window, main_window->color1);
-			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 27 - i) });
+			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 28 + i) });
 			std::cout << values[i].second << "                   ";
 		}
 		SetConsoleTextAttribute(window, main_window->color2);
@@ -565,22 +568,23 @@ void SinglePlayer::Interface()
 		SetConsoleCursorPosition(window, { 2, 40 + i * 2 });
 		std::cout << possible_actions[i];
 	}
-	const std::string border = "________________________________________________________  ";
+	
 	const std::vector<std::tuple<std::string, COORD, short>> boxes = { {VectorOfStrings::race_boxes[0], {0, static_cast<short>(main_window->GetHeight() - 15)}, 12 },
-				{ VectorOfStrings::race_boxes[1], {static_cast<short>(main_window->GetWidth() - static_cast<short>(border.size())), static_cast<short>(main_window->GetHeight() - 20) }, 17},
-				{VectorOfStrings::race_boxes[2],  { static_cast<short>(main_window->GetWidth() - static_cast<short>(border.size())), static_cast<short>(main_window->GetHeight() - 31) }, 7 } };
+				{ VectorOfStrings::race_boxes[1], {static_cast<short>(main_window->GetWidth() - static_cast<short>(String::border.size())), static_cast<short>(main_window->GetHeight() - 20) }, 17},
+				{VectorOfStrings::race_boxes[2],  { static_cast<short>(main_window->GetWidth() - static_cast<short>(String::border.size())), static_cast<short>(main_window->GetHeight() - 31) }, 7 } };
 	
 
 	SetConsoleTextAttribute(window, main_window->color2);
 	for (int i = 0; i < static_cast<int>(boxes.size()); ++i)
 	{
-		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X + static_cast<short>(border.size())/2 - static_cast<short>(std::get<0>(boxes[i]).size())/2, std::get<1>(boxes[i]).Y});
+		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X + static_cast<short>(String::border.size())/2 - static_cast<short>(std::get<0>(boxes[i]).size())/2, std::get<1>(boxes[i]).Y});
 		std::cout << std::get<0>(boxes[i]);
 		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X, std::get<1>(boxes[i]).Y + 1});
-		std::cout << border;
+		std::cout << String::border;
 		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X, std::get<1>(boxes[i]).Y + std::get<2>(boxes[i]) + 2 });
-		std::cout << border;
+		std::cout << String::border;
 	}
+	ShowChances(0, true);
 }
 bool SinglePlayer::VisionBox(const int turn)
 {

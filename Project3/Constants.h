@@ -11,7 +11,7 @@ namespace VectorOfStrings
 	const std::vector<std::string> game_options_options = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
 	const std::vector<std::string> game_options_colors = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green", "light cyan","light red","light magenta","yellow","white" };
 	const std::vector<std::string> race_actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
-	const std::vector<std::string> race_chances = { "Chance: ", "Estimated time: ", "Durability burning: " };
+	const std::vector<std::string> race_chances = { "Chance: ", "Estimated time: ", "Durability burning: ", "Estimated speed: " };
 	const std::vector<std::string> race_ranking = { "PLACE", "RACER", "SCORE" };
 	const std::vector<std::string> race_interface = { "You can speed up by (0 to " , "You can slow down by (0 to " , "Hand brake value is - ", "You can just wait if you're moving..." ,"Remember only weak ones surrenders" };
 	const std::vector<std::string> race_attribs = { " You're racing as: ",  " Your current speed is: ", " Your vehice has ", " durability   " };
@@ -79,6 +79,7 @@ namespace String
 	const std::string low_roll = " lowest roll - ";
 	const std::string behaviour = "in result of other racers behaviour";
 	const std::string speed = " speed,";
+	const std::string border = "________________________________________________________  ";
 
 }
 namespace CarModifiers
@@ -144,4 +145,9 @@ namespace Error_Title
 	const std::string missing_file = "Missing Files";
 	const std::string corrupted_file = "Corupted Files";
 
+}
+namespace Game_values
+{
+	const float drift_value = 2.0f;
+	const float friction_scalar = 0.9f;
 }
