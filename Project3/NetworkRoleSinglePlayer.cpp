@@ -425,7 +425,7 @@ void SinglePlayer::TakeAction()
 			}
 		}
 	}
-	participants[0].current_speed += value;
+	participants[0].current_speed += static_cast<float>(value)*(0.9f+0.2f*participants[0].TireEffectivness(current_field));
 	if (participants[0].current_speed < 0)
 	{
 		participants[0].current_speed = 0;
@@ -438,7 +438,7 @@ void SinglePlayer::TakeAction()
 		}
 		participants[0].current_durability -= participants[0].CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
 	}
-	participants[0].current_speed = participants[0].current_speed*Game_values::friction_scalar;
+	participants[0].current_speed *= GameValues::friction_scalar;
 }
 void SinglePlayer::GetOthersAction(const int turn)
 {
@@ -453,7 +453,7 @@ int SinglePlayer::Possible_AIs()
 }
 void SinglePlayer::ShowChances(const int value, const bool reset)
 {
-	float speed_estimation = (participants[0].current_speed + static_cast<float>(value));
+	float speed_estimation = (participants[0].current_speed + static_cast<float>(value) * (0.9f + 0.2f*participants[0].TireEffectivness(current_field)));
 	if (speed_estimation > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25f)
 	{
 		speed_estimation = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25f;
@@ -463,10 +463,10 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 		speed_estimation = 0;
 	}
 	float burned_durability = participants[0].CalculateBurning(speed_estimation - participants[0].car_modifiers[CarModifiers::max_speed]);
-	speed_estimation *= Game_values::friction_scalar;
+	speed_estimation *= GameValues::friction_scalar;
 	bool drift = take_action_position == 2 && participants[0].current_speed > 40.0f && current_field.size() > 1;
 	float chance_to_succeed = static_cast<float>(static_cast<int>((100.0f - participants[0].EvaluateChance(current_field, speed_estimation, drift))));
-	float estimated_time = drift ? Game_values::drift_value : 100.0f / (1.0f + speed_estimation * 10.0f / 36.0f);
+	float estimated_time = drift ? GameValues::drift_value : 100.0f / (1.0f + speed_estimation * 10.0f / 36.0f);
 	
 	HANDLE window = main_window->GetHandle();
 	std::string helper;
@@ -620,7 +620,7 @@ bool SinglePlayer::VisionBox(const int turn)
 		SetConsoleCursorPosition(window, { 1,24 + 2 *i });
 		std::cout << VectorOfStrings::race_distance[i];
 		SetConsoleTextAttribute(window, main_window->color2);
-		std::cout << VectorOfStrings::race_infobox[(visible_tour[i][0] - 48) * 2 + static_cast<int>(visible_tour[i].size()) > 1 ? 0 : 1] << helper.erase(0, 1) << "          ";
+		std::cout << VectorOfStrings::race_infobox[(visible_tour[i][0] - 48) * 2 + (static_cast<int>(visible_tour[i].size()) > 1 ? 0 : 1)] << helper.erase(0, 1) << "          ";
 	}
 	return ret;
 }

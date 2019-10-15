@@ -18,18 +18,7 @@ Participant::Participant(const int id, const std::string tour_path, SinglePlayer
 	GetOptimalTires();
 }
 float Participant::TiresPoints(const int terrain[], const std::string tires_path)
-{
-	std::function <float(int)> factorial;
-	factorial = [&factorial](int i) -> float {
-		if (i > 1)
-		{
-			return static_cast<float>(i) * factorial(i - 1);
-		}
-		else
-		{
-			return 1.0f;
-		}
-	};
+{	
 	const std::vector<std::string>tires_atrib = network_role->GetWindowPtr()->GetTireParameters(tires_path);
 	float total_points = 0.0f;
 	int x;
@@ -43,12 +32,12 @@ float Participant::TiresPoints(const int terrain[], const std::string tires_path
 			if (tires_atrib[i][j] == 'x')
 			{
 				x = static_cast<int>(atoi(tires_atrib[i].substr(0, j).c_str()));
-				y = static_cast<int>(atoi(tires_atrib[i].substr(j + 1, static_cast<int>(tires_atrib[i].size()) - j - j).c_str()));
+				y = static_cast<int>(atoi(tires_atrib[i].substr(j + 1, static_cast<int>(tires_atrib[i].size()) - j - 1).c_str()));
 			}
 		}
 		for (int j = 0; j <= y - x; ++x)
 		{
-			total_points += factorial(y) / factorial(y - x)/factorial(x) * PowerInt(0.5f, x) * PowerInt(0.5f, y - x) * static_cast<float>(terrain[i]);
+			total_points += static_cast<float>(MathFunctions::Factorial(y)) / static_cast<float>(MathFunctions::Factorial(y - x))/ static_cast<float>(MathFunctions::Factorial(x)) * MathFunctions::PowerInt(0.5f, x) * MathFunctions::PowerInt(0.5f, y - x) * static_cast<float>(terrain[i]);
 		}
 	}
 	return total_points;
@@ -91,6 +80,7 @@ void Participant::GetOptimalTires()
 		{
 			++terrain[static_cast<int>(tour[i][0]) - 48];
 		}
+		++terrain[static_cast<int>(tour[i][0]) - 48];
 	}
 	int current_best = 0;
 	int best_points = 0;
@@ -104,16 +94,6 @@ void Participant::GetOptimalTires()
 		}
 	}
 	this->tire_modifiers = network_role->GetWindowPtr()->GetTireParameters(tires[current_best]);
-}
-template<class T>
-inline T Participant::PowerInt(T number, int power)
-{
-	T value = 1;
-	for (int i = 0; i < power; i++)
-	{
-		value *= number;
-	}
-	return value;
 }
 int Participant::CarPoints(const std::string cars_path)
 {
@@ -165,10 +145,10 @@ void Participant::TakeAction(const int turn)
 	{
 		if (static_cast<int>(tour[i].size()) > 1)
 		{
-			float normal_speed = EvaluateSpeed(tour[i], risk, false) / Game_values::friction_scalar;
+			float normal_speed = EvaluateSpeed(tour[i], risk, false) / GameValues::friction_scalar;
 			for (int j = 0; j < i; ++j)
 			{
-				normal_speed = (normal_speed + static_cast<float>(car_modifiers[CarModifiers::max_braking])) / Game_values::friction_scalar;
+				normal_speed = (normal_speed + static_cast<float>(car_modifiers[CarModifiers::max_braking])) / GameValues::friction_scalar;
 			}
 			if (normal_speed < safe_speed)
 			{
@@ -190,7 +170,7 @@ void Participant::TakeAction(const int turn)
 		}
 		current_durability -= CalculateBurning(current_speed - car_modifiers[CarModifiers::max_speed]);
 	}
-	current_speed = current_speed * Game_values::friction_scalar;
+	current_speed = current_speed * GameValues::friction_scalar;
 }
 void Participant::Test(const std::string field, const bool show)
 {
@@ -298,7 +278,7 @@ void Participant::Test(const std::string field, const bool show)
 	if (drift == true)
 	{
 		drift = false;
-		score += Game_values::drift_value;
+		score += GameValues::drift_value;
 	}
 	else
 	{
@@ -384,6 +364,25 @@ float Participant::EvaluateSpeed(std::string field, const float chance, const bo
 		float base = (-(200.0f + 12.0f * chance) + sqrt(delta)) / -10.0f*((static_cast<float>(car_modifiers[CarModifiers::turn_mod]) - (5.0f * attacked)) / 100.0f);
 		return static_cast<float>(atof(field.c_str())) + base / (100.0f / static_cast<float>(atof(field.c_str())) + 1.0f);
 	}
+}
+float Participant::TireEffectivness(std::string field)
+{
+	int terrain = atoi(field.substr(0, 1).c_str());
+	int x, y;
+	float result = 0.0f;
+	for (int i = 0; i < static_cast<int>(tire_modifiers[terrain].size()); ++i)
+	{
+		if (tire_modifiers[terrain][i] == 'x')
+		{
+			x = static_cast<int>(atoi(tire_modifiers[terrain].substr(0, i).c_str()));
+			y = static_cast<int>(atoi(tire_modifiers[terrain].substr(i + 1, static_cast<int>(tire_modifiers[terrain].size()) - i - 1).c_str()));
+		}
+	}
+	for (int j = 0; j <= y - x; ++x)
+	{
+		result += static_cast<float>(MathFunctions::Factorial(y)) / static_cast<float>(MathFunctions::Factorial(y - x)) / static_cast<float>(MathFunctions::Factorial(x)) * MathFunctions::PowerInt(0.5f, x) * MathFunctions::PowerInt(0.5f, y - x);
+	}
+	return result;
 }
 float Participant::CalculateBurning(float value)
 {

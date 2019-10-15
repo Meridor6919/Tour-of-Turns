@@ -35,5 +35,6 @@ public:
 	float EvaluateChance(std::string field, const float speed, const bool drift);
 	float CalculateBurning(float value);
 	float EvaluateSpeed(std::string field, const float chance, const bool drift);
+	float TireEffectivness(std::string field);
 };
 

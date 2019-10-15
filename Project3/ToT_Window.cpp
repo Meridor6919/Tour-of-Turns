@@ -11,12 +11,12 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	}
 	if (!SaveFileNames(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
 	{
-		MessageBox(0, (ExtName::tire +" "+ Error_Msg::missing_file).c_str(), Error_Title::missing_file.c_str(), 0);
+		MessageBox(0, (ExtName::tire +" "+ ErrorMsg::missing_file).c_str(), ErrorTitle::missing_file.c_str(), 0);
 		playable = false;
 	}
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
 	{
-		MessageBox(0, (ExtName::tour + " " + Error_Msg::missing_file).c_str(), Error_Title::missing_file.c_str(), 0);
+		MessageBox(0, (ExtName::tour + " " + ErrorMsg::missing_file).c_str(), ErrorTitle::missing_file.c_str(), 0);
 		playable = false;
 	}
 	if (!ValidateGameFiles())
@@ -101,7 +101,7 @@ bool ToT_Window::ValidateTourFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::car + " " + Error_Msg::corrupted_file).c_str(), Error_Title::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		return false;
 	}
 	return true;
@@ -139,7 +139,7 @@ bool ToT_Window::ValidateCarFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::car + " " + Error_Msg::corrupted_file).c_str(), Error_Title::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		return false;
 	}
 	return true;
@@ -182,7 +182,7 @@ bool ToT_Window::ValidateTireFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::tire + " " + Error_Msg::corrupted_file).c_str(), Error_Title::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		return false;
 	}
 	return true;

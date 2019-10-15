@@ -132,22 +132,46 @@ namespace ExtName
 	const std::string tire = "tire";
 	const std::string ranking = "rank";
 }
-namespace Error_Msg
+namespace ErrorMsg
 {
 	const std::string unplayable = "You can't start new race with current game state, please repair files or reinstall game";
 	const std::string missing_file = "Files not found, please reinstall your game or repair missing files";
 	const std::string ranking_not_present = "There are no ranking files";
 	const std::string corrupted_file = " cannot be read, please repair or delete corrupted files";
 }
-namespace Error_Title
+namespace ErrorTitle
 {
 	const std::string unplayable = "Unplayable Game";
 	const std::string missing_file = "Missing Files";
 	const std::string corrupted_file = "Corupted Files";
 
 }
-namespace Game_values
+namespace GameValues
 {
 	const float drift_value = 2.0f;
 	const float friction_scalar = 0.9f;
+}
+namespace MathFunctions
+{
+	inline long Factorial(int i) 
+	{
+		if (i > 1)
+		{
+			return Factorial(i - 1)*i;
+		}
+		else
+		{
+			return 1;
+		}
+	};
+	template<class T>
+	inline T PowerInt(T number, int power)
+	{
+		T value = 1;
+		for (int i = 0; i < power; i++)
+		{
+			value *= number;
+		}
+		return value;
+	}
 }
