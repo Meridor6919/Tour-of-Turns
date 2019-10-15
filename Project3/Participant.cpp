@@ -48,7 +48,7 @@ float Participant::TiresPoints(const int terrain[], const std::string tires_path
 		}
 		for (int j = 0; j <= y - x; ++x)
 		{
-			total_points += factorial(y) / factorial(y - x)*factorial(x) * PowerInt(0.5f, x) * PowerInt(0.5f, y - x) * static_cast<float>(terrain[i]);
+			total_points += factorial(y) / factorial(y - x)/factorial(x) * PowerInt(0.5f, x) * PowerInt(0.5f, y - x) * static_cast<float>(terrain[i]);
 		}
 	}
 	return total_points;
