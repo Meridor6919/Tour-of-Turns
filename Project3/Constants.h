@@ -33,9 +33,9 @@ namespace VectorOfStrings
 		"He was patiently listening what problems do I have with ToT and the most important he gave me a main idea of the game.",
 		"Marek Loek ",
 		"for making an icon image and inspiring me to hard work.",
-		"Marcel Marzec ",
+		"Marcin Marzec ",
 		"for giving me inspiration.",
-		"I admire how much work he put in Pan Zniszczenia map for HoMM3 based on Diablo 2 universum.",
+		"I admire how much work he put into Pan Zniszczenia and Zniwiarz Dusz maps for HoMM3 based on Diablo universe.",
 		"Miroslaw Zelent ",
 		"for getting me interested in programming"
 	};
