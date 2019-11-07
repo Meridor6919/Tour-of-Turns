@@ -158,19 +158,7 @@ void Participant::TakeAction(const int turn)
 	}
 	current_speed = safe_speed;
 
-	if (current_speed < 0.0f)
-	{
-		current_speed = 0.0f;
-	}
-	else if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed]))
-	{
-		if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.25f)
-		{
-			current_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed] * 1.25f);
-		}
-		current_durability -= CalculateBurning(current_speed - car_modifiers[CarModifiers::max_speed]);
-	}
-	current_speed = current_speed * GameValues::friction_scalar;
+	CalculateParameters(current_speed, tour[0]);
 }
 void Participant::Test(const std::string field, const bool show)
 {
@@ -364,6 +352,23 @@ float Participant::EvaluateSpeed(std::string field, const float chance, const bo
 		float base = (-(200.0f + 12.0f * chance) + sqrt(delta)) / -10.0f*((static_cast<float>(car_modifiers[CarModifiers::turn_mod]) - (5.0f * attacked)) / 100.0f);
 		return static_cast<float>(atof(field.c_str())) + base / (100.0f / static_cast<float>(atof(field.c_str())) + 1.0f);
 	}
+}
+void Participant::CalculateParameters(float value, std::string current_field)
+{
+	current_speed += value*(0.9f + 0.2f*TireEffectivness(current_field));
+	if (current_speed < 0)
+	{
+		current_speed = 0;
+	}
+	else if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed]))
+	{
+		if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.25f)
+		{
+			current_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed] * 1.25f);
+		}
+		current_durability -= CalculateBurning(current_speed - car_modifiers[CarModifiers::max_speed]);
+	}
+	current_speed *= GameValues::friction_scalar;
 }
 float Participant::TireEffectivness(std::string field)
 {

@@ -425,20 +425,7 @@ void SinglePlayer::TakeAction()
 			}
 		}
 	}
-	participants[0].current_speed += static_cast<float>(value)*(0.9f+0.2f*participants[0].TireEffectivness(current_field));
-	if (participants[0].current_speed < 0)
-	{
-		participants[0].current_speed = 0;
-	}
-	else if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed]))
-	{
-		if (participants[0].current_speed > static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed])*1.25f)
-		{
-			participants[0].current_speed = static_cast<float>(participants[0].car_modifiers[CarModifiers::max_speed] * 1.25f);
-		}
-		participants[0].current_durability -= participants[0].CalculateBurning(participants[0].current_speed - participants[0].car_modifiers[CarModifiers::max_speed]);
-	}
-	participants[0].current_speed *= GameValues::friction_scalar;
+	participants[0].CalculateParameters(value, current_field);
 }
 void SinglePlayer::GetOthersAction(const int turn)
 {
