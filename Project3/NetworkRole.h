@@ -24,6 +24,7 @@ protected:
 	void ShowTiresParameters(const std::string tire_path, bool clear = false);
 	void ShowTourParameters(const std::string tire_path, bool clear = false);
 	void ShowRankingParameters(const std::string tire_path, bool clear = false);
+	void ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear);
 
 public:
 	std::shared_ptr<InfoBox> infobox;
