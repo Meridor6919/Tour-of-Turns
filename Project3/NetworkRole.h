@@ -22,6 +22,8 @@ protected:
 	std::string ChooseName(const std::string current_name, const int max_size);
 	void ShowCarParameters(const std::string tire_path, bool clear = false);
 	void ShowTiresParameters(const std::string tire_path, bool clear = false);
+	void ShowTourParameters(const std::string tire_path, bool clear = false);
+	void ShowRankingParameters(const std::string tire_path, bool clear = false);
 
 public:
 	std::shared_ptr<InfoBox> infobox;

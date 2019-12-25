@@ -72,13 +72,13 @@ int SinglePlayer::BinaryAction(const COORD coords)
 		}
 		if (button == 'y' || button == 'Y')
 		{
-			ShowChances(0, true);
-			return take_action_position;
+		ShowChances(0, true);
+		return take_action_position;
 		}
 		else if (button == 13 || button == 27 || button == 'n' || button == 'N')
 		{
-			ShowChances(0, true);
-			return 0;
+		ShowChances(0, true);
+		return 0;
 		}
 	}
 }
@@ -123,9 +123,9 @@ std::string SinglePlayer::ChooseName(const std::string current_name, const int m
 			std::cout << "\b\b\b   \b\b>";
 		}
 		name_size = static_cast<int>(name.size());
-	} 
-	
-while (button != 13);
+	}
+
+	while (button != 13);
 	for (int i = 0; i < name_size + 4; ++i)
 	{
 		std::cout << "\b";
@@ -142,37 +142,207 @@ while (button != 13);
 }
 void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear)
 {
-	std::vector<int> params1 = main_window->GetCarParameters(car_path);
-	std::vector<std::string> car_parameters;
-	std::vector<Text::OrdinaryText_atributes> text_atributes;
-	for (int i = 0; i < static_cast<int>(VectorOfStrings::car_modifiers.size()); ++i)
+	const std::vector<int> params2 = main_window->GetCarParameters(car_path);
+	const HANDLE handle = main_window->GetHandle();
+	const COORD starting_point = { 0, 19 };
+	const short spacing = 2;
+
+	if (clear)
 	{
-		text_atributes.push_back(Text::OrdinaryText_atributes::color2);
-		text_atributes.push_back(Text::OrdinaryText_atributes::endl);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y });
+		std::cout << "                                                            ";
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y+1 });
+		std::cout << "                                                            ";
+		for (short i = 0; i < static_cast<int>(params2.size()); ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X+1, starting_point.Y + spacing * (i + 2) });
+			for (short j = 0; j < static_cast<short>((VectorOfStrings::car_modifiers[i] + ": " + std::to_string(params2[i]) + "      ").size()); ++j)
+			{
+				std::cout << " ";
+			}
+		}
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing * (static_cast<short>(params2.size()) + 2) });
+		std::cout << "                                                            ";
+
 	}
-	for (int i = 0; i < static_cast<int>(params1.size()); ++i)
+	else
 	{
-		car_parameters.push_back(VectorOfStrings::car_modifiers[i] + ": ");
-		car_parameters.push_back(std::to_string(params1[i]) + "      ");
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y });
+		std::cout << "                     Car Modifiers                          ";
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y+1 });
+		std::cout << "____________________________________________________________";
+		for (short i = 0; i < static_cast<short>(params2.size()); ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X+1, starting_point.Y + spacing * (i + 2) });
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << VectorOfStrings::car_modifiers[i] + ": ";
+			SetConsoleTextAttribute(handle, main_window->color2);
+			std::cout << std::to_string(params2[i]) + "      ";
+		}
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing * (static_cast<short>(params2.size()) + 2) });
+		std::cout << "____________________________________________________________";
 	}
-	Text::OrdinaryText(car_parameters, text_atributes, Text::TextAlign::left, 2, 22, *main_window, clear);
 }
 void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
 {
-	std::vector<std::string> params2 = main_window->GetTireParameters(tire_path);
-	std::vector<std::string> tire_parameters;
-	std::vector<Text::OrdinaryText_atributes> text_atributes;
-	for (int i = 0; i < static_cast<int>(VectorOfStrings::tire_modifiers.size()); ++i)
+	const std::vector<std::string> params2 = main_window->GetTireParameters(tire_path);
+	const HANDLE handle = main_window->GetHandle();
+	const COORD starting_point = { 0, 39 };
+	const short spacing = 2;
+
+	if (clear)
 	{
-		text_atributes.push_back(Text::OrdinaryText_atributes::color2);
-		text_atributes.push_back(Text::OrdinaryText_atributes::endl);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y });
+		std::cout << "                                                            ";
+		for (short i = 0; i < static_cast<int>(params2.size()); ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X+1, starting_point.Y + spacing * (i+1) });
+			for (short j = 0; j < static_cast<short>((VectorOfStrings::tire_modifiers[i] + ": " + params2[i] + "      ").size()); ++j)
+			{
+				std::cout << " ";
+			}
+		}
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing * (static_cast<short>(params2.size())+1) });
+		std::cout << "                                                            ";
+
 	}
-	for (int i = 0; i < static_cast<int>(params2.size()); ++i)
+	else
 	{
-		tire_parameters.push_back(VectorOfStrings::tire_modifiers[i] + ": ");
-		tire_parameters.push_back(params2[i] + "      ");
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y });
+		std::cout << "____________________________________________________________";
+		for (short i = 0; i < static_cast<short>(params2.size()); ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X+1, starting_point.Y + spacing * (i+1) });
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << VectorOfStrings::tire_modifiers[i] + ": ";
+			SetConsoleTextAttribute(handle, main_window->color2);
+			std::cout << params2[i] + "      ";
+		}
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing * (static_cast<short>(params2.size()) + 1) });
+		std::cout << "____________________________________________________________";
 	}
-	Text::OrdinaryText(tire_parameters, text_atributes, Text::TextAlign::left, 2, 40, *main_window, clear);
+}
+void SinglePlayer::ShowTourParameters(const std::string tire_path, bool clear)
+{
+	ShowRankingParameters(tire_path, clear);
+	const std::vector<std::string> params2 = main_window->GetTourParameters(tire_path, 0, INT_MAX);
+	int segment_quantity[6] = { 0,0,0,0,0,0 };
+	const HANDLE handle = main_window->GetHandle();
+	const COORD starting_point = { main_window->GetWidth() - 62, 31 };
+	const short spacing = 2;
+	int turns = 0;
+
+	for (int i = 0; i < static_cast<short>(params2.size()); ++i)
+	{
+		++segment_quantity[params2[i][0]-48];
+		if (params2[i].size() > 1)
+		{
+			++turns;
+		}
+	}
+	if (clear)
+	{
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y });
+		std::cout << "                                                            ";
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing });
+		for (int i = 0; i < static_cast<int>(static_cast<std::string>(" tour_length: ").size())+ static_cast<int>(params2.size()); ++i)
+		{
+			std::cout << " ";
+		}
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing*2 });
+		for (int i = 0; i < static_cast<int>(static_cast<std::string>(" turns: ").size()) + static_cast<int>((std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(params2.size())*100.f)) + "%      ").size()); ++i)
+		{
+			std::cout << " ";
+		}
+		for (short i = 0; i < 6; ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X + 1, starting_point.Y + spacing * (i + 3) });
+			for (short j = 0; j < static_cast<short>((VectorOfStrings::tire_modifiers[i] + ": " + std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(params2.size())*100.f)) + "%      ").size()); ++j)
+			{
+				std::cout << " ";
+			}
+		}
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing * 9 });
+		std::cout << "                                                            ";
+
+	}
+	else
+	{
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y });
+		std::cout << "____________________________________________________________";
+		SetConsoleTextAttribute(handle, main_window->color1);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y+spacing });
+		std::cout << " tour_length: ";
+		SetConsoleTextAttribute(handle, main_window->color2);
+		std::cout << static_cast<int>(params2.size());
+		SetConsoleTextAttribute(handle, main_window->color1);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing*2 });
+		std::cout << " turns: ";
+		SetConsoleTextAttribute(handle, main_window->color2);
+		std::cout << std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(params2.size())*100.f)) + "%      ";
+		for (short i = 0; i < 6; ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X + 1, starting_point.Y + spacing * (i + 3) });
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << VectorOfStrings::tire_modifiers[i] + ": ";
+			SetConsoleTextAttribute(handle, main_window->color2);
+			std::cout << std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(params2.size())*100.f)) + "%      ";
+		}
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing * 9 });
+		std::cout << "____________________________________________________________";
+	}
+}
+void SinglePlayer::ShowRankingParameters(const std::string tire_path, bool clear)
+{
+	const std::vector<std::string> params2 = { "current_champion","winrate", "average_place" };
+	const HANDLE handle = main_window->GetHandle();
+	const COORD starting_point = { main_window->GetWidth() - 62, 21 };
+	const short spacing = 2;
+
+	if (clear)
+	{
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y });
+		std::cout << "                                                            ";
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + 1 });
+		std::cout << "                                                            ";
+		for (short i = 0; i < static_cast<int>(params2.size()); ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X + 1, starting_point.Y + spacing * (i + 2) });
+			for (short j = 0; j < static_cast<short>(((params2[i]) + ": ").size()); ++j)
+			{
+				std::cout << " ";
+			}
+		}
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing * (static_cast<short>(params2.size()) + 2) });
+		std::cout << "                                                            ";
+
+	}
+	else
+	{
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y });
+		std::cout << "                   Tour Informations                        ";
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + 1 });
+		std::cout << "____________________________________________________________";
+		for (short i = 0; i < static_cast<short>(params2.size()); ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X + 1, starting_point.Y + spacing * (i + 2) });
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << params2[i] + ": ";
+
+		}
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + spacing * (static_cast<short>(params2.size()) + 2) });
+		std::cout << "____________________________________________________________";
+	}
 }
 SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
@@ -197,6 +367,7 @@ bool SinglePlayer::GameLobby()
 
 	ShowCarParameters(cars[cars_pos]);
 	ShowTiresParameters(tires[tires_pos]);
+	ShowTourParameters(tours[tours_pos]);
 
 	while (main_menu_position != 5 || static_cast<int>(cars.size()) == 0)
 	{
@@ -224,22 +395,28 @@ bool SinglePlayer::GameLobby()
 			tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + static_cast<short>(VectorOfStrings::game_lobby_options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 			if (i != tours_pos)
 			{
+				ShowCarParameters(cars[cars_pos], true);
 				cars = main_window->GetCarNames(tours[tours_pos]);
 				cars_pos = 0;
 				ShowCarParameters(cars[cars_pos]);
-				break;
 			}
+			ShowTourParameters(tours[i], true);
+			ShowTourParameters(tours[tours_pos]);
 			break;
 		}
 		case 3://choosing car
 		{
+			int i = cars_pos;
 			cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + static_cast<short>(VectorOfStrings::game_lobby_options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+			ShowCarParameters(cars[i], true);
 			ShowCarParameters(cars[cars_pos]);
 			break;
 		}
 		case 4://choosing tires
 		{
+			int i = tires_pos;
 			tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + static_cast<short>(VectorOfStrings::game_lobby_options[main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
+			ShowTiresParameters(tires[i], true);
 			ShowTiresParameters(tires[tires_pos]);
 			break;
 		}
@@ -258,6 +435,7 @@ bool SinglePlayer::GameLobby()
 	main_window->SaveAtributes();
 	ShowTiresParameters(tires[tires_pos], true);
 	ShowCarParameters(cars[cars_pos], true);
+	ShowTourParameters(tours[tours_pos], true);
 	GetParticipants(name, tours[tours_pos], cars[cars_pos], tires[tires_pos]);
 	return true;
 }
