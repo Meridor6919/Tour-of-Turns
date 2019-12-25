@@ -785,7 +785,7 @@ bool SinglePlayer::VisionBox(const int turn)
 		SetConsoleCursorPosition(window, { 1,24 + 2 *i });
 		std::cout << VectorOfStrings::race_distance[i];
 		SetConsoleTextAttribute(window, main_window->color2);
-		std::cout << VectorOfStrings::race_infobox[(visible_tour[i][0] - 48) * 2 + (static_cast<int>(visible_tour[i].size()) > 1 ? 0 : 1)] << helper.erase(0, 1) << "          ";
+		std::cout << VectorOfStrings::race_infobox[(visible_tour[i][0] - 48) * 2 + (static_cast<int>(visible_tour[i].size()) > 1 ? 0 : 1)] << helper.erase(0, 1) << "                                               ";
 	}
 	return ret;
 }
