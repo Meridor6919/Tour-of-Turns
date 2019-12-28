@@ -85,6 +85,9 @@
     <ClCompile Include="ToT.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="Lang.cpp">
+      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralMultiPlayer.h">

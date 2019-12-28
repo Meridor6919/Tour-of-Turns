@@ -25,7 +25,7 @@ int main()
 				}
 				else
 				{
-					MessageBox(0, (ErrorMsg::unplayable).c_str(), ErrorTitle::unplayable.c_str(), 0);
+					MessageBox(0, (VectorOfStrings::error_msg[ErrorMsgs::unplayable]).c_str(), VectorOfStrings::error_title[ErrorTitles::unplayable].c_str(), 0);
 				}
 				break;
 			}
@@ -37,7 +37,7 @@ int main()
 				}
 				else
 				{
-					MessageBox(0, (ErrorMsg::ranking_not_present).c_str(), ErrorTitle::missing_file.c_str(), 0);
+					MessageBox(0, (VectorOfStrings::error_msg[ErrorMsgs::ranking_not_present]).c_str(), VectorOfStrings::error_title[ErrorTitles::missing_file].c_str(), 0);
 				}
 				break;
 			}

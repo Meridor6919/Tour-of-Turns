@@ -11,12 +11,12 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	}
 	if (!SaveFileNames(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
 	{
-		MessageBox(0, (ExtName::tire +" "+ ErrorMsg::missing_file).c_str(), ErrorTitle::missing_file.c_str(), 0);
+		MessageBox(0, (ExtName::tire +" "+ VectorOfStrings::error_msg[ErrorMsgs::missing_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::missing_file].c_str(), 0);
 		playable = false;
 	}
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
 	{
-		MessageBox(0, (ExtName::tour + " " + ErrorMsg::missing_file).c_str(), ErrorTitle::missing_file.c_str(), 0);
+		MessageBox(0, (ExtName::tour + " " + VectorOfStrings::error_msg[ErrorMsgs::missing_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::missing_file].c_str(), 0);
 		playable = false;
 	}
 	if (!ValidateGameFiles())
@@ -56,7 +56,7 @@ void ToT_Window::LoadAtributes()
 	}
 	if (name.size() < 1 || name.size() > 14)
 	{
-		name = String::default_name;
+		name = VectorOfStrings::other_string[OtherStrings::default_name];
 	}
 	wav_transformer->ChangeVolume(music_volume);
 	if (music_volume)
@@ -106,7 +106,7 @@ bool ToT_Window::ValidateTourFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::car + " " + VectorOfStrings::error_msg[ErrorMsgs::corrupted_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
 	}
 	return true;
@@ -144,7 +144,7 @@ bool ToT_Window::ValidateCarFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::car + " " + VectorOfStrings::error_msg[ErrorMsgs::corrupted_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
 	}
 	return true;
@@ -187,7 +187,7 @@ bool ToT_Window::ValidateTireFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::tire + " " + VectorOfStrings::error_msg[ErrorMsgs::corrupted_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
 	}
 	return true;

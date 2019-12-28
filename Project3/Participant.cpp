@@ -182,7 +182,7 @@ void Participant::Test(const std::string field, const bool show)
 	current_speed *= dmg;
 	if (dmg < 1.0f && show)
 	{
-		network_role->infobox->Push(name + String::lost + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + String::speed, String::behaviour);
+		network_role->infobox->Push(name + VectorOfStrings::other_string[OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + VectorOfStrings::other_string[OtherStrings::speed], VectorOfStrings::other_string[OtherStrings::behaviour]);
 	}
 	attacked = 0;
 
@@ -212,14 +212,14 @@ void Participant::Test(const std::string field, const bool show)
 		{
 			if (show)
 			{
-				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[0], String::required + std::to_string(static_cast<int>(formula)) + String::high_roll + std::to_string(max));
+				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[0], VectorOfStrings::other_string[OtherStrings::required] + std::to_string(static_cast<int>(formula)) + VectorOfStrings::other_string[OtherStrings::high_roll] + std::to_string(max));
 			}
 		}
 		else
 		{
 			if (show)
 			{
-				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[1], String::required + std::to_string(static_cast<int>(formula)) + String::low_roll + std::to_string(min));
+				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[1], VectorOfStrings::other_string[OtherStrings::required] + std::to_string(static_cast<int>(formula)) + VectorOfStrings::other_string[OtherStrings::low_roll] + std::to_string(min));
 			}
 			if (formula > static_cast<float>(min + 50))
 			{
@@ -258,7 +258,7 @@ void Participant::Test(const std::string field, const bool show)
 			}
 			if (show)
 			{
-				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[bad_case], name + String::lost + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + VectorOfStrings::race_attribs[3]);
+				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[bad_case], name + VectorOfStrings::other_string[OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + VectorOfStrings::race_attribs[3]);
 			}
 			current_durability -= durablity_lost;
 		}

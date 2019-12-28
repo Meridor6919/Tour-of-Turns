@@ -116,6 +116,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Lang.cpp" />
     <ClCompile Include="NetworkRoleClient.cpp" />
     <ClCompile Include="GeneralMultiPlayerGeneric.cpp" />
     <ClCompile Include="GeneralMultiPlayerClient.cpp" />

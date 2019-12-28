@@ -62,11 +62,11 @@ int SinglePlayer::BinaryAction(const COORD coords)
 	{
 		ShowChances(participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1 * static_cast<int>(take_action_position == 2), take_action_position == 4);
 		SetConsoleCursorPosition(window, coords);
-		std::cout << String::action_confirm;
+		std::cout << VectorOfStrings::other_string[OtherStrings::action_confirm];
 		button = _getch();
 		SetConsoleCursorPosition(window, coords);
 
-		for (int i = 0; i < static_cast<int>(String::action_confirm.size()); ++i)
+		for (int i = 0; i < static_cast<int>(VectorOfStrings::other_string[OtherStrings::action_confirm].size()); ++i)
 		{
 			std::cout << " ";
 		}
@@ -136,7 +136,7 @@ std::string SinglePlayer::ChooseName(const std::string current_name, const int m
 	}
 	if (name_size == 0)
 	{
-		name = String::default_name;
+		name = VectorOfStrings::other_string[OtherStrings::default_name];
 	}
 	return name;
 }
@@ -145,13 +145,20 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 	const HANDLE handle = main_window->GetHandle();
 	if (clear)
 	{
+		const int border_size = static_cast<int>(VectorOfStrings::other_string[OtherStrings::border].size());
 		if (title != "")
 		{
 			SetConsoleCursorPosition(handle, { base_position.X, base_position.Y });
-			std::cout << "                                                            ";
+			for (int i = 0; i < border_size; ++i)
+			{
+				std::cout << " ";
+			}
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		std::cout << "                                                            ";
+		for (int i = 0; i < border_size; ++i)
+		{
+			std::cout << " ";
+		}
 		for (short i = 0; i < static_cast<short>(text.size()); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
@@ -161,7 +168,10 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 			}
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
-		std::cout << "                                                            ";
+		for (int i = 0; i < border_size; ++i)
+		{
+			std::cout << " ";
+		}
 	}
 	else
 	{
@@ -173,7 +183,7 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 		}
 		SetConsoleTextAttribute(handle, main_window->color2);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		std::cout << "____________________________________________________________";
+		std::cout << VectorOfStrings::other_string[OtherStrings::border];
 		for (short i = 0; i < static_cast<short>(text.size()); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
@@ -184,7 +194,7 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 		}
 		SetConsoleTextAttribute(handle, main_window->color2);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
-		std::cout << "____________________________________________________________";
+		std::cout << VectorOfStrings::other_string[OtherStrings::border];
 	}
 }
 void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear)
@@ -377,7 +387,7 @@ bool SinglePlayer::GetCurrentAtribs()
 		participants[i].Test(current_field, i < static_cast<int>(participants.size()) - main_window->GetAIs());
 		if (participants[i].current_durability <= 0.0f && participants[i].alive)
 		{
-			infobox->Push(String::infobox_RIP1 +participants[i].name + String::infobox_RIP2, "");
+			infobox->Push(VectorOfStrings::other_string[OtherStrings::infobox_RIP1] +participants[i].name + VectorOfStrings::other_string[OtherStrings::infobox_RIP2], "");
 			participants[i].alive = false;
 			if (i == 0)
 			{
@@ -401,7 +411,7 @@ void SinglePlayer::Attack()
 	const int backward_attack_distance = 6;
 	std::multimap<float, Participant*> sorted_participants;
 
-	rival_name.push_back(String::attack);
+	rival_name.push_back(VectorOfStrings::other_string[OtherStrings::attack]);
 	rival_id.push_back(10);
 	participants[0].attacked = 0;
 	sorted_participants.insert(std::make_pair(participants[0].score, &participants[0]));
@@ -450,13 +460,14 @@ void SinglePlayer::TakeAction()
 		if (participants[0].current_speed == 0 && take_action_position % 4 != 0)
 		{
 			
-			std::cout << String::unable_to_move;
+			std::cout << VectorOfStrings::other_string[OtherStrings::unable_to_move];
 			main_window->Pause(1500);
-			for (int i = 0; i < static_cast<int>(String::unable_to_move.size()); ++i)
+			const int string_size = static_cast<int>(VectorOfStrings::other_string[OtherStrings::unable_to_move].size());
+			for (int i = 0; i < string_size; ++i)
 			{
 				std::cout << "\b";
 			}
-			for (int i = 0; i < static_cast<int>(String::unable_to_move.size()); ++i)
+			for (int i = 0; i < string_size; ++i)
 			{
 				std::cout << " ";
 			}
@@ -625,21 +636,21 @@ void SinglePlayer::Interface()
 		SetConsoleCursorPosition(window, { 2, 40 + i * 2 });
 		std::cout << possible_actions[i];
 	}
-	
+	const short x = static_cast<short>(main_window->GetWidth() - static_cast<short>(VectorOfStrings::other_string[OtherStrings::border].size()));
 	const std::vector<std::tuple<std::string, COORD, short>> boxes = { {VectorOfStrings::race_boxes[0], {0, static_cast<short>(main_window->GetHeight() - 15)}, 12 },
-				{ VectorOfStrings::race_boxes[1], {static_cast<short>(main_window->GetWidth() - static_cast<short>(String::border.size())), static_cast<short>(main_window->GetHeight() - 20) }, 17},
-				{VectorOfStrings::race_boxes[2],  { static_cast<short>(main_window->GetWidth() - static_cast<short>(String::border.size())), static_cast<short>(main_window->GetHeight() - 31) }, 7 } };
+				{ VectorOfStrings::race_boxes[1], { x, static_cast<short>(main_window->GetHeight() - 20) }, 17},
+				{VectorOfStrings::race_boxes[2],  { x, static_cast<short>(main_window->GetHeight() - 31) }, 7 } };
 	
 
 	SetConsoleTextAttribute(window, main_window->color2);
 	for (int i = 0; i < static_cast<int>(boxes.size()); ++i)
 	{
-		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X + static_cast<short>(String::border.size())/2 - static_cast<short>(std::get<0>(boxes[i]).size())/2, std::get<1>(boxes[i]).Y});
+		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X + static_cast<short>(VectorOfStrings::other_string[OtherStrings::border].size())/2 - static_cast<short>(std::get<0>(boxes[i]).size())/2, std::get<1>(boxes[i]).Y});
 		std::cout << std::get<0>(boxes[i]);
 		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X, std::get<1>(boxes[i]).Y + 1});
-		std::cout << String::border;
+		std::cout << VectorOfStrings::other_string[OtherStrings::border];
 		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X, std::get<1>(boxes[i]).Y + std::get<2>(boxes[i]) + 2 });
-		std::cout << String::border;
+		std::cout << VectorOfStrings::other_string[OtherStrings::border];
 	}
 	ShowChances(0, true);
 }
@@ -667,7 +678,7 @@ bool SinglePlayer::VisionBox(const int turn)
 			SetConsoleTextAttribute(window, main_window->color1);
 			std::cout << VectorOfStrings::race_distance[i];
 			SetConsoleTextAttribute(window, main_window->color2);
-			std::cout << String::meta + "                                              ";
+			std::cout << VectorOfStrings::other_string[OtherStrings::meta] + "                                              ";
 			SetConsoleCursorPosition(window, { 1,26 + 2 * i });
 			std::cout << "                                                   ";
 			break;

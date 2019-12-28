@@ -1,86 +1,76 @@
 #pragma once
 #include <string>
+#include <vector>
 
 namespace VectorOfStrings
 {
-	const std::vector<std::string> car_modifiers = { "max_speed","max_accelerating","max_braking","hand_brake_value","durability","visibility","turn_mod","drift_mod" };
-	const std::vector<std::string> tire_modifiers = { "asphalt","grass","gravel","sand","mud","ice" };
-	const std::vector<std::string> main_menu_options = { "New Game ", "Multiplayer ", "Ranking ", "Options ", "Credits ", "Exit" };
-	const std::vector<std::string> game_lobby_options = { "Name", "Number of AIs", "Tours", "Cars", "Tires", "Next" };
-	const std::vector<std::string> game_mode_options = { "Host game", "Search game", "Back" };
-	const std::vector<std::string> game_options_options = { "Main Color", "Secondary Color", "Music playing", "Hamachi connection", "Back" };
-	const std::vector<std::string> game_options_colors = { "green","cyan","red","magenta","brown","light gray","dark gray","blue","light green", "light cyan","light red","light magenta","yellow","white" };
-	const std::vector<std::string> race_actions = { "Speed up","Slow down","Hand-Brake","Do nothing","Abaddon Race" };
-	const std::vector<std::string> race_chances = { "Chance: ", "Estimated time: ", "Durability burning: ", "Estimated speed: " };
-	const std::vector<std::string> race_ranking = { "PLACE", "RACER", "SCORE" };
-	const std::vector<std::string> race_interface = { "You can speed up by (0 to " , "You can slow down by (0 to " , "Hand brake value is - ", "You can just wait if you're moving..." ,"Remember only weak ones surrenders" };
-	const std::vector<std::string> race_attribs = { " You're racing as: ",  " Your current speed is: ", " Your vehice has ", " durability   " };
-	const std::vector<std::string> race_distance = { "In front of you: ", "Close to you: ", "At some distance: ", "A little further: ", "At a considerable distance: ", "Far ahead: ", "Barely noticeable: " };
-	const std::vector<std::string> race_boxes = { "Infobox  " , "Attack box" , "Chance of succeeding" };
-	const std::vector<std::string> race_infobox = { "Turn on asphalt - safe speed is around ", "Straight road, terrain is asphalt", "Turn on grass - safe speed is around ", "Straight grassy road" , "Turn on gravel - safe speed is around " ,
-	"Straight road, gravel", "Turn on sand - safe speed is around ", "Linear part of tour, but sandy",  "Turn on mud - safe speed is around ", "Muddy road, without turn" , "Turn on ice - safe speed is around ", "Slippery road with ice" };
-	const std::vector<std::string> participant_names = { "Paul Harackovy", "Mark Driver", "Max McDonald", "Gordon Goodman", "Miguela Aguela", "Hans Ufner", "Isao Fujimoto", "Igor Belov",
-	"John Hill", "Andrew Anderson", "Jane Turning", "Lester King", "Drew McNeil", "Sam Samson", "Gaston Reveneu", "Roman Torbon",
-	"Helga Dick", "Mogore the Ogre", "David Black", "Reta Rdest", "Bloodwyn", "Quality Racer", "Sui Cide", "Ivan Atakovic", "Blu Apostrof" };
-	const std::vector<std::string> participant_infobox = { " have manage to turn, ", " had mistaken, ", " badly crashed !!! ", " crashed !!!, " ," had an dangerous accident, " ," got off the route, " ," fell into a dangerous slip, " ," slipped, " };
-	const std::vector<std::string> on_off = { "on", "off" };
-	const std::vector<std::string> credits = {
-		"Hello I am Michal Balicki and I am really happy that you are playing my game.",
-		"Tour of Turns was my first real project in my programming way and I hope you like it.",
-		"I would like to thank people who helped me with this project.",
-		"Krystian Grzegorzewicz ",
-		"without him the game wouldn't be created.",
-		"He was patiently listening what problems do I have with ToT and the most important he gave me a main idea of the game.",
-		"Marek Loek ",
-		"for making an icon image and inspiring me to hard work.",
-		"Marcin Marzec ",
-		"for giving me inspiration.",
-		"I admire how much work he put into Pan Zniszczenia and Zniwiarz Dusz maps for HoMM3 based on Diablo universe.",
-		"Miroslaw Zelent ",
-		"for getting me interested in programming"
-	};
-	const std::vector<std::string> title_main = {
-		"  _______  ___         ___     ",
-		"     |    |   | |   | |   |    ",
-		"     |    |   | |   | |___|    ",
-		"     |    |   | |   | |  \\     ",
-		"     |    |___| |___| |   \\    ",
-		"                               ",
-		"                               ",
-		"                               ",
-		"                               ",
-		"                               ",
-		"_______        ___    __   __  ",
-		"   |    |   | |   |  |  | |    ",
-		"   |    |   | |___|  |  | |__  ",
-		"   |    |   | |  \\   |  |    | ",
-		"   |    |___| |   \\  |  | ___| ",
-	};
-	const std::vector<std::string> title_additional = {
-		" ___   ___",
-		"|   | |   ",
-		"|   | |_  ",
-		"|   | |   ",
-		"|___| |   ",
+	extern std::vector<std::string> car_modifiers;
+	extern std::vector<std::string> tire_modifiers;
+	extern std::vector<std::string> main_menu_options;
+	extern std::vector<std::string> game_lobby_options;
+	extern std::vector<std::string> game_mode_options;
+	extern std::vector<std::string> game_options_options;
+	extern std::vector<std::string> game_options_colors;
+	extern std::vector<std::string> race_actions;
+	extern std::vector<std::string> race_chances;
+	extern std::vector<std::string> race_ranking;
+	extern std::vector<std::string> race_interface;
+	extern std::vector<std::string> race_attribs;
+	extern std::vector<std::string> race_distance;
+	extern std::vector<std::string> race_boxes;
+	extern std::vector<std::string> race_infobox;
+	extern std::vector<std::string> participant_names;
+	extern std::vector<std::string> participant_infobox;
+	extern std::vector<std::string> on_off;
+	extern std::vector<std::string> credits;
+	extern std::vector<std::string> title_main;
+	extern std::vector<std::string> title_additional;
+	extern std::vector<std::string> error_msg;
+	extern std::vector<std::string> error_title;
+	extern std::vector<std::string> other_string;
+
+}
+namespace OtherStrings
+{
+	enum
+	{
+		default_name,
+		action_confirm,
+		infobox_RIP1,
+		infobox_RIP2,
+		attack,
+		unable_to_move,
+		meta,
+		lost,
+		required,
+		high_roll,
+		low_roll,
+		behaviour,
+		speed,
+		border,
+		last
 	};
 }
-namespace String
+namespace ErrorTitles
 {
-	const std::string default_name = "Racer";
-	const std::string action_confirm = " - Do you really want to do this ? (Y/N) ";
-	const std::string infobox_RIP1 = "RIP, ";
-	const std::string infobox_RIP2 = " dezintegrated his vehichle...";
-	const std::string attack = "Don't attack";
-	const std::string unable_to_move = " - You can't do this because you aren't moving...";
-	const std::string meta = "META";
-	const std::string lost = " lost ";
-	const std::string required = "required - ";
-	const std::string high_roll = " highest roll - ";
-	const std::string low_roll = " lowest roll - ";
-	const std::string behaviour = "in result of other racers behaviour";
-	const std::string speed = " speed,";
-	const std::string border = "________________________________________________________  ";
-
+	enum
+	{
+		unplayable,
+		missing_file,
+		corrupted_file,
+		last
+	};
+}
+namespace ErrorMsgs
+{
+	enum
+	{
+		unplayable,
+		missing_file,
+		ranking_not_present,
+		corrupted_file,
+		last
+	};
 }
 namespace CarModifiers
 {
@@ -131,20 +121,6 @@ namespace ExtName
 	const std::string car = "car";
 	const std::string tire = "tire";
 	const std::string ranking = "rank";
-}
-namespace ErrorMsg
-{
-	const std::string unplayable = "You can't start new race with current game state, please repair files or reinstall game";
-	const std::string missing_file = "Files not found, please reinstall your game or repair missing files";
-	const std::string ranking_not_present = "There are no ranking files";
-	const std::string corrupted_file = " cannot be read, please repair or delete corrupted files";
-}
-namespace ErrorTitle
-{
-	const std::string unplayable = "Unplayable Game";
-	const std::string missing_file = "Missing Files";
-	const std::string corrupted_file = "Corupted Files";
-
 }
 namespace GameValues
 {
