@@ -11,12 +11,12 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	}
 	if (!SaveFileNames(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
 	{
-		MessageBox(0, (ExtName::tire +" "+ VectorOfStrings::error_msg[ErrorMsgs::missing_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::missing_file].c_str(), 0);
+		MessageBox(0, (ExtName::tire +" "+ LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::missing_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str(), 0);
 		playable = false;
 	}
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
 	{
-		MessageBox(0, (ExtName::tour + " " + VectorOfStrings::error_msg[ErrorMsgs::missing_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::missing_file].c_str(), 0);
+		MessageBox(0, (ExtName::tour + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::missing_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str(), 0);
 		playable = false;
 	}
 	if (!ValidateGameFiles())
@@ -56,7 +56,7 @@ void ToT_Window::LoadAtributes()
 	}
 	if (name.size() < 1 || name.size() > 14)
 	{
-		name = VectorOfStrings::other_string[OtherStrings::default_name];
+		name = LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::default_name];
 	}
 	wav_transformer->ChangeVolume(music_volume);
 	if (music_volume)
@@ -106,7 +106,7 @@ bool ToT_Window::ValidateTourFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::car + " " + VectorOfStrings::error_msg[ErrorMsgs::corrupted_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::corrupted_file].c_str(), 0);
+		MessageBox(0, (FolderName::car + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
 	}
 	return true;
@@ -144,7 +144,7 @@ bool ToT_Window::ValidateCarFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::car + " " + VectorOfStrings::error_msg[ErrorMsgs::corrupted_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::corrupted_file].c_str(), 0);
+		MessageBox(0, (FolderName::car + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
 	}
 	return true;
@@ -187,7 +187,7 @@ bool ToT_Window::ValidateTireFiles()
 	}
 	if (invalid)
 	{
-		MessageBox(0, (FolderName::tire + " " + VectorOfStrings::error_msg[ErrorMsgs::corrupted_file]).c_str(), VectorOfStrings::error_title[ErrorTitles::corrupted_file].c_str(), 0);
+		MessageBox(0, (FolderName::tire + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
 	}
 	return true;
@@ -288,38 +288,38 @@ void ToT_Window::SaveAtributes()
 }
 void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
 {
-	const COORD orientation_point = { starting_point.X - static_cast<short>((float)text_align / 2 * VectorOfStrings::title_main[0].size()), starting_point.Y };
+	const COORD orientation_point = { starting_point.X - static_cast<short>((float)text_align / 2 * LanguagePack::vector_of_strings[LanguagePack::title_main][0].size()), starting_point.Y };
 	const short decoration_distance = 5;
 	const std::string main_decoration = "{ }";
 	const std::string additional_decoration = "*";
 	//Main text
 	SetConsoleTextAttribute(window_handle, color2);
-	for (short i = 0; i < static_cast<short>(VectorOfStrings::title_main.size()); ++i)
+	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size()); ++i)
 	{
 		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
-		std::cout << VectorOfStrings::title_main[i];
+		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_main][i];
 	}
 	SetConsoleTextAttribute(window_handle, color1);
-	for (short i = 0; i < static_cast<short>(VectorOfStrings::title_additional.size()); ++i)
+	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional].size()); ++i)
 	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(VectorOfStrings::title_main[i].size() / 2 - VectorOfStrings::title_additional[i].size() / 2), orientation_point.Y + i + static_cast<short>(VectorOfStrings::title_main.size()) / 3 });
-		std::cout << VectorOfStrings::title_additional[i];
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size() / 2 - LanguagePack::vector_of_strings[LanguagePack::title_additional][i].size() / 2), orientation_point.Y + i + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size()) / 3 });
+		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_additional][i];
 	}
 	//Decoration
 	SetConsoleTextAttribute(window_handle, color2);
-	for (short i = 0; i < static_cast<short>(VectorOfStrings::title_main.size()); ++i)
+	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size()); ++i)
 	{
 		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) - i % 2, orientation_point.Y + i });
 		std::cout << main_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(VectorOfStrings::title_main[i].size() + decoration_distance - 1) - i % 2, orientation_point.Y + i });
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size() + decoration_distance - 1) - i % 2, orientation_point.Y + i });
 		std::cout << main_decoration;
 	}
 	SetConsoleTextAttribute(window_handle, color1);
-	for (short i = 0; i < static_cast<short>(VectorOfStrings::title_main.size()); ++i)
+	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size()); ++i)
 	{
 		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) + 1 - i % 2, orientation_point.Y + i });
 		std::cout << additional_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(VectorOfStrings::title_main[i].size() + decoration_distance - 1) + 1 - i % 2, orientation_point.Y + i });
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size() + decoration_distance - 1) + 1 - i % 2, orientation_point.Y + i });
 		std::cout << additional_decoration;
 	}
 }

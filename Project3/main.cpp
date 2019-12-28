@@ -14,7 +14,7 @@ int main()
 
 	while (true)
 	{
-		switch (main_menu_position = Text::Choose::Veritcal(VectorOfStrings::main_menu_options, main_menu_position, { static_cast<short>(game_window.GetWidth()) / 2+1, 25 }, 3, Text::TextAlign::center, true, game_window))
+		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::main_menu], main_menu_position, { static_cast<short>(game_window.GetWidth()) / 2+1, 25 }, 3, Text::TextAlign::center, true, game_window))
 		{
 			case 0:
 			case 1:
@@ -25,7 +25,7 @@ int main()
 				}
 				else
 				{
-					MessageBox(0, (VectorOfStrings::error_msg[ErrorMsgs::unplayable]).c_str(), VectorOfStrings::error_title[ErrorTitles::unplayable].c_str(), 0);
+					MessageBox(0, (LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::unplayable]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::unplayable].c_str(), 0);
 				}
 				break;
 			}
@@ -37,7 +37,7 @@ int main()
 				}
 				else
 				{
-					MessageBox(0, (VectorOfStrings::error_msg[ErrorMsgs::ranking_not_present]).c_str(), VectorOfStrings::error_title[ErrorTitles::missing_file].c_str(), 0);
+					MessageBox(0, (LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::ranking_not_present]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str(), 0);
 				}
 				break;
 			}

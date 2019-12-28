@@ -2,33 +2,53 @@
 #include <string>
 #include <vector>
 
-namespace VectorOfStrings
+namespace LanguagePack
 {
-	extern std::vector<std::string> car_modifiers;
-	extern std::vector<std::string> tire_modifiers;
-	extern std::vector<std::string> main_menu_options;
-	extern std::vector<std::string> game_lobby_options;
-	extern std::vector<std::string> game_mode_options;
-	extern std::vector<std::string> game_options_options;
-	extern std::vector<std::string> game_options_colors;
-	extern std::vector<std::string> race_actions;
-	extern std::vector<std::string> race_chances;
-	extern std::vector<std::string> race_ranking;
-	extern std::vector<std::string> race_interface;
-	extern std::vector<std::string> race_attribs;
-	extern std::vector<std::string> race_distance;
-	extern std::vector<std::string> race_boxes;
-	extern std::vector<std::string> race_infobox;
-	extern std::vector<std::string> participant_names;
-	extern std::vector<std::string> participant_infobox;
-	extern std::vector<std::string> on_off;
-	extern std::vector<std::string> credits;
-	extern std::vector<std::string> title_main;
-	extern std::vector<std::string> title_additional;
-	extern std::vector<std::string> error_msg;
-	extern std::vector<std::string> error_title;
-	extern std::vector<std::string> other_string;
+	extern std::vector<std::vector<std::string>> vector_of_strings;
+	enum
+	{
+		car_modifiers,
+		tire_modifiers,
+		main_menu,
+		game_lobby,
+		multiplayer,
+		game_options,
+		game_information,
+		colors,
+		race_actions,
+		race_chances,
+		race_ranking,
+		race_interface,
+		race_attribs,
+		race_distance,
+		race_boxes,
+		race_infobox,
+		participant_names,
+		participant_infobox,
+		credits,
+		on_off,
+		title_main,
+		title_additional,
+		error_msg,
+		error_title,
+		other_string,
+		last
+	};
+}
+namespace GameInformation
+{
+	enum
+	{
+		player_info,
+		tour_info,
+		tour_length,
+		turns,
+		champion,
+		win_rate,
+		avg_place,
+		last
 
+	};
 }
 namespace OtherStrings
 {

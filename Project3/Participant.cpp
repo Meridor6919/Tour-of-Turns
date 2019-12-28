@@ -44,7 +44,7 @@ float Participant::TiresPoints(const int terrain[], const std::string tires_path
 }
 void Participant::GetRandomName(const int id)
 {
-	static std::vector<std::string> names = VectorOfStrings::participant_names;
+	static std::vector<std::string> names = LanguagePack::vector_of_strings[LanguagePack::participant_names];
 	const int name_id = rand() % (static_cast<int>(names.size()) - id);
 	name = std::move(names[name_id]);
 	names[name_id] = std::move(names[static_cast<int>(names.size()) - 1 - id]);
@@ -182,7 +182,7 @@ void Participant::Test(const std::string field, const bool show)
 	current_speed *= dmg;
 	if (dmg < 1.0f && show)
 	{
-		network_role->infobox->Push(name + VectorOfStrings::other_string[OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + VectorOfStrings::other_string[OtherStrings::speed], VectorOfStrings::other_string[OtherStrings::behaviour]);
+		network_role->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::speed], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::behaviour]);
 	}
 	attacked = 0;
 
@@ -212,14 +212,14 @@ void Participant::Test(const std::string field, const bool show)
 		{
 			if (show)
 			{
-				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[0], VectorOfStrings::other_string[OtherStrings::required] + std::to_string(static_cast<int>(formula)) + VectorOfStrings::other_string[OtherStrings::high_roll] + std::to_string(max));
+				network_role->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][0], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::high_roll] + std::to_string(max));
 			}
 		}
 		else
 		{
 			if (show)
 			{
-				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[1], VectorOfStrings::other_string[OtherStrings::required] + std::to_string(static_cast<int>(formula)) + VectorOfStrings::other_string[OtherStrings::low_roll] + std::to_string(min));
+				network_role->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][1], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::low_roll] + std::to_string(min));
 			}
 			if (formula > static_cast<float>(min + 50))
 			{
@@ -258,7 +258,7 @@ void Participant::Test(const std::string field, const bool show)
 			}
 			if (show)
 			{
-				network_role->infobox->Push(name + VectorOfStrings::participant_infobox[bad_case], name + VectorOfStrings::other_string[OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + VectorOfStrings::race_attribs[3]);
+				network_role->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][bad_case], name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::vector_of_strings[LanguagePack::race_attribs][3]);
 			}
 			current_durability -= durablity_lost;
 		}
