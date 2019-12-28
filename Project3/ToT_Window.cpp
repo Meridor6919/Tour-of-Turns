@@ -23,19 +23,20 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	{
 		playable = false;
 	}
+	wav_transformer = new WavTransformer(FolderName::main + "\\" + FileName::music);
 	LoadAtributes();
 }
 void ToT_Window::LoadAtributes()
 {
 	hamachi_enabled = true;
-	music_enabled = true;
+	music_volume = 1.0f;
 	ais = 0;
 
 	std::fstream fvar;
 	fvar.open(FolderName::main + "\\" + FileName::config, std::ios::in);
 	fvar >> color1;
 	fvar >> color2;
-	fvar >> music_enabled;
+	fvar >> music_volume;
 	fvar >> hamachi_enabled;
 	fvar >> ais;
 	fvar >> name;
@@ -57,7 +58,11 @@ void ToT_Window::LoadAtributes()
 	{
 		name = String::default_name;
 	}
-	SetMusic(FolderName::main + "\\" + FileName::music, music_enabled);
+	wav_transformer->ChangeVolume(music_volume);
+	if (music_volume)
+	{
+		wav_transformer->Start(SND_ASYNC | SND_LOOP);
+	}
 }
 bool ToT_Window::ValidateGameFiles()
 {
@@ -275,7 +280,7 @@ void ToT_Window::SaveAtributes()
 	fvar.open(FolderName::main + "\\" + FileName::config);
 	fvar << color1 << "\n";
 	fvar << color2 << "\n";;
-	fvar << music_enabled << "\n";;
+	fvar << music_volume << "\n";;
 	fvar << hamachi_enabled << "\n";;
 	fvar << ais << "\n";
 	fvar << name << "\n";
@@ -322,11 +327,6 @@ void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {
 	hamachi_enabled = flag;
 }
-void ToT_Window::SetMusic(const std::string sound_file, const bool playing)
-{
-	music_enabled = playing;
-	Window::SetMusic(sound_file, playing);
-}
 void ToT_Window::SetAIs(int number_of_ais)
 {
 	ais = number_of_ais;
@@ -334,4 +334,17 @@ void ToT_Window::SetAIs(int number_of_ais)
 void ToT_Window::SetName(std::string name)
 {
 	this->name = name;
+}
+void ToT_Window::SetMusic(float volume)
+{
+	this->music_volume = volume;
+	if (volume)
+	{
+		wav_transformer->ChangeVolume(volume);
+		wav_transformer->Start(SND_ASYNC | SND_LOOP);
+	}
+	else
+	{
+		wav_transformer->Stop();
+	}
 }

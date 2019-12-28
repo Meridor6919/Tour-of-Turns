@@ -4,16 +4,18 @@
 #include "Window.h"
 #include "TextLib.h"
 #include "Constants.h"
+#include "WavTransformer.h"
 
 class ToT_Window : public Window
 {
 protected:
 	bool hamachi_enabled;
-	bool music_enabled;
+	float music_volume = 1.0f;
 	int ais;
 	std::string name;
 	bool playable;
 	bool ranking_found;
+	WavTransformer *wav_transformer;
 
 	void LoadAtributes();
 	bool ValidateGameFiles();
@@ -34,11 +36,11 @@ public:
 	void SaveAtributes();
 	void Title(const COORD starting_point, const Text::TextAlign text_align);
 	void SetHamachiConnectionFlag(const bool flag);
-	void SetMusic(const std::string sound_file, const bool playing);
 	void SetAIs(int number_of_ais);
 	void SetName(std::string name);
+	void SetMusic(float volume);
 	bool GetHamachiConnectionFlag() { return hamachi_enabled; }
-	bool GetMusic() { return music_enabled; }
+	float GetMusicVolume() { return music_volume; }
 	int GetAIs() { return ais; }
 	std::string GetName() { return name; }
 	bool RankingFound() { return ranking_found; }

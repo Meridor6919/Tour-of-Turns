@@ -3,7 +3,6 @@
 #include <time.h>
 #include <string>
 
-#pragma comment(lib, "winmm.lib")
 #pragma warning(disable : 4996)
 
 class Window
@@ -26,6 +25,5 @@ public:
 	HANDLE GetHandle();
 	HWND GetHWND();
 	void SetCursor(const bool visible);
-	virtual void SetMusic(const std::string sound_file,const bool playing);
 	void Pause(const int miliseconds);
 };

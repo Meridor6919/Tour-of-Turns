@@ -108,5 +108,8 @@
     <ClInclude Include="Constants.h">
       <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClInclude>
+    <ClInclude Include="WavTransformer.h">
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -66,7 +66,12 @@ void GameMode::Options(ToT_Window &main_window)
 			case 2:
 			{
 				const COORD local_starting_point = { starting_point.X + static_cast<short>(VectorOfStrings::game_options_options[main_menu_position].size())/2 +3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-				main_window.SetMusic(FolderName::main + "\\" + FileName::music, !(Text::Choose::Horizontal(VectorOfStrings::on_off, !main_window.GetMusic(), local_starting_point, Text::TextAlign::left, true, main_window)));
+				std::vector<std::string> text = { "none" };
+				for (int i = 1; i < 11; ++i)
+				{
+					text.push_back(std::to_string(i));
+				}
+				main_window.SetMusic(static_cast<float>(Text::Choose::Horizontal(text, static_cast<int>(main_window.GetMusicVolume()*10), local_starting_point, Text::TextAlign::left, true, main_window)) / 10.0f);
 				break;
 			}
 			case 3:

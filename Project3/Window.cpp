@@ -61,13 +61,6 @@ void Window::SetCursor(const bool visible)
 	console_cursor.bVisible = visible;
 	SetConsoleCursorInfo(window_handle, &console_cursor);
 }
-void Window::SetMusic(const std::string sound_file, const bool playing)
-{
-	if (playing)
-		PlaySound(sound_file.c_str(), 0, SND_LOOP | SND_ASYNC);
-	else
-		PlaySound(0, 0, 0);
-}
 void Window::Pause(const int miliseconds)
 {
 	DWORD consolesettings;

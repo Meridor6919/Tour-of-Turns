@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GeneralMultiPlayer.h" />
+    <ClInclude Include="WavTransformer.h" />
     <ClInclude Include="Infobox.h" />
     <ClInclude Include="NetworkRole.h" />
     <ClInclude Include="Participant.h" />
