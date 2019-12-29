@@ -6,15 +6,17 @@
 int main()
 {
 	ToT_Window game_window("Tour of Turns", 15, 10, 200, 70);
+	const short game_window_center = static_cast<short>(game_window.GetWidth()) / 2;
 	short main_menu_position = 0;
+
 
 	WSAData wsa_data;
 	WSAStartup(MAKEWORD(2, 2), &wsa_data);
-	game_window.Title({static_cast<short>(game_window.GetWidth())/2, 0}, Text::TextAlign::center);
+	game_window.Title({game_window_center, 0}, Text::TextAlign::center);
 
 	while (true)
 	{
-		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::main_menu], main_menu_position, { static_cast<short>(game_window.GetWidth()) / 2+1, 25 }, 3, Text::TextAlign::center, true, game_window))
+		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::main_menu], main_menu_position, { game_window_center +1, 25 }, 3, Text::TextAlign::center, true, game_window))
 		{
 			case 0:
 			case 1:

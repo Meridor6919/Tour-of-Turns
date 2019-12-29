@@ -14,58 +14,47 @@ void GameMode::Credits(ToT_Window &main_window)
 void GameMode::Options(ToT_Window &main_window)
 {
 	int main_menu_position = 0;
-	const COORD starting_point = { static_cast<short>(main_window.GetWidth()) / 2+1, 25 };
+	const short game_window_center = static_cast<short>(main_window.GetWidth()) / 2;
+	const COORD starting_point = { game_window_center+1, 25 };
 	const short spacing = 3;
 	bool loop = true;
 
 	while (loop)
 	{
-		//text allign is also needed in clearing so beware if changing them
-		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::game_options], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, main_window))
+		main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::game_options], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, main_window);
+		const short submenu_horizontal_position = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options][main_menu_position].size()) / 2 + 3;
+		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
+		switch (main_menu_position)
 		{
-			case 0:
+			case 0://set primary color
 			{
-				//list of colours from 2 to 17
 				std::vector<std::string> local_text = LanguagePack::vector_of_strings[LanguagePack::colors];
-				const COORD local_starting_point = { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options][main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-				
-				//erasing color that is already used by second colour
-				//program crashes when local_text.begin() is equal to local.text.end() -1 so inline if is nessesary. Substracting by 2 to synchronizewith list.
-				auto text_to_erase = main_window.color2 < 15 ? local_text.begin() + main_window.color2 - 2 : local_text.end() - 1;
-				local_text.erase(text_to_erase);
-
-				//setting new colour
+				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
+				local_text.erase(local_text.begin() + (main_window.color2 - 2));
 				main_window.color1 = Text::Choose::Horizontal(local_text, main_window.color1 - 2 - (main_window.color1 > main_window.color2), local_starting_point, Text::TextAlign::left, true, main_window) + 2;
 				if (main_window.color1 >= main_window.color2)
 				{
 					++main_window.color1;
 				}
-				main_window.Title({ static_cast<short>(main_window.GetWidth()) / 2, 0 }, Text::TextAlign::center);
+				main_window.Title({ game_window_center, 0 }, Text::TextAlign::center);
 				break;
 			}
-			case 1:
+			case 1://set secondary color
 			{
-				//list of colours from 2 to 17
 				std::vector<std::string> local_text = LanguagePack::vector_of_strings[LanguagePack::colors];
-				const COORD local_starting_point = { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options][main_menu_position].size()) / 2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
-				
-				//erasing color that is already used by second colour
-				//program crashes when local_text.begin() is equal to local.text.end() -1 so inline if is nessesary. Substracting by 2 to synchronizewith list.
-				auto text_to_erase = main_window.color1 < 15 ? local_text.begin() + main_window.color1 - 2 : local_text.end()-1;
-				local_text.erase(text_to_erase);
-
-				//setting new colour
+				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
+				local_text.erase(local_text.begin() + (main_window.color1 - 2));
 				main_window.color2 = Text::Choose::Horizontal(local_text, main_window.color2 - 2 - (main_window.color2 > main_window.color1), local_starting_point, Text::TextAlign::left, true, main_window) + 2;
 				if (main_window.color2 >= main_window.color1)
 				{
 					++main_window.color2;
 				}
-				main_window.Title({ static_cast<short>(main_window.GetWidth()) / 2, 0 }, Text::TextAlign::center);
+				main_window.Title({ game_window_center, 0 }, Text::TextAlign::center);
 				break;
 			}
-			case 2:
+			case 2://set music
 			{
-				const COORD local_starting_point = { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options][main_menu_position].size())/2 +3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
+				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 				std::vector<std::string> text = { LanguagePack::vector_of_strings[LanguagePack::on_off][1] };
 				for (int i = 1; i < 11; ++i)
 				{
@@ -74,17 +63,16 @@ void GameMode::Options(ToT_Window &main_window)
 				main_window.SetMusic(static_cast<float>(Text::Choose::Horizontal(text, static_cast<int>(main_window.GetMusicVolume()*10), local_starting_point, Text::TextAlign::left, true, main_window)) / 10.0f);
 				break;
 			}
-			case 3:
+			case 3://set hamachi flag
 			{
 				
-				const COORD local_starting_point = { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options][main_menu_position].size())/2 + 3 , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
+				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				main_window.SetHamachiConnectionFlag(!(Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::on_off], !main_window.GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, true, main_window)));
 				break;
 			}
-			case 4:
+			case 4://clearing
 			{
 				HANDLE handle = main_window.GetHandle();
-				//clearing options
 				for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options].size()); ++i)
 				{
 					SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size())), starting_point.Y + i * spacing });
@@ -106,10 +94,11 @@ void GameMode::Ranking(ToT_Window &main_window)
 void GameMode::Game(const bool multiplayer, ToT_Window &main_window)
 {
 	std::shared_ptr<SinglePlayer> network_role;
+	const short game_window_center = static_cast<short>(main_window.GetWidth() / 2);
 
 	if (multiplayer)
 	{	
-		switch (Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::multiplayer], 0, { static_cast<short>(main_window.GetWidth()) / 2, 25 }, 3, Text::TextAlign::center, true, main_window))
+		switch (Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::multiplayer], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, main_window))
 		{
 			case 0:
 			{
@@ -153,8 +142,7 @@ void GameMode::Game(const bool multiplayer, ToT_Window &main_window)
 
 		for (int turn = 0; network_role->VisionBox(turn); turn++)
 		{
-			//attacking start with second turn 
-			if (turn > 0)
+			if (turn > 0)//attacks start with second turn 
 			{
 				network_role->Attack();
 			}
@@ -169,5 +157,5 @@ void GameMode::Game(const bool multiplayer, ToT_Window &main_window)
 		_getch();
 	}
 	system("cls");
-	main_window.Title({ static_cast<short>(main_window.GetWidth()) / 2, 0 }, Text::TextAlign::center);
+	main_window.Title({ game_window_center, 0 }, Text::TextAlign::center);
 }
