@@ -4,6 +4,8 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 {
 	playable = true;
 	ranking_found = true;
+	const std::string error_msg = " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::missing_file];
+	const char* errot_title = LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str();
 
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
 	{
@@ -11,12 +13,12 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	}
 	if (!SaveFileNames(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
 	{
-		MessageBox(0, (ExtName::tire +" "+ LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::missing_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str(), 0);
+		MessageBox(0, (ExtName::tire +error_msg).c_str(), errot_title, 0);
 		playable = false;
 	}
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
 	{
-		MessageBox(0, (ExtName::tour + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::missing_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str(), 0);
+		MessageBox(0, (ExtName::tour + error_msg).c_str(), errot_title, 0);
 		playable = false;
 	}
 	if (!ValidateGameFiles())
@@ -28,11 +30,11 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 }
 void ToT_Window::LoadAtributes()
 {
+	std::fstream fvar;
 	hamachi_enabled = true;
 	music_volume = 1.0f;
 	ais = 0;
 
-	std::fstream fvar;
 	fvar.open(FolderName::main + "\\" + FileName::config, std::ios::in);
 	fvar >> color1;
 	fvar >> color2;
@@ -71,40 +73,38 @@ bool ToT_Window::ValidateGameFiles()
 bool ToT_Window::ValidateTourFiles()
 {
 	std::vector<std::string> tours = GetTourNames();
-	bool invalid = false;
+	const short number_of_tours = static_cast<short>(tours.size());
+	bool valid = number_of_tours;
 
-	if (static_cast<int>(tours.size()) == 0)
-	{
-		invalid = true;
-	}
-	for (int i = 0; i < static_cast<int>(tours.size()); ++i)
+	for (short i = 0; i < number_of_tours; ++i)
 	{
 		std::vector<std::string> params = GetTourParameters(tours[i], 0, INT_MAX);
-		if (static_cast<int>(params.size()) < 1)
+		if (static_cast<short>(params.size()) < 1)
 		{
-			invalid = true;
+			valid = false;
 			break;
 		}
-		for (int j = 0; j < static_cast<int>(params.size()); ++j)
+		for (short j = 0; j < static_cast<short>(params.size()); ++j)
 		{
-			if (params[j][0] - 48 < 0 || params[j][0] - 48 > TireModifiers::last)
+			const short size_of_segment = static_cast<short>(params[j].size());
+			if (params[j][0] - 48 < 0 || params[j][0] - 48 >= TireModifiers::last)//terrain type validation
 			{
-				invalid = true;
+				valid = false;
 				break;
 			}
-			else if (static_cast<int>(params[j].size()) > 5)
+			else if (size_of_segment > 11)//checking if safe speed isn't exceeding speed of light
 			{
-				invalid = true;
+				valid = false;
 				break;
 			}
-			else if (static_cast<int>(params[j].size()) != 1 && atoi(params[j].substr(1, static_cast<int>(params[j].size()) - 1).c_str()) < 1)
+			else if (size_of_segment != 1 && atoi(params[j].substr(1, size_of_segment - 1).c_str()) < 1)//checking if safe speed is at least 1
 			{
-				invalid = true;
+				valid = false;
 				break;
 			}
 		}
 	}
-	if (invalid)
+	if (!valid)
 	{
 		MessageBox(0, (FolderName::car + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
@@ -113,36 +113,23 @@ bool ToT_Window::ValidateTourFiles()
 }
 bool ToT_Window::ValidateCarFiles()
 {
-	std::vector<std::string> tours = GetTourNames();
-	bool invalid = false;
+	const std::vector<std::string> tours = GetTourNames();
+	bool valid = true;
 
-	for (int i = 0; i < static_cast<int>(tours.size()); ++i)
+	for (short i = 0; i < static_cast<short>(tours.size()); ++i)
 	{
-		std::vector<std::string> cars = GetCarNames(tours[i]);
-		if (static_cast<int>(cars.size()) == 0)
+		const std::vector<std::string> cars = GetCarNames(tours[i]);
+		valid *= static_cast<bool>(cars.size());//checking if there is at least one car that can be driven for any given tour
+		for (short j = 0; j < static_cast<short>(cars.size()); ++j)
 		{
-			invalid = true;
-			break;
-		}
-		for (int j = 0; j < static_cast<int>(cars.size()); ++j)
-		{
-			std::vector<int> params = GetCarParameters(cars[j]);
-			if (static_cast<int>(params.size()) != CarModifiers::last)
+			if (static_cast<short>(GetCarParameters(cars[j]).size()) != CarModifiers::last)//checking if car has all parameters set
 			{
-				invalid = true;
+				valid = false;
 				break;
-			}
-			for (int j = 0; j < CarModifiers::last; ++j)
-			{
-				if (params[j] < 1)
-				{
-					invalid = true;
-					break;
-				}
 			}
 		}
 	}
-	if (invalid)
+	if (!valid)
 	{
 		MessageBox(0, (FolderName::car + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
@@ -151,41 +138,38 @@ bool ToT_Window::ValidateCarFiles()
 }
 bool ToT_Window::ValidateTireFiles()
 {
-	std::vector<std::string> tires = GetTireNames();
-	bool invalid = false;
+	const std::vector<std::string> tires = GetTireNames();
+	bool valid = static_cast<bool>(tires.size());
 	int x = 0;
 	int y = 0;
 
-	if (static_cast<int>(tires.size()) == 0)
+	for (short i = 0; i < static_cast<short>(tires.size()); ++i)
 	{
-		invalid = true;
-	}
-	for (int i = 0; i < static_cast<int>(tires.size()); ++i)
-	{
-		std::vector<std::string> params = GetTireParameters(tires[i]);
-		if (static_cast<int>(params.size()) != TireModifiers::last)
+		const std::vector<std::string> params = GetTireParameters(tires[i]);
+		if (static_cast<short>(params.size()) != TireModifiers::last)//checking if tires have all parameters set
 		{
-			invalid = true;
+			valid = false;
 			break;
 		}
-		for (int j = 0; j < TireModifiers::last; ++j)
+		for (short j = 0; j < TireModifiers::last; ++j)//getting tires attributes
 		{
-			for (int k = 0; k < static_cast<int>(params[j].size()); ++k)
+			short tire_param_size = static_cast<short>(params[j].size());
+			for (short k = 0; k < tire_param_size; ++k)
 			{
 				if (params[j][k] == 'x')
 				{
-					x = static_cast<int>(atoi(params[j].substr(0, k).c_str()));
-					y = static_cast<int>(atoi(params[j].substr(k + 1, static_cast<int>(params[j].size()) - k - 1).c_str()));
+					x = atoi(params[j].substr(0, k).c_str());
+					y = atoi(params[j].substr(k + 1, tire_param_size - k - 1).c_str());
 				}
 			}
 		}
-		if (x*y == 0 || x > y)
+		if (x*y == 0 || x > y)//checking if tires attributes make sense
 		{
-			invalid = true;
+			valid = false;
 			break;
 		}
 	}
-	if (invalid)
+	if (!valid)
 	{
 		MessageBox(0, (FolderName::tire + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
 		return false;
@@ -259,9 +243,9 @@ std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int pos
 }
 std::vector<int> ToT_Window::GetCarParameters(const std::string path)
 {
-	std::vector<std::string> data = ReadFile(FolderName::car + "\\" + path);
+	const std::vector<std::string> data = ReadFile(FolderName::car + "\\" + path);
 	std::vector<int> car_parameters;
-	for (int i = 0; i < static_cast<int>(data.size()); ++i)
+	for (short i = 0; i < CarModifiers::last; ++i)
 	{
 		if (atoi(data[i].c_str()) < 1 || atoi(data[i].c_str()))
 		{
@@ -288,38 +272,41 @@ void ToT_Window::SaveAtributes()
 }
 void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
 {
-	const COORD orientation_point = { starting_point.X - static_cast<short>((float)text_align / 2 * LanguagePack::vector_of_strings[LanguagePack::title_main][0].size()), starting_point.Y };
+	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::vector_of_strings[LanguagePack::title_main][0].size()), starting_point.Y };
 	const short decoration_distance = 5;
 	const std::string main_decoration = "{ }";
 	const std::string additional_decoration = "*";
+	const short main_title_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size());
+	const short additional_title_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional].size());
 	//Main text
 	SetConsoleTextAttribute(window_handle, color2);
-	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size()); ++i)
+	for (short i = 0; i < main_title_size; ++i)
 	{
 		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
 		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_main][i];
 	}
 	SetConsoleTextAttribute(window_handle, color1);
-	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional].size()); ++i)
+	for (short i = 0; i < additional_title_size; ++i)
 	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size() / 2 - LanguagePack::vector_of_strings[LanguagePack::title_additional][i].size() / 2), orientation_point.Y + i + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size()) / 3 });
+		const short main_line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size());
+		const short additional_line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional][i].size());
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + main_line_size / 2 - additional_line_size/ 2, orientation_point.Y + i + main_title_size / 3 });
 		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_additional][i];
 	}
 	//Decoration
-	SetConsoleTextAttribute(window_handle, color2);
-	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size()); ++i)
+	for (short i = 0; i < main_title_size; ++i)
 	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) - i % 2, orientation_point.Y + i });
+		const short decoration_size = static_cast<short>(decoration_distance + main_decoration.size());
+		const short line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size());
+		SetConsoleTextAttribute(window_handle, color2);
+		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size - i % 2, orientation_point.Y + i });
 		std::cout << main_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size() + decoration_distance - 1) - i % 2, orientation_point.Y + i });
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - 1 - i % 2, orientation_point.Y + i });
 		std::cout << main_decoration;
-	}
-	SetConsoleTextAttribute(window_handle, color1);
-	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size()); ++i)
-	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X - static_cast<short>(decoration_distance + main_decoration.size()) + 1 - i % 2, orientation_point.Y + i });
+		SetConsoleTextAttribute(window_handle, color1);
+		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size + 1 - i % 2, orientation_point.Y + i });
 		std::cout << additional_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size() + decoration_distance - 1) + 1 - i % 2, orientation_point.Y + i });
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - i % 2, orientation_point.Y + i });
 		std::cout << additional_decoration;
 	}
 }
