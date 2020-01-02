@@ -137,10 +137,10 @@ namespace FileName
 }
 namespace ExtName
 {
-	const std::string tour = "tour";
-	const std::string car = "car";
-	const std::string tire = "tire";
-	const std::string ranking = "rank";
+	const std::string tour = ".tour";
+	const std::string car = ".car";
+	const std::string tire = ".tire";
+	const std::string ranking = ".rank";
 }
 namespace GameValues
 {

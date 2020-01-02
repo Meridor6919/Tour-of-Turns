@@ -197,6 +197,14 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 		std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border];
 	}
 }
+void SinglePlayer::RemoveExtension(std::vector<std::string>& vector, std::string extension)
+{
+	short extension_size = static_cast<short>(extension.size());
+	for (int i = 0; i < static_cast<int>(vector.size()); ++i)
+	{
+		vector[i] = vector[i].substr(0, static_cast<short>(vector[i].size())-extension_size);
+	}
+}
 void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear)
 {
 	const std::vector<int> car_params = main_window->GetCarParameters(car_path);
@@ -259,17 +267,20 @@ bool SinglePlayer::GameLobby()
 	const short spacing = 3;
 	short main_menu_position = 0;
 	std::string name = main_window->GetName();
-	const std::vector<std::string> tours = main_window->GetTourNames();
-	const std::vector<std::string> tires = main_window->GetTireNames();
+	std::vector<std::string> tours = main_window->GetTourNames();
+	std::vector<std::string> tires = main_window->GetTireNames();
 	std::vector<std::string> cars = main_window->GetCarNames(tours[0]);
+	RemoveExtension(tours, ExtName::tour);
+	RemoveExtension(tires, ExtName::tire);
+	RemoveExtension(cars, ExtName::car);
 	int ais = main_window->GetAIs();
 	int tires_pos = 0;
 	int cars_pos = 0;
 	int tours_pos = 0;
 
-	ShowCarParameters(cars[cars_pos]);
-	ShowTiresParameters(tires[tires_pos]);
-	ShowTourParameters(tours[tours_pos]);
+	ShowCarParameters(cars[cars_pos]+ExtName::car);
+	ShowTiresParameters(tires[tires_pos]+ ExtName::tire);
+	ShowTourParameters(tours[tours_pos]+ ExtName::tour);
 
 	while (main_menu_position != 5 || static_cast<int>(cars.size()) == 0)
 	{
@@ -297,29 +308,30 @@ bool SinglePlayer::GameLobby()
 			tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
 			if (i != tours_pos)
 			{
-				ShowCarParameters(cars[cars_pos], true);
-				cars = main_window->GetCarNames(tours[tours_pos]);
+				ShowCarParameters(cars[cars_pos] + ExtName::car, true);
+				cars = main_window->GetCarNames(tours[tours_pos]+ExtName::tour);
+				RemoveExtension(cars, ExtName::car);
 				cars_pos = 0;
-				ShowCarParameters(cars[cars_pos]);
+				ShowCarParameters(cars[cars_pos] + ExtName::car);
 			}
-			ShowTourParameters(tours[i], true);
-			ShowTourParameters(tours[tours_pos]);
+			ShowTourParameters(tours[i] + ExtName::tour, true);
+			ShowTourParameters(tours[tours_pos] + ExtName::tour);
 			break;
 		}
 		case 3://choosing car
 		{
 			int i = cars_pos;
 			cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
-			ShowCarParameters(cars[i], true);
-			ShowCarParameters(cars[cars_pos]);
+			ShowCarParameters(cars[i] + ExtName::car, true);
+			ShowCarParameters(cars[cars_pos] + ExtName::car);
 			break;
 		}
 		case 4://choosing tires
 		{
 			int i = tires_pos;
 			tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window);
-			ShowTiresParameters(tires[i], true);
-			ShowTiresParameters(tires[tires_pos]);
+			ShowTiresParameters(tires[i]+ExtName::tire, true);
+			ShowTiresParameters(tires[tires_pos]+ ExtName::tire);
 			break;
 		}
 		}
@@ -335,10 +347,10 @@ bool SinglePlayer::GameLobby()
 	main_window->SetAIs(ais);
 	main_window->SetName(name);
 	main_window->SaveAtributes();
-	ShowTiresParameters(tires[tires_pos], true);
-	ShowCarParameters(cars[cars_pos], true);
-	ShowTourParameters(tours[tours_pos], true);
-	GetParticipants(name, tours[tours_pos], cars[cars_pos], tires[tires_pos]);
+	ShowTiresParameters(tires[tires_pos]+ ExtName::tire, true);
+	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
+	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
+	GetParticipants(name, tours[tours_pos] + ExtName::tour, cars[cars_pos] + ExtName::car, tires[tires_pos] + ExtName::tire);
 	return true;
 }
 void SinglePlayer::GetParticipants(const std::string name, const std::string tour, const std::string car, const std::string tire)

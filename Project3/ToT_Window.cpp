@@ -191,7 +191,7 @@ std::vector<std::string> ToT_Window::ReadFile(const std::string path)
 }
 bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const std::string ext)
 {
-	dst_path = "dir " + src_path + "\\*." + ext + " > " + dst_path + " /b";
+	dst_path = "dir " + src_path + "\\*" + ext + " > " + dst_path + " /b";
 	if (system(dst_path.c_str()))
 	{
 		//Clearing error message that shows in a console window by default when files not found
