@@ -2,16 +2,17 @@
 
 int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window &main_window)
 {
-	HANDLE handle = main_window.GetHandle();
-	int color1 = main_window.color1;
-	int color2 = main_window.color2;
+	const HANDLE handle = main_window.GetHandle();
+	const int color1 = main_window.color1;
+	const int color2 = main_window.color2;
 	char button;
 
 	do
 	{
+		const float line_size = static_cast<float>(text[starting_position].size());
 		//Showing text with current index
 		SetConsoleTextAttribute(handle, color1);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y });
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
 		std::cout << "< ";
 		SetConsoleTextAttribute(handle, color2);
 		std::cout << text[starting_position];
@@ -21,11 +22,11 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		button = _getch();
 
 		//Clearing text from the screen
-		for (int i = 0; i < static_cast<int>(text[starting_position].size()) + 4; ++i)
+		for (float i = 0; i < line_size; ++i)
 		{
 			std::cout << "\b";
 		}
-		for (int i = 0; i < static_cast<float>(text[starting_position].size()) + 4; ++i)
+		for (float i = 0; i < line_size + 4; ++i)
 		{
 			std::cout << " ";
 		}
@@ -45,24 +46,25 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 }
 int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_position, const COORD starting_point, const short spacing, const TextAlign text_align, const bool clear_after, Window &main_window)
 {
-	HANDLE handle = main_window.GetHandle();
-	int color1 = main_window.color1;
-	int color2 = main_window.color2;
+	const HANDLE handle = main_window.GetHandle();
+	const int color1 = main_window.color1;
+	const int color2 = main_window.color2;
+	const int text_size = static_cast<int>(text.size());
+	const float text_align_float = static_cast<float>(text_align);
 	char button;
-	int text_size = static_cast<int>(text.size());
 
 	//Showing text on the screen
 	SetConsoleTextAttribute(handle, color1);
 	for (short i = 0; i < text_size; ++i)
 	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
 		std::cout << text[i];
 	}
 	do
 	{
 		//Changing active text's color
 		SetConsoleTextAttribute(handle, color2);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
 		std::cout << text[starting_position];
 
 		button = _getch();
@@ -70,7 +72,7 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 		//Changing color of active text back to normal
 		//I assume that user will press the correct button and position will change
 		SetConsoleTextAttribute(handle, color1);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
 		std::cout << text[starting_position];
 
 		//Changing the index when up or down arrow button is pressed
@@ -94,7 +96,7 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 	{
 		for (short i = 0; i < text_size; ++i)
 		{
-			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
+			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
 			for (int j = 0; j < static_cast<int>(text[i].size()); ++j)
 			{
 				std::cout << " ";
@@ -104,7 +106,7 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 	else
 	{
 		SetConsoleTextAttribute(handle, color2);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
 		std::cout << text[starting_position];
 	}
 	return starting_position;
@@ -161,8 +163,8 @@ void Text::OrdinaryText(std::vector<std::string> text, const std::vector<Ordinar
 {
 	HANDLE handle = main_window.GetHandle();
 	const int text_size = static_cast<int>(text.size());
+	const short starting_pos = static_cast<short>(main_window.GetWidth() / 2 * text_align);
 	short current_position;
-	short starting_pos = static_cast<short>(main_window.GetWidth() / 2 * text_align);
 
 
 	SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[0].size())), position });
@@ -208,7 +210,7 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 {
 	HANDLE handle = main_window.GetHandle();
 	std::vector<std::string>::iterator it = text.begin();
-	int text_size = static_cast<int>(text.size());
+	const int text_size = static_cast<int>(text.size());
 	for (int i = 0; i*texts_per_row < text_size; ++i)
 	{
 		//Setting right color

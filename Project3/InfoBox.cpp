@@ -13,7 +13,7 @@ void InfoBox::Push(const std::string special_text, const std::string text)
 	//Pushing new text into infobox
 	info.push_back(special_text + "  " + text);	
 
-	HANDLE handle = main_window->GetHandle();
+	const HANDLE handle = main_window->GetHandle();
 	std::vector<std::string>::iterator it = info.begin();
 
 	//Clearing visible text from infobox to update it
@@ -42,7 +42,7 @@ void InfoBox::Push(const std::string special_text, const std::string text)
 }
 void InfoBox::Clear()
 {
-	HANDLE handle = main_window->GetHandle();
+	const HANDLE handle = main_window->GetHandle();
 	std::vector<std::string>::iterator it = info.begin();
 
 	for (short i = 0; it != info.end(); ++it, ++i)
