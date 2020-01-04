@@ -22,13 +22,16 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		button = _getch();
 
 		//Clearing text from the screen
-		for (float i = 0; i < line_size; ++i)
+		if (button != 13 || !clear_after)
 		{
-			std::cout << "\b";
-		}
-		for (float i = 0; i < line_size + 4; ++i)
-		{
-			std::cout << " ";
+			for (float i = 0; i < line_size + 4; ++i)
+			{
+				std::cout << "\b";
+			}
+			for (float i = 0; i < line_size + 4; ++i)
+			{
+				std::cout << " ";
+			}
 		}
 		//Changing index when left or right arrow button is pressed
 		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 75 && starting_position > 0)
@@ -159,16 +162,11 @@ int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_a
 	}
 	return number;
 }
-void Text::OrdinaryText(std::vector<std::string> text, const std::vector<OrdinaryText_atributes> atribute, const TextAlign text_align, const short spacing, const short position, Window &main_window, const bool clearing)
+void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const short position, Window &main_window, const bool clearing)
 {
 	HANDLE handle = main_window.GetHandle();
 	const int text_size = static_cast<int>(text.size());
 	const short starting_pos = static_cast<short>(main_window.GetWidth() / 2 * text_align);
-	short current_position;
-
-
-	SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(text[0].size())), position });
-	current_position = position;
 
 	//Changing all chars in all members of the text array to ' ' if flag is active
 	if (clearing)
@@ -181,29 +179,19 @@ void Text::OrdinaryText(std::vector<std::string> text, const std::vector<Ordinar
 			}
 		}
 	}
-	//Showing the text
-	for (int i = 0; i < text_size; ++i)
+	if (text_size % 2)
 	{
-		if (atribute[i] == color2)
-		{
-			SetConsoleTextAttribute(handle, main_window.color2);
-		}
-		else
-		{
-			SetConsoleTextAttribute(handle, main_window.color1);
-		}
+		text.push_back("");
+	}
+	//Showing the text
+	for (short i = 0; i < text_size; i+=2)
+	{
+		const short line_size = static_cast<short>(text[i].size()) + static_cast<short>(text[i + 1].size());
+		SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), position+i/2*spacing });
+		SetConsoleTextAttribute(handle, main_window.color2);
 		std::cout << text[i];
-		if (atribute[i] == endl && i < text_size - 1)
-		{
-			int next_line_size = static_cast<int>(text[i + 1].size());
-
-			for (int j = 1; atribute[i + j] != endl; ++j)
-			{
-				next_line_size += static_cast<int>(text[i + j + 1].size());
-			}
-			current_position += spacing;
-			SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>(static_cast<float>(text_align) / 2.0f * next_line_size), current_position });
-		}
+		SetConsoleTextAttribute(handle, main_window.color1);
+		std::cout << text[i + 1];
 	}
 }
 void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, const bool clearing)

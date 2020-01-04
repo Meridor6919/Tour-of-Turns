@@ -33,6 +33,11 @@ int main()
 			}
 			case 2:
 			{
+				GameMode::Info(game_window);
+				break;
+			}
+			case 3:
+			{
 				if (game_window.RankingFound())
 				{
 					GameMode::Ranking(game_window);
@@ -43,17 +48,17 @@ int main()
 				}
 				break;
 			}
-			case 3:
+			case 4:
 			{
 				GameMode::Options(game_window);
 				break;
 			}
-			case 4:
+			case 5:
 			{
 				GameMode::Credits(game_window);
 				break;
 			}
-			case 5:
+			case 6:
 			{
 				WSACleanup();
 				exit(0);

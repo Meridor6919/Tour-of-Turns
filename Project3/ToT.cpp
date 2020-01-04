@@ -3,13 +3,10 @@
 void GameMode::Credits(ToT_Window &main_window)
 {
 	HANDLE handle = main_window.GetHandle();
-	const std::vector<Text::OrdinaryText_atributes> credits_atribute = { Text::endl, Text::endl, Text::endl, Text::color2, Text::endl,
-												Text::endl, Text::color2, Text::endl, Text::color2, Text::endl,
-												Text::endl, Text::color2, Text::endl };
 
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], credits_atribute, Text::TextAlign::center, 3, 25, main_window);
+	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], Text::TextAlign::center, 3, 25, main_window);
 	_getch();
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], credits_atribute, Text::TextAlign::center, 3, 25, main_window, true);
+	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], Text::TextAlign::center, 3, 25, main_window, true);
 }
 void GameMode::Options(ToT_Window &main_window)
 {
@@ -90,6 +87,23 @@ void GameMode::Options(ToT_Window &main_window)
 void GameMode::Ranking(ToT_Window &main_window)
 {
 	//TODO ranking should show players accuracy in decision making instead of showing lucky and stupid ones that scores the highest
+}
+void GameMode::Info(ToT_Window & main_window)
+{
+	HANDLE handle = main_window.GetHandle();
+	int pos = 0;
+	while (true)
+	{
+		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + pos], Text::TextAlign::center, 3, 28, main_window);
+		int i = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::game_information], 0, { static_cast<short>(main_window.GetWidth() / 2), 25 }, Text::TextAlign::center, false, main_window);
+		if (i == pos)
+		{
+			break;
+		}
+		pos = i;
+		
+	}
+	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction], Text::TextAlign::center, 3, 28, main_window, true);
 }
 void GameMode::Game(const bool multiplayer, ToT_Window &main_window)
 {
