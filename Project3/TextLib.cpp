@@ -22,7 +22,7 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		button = _getch();
 
 		//Clearing text from the screen
-		if (button != 13 || !clear_after)
+		if (button != 13 || clear_after)
 		{
 			for (float i = 0; i < line_size + 4; ++i)
 			{
