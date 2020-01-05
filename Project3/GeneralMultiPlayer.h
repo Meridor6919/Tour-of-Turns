@@ -16,11 +16,9 @@ namespace GeneralMultiPlayer {
 
 	//Container that saves messages received from clients to process them when the time comes
 	class RequestHandler {
-		int number_of_clients;
-		std::vector<std::vector<std::string>> requests;
-
+		
+		std::map<int, std::vector<std::string>> requests;
 	public:
-		RequestHandler(const int number_of_clients);
 		void SaveMsg(const std::string msg, const int client_id);
 		std::vector<std::string>* GetMsgsPtr(const int client_id);
 	};

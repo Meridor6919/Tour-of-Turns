@@ -114,7 +114,6 @@ bool Host::StartNetwork()
 				show_clients.join();
 				broadcast.join();
 				accept_clients.join();
-				request_handler = new GeneralMultiPlayer::RequestHandler(clients->size());
 				for (short i = 0; i < static_cast<int>((*clients).size()+1); i++)
 				{
 					SetConsoleCursorPosition(handle, { 0, 22 + 2 * i });

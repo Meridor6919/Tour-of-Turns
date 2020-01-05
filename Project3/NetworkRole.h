@@ -16,6 +16,7 @@ protected:
 	std::string current_field;
 	std::string tour;
 	short take_action_position = 0;
+	std::unique_ptr<GeneralMultiPlayer::RequestHandler> request_handler;
 
 	int NumericalAction(const COORD coords);
 	int BinaryAction(const COORD coords);
@@ -50,7 +51,6 @@ public:
 class Host : public SinglePlayer {
 
 	GeneralMultiPlayer::Host *host;
-	GeneralMultiPlayer::RequestHandler *request_handler;
 	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
 	bool StartNetwork();
 	int stage;

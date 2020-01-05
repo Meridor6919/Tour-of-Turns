@@ -259,6 +259,8 @@ SinglePlayer::SinglePlayer(ToT_Window &main_window)
 	this->main_window = &main_window;
 	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
 	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, main_window);
+	request_handler = std::make_unique<GeneralMultiPlayer::RequestHandler>();
+
 }
 bool SinglePlayer::GameLobby()
 {
