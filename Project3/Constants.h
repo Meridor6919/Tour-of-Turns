@@ -80,6 +80,7 @@ namespace ErrorTitles
 		unplayable,
 		missing_file,
 		corrupted_file,
+		pipe_error,
 		last
 	};
 }
@@ -91,6 +92,7 @@ namespace ErrorMsgs
 		missing_file,
 		ranking_not_present,
 		corrupted_file,
+		pipe_error,
 		last
 	};
 }

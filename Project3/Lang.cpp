@@ -45,8 +45,8 @@ namespace LanguagePack
 			"                               ", "                               ", "                               ", "                               ", "_______        ___    __   __  ", "   |    |   | |   |  |  | |    ",
 			"   |    |   | |___|  |  | |__  ", "   |    |   | |  \\   |  |    | ", "   |    |___| |   \\  |  | ___| "},
 		{ " ___   ___", "|   | |   ", "|   | |_  ", "|   | |   ", "|___| |   "},
-		{ "You can't start new race with current game state, please repair files or reinstall game", "Files not found, please reinstall your game or repair missing files" , "There are no ranking files" , " cannot be read, please repair or delete corrupted files" },
-		{ "Unplayable Game",  "Missing Files", "Corupted Files" },
+		{ "You can't start new race with current game state, please repair files or reinstall game", "Files not found, please reinstall your game or repair missing files" , "There are no ranking files" , " cannot be read, please repair or delete corrupted files", "Please call a plumber" },
+		{ "Unplayable Game",  "Missing Files", "Corupted Files", "Pipe error" },
 		{ "Racer", " - Do you really want to do this ? (Y/N) ", "RIP, ", " dezintegrated his vehichle...","Don't attack" ," - You can't do this because you aren't moving...",
 			"META" , " lost " , "required - ", " highest roll - ", " lowest roll - ", "in result of other racers behaviour", " speed,", "________________________________________________________  " }
 	};

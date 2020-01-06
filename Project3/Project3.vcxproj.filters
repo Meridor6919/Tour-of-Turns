@@ -88,6 +88,9 @@
     <ClCompile Include="Lang.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="AIConnector.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralMultiPlayer.h">
@@ -112,6 +115,9 @@
       <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="WavTransformer.h">
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="AIConnector.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>

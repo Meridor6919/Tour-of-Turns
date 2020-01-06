@@ -116,6 +116,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIConnector.cpp" />
     <ClCompile Include="Lang.cpp" />
     <ClCompile Include="NetworkRoleClient.cpp" />
     <ClCompile Include="GeneralMultiPlayerGeneric.cpp" />
@@ -135,6 +136,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIConnector.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GeneralMultiPlayer.h" />
     <ClInclude Include="WavTransformer.h" />
