@@ -90,18 +90,28 @@ void GameMode::Ranking(ToT_Window &main_window)
 }
 void GameMode::Info(ToT_Window & main_window)
 {
-	HANDLE handle = main_window.GetHandle();
-	int pos = 0;
+	const HANDLE handle = main_window.GetHandle();
+	const Text::TextAlign text_align = Text::TextAlign::center;
+	const short spacing = 3;
+	const short text_y_pos = 28;
+	const COORD title_pos = { static_cast<short>(main_window.GetWidth() / 2), text_y_pos-3 };
+	static int pos = 0;
 	while (true)
 	{
-		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + pos], Text::TextAlign::center, 3, 28, main_window);
-		int i = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::game_information], 0, { static_cast<short>(main_window.GetWidth() / 2), 25 }, Text::TextAlign::center, false, main_window);
-		if (i == pos)
+		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + pos], text_align, spacing, text_y_pos, main_window);
+		int temp_pos = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::game_information], pos, title_pos, text_align, false, main_window);
+		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + pos], text_align, spacing, text_y_pos, main_window, true);
+		if (temp_pos == pos)
 		{
+			const short text_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_information][pos].size());
+			SetConsoleCursorPosition(handle, {title_pos.X-text_size/2*text_align, title_pos.Y });
+			for (int j = 0; j < text_size + 4; ++j)
+			{
+				std::cout << " ";
+			}
 			break;
 		}
-		pos = i;
-		
+		pos = temp_pos;
 	}
 	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction], Text::TextAlign::center, 3, 28, main_window, true);
 }
