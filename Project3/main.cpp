@@ -6,6 +6,7 @@
 int main()
 {
 	ToT_Window game_window("Tour of Turns", 15, 10, 200, 70);
+	ToT game(&game_window);
 	const short game_window_center = static_cast<short>(game_window.GetWidth()) / 2;
 	short main_menu_position = 0;
 
@@ -23,7 +24,7 @@ int main()
 			{
 				if (game_window.IsPlayable())
 				{
-					GameMode::Game(main_menu_position, game_window);
+					game.Game(main_menu_position);
 				}
 				else
 				{
@@ -33,14 +34,14 @@ int main()
 			}
 			case 2:
 			{
-				GameMode::Info(game_window);
+				game.Info();
 				break;
 			}
 			case 3:
 			{
 				if (game_window.RankingFound())
 				{
-					GameMode::Ranking(game_window);
+					game.Ranking();
 				}
 				else
 				{
@@ -50,12 +51,12 @@ int main()
 			}
 			case 4:
 			{
-				GameMode::Options(game_window);
+				game.Options();
 				break;
 			}
 			case 5:
 			{
-				GameMode::Credits(game_window);
+				game.Credits();
 				break;
 			}
 			case 6:

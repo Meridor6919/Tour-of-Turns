@@ -4,11 +4,22 @@
 #include "ToT_Window.h"
 #include "Constants.h"
 
-namespace GameMode 
-{
-	void Credits(ToT_Window &main_window);
-	void Options(ToT_Window &main_window);
-	void Ranking(ToT_Window &main_window);
-	void Info(ToT_Window &main_window);
-	void Game(const bool multiplayer, ToT_Window &main_window);
-}
+
+class ToT {
+	ToT_Window* main_window;
+	HANDLE handle;
+	short game_window_center;
+	short info_pos = 0;
+
+public:
+
+	ToT(ToT_Window*main_window);
+	void Credits();
+	void Options();
+	void Ranking();
+	void Info();
+	void Game(const bool multiplayer);
+
+
+
+};
