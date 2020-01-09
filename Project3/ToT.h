@@ -6,20 +6,21 @@
 
 
 class ToT {
-	ToT_Window* main_window;
+	std::shared_ptr<ToT_Window> main_window;
 	HANDLE handle;
 	short game_window_center;
 	short info_pos = 0;
+	short main_menu_position = 0;
 
 public:
 
-	ToT(ToT_Window*main_window);
+	ToT();
 	void Credits();
 	void Options();
 	void Ranking();
 	void Info();
 	void Game(const bool multiplayer);
-
+	void MainMenu();
 
 
 };

@@ -1,10 +1,64 @@
 #include "ToT.h"
 
-ToT::ToT(ToT_Window *main_window)
+ToT::ToT()
 {
-	this->main_window = main_window;
+	this->main_window = std::make_shared<ToT_Window>("Tour of Turns", 15, 10, 200, 70);
 	handle = main_window->GetHandle();
 	game_window_center = static_cast<short>(main_window->GetWidth()) / 2;
+}
+void ToT::MainMenu()
+{
+	main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+	while (true)
+	{
+		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::main_menu], main_menu_position, { game_window_center + 1, 25 }, 3, Text::TextAlign::center, true, *main_window))
+		{
+		case 0:
+		case 1:
+		{
+			if (main_window->IsPlayable())
+			{
+				Game(main_menu_position);
+			}
+			else
+			{
+				MessageBox(0, (LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::unplayable]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::unplayable].c_str(), 0);
+			}
+			break;
+		}
+		case 2:
+		{
+			Info();
+			break;
+		}
+		case 3:
+		{
+			if (main_window->RankingFound())
+			{
+				Ranking();
+			}
+			else
+			{
+				MessageBox(0, (LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::ranking_not_present]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str(), 0);
+			}
+			break;
+		}
+		case 4:
+		{
+			Options();
+			break;
+		}
+		case 5:
+		{
+			Credits();
+			break;
+		}
+		case 6:
+		{
+			return;
+		}
+		}
+	}
 }
 void ToT::Credits()
 {
@@ -130,6 +184,7 @@ void ToT::Game(const bool multiplayer)
 				}
 				catch (int err)
 				{
+					UNREFERENCED_PARAMETER(err);
 					return;
 				}
 				break;
@@ -142,6 +197,7 @@ void ToT::Game(const bool multiplayer)
 				}
 				catch (int err)
 				{
+					UNREFERENCED_PARAMETER(err);
 					return;
 				}
 
@@ -181,3 +237,4 @@ void ToT::Game(const bool multiplayer)
 	system("cls");
 	main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
 }
+
