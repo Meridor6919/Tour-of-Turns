@@ -12,6 +12,7 @@ namespace LanguagePack
 		main_menu,
 		game_information,
 		introduction,
+		tour_information,
 		game_lobby,
 		multiplayer,
 		game_options,
