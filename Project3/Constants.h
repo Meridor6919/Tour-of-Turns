@@ -13,6 +13,7 @@ namespace LanguagePack
 		game_information,
 		introduction,
 		tour_information,
+		car_information,
 		game_lobby,
 		multiplayer,
 		game_options,

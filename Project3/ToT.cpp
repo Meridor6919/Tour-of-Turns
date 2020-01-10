@@ -146,19 +146,20 @@ void ToT::Ranking()
 }
 void ToT::Info()
 {
-	const Text::TextAlign text_align = Text::TextAlign::center;
+	const Text::TextAlign text_align_title = Text::TextAlign::center;
+	const Text::TextAlign text_align_content = Text::TextAlign::center;
 	const short spacing = 3;
 	const short text_y_pos = 28;
 	const COORD title_pos = { game_window_center, text_y_pos - 3 };
 	while (true)
 	{
-		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align, spacing, text_y_pos, *main_window);
-		int temp_pos = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::game_information], info_pos, title_pos, text_align, false,* main_window);
-		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align, spacing, text_y_pos, *main_window, true);
+		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_y_pos, *main_window);
+		int temp_pos = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::game_information], info_pos, title_pos, text_align_title, false,* main_window);
+		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_y_pos, *main_window, true);
 		if (temp_pos == info_pos)
 		{
 			const short text_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_information][info_pos].size());
-			SetConsoleCursorPosition(handle, {title_pos.X-text_size/2*text_align, title_pos.Y });
+			SetConsoleCursorPosition(handle, {title_pos.X-text_size/2*text_align_title, title_pos.Y });
 			for (int j = 0; j < text_size + 4; ++j)
 			{
 				std::cout << " ";
@@ -167,7 +168,7 @@ void ToT::Info()
 		}
 		info_pos = temp_pos;
 	}
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction], Text::TextAlign::center, 3, 28, *main_window, true);
+	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction], text_align_content, 3, 28, *main_window, true);
 }
 void ToT::Game(const bool multiplayer)
 {
@@ -237,4 +238,3 @@ void ToT::Game(const bool multiplayer)
 	system("cls");
 	main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
 }
-
