@@ -15,6 +15,7 @@ namespace LanguagePack
 		tour_information,
 		car_information,
 		tire_information,
+		game_mechanics_information,
 		game_lobby,
 		multiplayer,
 		game_options,
