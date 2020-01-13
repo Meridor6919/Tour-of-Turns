@@ -62,9 +62,9 @@ void ToT::MainMenu()
 }
 void ToT::Credits()
 {
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], Text::TextAlign::center, 3, 25, *main_window);
+	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], Text::TextAlign::center, 3, { game_window_center,25 }, *main_window);
 	_getch();
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], Text::TextAlign::center, 3, 25, *main_window, true);
+	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], Text::TextAlign::center, 3, { game_window_center,25 }, *main_window, true);
 }
 void ToT::Options()
 {
@@ -149,13 +149,13 @@ void ToT::Info()
 	const Text::TextAlign text_align_title = Text::TextAlign::center;
 	const Text::TextAlign text_align_content = Text::TextAlign::center;
 	const short spacing = 3;
-	const short text_y_pos = 28;
-	const COORD title_pos = { game_window_center, text_y_pos - 3 };
+	const COORD text_pos = { game_window_center, 28 };
+	const COORD title_pos = { game_window_center, text_pos.Y - 3 };
 	while (true)
 	{
-		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_y_pos, *main_window);
+		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_pos, *main_window);
 		int temp_pos = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::game_information], info_pos, title_pos, text_align_title, false,* main_window);
-		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_y_pos, *main_window, true);
+		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_pos, *main_window, true);
 		if (temp_pos == info_pos)
 		{
 			const short text_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_information][info_pos].size());
@@ -168,7 +168,7 @@ void ToT::Info()
 		}
 		info_pos = temp_pos;
 	}
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction], text_align_content, 3, 28, *main_window, true);
+	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction], text_align_content, 3, text_pos, *main_window, true);
 }
 void ToT::Game(const bool multiplayer)
 {

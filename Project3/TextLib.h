@@ -21,7 +21,7 @@ namespace Text
 		int Numeric(const int max, COORD starting_point, const bool zero_allowed, Window &main_window);
 	}
 	
-	void OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const short position, Window &main_window, const bool clearing = false);
+	void OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const COORD position, Window &main_window, const bool clearing = false);
 	void TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, const bool clearing = false);
 	void Spaces(const int i);
 }

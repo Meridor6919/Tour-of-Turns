@@ -162,11 +162,10 @@ int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_a
 	}
 	return number;
 }
-void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const short position, Window &main_window, const bool clearing)
+void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const COORD position, Window &main_window, const bool clearing)
 {
 	HANDLE handle = main_window.GetHandle();
 	const int text_size = static_cast<int>(text.size());
-	const short starting_pos = static_cast<short>(main_window.GetWidth() / 2 * text_align);
 
 	//Changing all chars in all members of the text array to ' ' if flag is active
 	if (clearing)
@@ -187,7 +186,7 @@ void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_alig
 	for (short i = 0; i < text_size; i+=2)
 	{
 		const short line_size = static_cast<short>(text[i].size()) + static_cast<short>(text[i + 1].size());
-		SetConsoleCursorPosition(handle, { starting_pos - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), position+i/2*spacing });
+		SetConsoleCursorPosition(handle, { position.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), position.Y+i/2*spacing });
 		SetConsoleTextAttribute(handle, main_window.color2);
 		std::cout << text[i];
 		SetConsoleTextAttribute(handle, main_window.color1);
