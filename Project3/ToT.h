@@ -21,6 +21,4 @@ public:
 	void Info();
 	void Game(const bool multiplayer);
 	void MainMenu();
-
-
 };

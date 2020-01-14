@@ -394,7 +394,7 @@ float Participant::CalculateBurning(float value)
 	float raw = value / static_cast<float>(car_modifiers[CarModifiers::max_speed]);
 	float result = 0.0f;
 
-	if (value < 0.0f)
+	if (raw < 0.0f)
 	{
 		return 0.0f;
 	}
@@ -403,10 +403,8 @@ float Participant::CalculateBurning(float value)
 		raw = 0.25f;
 		value = static_cast<float>(car_modifiers[CarModifiers::max_speed]) * 0.25f;
 	}
-	for (float i = 1.0f; i < raw / 0.05 + 3; i += 1.0f)
-	{
-		result += i * value;
-	}
-	return result / 10.0f;
+	int level = static_cast<int>(raw*20.0f) + 10;
+	result = value * static_cast<float>(level + level * level) / 2.0f;
+	return result / 50.0f;
 }
 
