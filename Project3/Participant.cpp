@@ -1,164 +1,14 @@
 #include "Participant.h"
-#include "NetworkRole.h"
+#include "ToT_Window.h"
 
-Participant::Participant(const std::string name, const std::string car_path, const std::string tire_path, SinglePlayer &network_role)
+Participant::Participant(const std::string name, const std::string car_path, const std::string tire_path, ToT_Windowd *main_window)
 {
 	this->name = name;
 	this->car_path = car_path;
-	this->network_role = &network_role;
-	this->car_modifiers = network_role.GetWindowPtr()->GetCarParameters(car_path);
-	this->tire_modifiers = network_role.GetWindowPtr()->GetTireParameters(tire_path);
+	this->main_window = main_window;
+	this->car_modifiers = main_window->GetCarParameters(car_path);
+	this->tire_modifiers = main_window->GetTireParameters(tire_path);
 	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
-}
-Participant::Participant(const int id, const std::string tour_path, SinglePlayer &network_role)
-{
-	this->network_role = &network_role;
-	GetRandomName(id);
-	GetOptimalCar(tour_path);
-	GetOptimalTires();
-}
-float Participant::TiresPoints(const int terrain[], const std::string tires_path)
-{	
-	const std::vector<std::string>tires_atrib = network_role->GetWindowPtr()->GetTireParameters(tires_path);
-	float total_points = 0.0f;
-	int x;
-	int y;
-
-	for (int i = 0; i < static_cast<int>(tires_atrib.size()); ++i)
-	{
-
-		for (int j = 0; j < static_cast<int>(tires_atrib[i].size()); ++j)
-		{
-			if (tires_atrib[i][j] == 'x')
-			{
-				x = static_cast<int>(atoi(tires_atrib[i].substr(0, j).c_str()));
-				y = static_cast<int>(atoi(tires_atrib[i].substr(j + 1, static_cast<int>(tires_atrib[i].size()) - j - 1).c_str()));
-			}
-		}
-		for (int j = 0; j <= y - x; ++x)
-		{
-			total_points += static_cast<float>(MathFunctions::Factorial(y)) / static_cast<float>(MathFunctions::Factorial(y - x))/ static_cast<float>(MathFunctions::Factorial(x)) * MathFunctions::PowerInt(0.5f, x) * MathFunctions::PowerInt(0.5f, y - x) * static_cast<float>(terrain[i]);
-		}
-	}
-	return total_points;
-}
-void Participant::GetRandomName(const int id)
-{
-	static std::vector<std::string> names = LanguagePack::vector_of_strings[LanguagePack::participant_names];
-	const int name_id = rand() % (static_cast<int>(names.size()) - id);
-	name = std::move(names[name_id]);
-	names[name_id] = std::move(names[static_cast<int>(names.size()) - 1 - id]);
-	names[static_cast<int>(names.size()) - 1 - id] = name;
-}
-void Participant::GetOptimalCar(const std::string tour_path)
-{
-	const std::vector<std::string> cars = network_role->GetWindowPtr()->GetCarNames(tour_path);
-	int current_best = 0;
-	int best_points = 0;
-	for (int i = 0; i < static_cast<int>(cars.size()); ++i)
-	{
-		int j = CarPoints(cars[i]);
-		if (j > best_points)
-		{
-			best_points = j;
-			current_best = i;
-		}
-	}
-	this->car_path = cars[current_best];
-	this->car_modifiers = network_role->GetWindowPtr()->GetCarParameters(cars[current_best]);
-	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
-}
-void Participant::GetOptimalTires()
-{
-	std::vector<std::string> tires = network_role->GetWindowPtr()->GetTireNames();
-	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->GetTour(), 0, INT_MAX);
-	int terrain[6];
-	memset(terrain, 0, 6);
-	for (int i = 0; i < static_cast<int>(tour.size()); ++i)
-	{
-		if (static_cast<int>(tour[i].size()) > 1)
-		{
-			++terrain[static_cast<int>(tour[i][0]) - 48];
-		}
-		++terrain[static_cast<int>(tour[i][0]) - 48];
-	}
-	int current_best = 0;
-	int best_points = 0;
-	for (int i = 0; i < static_cast<int>(tires.size()); ++i)
-	{
-		int j = static_cast<int>(TiresPoints(terrain, tires[i]));
-		if (j > best_points)
-		{
-			best_points = j;
-			current_best = i;
-		}
-	}
-	this->tire_modifiers = network_role->GetWindowPtr()->GetTireParameters(tires[current_best]);
-}
-int Participant::CarPoints(const std::string cars_path)
-{
-	std::vector<int> car_params;
-	float total_points = 0.0f;
-	int result;
-	car_params = network_role->GetWindowPtr()->GetCarParameters(cars_path);
-
-	result = car_params[CarModifiers::max_accelerating] - car_params[CarModifiers::max_speed] > 0 ? car_params[CarModifiers::max_speed] : car_params[CarModifiers::max_accelerating];
-	total_points += static_cast<float>(result);
-
-	result = car_params[CarModifiers::max_speed] - car_params[CarModifiers::max_accelerating] * 4 > 0 ? car_params[CarModifiers::max_accelerating] * 4 : car_params[CarModifiers::max_speed];
-	total_points += static_cast<float>(result) * 0.2f;
-
-	result = car_params[CarModifiers::max_braking] - car_params[CarModifiers::max_accelerating] > 0 ? car_params[CarModifiers::max_accelerating] : car_params[CarModifiers::max_braking];
-	total_points += static_cast<float>(result) * 0.2f;
-
-	result = 200 - 5 * (car_params[CarModifiers::hand_brake_value] - 20) * static_cast<int>(car_params[CarModifiers::hand_brake_value] > 20);
-	total_points += static_cast<float>(result * static_cast<int>(result > 0))*0.1f;
-
-	float value = static_cast<float>(car_params[CarModifiers::max_speed] + car_params[CarModifiers::max_accelerating]);
-	float raw = value / static_cast<float>(car_params[CarModifiers::max_speed]);
-	if (raw > 0.25f)
-	{
-		raw = 0.25f;
-		value = static_cast<float>(car_params[CarModifiers::max_speed]) * 0.25f;
-	}
-	float durability = 0;
-	for (float i = 1.0f; i < raw / 0.05 + 3.0f; i += 1.0f)
-	{
-		durability += i * value;
-	}
-	total_points += static_cast<float>(car_params[CarModifiers::durability]) / durability * 10.0f;
-
-	total_points += static_cast<float>(car_params[CarModifiers::visibility] * 5.0f);
-	total_points *= static_cast<float>(car_params[CarModifiers::turn_mod]) / 100.0f;
-	total_points *= static_cast<float>(car_params[CarModifiers::drift_mod]) / 100.0f;
-
-	return static_cast<int>(total_points * (1.0f + static_cast<float>(rand() % 20) / 100.0f));
-}
-void Participant::TakeAction(const int turn)
-{
-	std::vector<std::string> tour = network_role->GetWindowPtr()->GetTourParameters(network_role->GetTour(), turn, car_modifiers[CarModifiers::visibility]);
-
-	float safe_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.0f;
-	float risk = 40.0f;
-
-	for (int i = 0; i < static_cast<int>(tour.size()); ++i)
-	{
-		if (static_cast<int>(tour[i].size()) > 1)
-		{
-			float normal_speed = EvaluateSpeed(tour[i], risk, false) / GameValues::friction_scalar;
-			for (int j = 0; j < i; ++j)
-			{
-				normal_speed = (normal_speed + static_cast<float>(car_modifiers[CarModifiers::max_braking])) / GameValues::friction_scalar;
-			}
-			if (normal_speed < safe_speed)
-			{
-				safe_speed = normal_speed;
-			}
-		}
-	}
-	current_speed = safe_speed;
-
-	CalculateParameters(current_speed, tour[0]);
 }
 void Participant::Test(const std::string field, const bool show)
 {
@@ -182,7 +32,7 @@ void Participant::Test(const std::string field, const bool show)
 	current_speed *= dmg;
 	if (dmg < 1.0f && show)
 	{
-		network_role->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::speed], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::behaviour]);
+		main_window->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::speed], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::behaviour]);
 	}
 	attacked = 0;
 
@@ -212,14 +62,14 @@ void Participant::Test(const std::string field, const bool show)
 		{
 			if (show)
 			{
-				network_role->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][0], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::high_roll] + std::to_string(max));
+				main_window->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][0], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::high_roll] + std::to_string(max));
 			}
 		}
 		else
 		{
 			if (show)
 			{
-				network_role->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][1], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::low_roll] + std::to_string(min));
+				main_window->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][1], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::low_roll] + std::to_string(min));
 			}
 			if (formula > static_cast<float>(min + 50))
 			{
@@ -258,7 +108,7 @@ void Participant::Test(const std::string field, const bool show)
 			}
 			if (show)
 			{
-				network_role->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][bad_case], name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::vector_of_strings[LanguagePack::race_attribs][3]);
+				main_window->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][bad_case], name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::vector_of_strings[LanguagePack::race_attribs][3]);
 			}
 			current_durability -= durablity_lost;
 		}

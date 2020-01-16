@@ -1,11 +1,10 @@
 #include "NetworkRole.h"
 
-Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
+Host::Host(ToT_Windowd &main_window) : SinglePlayer(main_window)
 {
 	this->participants = participants;
 	this->main_window = &main_window;
 	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
-	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, main_window);
 	stage = 0;
 	if(!StartNetwork()) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
 	{
@@ -305,14 +304,14 @@ void Host::MsgHandling(std::string msg, int client_id)
 		strcpy(buffer, std::to_string(participants[client_id + 1].score).c_str());
 		send((*clients)[client_id].first, buffer, 254, 0);
 
-		for (int i = 0; i < infobox->info.size(); i++)
+		for (int i = 0; i < main_window->infobox->info.size(); i++)
 		{
-			std::string info = participants[0].network_role->infobox->info[i];
+			std::string info = main_window->infobox->info[i];
 
 			strcpy(buffer, info.substr(0, info.find("  ")).c_str());
 			send((*clients)[client_id].first, buffer, 254, 0);
 
-			strcpy(buffer, info.substr(participants[0].network_role->infobox->info[i].find("  ") + 2, info.size() - info.find("  ")).c_str());
+			strcpy(buffer, info.substr(main_window->infobox->info[i].find("  ") + 2, info.size() - info.find("  ")).c_str());
 			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 		send((*clients)[client_id].first, "exit", 254, 0);
@@ -340,7 +339,7 @@ void Host::GetParticipants(std::string name, std::string tour, std::string car, 
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
 
-	participants.push_back(Participant(name, car, tire, *this));
+	participants.push_back(Participant(name, car, tire, main_window));
 
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
@@ -373,10 +372,8 @@ void Host::GetParticipants(std::string name, std::string tour, std::string car, 
 			}
 			std::this_thread::sleep_for(ms);
 		}
-		participants.push_back(Participant(name, car_path, tires_path, *this));
+		participants.push_back(Participant(name, car_path, tires_path, main_window));
 	}
-	for (int i = 0; i < main_window->GetAIs(); i++)
-		participants.emplace_back(i, tour, *this);
 	stage =1;
 }
 std::vector<std::pair<float, std::string>> Host::GetRankingInfo(std::string current_field)

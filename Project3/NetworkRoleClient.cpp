@@ -2,12 +2,11 @@
 #include <map>
 #include <string>
 
-Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
+Client::Client(ToT_Windowd &main_window) : SinglePlayer(main_window)
 {
 	this->participants = participants;
 	this->main_window = &main_window;
 	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
-	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, main_window);
 	stage = 0;
 	if (!StartNetwork())
 	{
@@ -365,7 +364,7 @@ bool Client::GetCurrentAtribs()
 	}
 	participants[0].score = atof(buffer);
 
-	(*infobox).info.clear();
+	main_window->infobox->info.clear();
 	while (true)
 	{
 		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
@@ -382,7 +381,7 @@ bool Client::GetCurrentAtribs()
 				MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
 				return false;
 			}
-			(*infobox).Push(helper, (std::string)buffer);
+			main_window->infobox->Push(helper, (std::string)buffer);
 		}
 		else
 			break;

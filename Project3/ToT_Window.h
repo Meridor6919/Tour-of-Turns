@@ -5,8 +5,9 @@
 #include "TextLib.h"
 #include "Constants.h"
 #include "WavTransformer.h"
+#include "Infobox.h"
 
-class ToT_Window : public Window
+class ToT_Windowd : public Window
 {
 protected:
 	bool hamachi_enabled;
@@ -26,7 +27,9 @@ protected:
 	bool SaveFileNames(std::string src_path, std::string dst_path, const std::string ext);
 
 public:
-	ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
+	std::shared_ptr<InfoBox> infobox;
+
+	ToT_Windowd(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
 	std::vector<std::string> GetTourNames();
 	std::vector<std::string> GetCarNames(std::string tour);
 	std::vector<std::string> GetTireNames();

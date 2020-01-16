@@ -2,7 +2,7 @@
 
 ToT::ToT()
 {
-	this->main_window = std::make_shared<ToT_Window>("Tour of Turns", 15, 10, 200, 70);
+	this->main_window = std::make_shared<ToT_Windowd>("Tour of Turns", 15, 10, 200, 70);
 	handle = main_window->GetHandle();
 	game_window_center = static_cast<short>(main_window->GetWidth()) / 2;
 }

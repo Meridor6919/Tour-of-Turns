@@ -6,7 +6,7 @@
 
 
 class ToT {
-	std::shared_ptr<ToT_Window> main_window;
+	std::shared_ptr<ToT_Windowd> main_window;
 	HANDLE handle;
 	short game_window_center;
 	short info_pos = 0;

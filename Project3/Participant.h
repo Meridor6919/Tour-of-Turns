@@ -1,17 +1,10 @@
 #pragma once
 #include <vector>
 
-class SinglePlayer;
+class ToT_Windowd;
 
 class Participant 
 {
-private:
-	int CarPoints(const std::string car_path);
-	float TiresPoints(const int terrain[], const std::string tires_path);
-	void GetRandomName(const int id);
-	void GetOptimalCar(const std::string tour_path);
-	void GetOptimalTires();
-
 public:
 	bool alive = true;
 	std::string name;
@@ -20,15 +13,13 @@ public:
 	float score = 0.0f;
 	float current_speed = 0.0f;
 	float current_durability;
-	SinglePlayer *network_role;
 	std::string car_path;	
+	ToT_Windowd *main_window;
 	float attacked = 0.0f;
 	bool drift = false;
 
-	Participant(const std::string name, const std::string car_path, const std::string tire_path, SinglePlayer &network_role);
-	Participant(const int id, const std::string tour_path, SinglePlayer &network_role);
+	Participant(const std::string name, const std::string car_path, const std::string tire_path, ToT_Windowd *main_window);
 	Participant() = delete;
-	void TakeAction(const int turn);
 	void Test(const std::string field, const bool show);
 	float EvaluateChance(std::string field, const float speed, const bool drift);
 	float CalculateBurning(float value);

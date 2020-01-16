@@ -1,7 +1,9 @@
 #include "ToT_Window.h"
 
-ToT_Window::ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
+ToT_Windowd::ToT_Windowd(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
 {
+	const COORD infobox_position = { 0,static_cast<short>(GetHeight() - 12) };
+	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, *this);
 	playable = true;
 	ranking_found = true;
 	const std::string error_msg = " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::missing_file];
@@ -28,7 +30,7 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	wav_transformer = new WavTransformer(FolderName::main + "\\" + FileName::music);
 	LoadAtributes();
 }
-void ToT_Window::LoadAtributes()
+void ToT_Windowd::LoadAtributes()
 {
 	std::fstream fvar;
 	hamachi_enabled = true;
@@ -66,11 +68,11 @@ void ToT_Window::LoadAtributes()
 		wav_transformer->Start(SND_ASYNC | SND_LOOP);
 	}
 }
-bool ToT_Window::ValidateGameFiles()
+bool ToT_Windowd::ValidateGameFiles()
 {
 	return ValidateCarFiles()*ValidateTireFiles()*ValidateTourFiles();
 }
-bool ToT_Window::ValidateTourFiles()
+bool ToT_Windowd::ValidateTourFiles()
 {
 	std::vector<std::string> tours = GetTourNames();
 	const short number_of_tours = static_cast<short>(tours.size());
@@ -111,7 +113,7 @@ bool ToT_Window::ValidateTourFiles()
 	}
 	return true;
 }
-bool ToT_Window::ValidateCarFiles()
+bool ToT_Windowd::ValidateCarFiles()
 {
 	const std::vector<std::string> tours = GetTourNames();
 	bool valid = true;
@@ -136,7 +138,7 @@ bool ToT_Window::ValidateCarFiles()
 	}
 	return true;
 }
-bool ToT_Window::ValidateTireFiles()
+bool ToT_Windowd::ValidateTireFiles()
 {
 	const std::vector<std::string> tires = GetTireNames();
 	bool valid = static_cast<bool>(tires.size());
@@ -176,7 +178,7 @@ bool ToT_Window::ValidateTireFiles()
 	}
 	return true;
 }
-std::vector<std::string> ToT_Window::ReadFile(const std::string path)
+std::vector<std::string> ToT_Windowd::ReadFile(const std::string path)
 {
 	std::vector<std::string> data;
 	std::fstream fvar;
@@ -189,7 +191,7 @@ std::vector<std::string> ToT_Window::ReadFile(const std::string path)
 	fvar.close();
 	return data;
 }
-bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const std::string ext)
+bool ToT_Windowd::SaveFileNames(std::string src_path, std::string dst_path, const std::string ext)
 {
 	dst_path = "dir " + src_path + "\\*" + ext + " > " + dst_path + " /b";
 	if (system(dst_path.c_str()))
@@ -202,19 +204,19 @@ bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const
 	}
 	return true;
 }
-std::vector<std::string> ToT_Window::GetTourNames()
+std::vector<std::string> ToT_Windowd::GetTourNames()
 {
 	return ReadFile(FolderName::tour + "\\" + FileName::tour);
 }
-std::vector<std::string> ToT_Window::GetCarNames(const std::string tour)
+std::vector<std::string> ToT_Windowd::GetCarNames(const std::string tour)
 {
 	return ReadFile(FolderName::tour + "\\" + tour);
 }
-std::vector<std::string> ToT_Window::GetTireNames()
+std::vector<std::string> ToT_Windowd::GetTireNames()
 {
 	return ReadFile(FolderName::tire + "\\" + FileName::tire);
 }
-std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int position, const int visibility)
+std::vector<std::string> ToT_Windowd::GetTourParameters(std::string tour, int position, const int visibility)
 {
 	std::vector<std::string> ret;
 	std::fstream fvar;
@@ -241,7 +243,7 @@ std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int pos
 	fvar.close();
 	return ret;
 }
-std::vector<int> ToT_Window::GetCarParameters(const std::string path)
+std::vector<int> ToT_Windowd::GetCarParameters(const std::string path)
 {
 	const std::vector<std::string> data = ReadFile(FolderName::car + "\\" + path);
 	std::vector<int> car_parameters;
@@ -254,11 +256,11 @@ std::vector<int> ToT_Window::GetCarParameters(const std::string path)
 	}
 	return car_parameters;
 }
-std::vector<std::string> ToT_Window::GetTireParameters(const std::string path)
+std::vector<std::string> ToT_Windowd::GetTireParameters(const std::string path)
 {
 	return ReadFile(FolderName::tire + "\\" + path);
 }
-void ToT_Window::SaveAtributes()
+void ToT_Windowd::SaveAtributes()
 {
 	std::fstream fvar;
 	fvar.open(FolderName::main + "\\" + FileName::config);
@@ -270,7 +272,7 @@ void ToT_Window::SaveAtributes()
 	fvar << name << "\n";
 	fvar.close();
 }
-void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
+void ToT_Windowd::Title(const COORD starting_point, const Text::TextAlign text_align)
 {
 	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::vector_of_strings[LanguagePack::title_main][0].size()), starting_point.Y };
 	const short decoration_distance = 5;
@@ -310,19 +312,19 @@ void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_al
 		std::cout << additional_decoration;
 	}
 }
-void ToT_Window::SetHamachiConnectionFlag(const bool flag)
+void ToT_Windowd::SetHamachiConnectionFlag(const bool flag)
 {
 	hamachi_enabled = flag;
 }
-void ToT_Window::SetAIs(int number_of_ais)
+void ToT_Windowd::SetAIs(int number_of_ais)
 {
 	ais = number_of_ais;
 }
-void ToT_Window::SetName(std::string name)
+void ToT_Windowd::SetName(std::string name)
 {
 	this->name = name;
 }
-void ToT_Window::SetMusic(float volume)
+void ToT_Windowd::SetMusic(float volume)
 {
 	this->music_volume = volume;
 	if (volume)

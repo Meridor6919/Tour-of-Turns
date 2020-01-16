@@ -64,12 +64,6 @@
     <ClCompile Include="GeneralMultiPlayerGeneric.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkRoleClient.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkRoleHost.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
-    </ClCompile>
     <ClCompile Include="NetworkRoleSinglePlayer.cpp">
       <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
@@ -90,6 +84,12 @@
     </ClCompile>
     <ClCompile Include="AIConnector.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkRoleHost.cpp">
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkRoleClient.cpp">
+      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

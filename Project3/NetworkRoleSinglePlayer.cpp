@@ -254,13 +254,11 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::champion], ""},{LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::win_rate], ""}, {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::avg_place], ""} };
 	ShowLobbyInformation(LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::tour_info], vector, { static_cast<short>(main_window->GetWidth()) - static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size()), 19 }, 1, 2, clear);
 }
-SinglePlayer::SinglePlayer(ToT_Window &main_window)
+SinglePlayer::SinglePlayer(ToT_Windowd &main_window)
 {
 	this->main_window = &main_window;
-	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
-	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, main_window);
+	
 	request_handler = std::make_unique<GeneralMultiPlayer::RequestHandler>();
-
 }
 bool SinglePlayer::GameLobby()
 {
@@ -358,12 +356,7 @@ bool SinglePlayer::GameLobby()
 void SinglePlayer::GetParticipants(const std::string name, const std::string tour, const std::string car, const std::string tire)
 {
 	this->tour = tour;
-	participants.emplace_back(name, car, tire, *this);
-
-	for (int i = 0; i < main_window->GetAIs(); ++i)
-	{
-		participants.emplace_back(i, tour, *this);
-	}
+	participants.emplace_back(name, car, tire, main_window);
 }
 std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
 {
@@ -401,7 +394,7 @@ bool SinglePlayer::GetCurrentAtribs()
 		participants[i].Test(current_field, i < static_cast<int>(participants.size()) - main_window->GetAIs());
 		if (participants[i].current_durability <= 0.0f && participants[i].alive)
 		{
-			infobox->Push(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::infobox_RIP1] +participants[i].name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::infobox_RIP2], "");
+			main_window->infobox->Push(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::infobox_RIP1] +participants[i].name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::infobox_RIP2], "");
 			participants[i].alive = false;
 			if (i == 0)
 			{
@@ -524,10 +517,7 @@ void SinglePlayer::TakeAction()
 }
 void SinglePlayer::GetOthersAction(const int turn)
 {
-	for (int i = static_cast<int>(participants.size()) - main_window->GetAIs(); i < static_cast<int>(participants.size()); ++i)
-	{
-		participants[i].TakeAction(turn);
-	}
+	
 }
 int SinglePlayer::Possible_AIs()
 {
