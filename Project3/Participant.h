@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-class ToT_Windowd;
+class ToT_Window;
 
 class Participant 
 {
@@ -14,11 +14,11 @@ public:
 	float current_speed = 0.0f;
 	float current_durability;
 	std::string car_path;	
-	ToT_Windowd *main_window;
+	ToT_Window *main_window;
 	float attacked = 0.0f;
 	bool drift = false;
 
-	Participant(const std::string name, const std::string car_path, const std::string tire_path, ToT_Windowd *main_window);
+	Participant(const std::string name, const std::string car_path, const std::string tire_path, ToT_Window *main_window);
 	Participant() = delete;
 	void Test(const std::string field, const bool show);
 	float EvaluateChance(std::string field, const float speed, const bool drift);

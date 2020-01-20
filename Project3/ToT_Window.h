@@ -7,15 +7,15 @@
 #include "WavTransformer.h"
 #include "Infobox.h"
 
-class ToT_Windowd : public Window
+class ToT_Window : public Window
 {
 protected:
 	bool hamachi_enabled;
-	float music_volume = 1.0f;
-	int ais;
-	std::string name;
 	bool playable;
 	bool ranking_found;
+	float music_volume;
+	int ais;
+	std::string name;
 	WavTransformer *wav_transformer;
 
 	void LoadAtributes();
@@ -29,7 +29,7 @@ protected:
 public:
 	std::shared_ptr<InfoBox> infobox;
 
-	ToT_Windowd(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
+	ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
 	std::vector<std::string> GetTourNames();
 	std::vector<std::string> GetCarNames(std::string tour);
 	std::vector<std::string> GetTireNames();

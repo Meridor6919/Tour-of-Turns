@@ -10,7 +10,7 @@
 class SinglePlayer 
 {
 protected:
-	ToT_Windowd *main_window;
+	ToT_Window *main_window;
 	std::vector<Participant> participants;
 	std::string current_field;
 	std::string tour;
@@ -28,7 +28,7 @@ protected:
 	void RemoveExtension(std::vector<std::string> &vector, std::string extension);
 
 public:
-	SinglePlayer(ToT_Windowd &main_window);
+	SinglePlayer(ToT_Window &main_window);
 	bool GameLobby();
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
@@ -41,7 +41,7 @@ public:
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
 	void ShowChances(int value, bool reset=false);
-	ToT_Windowd* GetWindowPtr() { return main_window; }
+	ToT_Window* GetWindowPtr() { return main_window; }
 	std::string GetTour() { return tour; }
 };
 
@@ -55,7 +55,7 @@ class Host : public SinglePlayer {
 public:
 
 	void MsgHandling(std::string msg, int client_id);
-	Host(ToT_Windowd &main_window);
+	Host(ToT_Window &main_window);
 	~Host();
 	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
@@ -77,7 +77,7 @@ class Client : public SinglePlayer {
 
 public:
 
-	Client(ToT_Windowd &main_window);
+	Client(ToT_Window &main_window);
 	~Client();
 	void GetTourNames(std::vector<std::string>&tours);
 	void GetCarNames(std::vector<std::string>&cars, std::string tour);

@@ -1,7 +1,7 @@
 #include "Participant.h"
 #include "ToT_Window.h"
 
-Participant::Participant(const std::string name, const std::string car_path, const std::string tire_path, ToT_Windowd *main_window)
+Participant::Participant(const std::string name, const std::string car_path, const std::string tire_path, ToT_Window *main_window)
 {
 	this->name = name;
 	this->car_path = car_path;

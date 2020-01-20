@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-Host::Host(ToT_Windowd &main_window) : SinglePlayer(main_window)
+Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 {
 	this->participants = participants;
 	this->main_window = &main_window;

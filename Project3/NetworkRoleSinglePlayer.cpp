@@ -254,7 +254,7 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::champion], ""},{LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::win_rate], ""}, {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::avg_place], ""} };
 	ShowLobbyInformation(LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::tour_info], vector, { static_cast<short>(main_window->GetWidth()) - static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size()), 19 }, 1, 2, clear);
 }
-SinglePlayer::SinglePlayer(ToT_Windowd &main_window)
+SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
 	
