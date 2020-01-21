@@ -10,7 +10,6 @@
 class SinglePlayer 
 {
 protected:
-	ToT_Window *main_window;
 	std::string current_field;
 	std::string tour;
 	short take_action_position = 0;
@@ -31,22 +30,70 @@ protected:
 	void ShowChances(int value, bool reset = false);
 
 public:
+	ToT_Window *main_window;
+
+	//General
 	SinglePlayer(ToT_Window &main_window);
-	bool GameLobby();
+	
+	//Get methods
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
 	virtual bool GetCurrentAtribs();
+	virtual void GetOthersAction(int turn);
+	std::string GetTour();
+
+	//Game methods
+	bool GameLobby();
 	virtual void Attack();
 	virtual void TakeAction();
-	virtual void GetOthersAction(int turn);
 	virtual int Possible_AIs();
 	virtual int Ranking(bool clear);
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
-	
-	ToT_Window* GetWindowPtr() { return main_window; }
-	std::string GetTour() { return tour; }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Host : public SinglePlayer {
 
@@ -69,7 +116,6 @@ public:
 
 	int Possible_AIs();
 };
-
 class Client : public SinglePlayer {
 
 	GeneralMultiPlayer::Client *client;
