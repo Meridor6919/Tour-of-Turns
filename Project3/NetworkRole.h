@@ -11,21 +11,24 @@ class SinglePlayer
 {
 protected:
 	ToT_Window *main_window;
-	std::vector<Participant> participants;
 	std::string current_field;
 	std::string tour;
 	short take_action_position = 0;
+	std::vector<Participant> participants;
 	std::unique_ptr<GeneralMultiPlayer::RequestHandler> request_handler;
 
-	int NumericalAction(const COORD coords);
-	int BinaryAction(const COORD coords);
-	std::string ChooseName(const std::string current_name, const int max_size);
+	//Selection methods
+	int NumericalSelection(const COORD coords);
+	int BinarySelection(const COORD coords);
+	std::string StringSelection(const std::string current_name, const int max_size);
+
+	//Showing methods
 	void ShowCarParameters(const std::string tire_path, bool clear = false);
 	void ShowTiresParameters(const std::string tire_path, bool clear = false);
 	void ShowTourParameters(const std::string tire_path, bool clear = false);
 	void ShowRankingParameters(const std::string tire_path, bool clear = false);
 	void ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear);
-	void RemoveExtension(std::vector<std::string> &vector, std::string extension);
+	void ShowChances(int value, bool reset = false);
 
 public:
 	SinglePlayer(ToT_Window &main_window);
@@ -40,7 +43,7 @@ public:
 	virtual int Ranking(bool clear);
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
-	void ShowChances(int value, bool reset=false);
+	
 	ToT_Window* GetWindowPtr() { return main_window; }
 	std::string GetTour() { return tour; }
 };

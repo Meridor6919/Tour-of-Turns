@@ -4,13 +4,12 @@
 Window::Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns)
 {
 	//Saving crucial data
-	strcpy(this->title, title.c_str());
 	this->color1 = color1;
 	this->color2 = color2;
 	this->window_size = { chars_in_rows, chars_in_columns };
 	this->window_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	this->window_hwnd = GetConsoleWindow();
-	SetConsoleTitle(this->title);
+	SetConsoleTitle(title.c_str());
 	srand(static_cast<int>(time(0)));
 
 	//Automatically detecting appropriate font size
@@ -33,8 +32,38 @@ Window::Window(const std::string title, const int color1, const int color2, cons
 	SetConsoleScreenBufferSize(window_handle, { window_size.X - 1,window_size.Y - 1 });
 	
 	//Cursor visibility	set to false by default							
-	GetConsoleCursorInfo(window_handle, &console_cursor);
 	SetCursor(false);
+}
+std::vector<std::string> Window::ReadFile(const std::string path)
+{
+	std::vector<std::string> data;
+	std::fstream fvar;
+	std::string helper;
+	fvar.open(path);
+	while (getline(fvar, helper) && helper != "")
+	{
+		data.push_back(std::move(helper));
+	}
+	fvar.close();
+	return data;
+}
+void Window::Pause(const int miliseconds)
+{
+	DWORD consolesettings;
+	HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
+	GetConsoleMode(input_handle, &consolesettings);
+	SetConsoleMode(input_handle, 0 & ~ENABLE_ECHO_INPUT);
+	Sleep(miliseconds);
+	FlushConsoleInputBuffer(input_handle);
+	SetConsoleMode(input_handle, consolesettings);
+}
+int Window::GetWidth()
+{
+	return window_size.X;
+}
+int Window::GetHeight()
+{
+	return window_size.Y;
 }
 int Window::GetFontSize()
 {
@@ -48,26 +77,27 @@ HWND Window::GetHWND()
 {
 	return window_hwnd;
 }
-int Window::GetHeight()
+float Window::GetMusicVolume()
 {
-	return window_size.Y;
-}
-int Window::GetWidth()
-{
-	return window_size.X;
+	return music_volume;
 }
 void Window::SetCursor(const bool visible)
 {
+	CONSOLE_CURSOR_INFO console_cursor;
+	GetConsoleCursorInfo(window_handle, &console_cursor);
 	console_cursor.bVisible = visible;
 	SetConsoleCursorInfo(window_handle, &console_cursor);
 }
-void Window::Pause(const int miliseconds)
+void Window::SetMusic(float volume)
 {
-	DWORD consolesettings;
-	HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
-	GetConsoleMode(input_handle, &consolesettings);
-	SetConsoleMode(input_handle, 0 & ~ENABLE_ECHO_INPUT);
-	Sleep(miliseconds);
-	FlushConsoleInputBuffer(input_handle);
-	SetConsoleMode(input_handle, consolesettings);
+	this->music_volume = volume;
+	if (volume)
+	{
+		wav_transformer->ChangeVolume(volume);
+		wav_transformer->Start(SND_ASYNC | SND_LOOP);
+	}
+	else
+	{
+		wav_transformer->Stop();
+	}
 }

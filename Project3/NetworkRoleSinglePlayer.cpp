@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-int SinglePlayer::NumericalAction(const COORD coords)
+int SinglePlayer::NumericalSelection(const COORD coords)
 {
 	const HANDLE window = main_window->GetHandle();
 	char button;
@@ -53,7 +53,7 @@ int SinglePlayer::NumericalAction(const COORD coords)
 	ShowChances(0, true);
 	return value * (static_cast<bool>(take_action_position) ? -1 : 1);
 }
-int SinglePlayer::BinaryAction(const COORD coords)
+int SinglePlayer::BinarySelection(const COORD coords)
 {
 	const HANDLE window = main_window->GetHandle();
 	char button;
@@ -82,7 +82,7 @@ int SinglePlayer::BinaryAction(const COORD coords)
 		}
 	}
 }
-std::string SinglePlayer::ChooseName(const std::string current_name, const int max_name_size)
+std::string SinglePlayer::StringSelection(const std::string current_name, const int max_name_size)
 {
 	const HANDLE handle = main_window->GetHandle();
 	std::string name = current_name;
@@ -197,14 +197,6 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 		std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border];
 	}
 }
-void SinglePlayer::RemoveExtension(std::vector<std::string>& vector, std::string extension)
-{
-	short extension_size = static_cast<short>(extension.size());
-	for (int i = 0; i < static_cast<int>(vector.size()); ++i)
-	{
-		vector[i] = vector[i].substr(0, static_cast<short>(vector[i].size())-extension_size);
-	}
-}
 void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear)
 {
 	const std::vector<int> car_params = main_window->GetCarParameters(car_path);
@@ -270,9 +262,9 @@ bool SinglePlayer::GameLobby()
 	std::vector<std::string> tours = main_window->GetTourNames();
 	std::vector<std::string> tires = main_window->GetTireNames();
 	std::vector<std::string> cars = main_window->GetCarNames(tours[0]);
-	RemoveExtension(tours, ExtName::tour);
-	RemoveExtension(tires, ExtName::tire);
-	RemoveExtension(cars, ExtName::car);
+	main_window->RemoveExtension(tours, ExtName::tour);
+	main_window->RemoveExtension(tires, ExtName::tire);
+	main_window->RemoveExtension(cars, ExtName::car);
 	int ais = main_window->GetAIs();
 	int tires_pos = 0;
 	int cars_pos = 0;
@@ -288,7 +280,7 @@ bool SinglePlayer::GameLobby()
 		{
 		case 0://choosing name
 		{
-			name = ChooseName(name, 14);
+			name = StringSelection(name, 14);
 			break;
 		}
 		case 1://Number of ais
@@ -310,7 +302,7 @@ bool SinglePlayer::GameLobby()
 			{
 				ShowCarParameters(cars[cars_pos] + ExtName::car, true);
 				cars = main_window->GetCarNames(tours[tours_pos]+ExtName::tour);
-				RemoveExtension(cars, ExtName::car);
+				main_window->RemoveExtension(cars, ExtName::car);
 				cars_pos = 0;
 				ShowCarParameters(cars[cars_pos] + ExtName::car);
 			}
@@ -482,7 +474,7 @@ void SinglePlayer::TakeAction()
 		}
 		if (take_action_position < 2)
 		{
-			value = NumericalAction({ static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
+			value = NumericalSelection({ static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
 			if (value != 0)
 			{
 				break;
@@ -490,7 +482,7 @@ void SinglePlayer::TakeAction()
 		}
 		else
 		{
-			int option = BinaryAction({ static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
+			int option = BinarySelection({ static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
 			if (option == 0)
 			{
 				continue;

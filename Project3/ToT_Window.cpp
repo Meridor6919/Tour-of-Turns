@@ -121,7 +121,7 @@ bool ToT_Window::ValidateCarFiles()
 	for (short i = 0; i < static_cast<short>(tours.size()); ++i)
 	{
 		const std::vector<std::string> cars = GetCarNames(tours[i]);
-		valid *= static_cast<bool>(cars.size());//checking if there is at least one car that can be driven for any given tour
+		valid = valid && static_cast<bool>(cars.size());//checking if there is at least one car that can be driven for any given tour
 		for (short j = 0; j < static_cast<short>(cars.size()); ++j)
 		{
 			if (static_cast<short>(GetCarParameters(cars[j]).size()) != CarModifiers::last)//checking if car has all parameters set
@@ -178,19 +178,6 @@ bool ToT_Window::ValidateTireFiles()
 	}
 	return true;
 }
-std::vector<std::string> ToT_Window::ReadFile(const std::string path)
-{
-	std::vector<std::string> data;
-	std::fstream fvar;
-	std::string helper;
-	fvar.open(path);
-	while (getline(fvar, helper) && helper != "")
-	{
-		data.push_back(std::move(helper));
-	}
-	fvar.close();
-	return data;
-}
 bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const std::string ext)
 {
 	dst_path = "dir " + src_path + "\\*" + ext + " > " + dst_path + " /b";
@@ -203,6 +190,54 @@ bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const
 		return false;
 	}
 	return true;
+}
+void ToT_Window::RemoveExtension(std::vector<std::string>& vector, std::string extension)
+{
+	short extension_size = static_cast<short>(extension.size());
+	for (int i = 0; i < static_cast<int>(vector.size()); ++i)
+	{
+		vector[i] = vector[i].substr(0, static_cast<short>(vector[i].size()) - extension_size);
+	}
+}
+void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
+{
+	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::vector_of_strings[LanguagePack::title_main][0].size()), starting_point.Y };
+	const short decoration_distance = 5;
+	const std::string main_decoration = "{ }";
+	const std::string additional_decoration = "*";
+	const short main_title_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size());
+	const short additional_title_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional].size());
+	//Main text
+	SetConsoleTextAttribute(window_handle, color2);
+	for (short i = 0; i < main_title_size; ++i)
+	{
+		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
+		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_main][i];
+	}
+	SetConsoleTextAttribute(window_handle, color1);
+	for (short i = 0; i < additional_title_size; ++i)
+	{
+		const short main_line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size());
+		const short additional_line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional][i].size());
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + main_line_size / 2 - additional_line_size / 2, orientation_point.Y + i + main_title_size / 3 });
+		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_additional][i];
+	}
+	//Decoration
+	for (short i = 0; i < main_title_size; ++i)
+	{
+		const short decoration_size = static_cast<short>(decoration_distance + main_decoration.size());
+		const short line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size());
+		SetConsoleTextAttribute(window_handle, color2);
+		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size - i % 2, orientation_point.Y + i });
+		std::cout << main_decoration;
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - 1 - i % 2, orientation_point.Y + i });
+		std::cout << main_decoration;
+		SetConsoleTextAttribute(window_handle, color1);
+		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size + 1 - i % 2, orientation_point.Y + i });
+		std::cout << additional_decoration;
+		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - i % 2, orientation_point.Y + i });
+		std::cout << additional_decoration;
+	}
 }
 std::vector<std::string> ToT_Window::GetTourNames()
 {
@@ -260,57 +295,25 @@ std::vector<std::string> ToT_Window::GetTireParameters(const std::string path)
 {
 	return ReadFile(FolderName::tire + "\\" + path);
 }
-void ToT_Window::SaveAtributes()
+bool ToT_Window::GetHamachiConnectionFlag()
 {
-	std::fstream fvar;
-	fvar.open(FolderName::main + "\\" + FileName::config);
-	fvar << color1 << "\n";
-	fvar << color2 << "\n";;
-	fvar << music_volume << "\n";;
-	fvar << hamachi_enabled << "\n";;
-	fvar << ais << "\n";
-	fvar << name << "\n";
-	fvar.close();
+	return hamachi_enabled;
 }
-void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
+int ToT_Window::GetAIs()
 {
-	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::vector_of_strings[LanguagePack::title_main][0].size()), starting_point.Y };
-	const short decoration_distance = 5;
-	const std::string main_decoration = "{ }";
-	const std::string additional_decoration = "*";
-	const short main_title_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size());
-	const short additional_title_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional].size());
-	//Main text
-	SetConsoleTextAttribute(window_handle, color2);
-	for (short i = 0; i < main_title_size; ++i)
-	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
-		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_main][i];
-	}
-	SetConsoleTextAttribute(window_handle, color1);
-	for (short i = 0; i < additional_title_size; ++i)
-	{
-		const short main_line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size());
-		const short additional_line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional][i].size());
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + main_line_size / 2 - additional_line_size/ 2, orientation_point.Y + i + main_title_size / 3 });
-		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_additional][i];
-	}
-	//Decoration
-	for (short i = 0; i < main_title_size; ++i)
-	{
-		const short decoration_size = static_cast<short>(decoration_distance + main_decoration.size());
-		const short line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size());
-		SetConsoleTextAttribute(window_handle, color2);
-		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size - i % 2, orientation_point.Y + i });
-		std::cout << main_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - 1 - i % 2, orientation_point.Y + i });
-		std::cout << main_decoration;
-		SetConsoleTextAttribute(window_handle, color1);
-		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size + 1 - i % 2, orientation_point.Y + i });
-		std::cout << additional_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - i % 2, orientation_point.Y + i });
-		std::cout << additional_decoration;
-	}
+	return ais;
+}
+std::string ToT_Window::GetName()
+{
+	return name;
+}
+bool ToT_Window::RankingFound()
+{
+	return ranking_found;
+}
+bool ToT_Window::IsPlayable()
+{
+	return playable;
 }
 void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {
@@ -324,16 +327,15 @@ void ToT_Window::SetName(std::string name)
 {
 	this->name = name;
 }
-void ToT_Window::SetMusic(float volume)
+void ToT_Window::SaveAtributes()
 {
-	this->music_volume = volume;
-	if (volume)
-	{
-		wav_transformer->ChangeVolume(volume);
-		wav_transformer->Start(SND_ASYNC | SND_LOOP);
-	}
-	else
-	{
-		wav_transformer->Stop();
-	}
+	std::fstream fvar;
+	fvar.open(FolderName::main + "\\" + FileName::config);
+	fvar << color1 << "\n";
+	fvar << color2 << "\n";;
+	fvar << music_volume << "\n";;
+	fvar << hamachi_enabled << "\n";;
+	fvar << ais << "\n";
+	fvar << name << "\n";
+	fvar.close();
 }
