@@ -1,6 +1,6 @@
 #include "TextLib.h"
 
-int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window &main_window)
+int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window &main_window, std::mutex *mutex)
 {
 	const HANDLE handle = main_window.GetHandle();
 	const int color1 = main_window.color1;
@@ -11,6 +11,10 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 	{
 		const float line_size = static_cast<float>(text[starting_position].size());
 		//Showing text with current index
+		if (mutex != nullptr)
+		{
+			mutex->lock();
+		}
 		SetConsoleTextAttribute(handle, color1);
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
 		std::cout << "< ";
@@ -18,9 +22,15 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		std::cout << text[starting_position];
 		SetConsoleTextAttribute(handle, color1);
 		std::cout << " >";
-
+		if (mutex != nullptr)
+		{
+			mutex->unlock();
+		}
 		button = _getch();
-
+		if (mutex != nullptr)
+		{
+			mutex->lock();
+		}
 		//Clearing text from the screen
 		if (button != 13 || clear_after)
 		{
@@ -32,6 +42,10 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 			{
 				std::cout << " ";
 			}
+		}
+		if (mutex != nullptr)
+		{
+			mutex->unlock();
 		}
 		//Changing index when left or right arrow button is pressed
 		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 75 && starting_position > 0)
@@ -47,7 +61,7 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 
 	return starting_position;
 }
-int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_position, const COORD starting_point, const short spacing, const TextAlign text_align, const bool clear_after, Window &main_window)
+int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_position, const COORD starting_point, const short spacing, const TextAlign text_align, const bool clear_after, Window &main_window, std::mutex *mutex)
 {
 	const HANDLE handle = main_window.GetHandle();
 	const int color1 = main_window.color1;
@@ -57,27 +71,48 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 	char button;
 
 	//Showing text on the screen
+	if (mutex != nullptr)
+	{
+		mutex->lock();
+	}
 	SetConsoleTextAttribute(handle, color1);
 	for (short i = 0; i < text_size; ++i)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
 		std::cout << text[i];
 	}
+	if (mutex != nullptr)
+	{
+		mutex->unlock();
+	}
 	do
 	{
 		//Changing active text's color
+		if (mutex != nullptr)
+		{
+			mutex->lock();
+		}
 		SetConsoleTextAttribute(handle, color2);
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
 		std::cout << text[starting_position];
-
+		if (mutex != nullptr)
+		{
+			mutex->unlock();
+		}
 		button = _getch();
-
+		if (mutex != nullptr)
+		{
+			mutex->lock();
+		}
 		//Changing color of active text back to normal
 		//I assume that user will press the correct button and position will change
 		SetConsoleTextAttribute(handle, color1);
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
 		std::cout << text[starting_position];
-
+		if (mutex != nullptr)
+		{
+			mutex->unlock();
+		}
 		//Changing the index when up or down arrow button is pressed
 		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 80)
 		{
@@ -95,6 +130,10 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 	} while (button != 13);
 
 	//Clearing the text if flag is active
+	if (mutex != nullptr)
+	{
+		mutex->lock();
+	}
 	if (clear_after)
 	{
 		for (short i = 0; i < text_size; ++i)
@@ -112,26 +151,42 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
 		std::cout << text[starting_position];
 	}
+	if (mutex != nullptr)
+	{
+		mutex->unlock();
+	}
 	return starting_position;
 }
-int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_allowed, Window &main_window)
+int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_allowed, Window &main_window, std::mutex *mutex)
 {
 	char button;
 	int number = 0;
-	int pos = 0;
-	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
+	short pos = 0;
 	while (true)
 	{
+		SetConsoleCursorPosition(main_window.GetHandle(), { starting_point.X + pos, starting_point.Y });
 		button = _getch();
+		if (mutex != nullptr)
+		{
+			mutex->lock();
+		}
 		//Adding if user pressed key between 0 and 9 
 		if (button >= '0' && button <= '9')
 		{
 			if (button == '0' && pos == 0)
 			{
+				if (mutex != nullptr)
+				{
+					mutex->unlock();
+				}
 				continue;
 			}
 			else if (number * 10 + button - 48 > max)
 			{
+				if (mutex != nullptr)
+				{
+					mutex->unlock();
+				}
 				continue;
 			}
 			std::cout << button;
@@ -145,6 +200,10 @@ int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_a
 			number /= 10;
 			--pos;
 		}
+		if (mutex != nullptr)
+		{
+			mutex->unlock();
+		}
 		if (button == 13)
 		{
 			if (pos == 0 && !zero_allowed)
@@ -155,14 +214,22 @@ int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_a
 		}
 	}
 	//Clearing text from the screen
+	if (mutex != nullptr)
+	{
+		mutex->lock();
+	}
 	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
 	for (int i = 1; i <= number; i *= 10)
 	{
 		std::cout << " ";
 	}
+	if (mutex != nullptr)
+	{
+		mutex->unlock();
+	}
 	return number;
 }
-void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const COORD position, Window &main_window, const bool clearing)
+void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const COORD position, Window &main_window, const bool clearing, std::mutex *mutex)
 {
 	HANDLE handle = main_window.GetHandle();
 	const int text_size = static_cast<int>(text.size());
@@ -183,6 +250,10 @@ void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_alig
 		text.push_back("");
 	}
 	//Showing the text
+	if (mutex != nullptr)
+	{
+		mutex->lock();
+	}
 	for (short i = 0; i < text_size; i+=2)
 	{
 		const short line_size = static_cast<short>(text[i].size()) + static_cast<short>(text[i + 1].size());
@@ -192,12 +263,20 @@ void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_alig
 		SetConsoleTextAttribute(handle, main_window.color1);
 		std::cout << text[i + 1];
 	}
+	if (mutex != nullptr)
+	{
+		mutex->unlock();
+	}
 }
-void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, const bool clearing)
+void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, const bool clearing, std::mutex *mutex)
 {
 	HANDLE handle = main_window.GetHandle();
 	std::vector<std::string>::iterator it = text.begin();
 	const int text_size = static_cast<int>(text.size());
+	if (mutex != nullptr)
+	{
+		mutex->lock();
+	}
 	for (int i = 0; i*texts_per_row < text_size; ++i)
 	{
 		//Setting right color
@@ -229,11 +308,23 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 			++it;
 		}
 	}
+	if (mutex != nullptr)
+	{
+		mutex->unlock();
+	}
 }
-void Text::Spaces(const int i)
+void Text::Spaces(const int i, std::mutex *mutex)
 {
+	if (mutex != nullptr)
+	{
+		mutex->lock();
+	}
 	for (int j = 0; j < i; ++j)
 	{
 		std::cout << " ";
+	}
+	if (mutex != nullptr)
+	{
+		mutex->unlock();
 	}
 }

@@ -2,16 +2,9 @@
 
 Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 {
-	this->participants = participants;
 	this->main_window = &main_window;
-	COORD infobox_position = { 0,static_cast<short>(main_window.GetHeight() - 12) };
-	stage = 0;
-	if(!StartNetwork()) //if player will decide to go back throw the exception, and close all sockets (constructor issue) 
+	if(!StartNetwork()) //if player will decide to go back throw the exception
 	{
-		for (int i =0; i < (*clients).size(); i++)
-		{
-			closesocket((*clients)[i].first);
-		}
 		throw 1;
 	}
 }
@@ -21,7 +14,6 @@ Host::~Host()
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
 
-	stage++;
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
 		bool done = false;
@@ -44,8 +36,7 @@ Host::~Host()
 }
 bool Host::StartNetwork()
 {
-	//TODO use mutexes
-	HANDLE handle = main_window->GetHandle();
+	const HANDLE handle = main_window->GetHandle();
 	bool showing_clients = true;
 	host = new GeneralMultiPlayer::Host();
 

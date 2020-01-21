@@ -6,6 +6,7 @@
 #include <vector>
 #include <exception>
 #include "Participant.h"
+#include <mutex>
 
 class SinglePlayer 
 {
@@ -15,11 +16,12 @@ protected:
 	short take_action_position = 0;
 	std::vector<Participant> participants;
 	std::unique_ptr<GeneralMultiPlayer::RequestHandler> request_handler;
+	std::mutex mutex;
 
 	//Selection methods
 	int NumericalSelection(const COORD coords);
 	int BinarySelection(const COORD coords);
-	std::string StringSelection(const std::string current_name, const int max_size);
+	std::string StringSelection(const std::string current_name, const int max_size, const COORD coords);
 
 	//Showing methods
 	void ShowCarParameters(const std::string tire_path, bool clear = false);
@@ -100,7 +102,7 @@ class Host : public SinglePlayer {
 	GeneralMultiPlayer::Host *host;
 	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
 	bool StartNetwork();
-	int stage;
+	int stage = 0;
 
 public:
 
