@@ -34,10 +34,7 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		//Clearing text from the screen
 		if (button != 13 || clear_after)
 		{
-			for (float i = 0; i < line_size + 4; ++i)
-			{
-				std::cout << "\b";
-			}
+			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
 			for (float i = 0; i < line_size + 4; ++i)
 			{
 				std::cout << " ";
