@@ -6,15 +6,14 @@ Durability
 Visibility
 Turn Modifier
 Drift Modifier
-
-
+&&&
 Asphalt
 Grass
 Gravel
 Sand
 Mud
 Ice
-
+&&&
 New Game 
 Multiplayer 
 Game Information
@@ -22,13 +21,13 @@ Ranking
 Options 
 Credits 
 Exit
-
+&&&
 Introduction
 Tours
 Cars
 Tires
 Gameplay Formulas
-
+&&&
  
 Tour of Turns is turn-based racing game where player with the lowest final score wins.
  
@@ -41,7 +40,7 @@ Each action consists of two different elements : speed changing phase and attack
 After completing the action, the player moves to the next segment and the new turn begins.
  
 When player finishes the race his score is added to ranking file.
-
+&&&
  
 Tour is made out of segments that can be seen on the left side of the screen along with parameters of these types:
 Terrain type
@@ -52,7 +51,7 @@ Safe speed
  - if the player surpasses this value he is being tested. Chance of succeeding is showed on the right side of the screen.
  
 Straight segments of the road doesn't have any restrictions about safe speed.
-
+&&&
  
 Selection of car is the single most important decision in Tour of Turns. It provides essencial atributes such as:
 Max Speed
@@ -71,7 +70,7 @@ Turn Modifier
  - Multiplies your chance to succeed in a turn test. Doesn't work when player performs a drift
 Drift Modifier
  - Multiplies your chance to succeed in a turn test when performing a drift.
-
+&&&
  
 Tires provide parameters strictly connected to type of the terrain. There are exactly six of them - as many as terrain types
  
@@ -80,7 +79,7 @@ Friction
  - Alterates attributes responsible for speed modulation. Basically better probability of passing the tests - widder the modulation range Specific calculations are available in \"Gameplay Formulas\" panel
 Turning tests
  -In any non-straight segment of tour player is being tested.Number of all tests and required tests are taken directly from tire attributes.
- 
+&&&
 Tour of Turns's
 game mechanics are inherently based on math. There are no dexterity involved, pure analysis. Every part of gameplay has its own formulas. Order in which this events take place look like this: 
 Attacking segment
@@ -100,24 +99,24 @@ durability_lost = over_speed * (level + level * level) / 2 where level is an int
 Lastly player's speed is being multiplied by 0.9, because of friction.
 Test segment
  - 
-
+&&&
 Name
 Number of AIs
 Tours
 Cars
 Tires
 Next
-
+&&&
 Host game
 Search game
 Back
-
+&&&
 Main Color
 Secondary Color
 Music volume
 Hamachi connection
 Back
-
+&&&
 Player Informations
 Tour Informations
 tour_length
@@ -125,7 +124,7 @@ turns
 current_champion
 winrate
 average_place
-
+&&&
 green
 cyan
 red
@@ -140,33 +139,33 @@ light red
 light magenta 
 yellow 
 white
-
+&&&
 Speed up 
 Slow down 
 Hand-Brake 
 Do nothing 
 Abaddon Race
-
+&&&
 Chance: 
 Estimated time: 
 Durability burning: 
 Estimated speed:
-
+&&&
 PLACE
 RACER
 SCORE
-
+&&&
 You can speed up by (0 to 
 You can slow down by (0 to 
 Hand brake value is - 
 You can just wait if you're moving...
 Remember only weak ones surrenders
-
+&&&
  You're racing as: 
  Your current speed is: 
  Your vehice has 
  durability   
- 
+&&&
 In front of you: 
 Close to you: 
 At some distance: 
@@ -174,11 +173,11 @@ A little further:
 At a considerable distance: 
 Far ahead: 
 Barely noticeable:
-
+&&&
 Infobox  
 Attack box
 Chance of succeeding
-
+&&&
 Turn on asphalt - safe speed is around 
 Straight road, terrain is asphalt
 Turn on grass - safe speed is around 
@@ -191,7 +190,7 @@ Turn on mud - safe speed is around
 Muddy road, without turn
 Turn on ice - safe speed is around 
 Slippery road with ice
-
+&&&
 Paul Harackovy
 Mark Driver
 Max McDonald
@@ -217,7 +216,7 @@ Quality Racer
 Sui Cide
 Ivan Atakovic
 Blu Apostrof
-
+&&&
  have manage to turn, 
  had mistaken, 
  badly crashed !!! 
@@ -226,7 +225,7 @@ Blu Apostrof
  got off the route,
  fell into a dangerous slip,
  slipped,
-
+&&&
  
 Hello I am Michal Balicki and I am really happy that you are playing my game.
  
@@ -245,42 +244,43 @@ for giving me inspiration.
 I admire how much work he put into Pan Zniszczenia and Zniwiarz Dusz maps for HoMM3, based on Diablo universe.
 Miroslaw Zelent 
 for getting me interested in programming
-
+&&&
 on
 off
-
+&&&
   _______  ___         ___     
      |    |   | |   | |   |    
      |    |   | |   | |___|    
      |    |   | |   | |  \     
-     |    |___| |___| |   \   
+     |    |___| |___| |   \    
                                
-          
                                
-								
+                               
+                               
                                
 _______        ___    __   __  
    |    |   | |   |  |  | |    
    |    |   | |___|  |  | |__  
    |    |   | |  \   |  |    | 
-   |    |___| |   \  |  | ___|
+   |    |___| |   \  |  | ___| 
+&&&
  ___   ___
 |   | |   
 |   | |_  
 |   | |   
-|___| | 
-
+|___| |   
+&&&
 You can't start new race with current game state, please repair files or reinstall game
 Files not found, please reinstall your game or repair missing files
 There are no ranking files
 cannot be read, please repair or delete corrupted files
 Please call a plumber
-
+&&&
 Unplayable Game
 Missing Files
 Corupted Files
 Pipe error
-
+&&&
 Racer
  - Do you really want to do this ? (Y/N) 
 RIP 
