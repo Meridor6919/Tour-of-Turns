@@ -78,4 +78,24 @@ namespace LanguagePack
 		{ "Racer", " - Do you really want to do this ? (Y/N) ", "RIP, ", " dezintegrated his vehichle...","Don't attack" ," - You can't do this because you aren't moving...",
 			"META" , " lost " , "required - ", " highest roll - ", " lowest roll - ", "in result of other racers behaviour", " speed,", "________________________________________________________  " }
 	};
+	void LoadVector(std::string path)
+	{
+		std::ifstream fvar;
+		std::string line;
+		int position = 0;
+		fvar.open(path.c_str());
+		while (std::getline(fvar, line))
+		{
+			if (line == "\n")
+			{
+				LanguagePack::vector_of_strings.push_back({});
+				++position;
+			}
+			else
+			{
+				LanguagePack::vector_of_strings[position].push_back(line);
+			}
+		}
+
+	}
 }

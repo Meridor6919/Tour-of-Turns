@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <fstream>
 
 namespace LanguagePack
 {
+	void LoadVector(std::string path);
 	extern std::vector<std::vector<std::string>> vector_of_strings;
 	enum
 	{
