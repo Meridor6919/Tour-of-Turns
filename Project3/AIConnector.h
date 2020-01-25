@@ -63,7 +63,7 @@ void  AIConnector::RecvFunction(void(T::*MsgHandling)(std::string), T* object)
 		char buffer[2048] = "";
 		if (!ReadFile(output_pipe_read, buffer, sizeof(buffer) - 1, &bytes_read, NULL))
 		{
-			MessageBox(0, LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::pipe_error].c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::pipe_error].c_str(), 0);
+			MessageBox(0, ErrorMsg::pipe_error.c_str(), ErrorTitle::pipe_error.c_str(), 0);
 			break;
 		}
 		else

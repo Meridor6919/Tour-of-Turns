@@ -37,8 +37,6 @@ namespace LanguagePack
 		on_off,
 		title_main,
 		title_additional,
-		error_msg,
-		error_title,
 		other_string,
 		last
 	};
@@ -76,29 +74,6 @@ namespace OtherStrings
 		behaviour,
 		speed,
 		border,
-		last
-	};
-}
-namespace ErrorTitles
-{
-	enum
-	{
-		unplayable,
-		missing_file,
-		corrupted_file,
-		pipe_error,
-		last
-	};
-}
-namespace ErrorMsgs
-{
-	enum
-	{
-		unplayable,
-		missing_file,
-		ranking_not_present,
-		corrupted_file,
-		pipe_error,
 		last
 	};
 }
@@ -152,6 +127,21 @@ namespace ExtName
 	const std::string tire = ".tire";
 	const std::string ranking = ".rank";
 }
+namespace ErrorTitle
+{
+	const std::string unplayable = "Unplayable Game";
+	const std::string missing_file = "Missing Files";
+	const std::string corrupted_file = "Corupted Files";
+	const std::string pipe_error = "Pipe error";
+}
+namespace ErrorMsg
+{
+	const std::string unplayable = "You can't start new race with current game state, please repair files or reinstall game";
+	const std::string missing_file = "Files not found, please reinstall your game or repair missing files";
+	const std::string ranking_missing = "There are no ranking files";
+	const std::string corrupted_file = "cannot be read, please repair or delete corrupted files";
+	const std::string pipe_error = "Please call a plumber";
+}
 namespace GameValues
 {
 	const float drift_value = 2.0f;
@@ -181,3 +171,5 @@ namespace MathFunctions
 		return value;
 	}
 }
+
+

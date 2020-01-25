@@ -6,8 +6,8 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, *this);
 	playable = true;
 	ranking_found = true;
-	const std::string error_msg = " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::missing_file];
-	const char* errot_title = LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str();
+	const std::string error_msg = " " + ErrorMsg::missing_file;
+	const char* errot_title = ErrorTitle::missing_file.c_str();
 
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
 	{
@@ -108,7 +108,7 @@ bool ToT_Window::ValidateTourFiles()
 	}
 	if (!valid)
 	{
-		MessageBox(0, (FolderName::car + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
+		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		return false;
 	}
 	return true;
@@ -133,7 +133,7 @@ bool ToT_Window::ValidateCarFiles()
 	}
 	if (!valid)
 	{
-		MessageBox(0, (FolderName::car + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
+		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		return false;
 	}
 	return true;
@@ -173,7 +173,7 @@ bool ToT_Window::ValidateTireFiles()
 	}
 	if (!valid)
 	{
-		MessageBox(0, (FolderName::tire + " " + LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::corrupted_file]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::corrupted_file].c_str(), 0);
+		MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		return false;
 	}
 	return true;

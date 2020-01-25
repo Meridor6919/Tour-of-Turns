@@ -74,9 +74,9 @@ Drift Modifier
  
 Tires provide parameters strictly connected to type of the terrain. There are exactly six of them - as many as terrain types
  
-Each parameter is represented by two numbers with the letter \"x\" between them - number of tests required and number of tests in general. There are two ways in which they impact the gameplay :
+Each parameter is represented by two numbers with the letter "x" between them - number of tests required and number of tests in general. There are two ways in which they impact the gameplay :
 Friction
- - Alterates attributes responsible for speed modulation. Basically better probability of passing the tests - widder the modulation range Specific calculations are available in \"Gameplay Formulas\" panel
+ - Alterates attributes responsible for speed modulation. Basically better probability of passing the tests - widder the modulation range Specific calculations are available in "Gameplay Formulas" panel
 Turning tests
  -In any non-straight segment of tour player is being tested.Number of all tests and required tests are taken directly from tire attributes.
 &&&
@@ -115,6 +115,7 @@ Main Color
 Secondary Color
 Music volume
 Hamachi connection
+Language
 Back
 &&&
 Player Informations
@@ -269,17 +270,6 @@ _______        ___    __   __
 |   | |_  
 |   | |   
 |___| |   
-&&&
-You can't start new race with current game state, please repair files or reinstall game
-Files not found, please reinstall your game or repair missing files
-There are no ranking files
-cannot be read, please repair or delete corrupted files
-Please call a plumber
-&&&
-Unplayable Game
-Missing Files
-Corupted Files
-Pipe error
 &&&
 Racer
  - Do you really want to do this ? (Y/N) 

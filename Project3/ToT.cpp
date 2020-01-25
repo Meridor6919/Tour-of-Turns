@@ -22,7 +22,7 @@ void ToT::MainMenu()
 			}
 			else
 			{
-				MessageBox(0, (LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::unplayable]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::unplayable].c_str(), 0);
+				MessageBox(0, ErrorMsg::unplayable.c_str(), ErrorTitle::unplayable.c_str(), 0);
 			}
 			break;
 		}
@@ -39,7 +39,7 @@ void ToT::MainMenu()
 			}
 			else
 			{
-				MessageBox(0, (LanguagePack::vector_of_strings[LanguagePack::error_msg][ErrorMsgs::ranking_not_present]).c_str(), LanguagePack::vector_of_strings[LanguagePack::error_title][ErrorTitles::missing_file].c_str(), 0);
+				MessageBox(0, ErrorMsg::ranking_missing.c_str(), ErrorTitle::missing_file.c_str(), 0);
 			}
 			break;
 		}
