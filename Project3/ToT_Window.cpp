@@ -33,7 +33,6 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 		playable = false;
 	}
 	wav_transformer = new WavTransformer(FolderName::main + "\\" + FileName::music);
-	LanguagePack::LoadVector(FolderName::language + "\\Eng.lang");
 	LoadAtributes();
 }
 void ToT_Window::LoadAtributes()
@@ -50,8 +49,30 @@ void ToT_Window::LoadAtributes()
 	fvar >> hamachi_enabled;
 	fvar >> ais;
 	fvar >> name;
+	fvar >> lang;
 	fvar.close();
 
+	if (!LanguagePack::LoadVector(FolderName::language + "\\" + lang))
+	{
+		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		
+		std::vector<std::string> languages = this->ReadFile(FolderName::language + "\\" + FileName::language);
+		bool no_valid_lang_packs = true;
+		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
+		{
+			if (LanguagePack::LoadVector(FolderName::language + "\\" + languages[i]))
+			{
+				no_valid_lang_packs = false;
+				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language.c_str(), 0);
+				break;
+			}
+		}
+		if (no_valid_lang_packs)
+		{
+			MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
+			exit(0);
+		}
+	}
 	if (color1 < 0 || color1 > 15)
 	{
 		color1 = 15;
@@ -351,5 +372,6 @@ void ToT_Window::SaveAtributes()
 	fvar << hamachi_enabled << "\n";;
 	fvar << ais << "\n";
 	fvar << name << "\n";
+	fvar << lang << "\n";
 	fvar.close();
 }

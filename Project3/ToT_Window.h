@@ -11,7 +11,7 @@ class ToT_Window : public Window
 protected:
 	//Options
 	std::string name;
-	std::string lang = "Eng.lang";
+	std::string lang;
 	bool hamachi_enabled;
 	int ais;
 
