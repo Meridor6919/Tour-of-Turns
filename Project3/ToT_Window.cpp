@@ -23,11 +23,17 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 		MessageBox(0, (ExtName::tour + error_msg).c_str(), errot_title, 0);
 		playable = false;
 	}
+	if (!SaveFileNames(FolderName::language, FolderName::language + "\\" + FileName::language, ExtName::language))
+	{
+		MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
+		exit(0);
+	}
 	if (!ValidateGameFiles())
 	{
 		playable = false;
 	}
 	wav_transformer = new WavTransformer(FolderName::main + "\\" + FileName::music);
+	LanguagePack::LoadVector(FolderName::language + "\\Eng.lang");
 	LoadAtributes();
 }
 void ToT_Window::LoadAtributes()
@@ -307,6 +313,10 @@ std::string ToT_Window::GetName()
 {
 	return name;
 }
+std::string ToT_Window::GetLanguage()
+{
+	return lang;
+}
 bool ToT_Window::RankingFound()
 {
 	return ranking_found;
@@ -326,6 +336,10 @@ void ToT_Window::SetAIs(int number_of_ais)
 void ToT_Window::SetName(std::string name)
 {
 	this->name = name;
+}
+bool ToT_Window::SetLanguage(std::string lang)
+{
+	return LanguagePack::LoadVector(lang);
 }
 void ToT_Window::SaveAtributes()
 {

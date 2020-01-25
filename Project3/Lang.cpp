@@ -4,7 +4,7 @@
 namespace LanguagePack
 {
 	std::vector<std::vector<std::string>> vector_of_strings;
-	void LoadVector(std::string path)
+	bool LoadVector(std::string path)
 	{
 		LanguagePack::vector_of_strings.push_back({});
 		std::ifstream fvar;
@@ -23,5 +23,6 @@ namespace LanguagePack
 				LanguagePack::vector_of_strings[position].push_back(line);
 			}
 		}
+		return true;
 	}
 }

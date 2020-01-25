@@ -8,7 +8,6 @@ int main()
 	WSAData wsa_data;
 	WSAStartup(MAKEWORD(2, 2), &wsa_data);
 
-	LanguagePack::LoadVector(FolderName::main+"\\Ang.txt");
 	ToT game;
 	game.MainMenu();
 	WSACleanup();

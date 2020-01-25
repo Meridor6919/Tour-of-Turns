@@ -5,7 +5,7 @@
 
 namespace LanguagePack
 {
-	void LoadVector(std::string path);
+	bool LoadVector(std::string path);
 	extern std::vector<std::vector<std::string>> vector_of_strings;
 	enum
 	{
@@ -110,7 +110,8 @@ namespace FolderName
 	const std::string tour = "Maps";
 	const std::string car = "Cars";
 	const std::string tire = "Tires";
-	const std::string main = "Game_Files";
+	const std::string main = "GameFiles";
+	const std::string language = "LangPack";
 }
 namespace FileName
 {
@@ -119,6 +120,7 @@ namespace FileName
 	const std::string ranking = "Ranking.txt";
 	const std::string config = "config.txt";
 	const std::string music = "test.wav";
+	const std::string language = "lang.txt";
 }
 namespace ExtName
 {
@@ -126,6 +128,7 @@ namespace ExtName
 	const std::string car = ".car";
 	const std::string tire = ".tire";
 	const std::string ranking = ".rank";
+	const std::string language = ".lang";
 }
 namespace ErrorTitle
 {
@@ -133,14 +136,16 @@ namespace ErrorTitle
 	const std::string missing_file = "Missing Files";
 	const std::string corrupted_file = "Corupted Files";
 	const std::string pipe_error = "Pipe error";
+	const std::string language_error = "Language pack not found. Critical error";
 }
 namespace ErrorMsg
 {
 	const std::string unplayable = "You can't start new race with current game state, please repair files or reinstall game";
 	const std::string missing_file = "Files not found, please reinstall your game or repair missing files";
 	const std::string ranking_missing = "There are no ranking files";
-	const std::string corrupted_file = "cannot be read, please repair or delete corrupted files";
+	const std::string corrupted_file = "File cannot be read, please repair or delete corrupted files";
 	const std::string pipe_error = "Please call a plumber";
+	const std::string language_error = "Game cannot find language pack, please repair files or reinstall game";
 }
 namespace GameValues
 {

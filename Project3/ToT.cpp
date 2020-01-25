@@ -117,14 +117,38 @@ void ToT::Options()
 				main_window->SetMusic(static_cast<float>(Text::Choose::Horizontal(text, static_cast<int>(main_window->GetMusicVolume()*10), local_starting_point, Text::TextAlign::left, true, *main_window)) / 10.0f);
 				break;
 			}
-			case 3://set hamachi flag
+			case 3://language
+			{
+				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
+				std::vector<std::string> language = main_window->ReadFile(FolderName::language+"\\"+FileName::language);
+				int starting_pos = 0;
+				for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
+				{
+					if (language[starting_pos] == main_window->GetLanguage())
+					{
+						break;
+					}
+				}
+				main_window->RemoveExtension(language, ExtName::language);
+				int current_pos = Text::Choose::Horizontal(language, starting_pos, local_starting_point, Text::TextAlign::left, true, *main_window);
+				if (current_pos != starting_pos)
+				{
+					main_window->SetLanguage(language[current_pos] + "\\" + ExtName::language);
+					loop = false;
+					system("cls");
+					main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+					Options();
+				}
+				break;
+			}
+			case 4://set hamachi flag
 			{
 				
 				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, true, *main_window)));
 				break;
 			}
-			case 4://clearing
+			case 5://clearing
 			{
 				for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options].size()); ++i)
 				{

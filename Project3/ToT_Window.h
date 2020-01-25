@@ -11,6 +11,7 @@ class ToT_Window : public Window
 protected:
 	//Options
 	std::string name;
+	std::string lang = "Eng.lang";
 	bool hamachi_enabled;
 	int ais;
 
@@ -44,6 +45,7 @@ public:
 	bool GetHamachiConnectionFlag();
 	int GetAIs();
 	std::string GetName();
+	std::string GetLanguage();
 	bool RankingFound();
 	bool IsPlayable();
 
@@ -51,5 +53,6 @@ public:
 	void SetHamachiConnectionFlag(const bool flag);
 	void SetAIs(int number_of_ais);
 	void SetName(std::string name);
+	bool SetLanguage(std::string lang);
 	void SaveAtributes();
 };
