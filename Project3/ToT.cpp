@@ -78,48 +78,58 @@ void ToT::Options()
 		main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::game_options], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window);
 		const short submenu_horizontal_position = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options][main_menu_position].size()) / 2 + 3;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
+		const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 		switch (main_menu_position)
 		{
 			case 0://set primary color
 			{
 				std::vector<std::string> local_text = LanguagePack::vector_of_strings[LanguagePack::colors];
-				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
+				const int starting_color = main_window->color1;
 				local_text.erase(local_text.begin() + (main_window->color2 - 2));
 				main_window->color1 = Text::Choose::Horizontal(local_text, main_window->color1 - 2 - (main_window->color1 > main_window->color2), local_starting_point, Text::TextAlign::left, true, *main_window) + 2;
 				if (main_window->color1 >= main_window->color2)
 				{
 					++main_window->color1;
 				}
-				main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+				if (starting_color != main_window->color1)
+				{
+					main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+				}
 				break;
 			}
 			case 1://set secondary color
 			{
 				std::vector<std::string> local_text = LanguagePack::vector_of_strings[LanguagePack::colors];
-				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
+				const int starting_color = main_window->color2;
 				local_text.erase(local_text.begin() + (main_window->color1 - 2));
 				main_window->color2 = Text::Choose::Horizontal(local_text, main_window->color2 - 2 - (main_window->color2 > main_window->color1), local_starting_point, Text::TextAlign::left, true, *main_window) + 2;
 				if (main_window->color2 >= main_window->color1)
 				{
 					++main_window->color2;
 				}
-				main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+				if (starting_color != main_window->color2)
+				{
+					main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+				}
 				break;
 			}
 			case 2://set music
 			{
-				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 				std::vector<std::string> text = { LanguagePack::vector_of_strings[LanguagePack::on_off][1] };
 				for (int i = 1; i < 11; ++i)
 				{
 					text.push_back(std::to_string(i));
 				}
-				main_window->SetMusic(static_cast<float>(Text::Choose::Horizontal(text, static_cast<int>(main_window->GetMusicVolume()*10), local_starting_point, Text::TextAlign::left, true, *main_window)) / 10.0f);
+				const float starting_volume = main_window->GetMusicVolume();
+				const float current_volume = static_cast<float>(Text::Choose::Horizontal(text, static_cast<int>(main_window->GetMusicVolume() * 10), local_starting_point, Text::TextAlign::left, true, *main_window)) / 10.0f;
+				if(starting_volume != current_volume)
+				{
+					main_window->SetMusic(current_volume);
+				}
 				break;
 			}
 			case 3://language
 			{
-				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 				std::vector<std::string> language = main_window->ReadFile(FolderName::language+"\\"+FileName::language);
 				int starting_pos = 0;
 				for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
@@ -134,32 +144,29 @@ void ToT::Options()
 				if (current_pos != starting_pos)
 				{
 					main_window->SetLanguage(language[current_pos] + "\\" + ExtName::language);
-					loop = false;
 					system("cls");
 					main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
-					Options();
 				}
 				break;
 			}
 			case 4://set hamachi flag
 			{
-				
-				const COORD local_starting_point = { starting_point.X + submenu_horizontal_position , starting_point.Y + static_cast<short>(main_menu_position * spacing) };
 				main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, true, *main_window)));
 				break;
 			}
 			case 5://clearing
 			{
-				for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options].size()); ++i)
-				{
-					SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size())), starting_point.Y + i * spacing });
-					for (int j = 0; j < static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size()); ++j)
-					{
-						std::cout << " ";
-					}
-				}
 				loop = false;
+				break;
 			}
+		}
+	}
+	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options].size()); ++i)
+	{
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size())), starting_point.Y + i * spacing });
+		for (int j = 0; j < static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size()); ++j)
+		{
+			std::cout << " ";
 		}
 	}
 	main_window->SaveAtributes();
