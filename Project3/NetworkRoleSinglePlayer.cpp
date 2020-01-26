@@ -162,7 +162,7 @@ void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clea
 	{
 		text.push_back(std::make_pair(LanguagePack::vector_of_strings[LanguagePack::car_modifiers][i], std::to_string(car_params[i])));
 	}
-	ShowLobbyInformation(LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::player_info], text, { 0, 19 }, 1, 2, clear);
+	ShowLobbyInformation(LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::player_info], text, { 0, 19 }, 1, 2, clear);
 }
 void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
 {
@@ -190,7 +190,7 @@ void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 			++turns;
 		}
 	}
-	std::vector<std::pair<std::string, std::string>> text = { {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::tour_length], std::to_string(static_cast<int>(tour_params.size()))}, {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::turns], std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(tour_params.size())*100.f)) + "%"} };
+	std::vector<std::pair<std::string, std::string>> text = { {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::tour_length], std::to_string(static_cast<int>(tour_params.size()))}, {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::turns], std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(tour_params.size())*100.f)) + "%"} };
 	for (short i = 0; i < 6; ++i)
 	{
 		text.push_back(std::make_pair(LanguagePack::vector_of_strings[LanguagePack::tire_modifiers][i], std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(tour_params.size())*100.f)) + "%"));
@@ -199,8 +199,8 @@ void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 }
 void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool clear)
 {
-	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::champion], ""},{LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::win_rate], ""}, {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::avg_place], ""} };
-	ShowLobbyInformation(LanguagePack::vector_of_strings[LanguagePack::information_box_titles][GameInformation::tour_info], vector, { static_cast<short>(main_window->GetWidth()) - static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size()), 19 }, 1, 2, clear);
+	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::champion], ""},{LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::win_rate], ""}, {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::avg_place], ""} };
+	ShowLobbyInformation(LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::tour_info], vector, { static_cast<short>(main_window->GetWidth()) - static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size()), 19 }, 1, 2, clear);
 }
 void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear)
 {

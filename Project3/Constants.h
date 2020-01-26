@@ -31,7 +31,6 @@ namespace LanguagePack
 		race_distance,
 		race_boxes,
 		race_infobox,
-		participant_names,
 		participant_infobox,
 		credits,
 		on_off,
@@ -41,7 +40,7 @@ namespace LanguagePack
 		last
 	};
 }
-namespace GameInformation
+namespace InformationBoxTitle
 {
 	enum
 	{
@@ -104,6 +103,21 @@ namespace TireModifiers
 		ice,
 		last
 	};
+}
+namespace ValidationConstants
+{
+	const int main_menu_size = 7;
+	const int game_lobby_size = 6;
+	const int multiplayer_lobby_size = 3;
+	const int option_size = 6;
+	const int possible_colors = 14;
+	const int possible_actions = 5;
+	const int race_attribs = 4;
+	const int race_chances_size = 4;
+	const int race_ranking_size = 3;
+	const int race_distance_size = 7;
+	const int race_boxes = 3;
+	const int participant_infobox_size = 8;
 }
 namespace FolderName
 {
