@@ -123,7 +123,7 @@ namespace ValidationConstants
 	const int participant_infobox_size = 8;
 	const int ranking_search_menu = 5;
 	const int ranking_classification_types = 3;
-	const int ranking_details = 11;
+	const int ranking_details = 12;
 }
 namespace FolderName
 {

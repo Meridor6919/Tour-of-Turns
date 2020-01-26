@@ -8,8 +8,8 @@ Racer1
 0	0	0
 129	80	0
 0	0	0
-mikrus:120:delta:9	mikrus:80	0
-A1:129	A1:129	0
+mikrus:120:delta:9:	mikrus:80:	0
+A1:129:	A1:129:	0
 Racer2
 129	80	0
 40	10	0
@@ -20,8 +20,8 @@ Racer2
 0	0	0
 129	80	0
 0	0	0
-mikrus:120:delta:9	mikrus:80	0
-A1:129	A1:129	0
+mikrus:120:delta:9:	delta:80:	0
+A1:129:	A1:129:	0
 Racer3
 129	80	0
 40	10	0
@@ -32,5 +32,5 @@ Racer3
 0	0	0
 129	80	0
 0	0	0
-mikrus:120:delta:9	mikrus:80	0
-A1:129	A1:129	0
+mikrus:120:delta:9:	longnamelongnamelonglong:80:	0
+A1:129:	A1:129:	0

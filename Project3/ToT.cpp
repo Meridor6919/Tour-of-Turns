@@ -8,12 +8,115 @@ std::vector<std::string> ToT::GetRankingNames(std::string tour)
 	fvar.open(tour.c_str());
 	for (int i = 0; std::getline(fvar, line); ++i)
 	{
-		if (!(i % 12))
+		if (!(i %  ValidationConstants::ranking_details))
 		{
 			ret.push_back(line);
 		}
 	}
 	fvar.close();
+	return ret;
+}
+std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos, int classification_type)
+{
+	std::string line;
+	std::vector<std::string> ret = {};
+	for (int i = 0; i < 12; ++i)
+	{
+		ret.push_back(" ");
+	}
+
+	std::ifstream fvar(tour.c_str());
+	for (int i = 0; i < ValidationConstants::ranking_details * racer_pos && std::getline(fvar, line); ++i);
+	auto get_classified_detail = [](std::string line, int classification_type) {
+
+		int start = 0;
+		int count = 0;
+		for (int i = 0; i < static_cast<int>(line.size()); ++i)
+		{
+			if ((line[i] == '\t') || (i + 1 == static_cast<int>(line.size())))
+			{
+				if (!classification_type)
+				{
+					count = i - start + (i + 1 == static_cast<int>(line.size()));
+					break;
+				}
+				else
+				{
+					--classification_type;
+					start = i+1;
+				}
+			}
+		}
+		return line.substr(start, count);
+	};
+	auto get_most_frequent = [](std::string line)
+	{
+		std::string best_name = " ";
+		int best_score = 0;
+
+		std::string current_name = "";
+		std::string current_score;
+		bool name = true;
+
+		for (int i = 0; i < static_cast<int>(line.size()); ++i)
+		{
+			if (line[i] == ':')
+			{
+				name = !name;
+				if (name)
+				{
+					if (atoi(current_score.c_str()) > best_score)
+					{
+						best_name = current_name;
+						best_score = atoi(current_score.c_str());
+						current_name = "";
+						current_score = "";
+					}
+				}
+			}
+			else if (name)
+			{
+				current_name += line[i];
+			}
+			else
+			{
+				current_score += line[i];
+			}
+		}
+		return best_name;
+	};
+
+
+	if (std::getline(fvar, line))
+	{
+		ret[0] = line;//name
+		std::getline(fvar, line);
+		ret[1] = get_classified_detail(line, classification_type);//games played
+		if (ret[1] == "0")
+		{
+			return ret;
+		}
+		std::getline(fvar, line);
+		ret[2] = std::to_string(static_cast<int>(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()) * 100.0f)) + '%';//winrate
+		std::getline(fvar, line);
+		ret[3] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg_place
+		std::getline(fvar, line);
+		ret[4] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg_score
+		std::getline(fvar, line);
+		ret[5] = get_classified_detail(line, classification_type);//highest score
+		std::getline(fvar, line);
+		ret[8] = get_classified_detail(line, classification_type); //crashes
+		std::getline(fvar, line);
+		ret[9] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));// avg attacks
+		std::getline(fvar, line);
+		ret[10] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg drifts
+		std::getline(fvar, line);
+		ret[11] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg durability burning
+		std::getline(fvar, line);
+		ret[6] = get_most_frequent(get_classified_detail(line, classification_type));//favorite car
+		std::getline(fvar, line);
+		ret[7] = get_most_frequent(get_classified_detail(line, classification_type));//favorite tires
+	}
 	return ret;
 }
 void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing)
@@ -22,6 +125,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	const int spacing = 2;
 	const int paragraph_size = 2;
 	const COORD base_position = { 0, 19 };
+	std::vector<std::string> details = GetRankingDetails(tour, racer_pos, classification_type);
 	if (clearing)
 	{
 		const int border_size = static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size());
@@ -33,7 +137,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		for (short i = 0; i < static_cast<short>(ValidationConstants::ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
-			for (int j = 0; j < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_details][i].size()) + static_cast<short>(1) + 2; ++j)
+			for (int j = 0; j < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2; ++j)
 			{
 				std::cout << " ";
 			}
@@ -55,7 +159,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 			SetConsoleTextAttribute(handle, main_window->color1);
 			std::cout << LanguagePack::vector_of_strings[LanguagePack::ranking_details][i] + ": ";
 			SetConsoleTextAttribute(handle, main_window->color2);
-			std::cout << "*";
+			std::cout << details[i];
 		}
 		SetConsoleTextAttribute(handle, main_window->color2);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(ValidationConstants::ranking_details) + 2) });
