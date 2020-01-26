@@ -1,5 +1,68 @@
 #include "ToT.h"
 
+std::vector<std::string> ToT::GetRankingNames(std::string tour)
+{
+	std::ifstream fvar;
+	std::string line;
+	std::vector<std::string> ret = {};
+	fvar.open(tour.c_str());
+	for (int i = 0; std::getline(fvar, line); ++i)
+	{
+		if (!(i % 12))
+		{
+			ret.push_back(line);
+		}
+	}
+	fvar.close();
+	return ret;
+}
+void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing)
+{
+	const HANDLE handle = main_window->GetHandle();
+	const int spacing = 2;
+	const int paragraph_size = 2;
+	const COORD base_position = { 0, 19 };
+	if (clearing)
+	{
+		const int border_size = static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size());
+		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
+		for (int i = 0; i < border_size; ++i)
+		{
+			std::cout << " ";
+		}
+		for (short i = 0; i < static_cast<short>(ValidationConstants::ranking_details); ++i)
+		{
+			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
+			for (int j = 0; j < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_details][i].size()) + static_cast<short>(1) + 2; ++j)
+			{
+				std::cout << " ";
+			}
+		}
+		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(ValidationConstants::ranking_details) + 2) });
+		for (int i = 0; i < border_size; ++i)
+		{
+			std::cout << " ";
+		}
+	}
+	else
+	{
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
+		std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border];
+		for (short i = 0; i < static_cast<short>(ValidationConstants::ranking_details); ++i)
+		{
+			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << LanguagePack::vector_of_strings[LanguagePack::ranking_details][i] + ": ";
+			SetConsoleTextAttribute(handle, main_window->color2);
+			std::cout << "*";
+		}
+		SetConsoleTextAttribute(handle, main_window->color2);
+		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(ValidationConstants::ranking_details) + 2) });
+		std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border];
+	}
+}
+
 ToT::ToT()
 {
 	this->main_window = std::make_shared<ToT_Window>("Tour of Turns", 15, 10, 200, 70);
@@ -173,7 +236,86 @@ void ToT::Options()
 }
 void ToT::Ranking()
 {
-	//TODO ranking should show players accuracy in decision making instead of showing lucky and stupid ones that scores the highest
+	int main_menu_position = 0;
+	const COORD starting_point = { game_window_center + 1, 25 };
+	const short spacing = 3;
+	bool loop = true;
+
+	std::vector<std::string> maps = main_window->ReadFile(FolderName::tour + "\\" + FileName::ranking);
+	int map_pos = 0;
+	main_window->RemoveExtension(maps, ExtName::ranking);
+
+	int racer_pos = 0;
+	int classification_type = 0;
+
+	ShowRankingDetails(FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
+	while (loop)
+	{
+		const std::string starting_map_path = FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking;
+		main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window);
+		const short submenu_horizontal_position = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][main_menu_position].size()) / 2 + 3;
+		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
+		const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
+		switch (main_menu_position)
+		{
+			case 0://Map
+			{
+				const int temp = map_pos;
+				map_pos = Text::Choose::Horizontal(maps, map_pos, local_starting_point, Text::TextAlign::left, true, *main_window);
+				if (map_pos != temp)
+				{
+					ShowRankingDetails(starting_map_path, racer_pos, classification_type, true);
+					racer_pos = 0;
+					ShowRankingDetails(FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
+				}
+				break;
+			}
+			case 1://Player
+			{
+				const int temp = racer_pos;
+				racer_pos = Text::Choose::Horizontal(GetRankingNames(FolderName::tour+ "\\" + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, Text::TextAlign::left, true, *main_window);
+				if(temp != racer_pos)
+				{
+					ShowRankingDetails(starting_map_path, temp, classification_type, true);
+					ShowRankingDetails(starting_map_path, racer_pos, classification_type);
+				}
+				break;
+			}
+			case 2://Classification type
+			{
+				const int temp = classification_type;
+				classification_type = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::ranking_classification_types], classification_type, local_starting_point, Text::TextAlign::left, true, *main_window);
+				if (temp != classification_type)
+				{
+					ShowRankingDetails(starting_map_path, racer_pos, temp, true);
+					ShowRankingDetails(starting_map_path, racer_pos, classification_type);
+				}
+				break;
+			}
+			case 3://Reset map details
+			{
+				ShowRankingDetails(starting_map_path, racer_pos, classification_type, true);
+				std::fstream fvar((FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking).c_str(), std::ios::out);
+				ShowRankingDetails(starting_map_path, racer_pos, classification_type);
+				fvar.close();
+				break;
+			}
+			case 4://Back
+			{
+				ShowRankingDetails(starting_map_path, racer_pos, classification_type, true);
+				loop = false;
+				break;
+			}
+		}
+		for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu].size()); ++i)
+		{
+			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][i].size())), starting_point.Y + i * spacing });
+			for (int j = 0; j < static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][i].size()); ++j)
+			{
+				std::cout << " ";
+			}
+		}
+	}
 }
 void ToT::Info()
 {

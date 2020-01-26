@@ -83,6 +83,18 @@ namespace LanguagePack
 		{
 			return false;
 		}
+		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu].size()) != ValidationConstants::ranking_search_menu)
+		{
+			return false;
+		}
+		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_classification_types].size()) != ValidationConstants::ranking_classification_types)
+		{
+			return false;
+		}
+		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_details].size()) != ValidationConstants::ranking_details)
+		{
+			return false;
+		}
 		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::other_string].size()) != OtherStrings::last)
 		{
 			return false;

@@ -53,9 +53,9 @@ Safe speed
 Straight segments of the road doesn't have any restrictions about safe speed.
 &&&
  
-Selection of car is the single most important decision in Tour of Turns. It provides essencial atributes such as:
+Selection of car is the single most important decision in Tour of Turns. It provides essential attributes such as:
 Max Speed
- - Player's vehical retains about 90% of speed every turn. This parameter defines maximum speed accumulated over time. Player can surpass this value up to 125% but every point exceeding, costs durability.
+ - Player's vehicle retains about 90% of speed every turn. This parameter defines maximum speed accumulated over time. Player can surpass this value up to 125% but every point exceeding, costs durability.
 Max Acceleration
  - Maximum value by which player can speed up. It's influenced by terrain and according tire parameter.
 Max Braking
@@ -63,7 +63,7 @@ Max Braking
 Hand Brake Value
  - Player can use hand brake, slowing down by a constant value. If player chooses this action on a non-straight segment of turn and he is driving faster than 40km/h then drift is performed.
 Durability
- - When the player loses all of durablility then he is out of the race. There are multiple sources that can limit this value. Firstly unsuccessful turning tests, secondly surpassing maximum speed and lastly enemy attacks.
+ - When the player loses all of durability then he is out of the race. There are multiple sources that can limit this value. Firstly unsuccessful turning tests, secondly surpassing maximum speed and lastly enemy attacks.
 Visibility
  - Sets number of tour's segments that player can see on the left side of the screen.
 Turn Modifier
@@ -76,25 +76,25 @@ Tires provide parameters strictly connected to type of the terrain. There are ex
  
 Each parameter is represented by two numbers with the letter "x" between them - number of tests required and number of tests in general. There are two ways in which they impact the gameplay :
 Friction
- - Alterates attributes responsible for speed modulation. Basically better probability of passing the tests - widder the modulation range Specific calculations are available in "Gameplay Formulas" panel
+ - Alters attributes responsible for speed modulation. Basically better probability of passing the tests - wider the modulation range Specific calculations are available in "Gameplay Formulas" panel
 Turning tests
  -In any non-straight segment of tour player is being tested.Number of all tests and required tests are taken directly from tire attributes.
 &&&
 Tour of Turns's
 game mechanics are inherently based on math. There are no dexterity involved, pure analysis. Every part of gameplay has its own formulas. Order in which this events take place look like this: 
 Attacking segment
- - This part starts with the beggining of the second turn. Players choose targets that have score, higher up to 6 points and lower up to 4 points. (Player with the lowest score is on the lead)
+ - This part starts with the beginning of the second turn. Players choose targets that have score, higher up to 6 points and lower up to 4 points. (Player with the lowest score is on the lead)
  
 When the target is chosen, he gains a full attacking point when the attacker gains half a point.
 Action segment
 - Player chooses how he would like to modify his speed. Then value of that modulation is being multiplied by 0.9 + TireEffectivness.			 
-TireEffectivness parameter is calculated as common probability to pass serries of tests with local probability of 50%.
+TireEffectivness parameter is calculated as common probability to pass series of tests with local probability of 50%.
  
 Number of tests required and number of tests in general come from tires parameter responsible for current segment's terrain type.
  
 Next thing that is being calculated is durability burning. Player loses durability for every point of speed that surpasses maximum speed of the car. Formula for durability burning looks like this:
  
-durability_lost = over_speed * (level + level * level) / 2 where level is an intager rounded down from over_speed / maximum speed * 20 + 10
+durability_lost = over_speed * (level + level * level) / 2 where level is an integer rounded down from over_speed / maximum speed * 20 + 10
  
 Lastly player's speed is being multiplied by 0.9, because of friction.
 Test segment
@@ -164,7 +164,7 @@ Remember only weak ones surrenders
 &&&
  You're racing as: 
  Your current speed is: 
- Your vehice has 
+ Your vehicle has 
  durability   
 &&&
 In front of you: 
@@ -245,10 +245,32 @@ _______        ___    __   __
 |   | |   
 |___| |   
 &&&
+Map
+Player
+Classification
+Reset map details
+Back
+&&&
+All games
+8 Players only
+Multiplayer only
+&&&
+Racer
+Win rate
+Games played
+Average Place
+Highest Score
+Favorite Car
+Favorite Tire
+Fatal Crashes
+Average attacks per game
+Average drifts per game
+Average durability burning per game
+&&&
 Racer
  - Do you really want to do this ? (Y/N) 
 RIP 
-dezintegrated his vehichle... 
+disintegrated his vehicle... 
 Don't attack
  - You can't do this because you aren't moving...
 META
@@ -256,6 +278,6 @@ META
  required - 
  highest roll - 
  lowest roll - 
-in result of other racers behaviour
+in result of other racers behavior
  speed,
 ________________________________________________________ 

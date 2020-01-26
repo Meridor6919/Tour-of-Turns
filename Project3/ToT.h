@@ -11,6 +11,9 @@ class ToT {
 	short info_pos = 0;
 	short main_menu_position = 0;
 
+	std::vector<std::string> GetRankingNames(std::string tour);
+	void ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing = false);
+
 public:
 	ToT();
 	void Credits();

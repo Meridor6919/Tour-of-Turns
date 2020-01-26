@@ -2,11 +2,14 @@
 
 int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window &main_window, std::mutex *mutex)
 {
+	if (!static_cast<short>(text.size()))
+	{
+		return -1;
+	}
 	const HANDLE handle = main_window.GetHandle();
 	const int color1 = main_window.color1;
 	const int color2 = main_window.color2;
 	char button;
-
 	do
 	{
 		const float line_size = static_cast<float>(text[starting_position].size());

@@ -36,6 +36,9 @@ namespace LanguagePack
 		on_off,
 		title_main,
 		title_additional,
+		ranking_search_menu,
+		ranking_classification_types,
+		ranking_details,
 		other_string,
 		last
 	};
@@ -118,6 +121,9 @@ namespace ValidationConstants
 	const int race_distance_size = 7;
 	const int race_boxes = 3;
 	const int participant_infobox_size = 8;
+	const int ranking_search_menu = 5;
+	const int ranking_classification_types = 3;
+	const int ranking_details = 11;
 }
 namespace FolderName
 {
