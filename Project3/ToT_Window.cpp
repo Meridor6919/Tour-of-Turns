@@ -33,6 +33,31 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	wav_transformer = new WavTransformer(FolderName::main + "\\" + FileName::music);
 	LoadAtributes();
 }
+std::string ToT_Window::GetClassifiedDetail(std::string line, int classification_type)
+{
+	{
+
+		int start = 0;
+		int count = 0;
+		for (int i = 0; i < static_cast<int>(line.size()); ++i)
+		{
+			if ((line[i] == '\t') || (i + 1 == static_cast<int>(line.size())))
+			{
+				if (!classification_type)
+				{
+					count = i - start + (i + 1 == static_cast<int>(line.size()));
+					break;
+				}
+				else
+				{
+					--classification_type;
+					start = i + 1;
+				}
+			}
+		}
+		return line.substr(start, count);
+	};
+}
 void ToT_Window::LoadAtributes()
 {
 	std::fstream fvar;
@@ -200,7 +225,7 @@ bool ToT_Window::ValidateRanking()
 	std::ifstream fvar;
 	for (short i = 0; i < static_cast<short>(ranking_files.size()); ++i)
 	{
-		fvar.open(ranking_files[i]);
+		fvar.open(FolderName::tour + "\\" +  ranking_files[i]);
 		std::string line;
 		int iterations = 0;
 		for (; std::getline(fvar, line); ++iterations);
@@ -354,6 +379,10 @@ bool ToT_Window::IsPlayable()
 {
 	return playable;
 }
+bool ToT_Window::GetMultiplayer()
+{
+	return multiplayer;
+}
 void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {
 	hamachi_enabled = flag;
@@ -369,6 +398,126 @@ void ToT_Window::SetName(std::string name)
 bool ToT_Window::SetLanguage(std::string lang)
 {
 	return LanguagePack::LoadVector(lang);
+}
+void ToT_Window::SetMultiplayer(bool multiplayer)
+{
+	this->multiplayer = multiplayer;
+}
+void ToT_Window::SaveRanking(std::string tour, std::string name, int place, float score, int crashes, int attacks, int drifts, int durability_burning, std::string car, std::string tires)
+{
+	std::fstream fvar;
+	std::string path = FolderName::tour + "\\" + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
+	std::string temp;
+	std::vector<std::string> line = { "" };
+
+	fvar.open(path.c_str(), std::ios::in);
+	for (int i = 0; std::getline(fvar, line[i]); ++i)
+	{
+		line.push_back("");
+	}
+	fvar.close();
+
+	int index_pos = -1;
+	for (int i = 0; i < static_cast<int>(line.size()); i+=ValidationConstants::ranking_details)
+	{
+		if (line[i] == name)
+		{
+			index_pos = i+1;
+			break;
+		}
+	}
+
+	if (index_pos < 0)//Add record if player not found
+	{
+		index_pos = static_cast<int>(line.size());
+		line[index_pos - 1] = name;
+		for (int i = 0; i < ValidationConstants::ranking_details - 1; ++i)
+		{
+			line.push_back("");
+		}
+		line.push_back("");
+	}
+	const std::vector<int> additions = { 1, place==1,place, static_cast<int>(score), 0, crashes, attacks, durability_burning };
+	for (int i = 0; i < static_cast<int>(additions.size()); ++i)
+	{
+		std::string class_all = std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], 0).c_str()) + additions[i]);
+		std::string class_8ais = std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], 1).c_str()) + additions[i] * (ais == 7));
+		std::string class_multiplayer = std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], 2).c_str()) + additions[i] * static_cast<int>(multiplayer));
+
+		line[index_pos + i] = class_all + "\t" + class_8ais + "\t" + class_multiplayer;
+	}
+	temp = "";
+	for(int i = 0; i < 3; ++i)
+	{	
+		int local_score = atoi(GetClassifiedDetail(line[index_pos], i).c_str());
+		if (static_cast<int>(score) > local_score);
+		{
+			local_score = static_cast<int>(score);
+		}
+		temp += std::to_string(local_score) + "\t";
+	}
+	line[index_pos + 4] = temp.substr(0, static_cast<int>(temp.size()) - 1);
+	
+	auto AddQuantity = [](std::string text, std::string phrase, int added_value) {
+		if (!added_value)
+		{
+			return static_cast<std::string>("");
+		}
+		bool name = true;
+		bool found = false;
+		std::string current_phrase;
+		std::string value;
+		int index;
+		for (int i = 0; i < static_cast<int>(text.size()); ++i)
+		{
+			if (text[i] == ':')
+			{
+				name = !name;
+				if (!name)
+				{
+					if (current_phrase == phrase)
+					{
+						found = true;
+						index = i;
+					}
+				}
+				else
+				{
+					if (found)
+					{
+						return text.substr(0, index + 1) + std::to_string(atoi(value.c_str()) + added_value) + text.substr(i, static_cast<int>(text.size()) - i);
+					}
+					current_phrase = "";
+					value = "";
+
+				}
+			}
+			else if (name)
+			{
+				current_phrase += text[i];
+			}
+			else
+			{
+				value += text[i];
+			}
+		}
+		return text + phrase +":"+std::to_string(added_value)+":";
+	};
+	line[index_pos + 9] = AddQuantity(GetClassifiedDetail(line[index_pos + 9], 0), car, 1) + "\t" + AddQuantity(GetClassifiedDetail(line[index_pos + 9], 0), car, 1*(ais==7)) + "\t" + AddQuantity(GetClassifiedDetail(line[index_pos + 9], 0), car, 1*static_cast<int>(multiplayer)); //car
+	line[index_pos + 10] = AddQuantity(GetClassifiedDetail(line[index_pos + 10], 0), tires, 1) + "\t" + AddQuantity(GetClassifiedDetail(line[index_pos + 10], 0), tires, 1 * (ais == 7)) + "\t" + AddQuantity(GetClassifiedDetail(line[index_pos + 10], 0), tires, 1 * static_cast<int>(multiplayer)); //tires
+
+
+	fvar.open(path.c_str(), std::ios::out);
+	for (int i = 0; i < static_cast<int>(line.size())-1; ++i)
+	{
+		if(i)
+		{
+			fvar << "\n";
+		}
+		fvar << line[i];
+
+	}
+	fvar.close();
 }
 void ToT_Window::SaveAtributes()
 {

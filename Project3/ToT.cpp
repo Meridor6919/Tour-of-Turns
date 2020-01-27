@@ -27,28 +27,6 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 
 	std::ifstream fvar(tour.c_str());
 	for (int i = 0; i < ValidationConstants::ranking_details * racer_pos && std::getline(fvar, line); ++i);
-	auto get_classified_detail = [](std::string line, int classification_type) {
-
-		int start = 0;
-		int count = 0;
-		for (int i = 0; i < static_cast<int>(line.size()); ++i)
-		{
-			if ((line[i] == '\t') || (i + 1 == static_cast<int>(line.size())))
-			{
-				if (!classification_type)
-				{
-					count = i - start + (i + 1 == static_cast<int>(line.size()));
-					break;
-				}
-				else
-				{
-					--classification_type;
-					start = i+1;
-				}
-			}
-		}
-		return line.substr(start, count);
-	};
 	auto get_most_frequent = [](std::string line)
 	{
 		std::string best_name = " ";
@@ -91,31 +69,31 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 	{
 		ret[0] = line;//name
 		std::getline(fvar, line);
-		ret[1] = get_classified_detail(line, classification_type);//games played
+		ret[1] = main_window->GetClassifiedDetail(line, classification_type);//games played
 		if (ret[1] == "0")
 		{
 			return ret;
 		}
 		std::getline(fvar, line);
-		ret[2] = std::to_string(static_cast<int>(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()) * 100.0f)) + '%';//winrate
+		ret[2] = std::to_string(static_cast<int>(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()) * 100.0f)) + '%';//winrate
 		std::getline(fvar, line);
-		ret[3] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg_place
+		ret[3] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg_place
 		std::getline(fvar, line);
-		ret[4] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg_score
+		ret[4] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg_score
 		std::getline(fvar, line);
-		ret[5] = get_classified_detail(line, classification_type);//highest score
+		ret[5] = main_window->GetClassifiedDetail(line, classification_type);//highest score
 		std::getline(fvar, line);
-		ret[8] = get_classified_detail(line, classification_type); //crashes
+		ret[8] = main_window->GetClassifiedDetail(line, classification_type); //crashes
 		std::getline(fvar, line);
-		ret[9] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));// avg attacks
+		ret[9] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));// avg attacks
 		std::getline(fvar, line);
-		ret[10] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg drifts
+		ret[10] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg drifts
 		std::getline(fvar, line);
-		ret[11] = std::to_string(static_cast<int>(round(atof(get_classified_detail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg durability burning
+		ret[11] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg durability burning
 		std::getline(fvar, line);
-		ret[6] = get_most_frequent(get_classified_detail(line, classification_type));//favorite car
+		ret[6] = get_most_frequent(main_window->GetClassifiedDetail(line, classification_type));//favorite car
 		std::getline(fvar, line);
-		ret[7] = get_most_frequent(get_classified_detail(line, classification_type));//favorite tires
+		ret[7] = get_most_frequent(main_window->GetClassifiedDetail(line, classification_type));//favorite tires
 	}
 	return ret;
 }
@@ -449,6 +427,7 @@ void ToT::Info()
 }
 void ToT::Game(const bool multiplayer)
 {
+	main_window->SetMultiplayer(multiplayer);
 	std::shared_ptr<SinglePlayer> network_role;
 	if (multiplayer)
 	{	
