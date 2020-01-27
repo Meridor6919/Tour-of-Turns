@@ -5,13 +5,13 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	const COORD infobox_position = { 0,static_cast<short>(GetHeight() - 12) };
 	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, *this);
 	playable = true;
-	ranking_found = true;
+	enable_ranking = true;
 	const std::string error_msg = " " + ErrorMsg::missing_file;
 	const char* errot_title = ErrorTitle::missing_file.c_str();
 
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
 	{
-		ranking_found = false;
+		enable_ranking = false;
 	}
 	if (!SaveFileNames(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
 	{
@@ -28,10 +28,8 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 		MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
 		exit(0);
 	}
-	if (!ValidateGameFiles())
-	{
-		playable = false;
-	}
+	enable_ranking = enable_ranking & ValidateRanking();
+	playable = playable & ValidateGameFiles();
 	wav_transformer = new WavTransformer(FolderName::main + "\\" + FileName::music);
 	LoadAtributes();
 }
@@ -103,72 +101,68 @@ bool ToT_Window::ValidateTourFiles()
 {
 	std::vector<std::string> tours = GetTourNames();
 	const short number_of_tours = static_cast<short>(tours.size());
-	bool valid = number_of_tours;
-
+	if (!number_of_tours)
+	{
+		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		return false;
+	}
 	for (short i = 0; i < number_of_tours; ++i)
 	{
 		std::vector<std::string> params = GetTourParameters(tours[i], 0, INT_MAX);
 		if (static_cast<short>(params.size()) < 1)
 		{
-			valid = false;
-			break;
+			MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			return false;
 		}
 		for (short j = 0; j < static_cast<short>(params.size()); ++j)
 		{
 			const short size_of_segment = static_cast<short>(params[j].size());
 			if (params[j][0] - 48 < 0 || params[j][0] - 48 >= TireModifiers::last)//terrain type validation
 			{
-				valid = false;
-				break;
+				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				return false;
 			}
 			else if (size_of_segment > 11)//checking if safe speed isn't exceeding speed of light
 			{
-				valid = false;
-				break;
+				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				return false;
 			}
 			else if (size_of_segment != 1 && atoi(params[j].substr(1, size_of_segment - 1).c_str()) < 1)//checking if safe speed is at least 1
 			{
-				valid = false;
-				break;
+				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				return false;
 			}
 		}
 	}
-	if (!valid)
-	{
-		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
-		return false;
-	}
+	
 	return true;
 }
 bool ToT_Window::ValidateCarFiles()
 {
 	const std::vector<std::string> tours = GetTourNames();
-	bool valid = true;
 
 	for (short i = 0; i < static_cast<short>(tours.size()); ++i)
 	{
 		const std::vector<std::string> cars = GetCarNames(tours[i]);
-		valid = valid && static_cast<bool>(cars.size());//checking if there is at least one car that can be driven for any given tour
+		if (!static_cast<bool>(cars.size()))//checking if there is at least one car that can be driven for any given tour
+		{
+			MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			return false;
+		}		
 		for (short j = 0; j < static_cast<short>(cars.size()); ++j)
 		{
 			if (static_cast<short>(GetCarParameters(cars[j]).size()) != CarModifiers::last)//checking if car has all parameters set
 			{
-				valid = false;
-				break;
+				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				return false;
 			}
 		}
-	}
-	if (!valid)
-	{
-		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
-		return false;
 	}
 	return true;
 }
 bool ToT_Window::ValidateTireFiles()
 {
 	const std::vector<std::string> tires = GetTireNames();
-	bool valid = static_cast<bool>(tires.size());
 	int x = 0;
 	int y = 0;
 
@@ -177,8 +171,8 @@ bool ToT_Window::ValidateTireFiles()
 		const std::vector<std::string> params = GetTireParameters(tires[i]);
 		if (static_cast<short>(params.size()) != TireModifiers::last)//checking if tires have all parameters set
 		{
-			valid = false;
-			break;
+			MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			return false;
 		}
 		for (short j = 0; j < TireModifiers::last; ++j)//getting tires attributes
 		{
@@ -194,14 +188,28 @@ bool ToT_Window::ValidateTireFiles()
 		}
 		if (x*y == 0 || x > y)//checking if tires attributes make sense
 		{
-			valid = false;
-			break;
+			MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			return false;
 		}
 	}
-	if (!valid)
+	return true;
+}
+bool ToT_Window::ValidateRanking()
+{
+	std::vector<std::string> ranking_files = ReadFile(FolderName::tour + "\\" + FileName::ranking);
+	std::ifstream fvar;
+	for (short i = 0; i < static_cast<short>(ranking_files.size()); ++i)
 	{
-		MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
-		return false;
+		fvar.open(ranking_files[i]);
+		std::string line;
+		int iterations = 0;
+		for (; std::getline(fvar, line); ++iterations);
+		if (iterations % ValidationConstants::ranking_details != 0)
+		{
+			MessageBox(0, (+" " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			return false;
+		}
+		fvar.close();
 	}
 	return true;
 }
@@ -340,7 +348,7 @@ std::string ToT_Window::GetLanguage()
 }
 bool ToT_Window::RankingFound()
 {
-	return ranking_found;
+	return enable_ranking;
 }
 bool ToT_Window::IsPlayable()
 {

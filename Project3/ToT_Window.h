@@ -17,13 +17,14 @@ protected:
 
 	//Viability 
 	bool playable;
-	bool ranking_found;
+	bool enable_ranking;
 
 	void LoadAtributes();
 	bool ValidateGameFiles();
 	bool ValidateTourFiles();
 	bool ValidateCarFiles();
 	bool ValidateTireFiles();
+	bool ValidateRanking();
 	bool SaveFileNames(std::string src_path, std::string dst_path, const std::string ext);
 
 public:
