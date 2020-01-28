@@ -714,5 +714,9 @@ bool SinglePlayer::VisionBox(const int turn)
 }
 void SinglePlayer::Finish()
 {
-	main_window->SaveRanking(tour, participants[0].name, 1, participants[0].score, participants[0].crashes, participants[0].attacks_performed, participants[0].drifts_performed, participants[0].durability_burned, participants[0].car_path, participants[0].tire_path);
+	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+	{
+		main_window->SaveRanking(tour, participants[i].name, 1, participants[i].score, participants[i].crashes, participants[i].attacks_performed, participants[i].drifts_performed, participants[i].durability_burned, participants[i].car_path, participants[i].tire_path);
+	}
+	main_window->infobox->info.clear();
 }
