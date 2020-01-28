@@ -407,6 +407,9 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, floa
 {
 	car = car.substr(0, static_cast<int>(car.size()) - static_cast<int>(ExtName::car.size()));
 	tires = tires.substr(0, static_cast<int>(tires.size()) - static_cast<int>(ExtName::tire.size()));
+
+	const bool classification[ValidationConstants::ranking_classification_types] = { true, ais == 7, multiplayer && ais != 7 };
+	
 	std::fstream fvar;
 	std::string path = FolderName::tour + "\\" + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
 	std::string temp;
@@ -442,21 +445,23 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, floa
 	const std::vector<int> additions = { 1, place==1,place, static_cast<int>(score), 0, crashes, attacks, drifts, durability_burning };
 	for (int i = 0; i < static_cast<int>(additions.size()); ++i)
 	{
-		std::string class_all = std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], 0).c_str()) + additions[i]);
-		std::string class_8ais = std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], 1).c_str()) + additions[i] * (ais == 7));
-		std::string class_multiplayer = std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], 2).c_str()) + additions[i] * static_cast<int>(multiplayer));
-
-		line[index_pos + i] = class_all + "\t" + class_8ais + "\t" + class_multiplayer;
+		temp = "";
+		for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
+		{
+			temp += std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], j).c_str()) + additions[i] * classification[j]) + '\t';
+		}
+		line[index_pos + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 	}
 	temp = "";
-	for(int i = 0; i < 3; ++i)
-	{	
-		int local_score = atoi(GetClassifiedDetail(line[index_pos], i).c_str());
-		if (static_cast<int>(score) > local_score);
+	std::vector<int> high_score_vec;
+	for (int i = 0; i < ValidationConstants::ranking_classification_types; ++i)
+	{
+		int local_score = atoi(GetClassifiedDetail(line[index_pos + 4], i).c_str());
+		if (classification[i] && (static_cast<int>(score) < local_score || local_score == 0))
 		{
-			local_score = static_cast<int>(score);
+			local_score = score;
 		}
-		temp += std::to_string(local_score) + "\t";
+		temp += std::to_string(local_score) + '\t';
 	}
 	line[index_pos + 4] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 	
