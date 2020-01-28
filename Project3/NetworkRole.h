@@ -52,6 +52,7 @@ public:
 	virtual int Ranking(bool clear);
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
+	virtual void Finish();
 };
 
 

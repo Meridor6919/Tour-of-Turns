@@ -405,6 +405,8 @@ void ToT_Window::SetMultiplayer(bool multiplayer)
 }
 void ToT_Window::SaveRanking(std::string tour, std::string name, int place, float score, int crashes, int attacks, int drifts, int durability_burning, std::string car, std::string tires)
 {
+	car = car.substr(0, static_cast<int>(car.size()) - static_cast<int>(ExtName::car.size()));
+	tires = tires.substr(0, static_cast<int>(tires.size()) - static_cast<int>(ExtName::tire.size()));
 	std::fstream fvar;
 	std::string path = FolderName::tour + "\\" + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
 	std::string temp;
@@ -437,7 +439,7 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, floa
 		}
 		line.push_back("");
 	}
-	const std::vector<int> additions = { 1, place==1,place, static_cast<int>(score), 0, crashes, attacks, durability_burning };
+	const std::vector<int> additions = { 1, place==1,place, static_cast<int>(score), 0, crashes, attacks, drifts, durability_burning };
 	for (int i = 0; i < static_cast<int>(additions.size()); ++i)
 	{
 		std::string class_all = std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], 0).c_str()) + additions[i]);

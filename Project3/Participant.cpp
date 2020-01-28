@@ -5,6 +5,7 @@ Participant::Participant(const std::string name, const std::string car_path, con
 {
 	this->name = name;
 	this->car_path = car_path;
+	this->tire_path = tire_path;
 	this->main_window = main_window;
 	this->car_modifiers = main_window->GetCarParameters(car_path);
 	this->tire_modifiers = main_window->GetTireParameters(tire_path);
@@ -29,6 +30,10 @@ void Participant::Test(const std::string field, const bool show)
 	float formula = EvaluateChance(field, current_speed, drift);
 
 	float dmg = 1.0f - 0.05f*attacked;
+	if (static_cast<int>(attacked*10.0f) % 10)
+	{
+		++attacks_performed;
+	}
 	current_speed *= dmg;
 	if (dmg < 1.0f && show)
 	{
@@ -76,12 +81,14 @@ void Participant::Test(const std::string field, const bool show)
 				durablity_lost = current_speed * (100.0f + formula - static_cast<float>(min)) / 50.0f;
 				bad_case = 2;
 				current_speed = 0.0f;
+				++crashes;
 			}
 			else if (formula > static_cast<float>(min + 40))
 			{
 				durablity_lost = current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f;
 				bad_case = 3;
 				current_speed = 0.0f;
+				++crashes;
 			}
 			else if (formula > static_cast<float>(min + 30))
 			{
@@ -115,6 +122,7 @@ void Participant::Test(const std::string field, const bool show)
 	}
 	if (drift == true)
 	{
+		++drifts_performed;
 		drift = false;
 		score += GameValues::drift_value;
 	}
@@ -216,7 +224,9 @@ void Participant::CalculateParameters(float value, std::string current_field)
 		{
 			current_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed] * 1.25f);
 		}
-		current_durability -= CalculateBurning(current_speed - car_modifiers[CarModifiers::max_speed]);
+		float temp = CalculateBurning(current_speed - car_modifiers[CarModifiers::max_speed]);
+		durability_burned += temp;
+		current_durability -= temp;
 	}
 	current_speed *= GameValues::friction_scalar;
 }

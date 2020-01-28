@@ -13,7 +13,14 @@ public:
 	float score = 0.0f;
 	float current_speed = 0.0f;
 	float current_durability;
-	std::string car_path;	
+
+	std::string car_path;
+	std::string tire_path ;
+	int drifts_performed = 0;
+	int crashes = 0;
+	int attacks_performed = 0;
+	float durability_burned = 0.0f;
+
 	ToT_Window *main_window;
 	float attacked = 0.0f;
 	bool drift = false;

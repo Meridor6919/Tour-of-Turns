@@ -712,3 +712,7 @@ bool SinglePlayer::VisionBox(const int turn)
 	mutex.unlock();
 	return ret;
 }
+void SinglePlayer::Finish()
+{
+	main_window->SaveRanking(tour, participants[0].name, 1, participants[0].score, participants[0].crashes, participants[0].attacks_performed, participants[0].drifts_performed, participants[0].durability_burned, participants[0].car_path, participants[0].tire_path);
+}

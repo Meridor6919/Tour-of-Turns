@@ -488,6 +488,7 @@ void ToT::Game(const bool multiplayer)
 			network_role->Ranking(true);
 			network_role->Ranking(false);
 		}
+		network_role->Finish();
 		_getch();
 		_getch();
 	}
