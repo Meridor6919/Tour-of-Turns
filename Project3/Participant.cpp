@@ -120,6 +120,10 @@ void Participant::Test(const std::string field, const bool show)
 			current_durability -= durablity_lost;
 		}
 	}
+	else
+	{
+		drift = false;
+	}
 	if (drift == true)
 	{
 		++drifts_performed;
