@@ -17,7 +17,6 @@ public:
 	std::string car_path;
 	std::string tire_path ;
 	int drifts_performed = 0;
-	int crashes = 0;
 	int attacks_performed = 0;
 	float durability_burned = 0.0f;
 

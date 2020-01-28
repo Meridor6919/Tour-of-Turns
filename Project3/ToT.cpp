@@ -64,37 +64,50 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 		return best_name;
 	};
 
-
-	if (std::getline(fvar, line))
+	for (int i = 0; i < ValidationConstants::ranking_details && std::getline(fvar, line); ++i)
 	{
-		ret[0] = line;//name
-		std::getline(fvar, line);
-		ret[1] = main_window->GetClassifiedDetail(line, classification_type);//games played
-		if (ret[1] == "0")
+		if (i == 0)
 		{
-			return ret;
+			ret[i] = line;
 		}
-		std::getline(fvar, line);
-		ret[2] = std::to_string(static_cast<int>(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()) * 100.0f)) + '%';//winrate
-		std::getline(fvar, line);
-		ret[3] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg_place
-		std::getline(fvar, line);
-		ret[4] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg_score
-		std::getline(fvar, line);
-		ret[5] = main_window->GetClassifiedDetail(line, classification_type);//highest score
-		std::getline(fvar, line);
-		ret[8] = main_window->GetClassifiedDetail(line, classification_type); //crashes
-		std::getline(fvar, line);
-		ret[9] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));// avg attacks
-		std::getline(fvar, line);
-		ret[10] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg drifts
-		std::getline(fvar, line);
-		ret[11] = std::to_string(static_cast<int>(round(atof(main_window->GetClassifiedDetail(line, classification_type).c_str()) / atof(ret[1].c_str()))));//avg durability burning
-		std::getline(fvar, line);
-		ret[6] = get_most_frequent(main_window->GetClassifiedDetail(line, classification_type));//favorite car
-		std::getline(fvar, line);
-		ret[7] = get_most_frequent(main_window->GetClassifiedDetail(line, classification_type));//favorite tires
+		else if (i < 6)
+		{
+			ret[i] = main_window->GetClassifiedDetail(line, classification_type);
+		}
+		else if (i < 10)
+		{
+			ret[i+2] = main_window->GetClassifiedDetail(line, classification_type);
+		}
+		else
+		{
+			ret[i-4] = main_window->GetClassifiedDetail(line, classification_type);
+		}
 	}
+	int games_multiplier = atoi(ret[1].c_str()) - atoi(ret[8].c_str());
+	if (!games_multiplier)
+	{
+		for (int i = 2; i < 6 + 3*(ret[1] == "0"); ++i)
+		{
+			ret[i] = "";
+		}
+		for (int i = 9; i < ValidationConstants::ranking_details; ++i)
+		{
+			ret[i] = "";
+		}
+	}
+	else
+	{
+		ret[2] = std::to_string(static_cast<int>(atof(ret[2].c_str()) / atof(ret[1].c_str()) * 100.0f)) + '%';
+
+		for (int i = 0; i < 5; ++i)
+		{
+			int x = i + 3 + (i > 1) * 4;
+			ret[i + 3 + (i > 1) * 4] = std::to_string(static_cast<int>(round(atof(ret[i + 3 + (i > 1) * 4].c_str()) / static_cast<float>(games_multiplier))));
+		}
+	}
+	ret[6] = get_most_frequent(ret[6]);
+	ret[7] = get_most_frequent(ret[7]);
+	fvar.close();
 	return ret;
 }
 void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing)

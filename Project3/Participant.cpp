@@ -81,14 +81,12 @@ void Participant::Test(const std::string field, const bool show)
 				durablity_lost = current_speed * (100.0f + formula - static_cast<float>(min)) / 50.0f;
 				bad_case = 2;
 				current_speed = 0.0f;
-				++crashes;
 			}
 			else if (formula > static_cast<float>(min + 40))
 			{
 				durablity_lost = current_speed * (100.0f + formula - static_cast<float>(min)) / 75.0f;
 				bad_case = 3;
 				current_speed = 0.0f;
-				++crashes;
 			}
 			else if (formula > static_cast<float>(min + 30))
 			{

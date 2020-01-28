@@ -442,28 +442,43 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, floa
 		}
 		line.push_back("");
 	}
-	const std::vector<int> additions = { 1, place==1,place, static_cast<int>(score), 0, crashes, attacks, drifts, durability_burning };
-	for (int i = 0; i < static_cast<int>(additions.size()); ++i)
+	if (!crashes)
 	{
+		const std::vector<int> additions = { 1, place == 1,place, static_cast<int>(score), 0, crashes, attacks, drifts, durability_burning };
+		for (int i = 0; i < static_cast<int>(additions.size()); ++i)
+		{
+			temp = "";
+			for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
+			{
+				temp += std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], j).c_str()) + additions[i] * classification[j]) + '\t';
+			}
+			line[index_pos + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
+		}
 		temp = "";
-		for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
+		std::vector<int> high_score_vec;
+		for (int i = 0; i < ValidationConstants::ranking_classification_types; ++i)
 		{
-			temp += std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], j).c_str()) + additions[i] * classification[j]) + '\t';
+			int local_score = atoi(GetClassifiedDetail(line[index_pos + 4], i).c_str());
+			if (classification[i] && (static_cast<int>(score) < local_score || local_score == 0))
+			{
+				local_score = score;
+			}
+			temp += std::to_string(local_score) + '\t';
 		}
-		line[index_pos + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
+		line[index_pos + 4] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 	}
-	temp = "";
-	std::vector<int> high_score_vec;
-	for (int i = 0; i < ValidationConstants::ranking_classification_types; ++i)
+	else
 	{
-		int local_score = atoi(GetClassifiedDetail(line[index_pos + 4], i).c_str());
-		if (classification[i] && (static_cast<int>(score) < local_score || local_score == 0))
+		for (int i = 0; i < 10; i += 5)
 		{
-			local_score = score;
+			temp = "";
+			for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
+			{
+				temp += std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], j).c_str()) + 1 * classification[j]) + '\t';
+			}
+			line[index_pos + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 		}
-		temp += std::to_string(local_score) + '\t';
 	}
-	line[index_pos + 4] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 	
 	auto AddQuantity = [](std::string text, std::string phrase, int added_value) {
 		if (!added_value)
