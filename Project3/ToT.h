@@ -13,6 +13,7 @@ class ToT {
 
 	std::vector<std::string> GetRankingNames(std::string tour);
 	std::vector<std::string> GetRankingDetails(std::string tour, int racer_pos, int classification_type);
+	std::string GetRankingFavourite(std::string text);
 	void ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing = false);
 
 public:

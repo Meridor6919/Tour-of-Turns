@@ -1,16 +1,22 @@
 #include "ToT.h"
 
+ToT::ToT()
+{
+	this->main_window = std::make_shared<ToT_Window>("Tour of Turns", 15, 10, 200, 70);
+	handle = main_window->GetHandle();
+	game_window_center = static_cast<short>(main_window->GetWidth()) / 2;
+}
 std::vector<std::string> ToT::GetRankingNames(std::string tour)
 {
 	std::ifstream fvar;
-	std::string line;
+	std::string temp;
 	std::vector<std::string> ret = {};
 	fvar.open(tour.c_str());
-	for (int i = 0; std::getline(fvar, line); ++i)
+	for (int i = 0; std::getline(fvar, temp); ++i)
 	{
 		if (!(i %  ValidationConstants::ranking_details))
 		{
-			ret.push_back(line);
+			ret.push_back(temp);
 		}
 	}
 	fvar.close();
@@ -24,46 +30,9 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 	{
 		ret.push_back(" ");
 	}
-
-	std::ifstream fvar(tour.c_str());
+	std::ifstream fvar;
+	fvar.open(tour.c_str());
 	for (int i = 0; i < ValidationConstants::ranking_details * racer_pos && std::getline(fvar, line); ++i);
-	auto get_most_frequent = [](std::string line)
-	{
-		std::string best_name = " ";
-		int best_score = 0;
-
-		std::string current_name = "";
-		std::string current_score;
-		bool name = true;
-
-		for (int i = 0; i < static_cast<int>(line.size()); ++i)
-		{
-			if (line[i] == ':')
-			{
-				name = !name;
-				if (name)
-				{
-					if (atoi(current_score.c_str()) > best_score)
-					{
-						best_name = current_name;
-						best_score = atoi(current_score.c_str());
-						current_name = "";
-						current_score = "";
-					}
-				}
-			}
-			else if (name)
-			{
-				current_name += line[i];
-			}
-			else
-			{
-				current_score += line[i];
-			}
-		}
-		return best_name;
-	};
-
 	for (int i = 0; i < ValidationConstants::ranking_details && std::getline(fvar, line); ++i)
 	{
 		if (i == 0)
@@ -83,8 +52,8 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 			ret[i-4] = main_window->GetClassifiedDetail(line, classification_type);
 		}
 	}
-	int games_multiplier = atoi(ret[1].c_str()) - atoi(ret[8].c_str());
-	if (!games_multiplier)
+	int finished_games = atoi(ret[1].c_str()) - atoi(ret[8].c_str());
+	if (!finished_games)
 	{
 		for (int i = 2; i < 6 + 3*(ret[1] == "0"); ++i)
 		{
@@ -102,12 +71,47 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 		for (int i = 0; i < 5; ++i)
 		{
 			int x = i + 3 + (i > 1) * 4;
-			ret[i + 3 + (i > 1) * 4] = std::to_string(static_cast<int>(round(atof(ret[i + 3 + (i > 1) * 4].c_str()) / static_cast<float>(games_multiplier))));
+			ret[i + 3 + (i > 1) * 4] = std::to_string(static_cast<int>(round(atof(ret[i + 3 + (i > 1) * 4].c_str()) / static_cast<float>(finished_games))));
 		}
 	}
-	ret[6] = get_most_frequent(ret[6]);
-	ret[7] = get_most_frequent(ret[7]);
+	ret[6] = GetRankingFavourite(ret[6]);
+	ret[7] = GetRankingFavourite(ret[7]);
 	fvar.close();
+	return ret;
+}
+std::string ToT::GetRankingFavourite(std::string text)
+{
+	std::string current_phrase = "";
+	std::string current_value = "";
+	std::string ret = " ";
+	int highest_value = 0;
+	bool phrase_value_flag = true;
+
+	for (int i = 0; i < static_cast<int>(text.size()); ++i)
+	{
+		if (text[i] == ':')
+		{
+			phrase_value_flag = !phrase_value_flag;
+			if (phrase_value_flag)
+			{
+				if (atoi(current_value.c_str()) > highest_value)
+				{
+					ret = current_phrase;
+					highest_value = atoi(current_value.c_str());
+					current_phrase = "";
+					current_value = "";
+				}
+			}
+		}
+		else if (phrase_value_flag)
+		{
+			current_phrase += text[i];
+		}
+		else
+		{
+			current_value += text[i];
+		}
+	}
 	return ret;
 }
 void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing)
@@ -156,13 +160,6 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(ValidationConstants::ranking_details) + 2) });
 		std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border];
 	}
-}
-
-ToT::ToT()
-{
-	this->main_window = std::make_shared<ToT_Window>("Tour of Turns", 15, 10, 200, 70);
-	handle = main_window->GetHandle();
-	game_window_center = static_cast<short>(main_window->GetWidth()) / 2;
 }
 void ToT::MainMenu()
 {

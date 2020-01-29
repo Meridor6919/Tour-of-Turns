@@ -33,30 +33,49 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	wav_transformer = new WavTransformer(FolderName::main + "\\" + FileName::music);
 	LoadAtributes();
 }
-std::string ToT_Window::GetClassifiedDetail(std::string line, int classification_type)
+std::string ToT_Window::UpdateRankingFavorites(std::string text, std::string phrase, int added_value)
 {
+	if (!added_value)
 	{
+		return "";
+	}
+	bool phrase_value_flag = true;
+	std::string current_phrase = "";
+	std::string value = "";
+	int phrase_index = -1;
 
-		int start = 0;
-		int count = 0;
-		for (int i = 0; i < static_cast<int>(line.size()); ++i)
+	for (int i = 0; i < static_cast<int>(text.size()); ++i)
+	{
+		if (text[i] == ':')
 		{
-			if ((line[i] == '\t') || (i + 1 == static_cast<int>(line.size())))
+			phrase_value_flag = !phrase_value_flag;
+			if (!phrase_value_flag)
 			{
-				if (!classification_type)
+				if (current_phrase == phrase)
 				{
-					count = i - start + (i + 1 == static_cast<int>(line.size()));
-					break;
-				}
-				else
-				{
-					--classification_type;
-					start = i + 1;
+					phrase_index = i;
 				}
 			}
+			else
+			{
+				if (phrase_index != -1)
+				{
+					return text.substr(0, phrase_index + 1) + std::to_string(atoi(value.c_str()) + added_value) + text.substr(i, static_cast<int>(text.size()) - i);
+				}
+				current_phrase = "";
+				value = "";
+			}
 		}
-		return line.substr(start, count);
-	};
+		else if (phrase_value_flag)
+		{
+			current_phrase += text[i];
+		}
+		else
+		{
+			value += text[i];
+		}
+	}
+	return text + phrase + ":" + std::to_string(added_value) + ":";
 }
 void ToT_Window::LoadAtributes()
 {
@@ -251,50 +270,6 @@ bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const
 	}
 	return true;
 }
-std::string ToT_Window::UpdateRankingFavorites(std::string text, std::string phrase, int added_value)
-{
-	if (!added_value)
-	{
-		return "";
-	}
-	bool phrase_value_flag = true;
-	std::string current_phrase = "";
-	std::string value = "";
-	int phrase_index = -1;
-
-	for (int i = 0; i < static_cast<int>(text.size()); ++i)
-	{
-		if (text[i] == ':')
-		{
-			phrase_value_flag = !phrase_value_flag;
-			if (!phrase_value_flag)
-			{
-				if (current_phrase == phrase)
-				{
-					phrase_index = i;
-				}
-			}
-			else
-			{
-				if (phrase_index != -1)
-				{
-					return text.substr(0, phrase_index + 1) + std::to_string(atoi(value.c_str()) + added_value) + text.substr(i, static_cast<int>(text.size()) - i);
-				}
-				current_phrase = "";
-				value = "";
-			}
-		}
-		else if (phrase_value_flag)
-		{
-			current_phrase += text[i];
-		}
-		else
-		{
-			value += text[i];
-		}
-	}
-	return text + phrase + ":" + std::to_string(added_value) + ":";
-}
 void ToT_Window::RemoveExtension(std::vector<std::string>& vector, std::string extension)
 {
 	short extension_size = static_cast<short>(extension.size());
@@ -342,6 +317,28 @@ void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_al
 		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - i % 2, orientation_point.Y + i });
 		std::cout << additional_decoration;
 	}
+}
+std::string ToT_Window::GetClassifiedDetail(std::string text, int classification_type)
+{
+	int start = 0;
+	int count = 0;
+	for (int i = 0; i < static_cast<int>(text.size()); ++i)
+	{
+		if ((text[i] == '\t') || (i + 1 == static_cast<int>(text.size())))
+		{
+			if (!classification_type)
+			{
+				count = i - start + (i + 1 == static_cast<int>(text.size()));
+				break;
+			}
+			else
+			{
+				--classification_type;
+				start = i + 1;
+			}
+		}
+	}
+	return text.substr(start, count);
 }
 std::vector<std::string> ToT_Window::GetTourNames()
 {

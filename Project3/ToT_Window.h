@@ -39,7 +39,7 @@ public:
 	ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
 	void RemoveExtension(std::vector<std::string> &vector, std::string extension);
 	void Title(const COORD starting_point, const Text::TextAlign text_align);
-	std::string GetClassifiedDetail(std::string line, int classification_type);
+	std::string GetClassifiedDetail(std::string text, int classification_type);
 
 	//Get methods
 	std::vector<std::string> GetTourNames();
