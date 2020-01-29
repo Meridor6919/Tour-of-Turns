@@ -28,6 +28,9 @@ protected:
 	bool ValidateRanking();
 	bool SaveFileNames(std::string src_path, std::string dst_path, const std::string ext);
 
+	//Ranking
+	std::string UpdateRankingFavorites(std::string text, std::string phrase, int added_value);
+
 public:
 	//Attributes
 	std::shared_ptr<InfoBox> infobox;
@@ -59,6 +62,6 @@ public:
 	void SetName(std::string name);
 	bool SetLanguage(std::string lang);
 	void SetMultiplayer(bool multiplayer);
-	void SaveRanking(std::string tour, std::string name, int place, float score, int crashes, int attacks, int drifts, int durability_burning, std::string car, std::string tires);
+	void SaveRanking(std::string tour, std::string name, int place, int score, bool crash, int attacks, int drifts, int durability_burning, std::string car, std::string tires);
 	void SaveAtributes();
 };

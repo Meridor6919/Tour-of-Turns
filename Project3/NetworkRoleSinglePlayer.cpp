@@ -716,7 +716,7 @@ void SinglePlayer::Finish()
 {
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		main_window->SaveRanking(tour, participants[i].name, 1, participants[i].score, participants[i].current_durability <= 0.0f, participants[i].attacks_performed, participants[i].drifts_performed, participants[i].durability_burned, participants[i].car_path, participants[i].tire_path);
+		main_window->SaveRanking(tour, participants[i].name, 1, static_cast<int>(participants[i].score), participants[i].current_durability <= 0.0f, participants[i].attacks_performed, participants[i].drifts_performed, static_cast<int>(participants[i].durability_burned), participants[i].car_path, participants[i].tire_path);
 	}
 	main_window->infobox->info.clear();
 }

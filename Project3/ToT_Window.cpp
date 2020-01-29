@@ -251,6 +251,50 @@ bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const
 	}
 	return true;
 }
+std::string ToT_Window::UpdateRankingFavorites(std::string text, std::string phrase, int added_value)
+{
+	if (!added_value)
+	{
+		return "";
+	}
+	bool phrase_value_flag = true;
+	std::string current_phrase = "";
+	std::string value = "";
+	int phrase_index = -1;
+
+	for (int i = 0; i < static_cast<int>(text.size()); ++i)
+	{
+		if (text[i] == ':')
+		{
+			phrase_value_flag = !phrase_value_flag;
+			if (!phrase_value_flag)
+			{
+				if (current_phrase == phrase)
+				{
+					phrase_index = i;
+				}
+			}
+			else
+			{
+				if (phrase_index != -1)
+				{
+					return text.substr(0, phrase_index + 1) + std::to_string(atoi(value.c_str()) + added_value) + text.substr(i, static_cast<int>(text.size()) - i);
+				}
+				current_phrase = "";
+				value = "";
+			}
+		}
+		else if (phrase_value_flag)
+		{
+			current_phrase += text[i];
+		}
+		else
+		{
+			value += text[i];
+		}
+	}
+	return text + phrase + ":" + std::to_string(added_value) + ":";
+}
 void ToT_Window::RemoveExtension(std::vector<std::string>& vector, std::string extension)
 {
 	short extension_size = static_cast<short>(extension.size());
@@ -403,69 +447,68 @@ void ToT_Window::SetMultiplayer(bool multiplayer)
 {
 	this->multiplayer = multiplayer;
 }
-void ToT_Window::SaveRanking(std::string tour, std::string name, int place, float score, int crashes, int attacks, int drifts, int durability_burning, std::string car, std::string tires)
+void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int score, bool crash, int attacks, int drifts, int durability_burning, std::string car, std::string tires)
 {
+	const bool classification[ValidationConstants::ranking_classification_types] = { true, ais == 7, multiplayer && ais != 7 };
+	const std::string ranking_path = FolderName::tour + "\\" + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
+	std::vector<std::string> ranking_data = { "" };
+	int racer_index = -1;
+	std::fstream fvar;
+	std::string temp;
 	car = car.substr(0, static_cast<int>(car.size()) - static_cast<int>(ExtName::car.size()));
 	tires = tires.substr(0, static_cast<int>(tires.size()) - static_cast<int>(ExtName::tire.size()));
 
-	const bool classification[ValidationConstants::ranking_classification_types] = { true, ais == 7, multiplayer && ais != 7 };
-	
-	std::fstream fvar;
-	std::string path = FolderName::tour + "\\" + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
-	std::string temp;
-	std::vector<std::string> line = { "" };
-
-	fvar.open(path.c_str(), std::ios::in);
-	for (int i = 0; std::getline(fvar, line[i]); ++i)
+	//Loading data
+	fvar.open(ranking_path.c_str(), std::ios::in);
+	for (int i = 0; std::getline(fvar, ranking_data[i]); ++i)
 	{
-		line.push_back("");
+		ranking_data.push_back("");
 	}
 	fvar.close();
-
-	int index_pos = -1;
-	for (int i = 0; i < static_cast<int>(line.size()); i+=ValidationConstants::ranking_details)
+	//Searching if the racer is already in the data
+	for (int i = 0; i < static_cast<int>(ranking_data.size()); i+=ValidationConstants::ranking_details)
 	{
-		if (line[i] == name)
+		if (ranking_data[i] == name)
 		{
-			index_pos = i+1;
+			racer_index = i+1;
 			break;
 		}
 	}
-
-	if (index_pos < 0)//Add record if player not found
+	//Add record if racer not found
+	if (racer_index < 0)
 	{
-		index_pos = static_cast<int>(line.size());
-		line[index_pos - 1] = name;
+		racer_index = static_cast<int>(ranking_data.size());
+		ranking_data[racer_index - 1] = name;
 		for (int i = 0; i < ValidationConstants::ranking_details - 1; ++i)
 		{
-			line.push_back("");
+			ranking_data.push_back("");
 		}
-		line.push_back("");
+		ranking_data.push_back("");
 	}
-	if (!crashes)
+	//Modifying ranking_data by selected racer's performance
+	if (!crash)
 	{
-		const std::vector<int> additions = { 1, place == 1,place, static_cast<int>(score), 0, crashes, attacks, drifts, durability_burning };
-		for (int i = 0; i < static_cast<int>(additions.size()); ++i)
+		const std::vector<int> added_value = { 1, place == 1,place, score, 0, crash, attacks, drifts, durability_burning };
+		for (int i = 0; i < static_cast<int>(added_value.size()); ++i)
 		{
 			temp = "";
 			for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
 			{
-				temp += std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], j).c_str()) + additions[i] * classification[j]) + '\t';
+				temp += std::to_string(atoi(GetClassifiedDetail(ranking_data[racer_index + i], j).c_str()) + added_value[i] * classification[j]) + '\t';
 			}
-			line[index_pos + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
+			ranking_data[racer_index + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 		}
 		temp = "";
-		std::vector<int> high_score_vec;
 		for (int i = 0; i < ValidationConstants::ranking_classification_types; ++i)
 		{
-			int local_score = atoi(GetClassifiedDetail(line[index_pos + 4], i).c_str());
-			if (classification[i] && (static_cast<int>(score) < local_score || local_score == 0))
+			int local_score = atoi(GetClassifiedDetail(ranking_data[racer_index + 4], i).c_str());
+			if (classification[i] && (score < local_score || local_score == 0))
 			{
 				local_score = score;
 			}
 			temp += std::to_string(local_score) + '\t';
 		}
-		line[index_pos + 4] = temp.substr(0, static_cast<int>(temp.size()) - 1);
+		ranking_data[racer_index + 4] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 	}
 	else
 	{
@@ -474,70 +517,29 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, floa
 			temp = "";
 			for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
 			{
-				temp += std::to_string(atoi(GetClassifiedDetail(line[index_pos + i], j).c_str()) + 1 * classification[j]) + '\t';
+				temp += std::to_string(atoi(GetClassifiedDetail(ranking_data[racer_index + i], j).c_str()) + 1 * classification[j]) + '\t';
 			}
-			line[index_pos + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
+			ranking_data[racer_index + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 		}
 	}
-	
-	auto AddQuantity = [](std::string text, std::string phrase, int added_value) {
-		if (!added_value)
+	for (int i = 0; i < 2; ++i)
+	{
+		temp = "";
+		for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
 		{
-			return static_cast<std::string>("");
+			temp += UpdateRankingFavorites(GetClassifiedDetail(ranking_data[racer_index + 9 + i], j), i % 2 ? car : tires, 1) + "\t";
 		}
-		bool name = true;
-		bool found = false;
-		std::string current_phrase;
-		std::string value;
-		int index;
-		for (int i = 0; i < static_cast<int>(text.size()); ++i)
-		{
-			if (text[i] == ':')
-			{
-				name = !name;
-				if (!name)
-				{
-					if (current_phrase == phrase)
-					{
-						found = true;
-						index = i;
-					}
-				}
-				else
-				{
-					if (found)
-					{
-						return text.substr(0, index + 1) + std::to_string(atoi(value.c_str()) + added_value) + text.substr(i, static_cast<int>(text.size()) - i);
-					}
-					current_phrase = "";
-					value = "";
-
-				}
-			}
-			else if (name)
-			{
-				current_phrase += text[i];
-			}
-			else
-			{
-				value += text[i];
-			}
-		}
-		return text + phrase +":"+std::to_string(added_value)+":";
-	};
-	line[index_pos + 9] = AddQuantity(GetClassifiedDetail(line[index_pos + 9], 0), car, 1) + "\t" + AddQuantity(GetClassifiedDetail(line[index_pos + 9], 0), car, 1*(ais==7)) + "\t" + AddQuantity(GetClassifiedDetail(line[index_pos + 9], 0), car, 1*static_cast<int>(multiplayer)); //car
-	line[index_pos + 10] = AddQuantity(GetClassifiedDetail(line[index_pos + 10], 0), tires, 1) + "\t" + AddQuantity(GetClassifiedDetail(line[index_pos + 10], 0), tires, 1 * (ais == 7)) + "\t" + AddQuantity(GetClassifiedDetail(line[index_pos + 10], 0), tires, 1 * static_cast<int>(multiplayer)); //tires
-
-
-	fvar.open(path.c_str(), std::ios::out);
-	for (int i = 0; i < static_cast<int>(line.size())-1; ++i)
+		ranking_data[racer_index + 9 + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
+	}
+	//Saving ranking_data to file
+	fvar.open(ranking_path.c_str(), std::ios::out);
+	for (int i = 0; i < static_cast<int>(ranking_data.size())-1; ++i)
 	{
 		if(i)
 		{
 			fvar << "\n";
 		}
-		fvar << line[i];
-
+		fvar << ranking_data[i];
 	}
 	fvar.close();
 }
