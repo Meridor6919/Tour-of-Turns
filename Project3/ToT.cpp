@@ -415,7 +415,7 @@ void ToT::Info()
 	const Text::TextAlign text_align_content = Text::TextAlign::center;
 	const short spacing = 3;
 	const COORD text_pos = { game_window_center, 28 };
-	const COORD title_pos = { game_window_center, text_pos.Y - 3 };
+	const COORD title_pos = { game_window_center - 2, text_pos.Y - 3 };
 	while (true)
 	{
 		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_pos, *main_window);

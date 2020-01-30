@@ -27,6 +27,7 @@ Tours
 Cars
 Tires
 Gameplay Formulas
+Accidents
 &&&
  
 Tour of Turns is turn-based racing game where player with the lowest final score wins.
@@ -80,25 +81,47 @@ Friction
 Turning tests
  -In any non-straight segment of tour player is being tested.Number of all tests and required tests are taken directly from tire attributes.
 &&&
-Tour of Turns's
-game mechanics are inherently based on math. There are no dexterity involved, pure analysis. Every part of gameplay has its own formulas. Order in which this events take place look like this: 
 Attacking segment
  - This part starts with the beginning of the second turn. Players choose targets that have score, higher up to 6 points and lower up to 4 points. (Player with the lowest score is on the lead)
  
 When the target is chosen, he gains a full attacking point when the attacker gains half a point.
 Action segment
 - Player chooses how he would like to modify his speed. Then value of that modulation is being multiplied by 0.9 + TireEffectivness.			 
+
 TireEffectivness parameter is calculated as common probability to pass series of tests with local probability of 50%.
  
 Number of tests required and number of tests in general come from tires parameter responsible for current segment's terrain type.
  
 Next thing that is being calculated is durability burning. Player loses durability for every point of speed that surpasses maximum speed of the car. Formula for durability burning looks like this:
  
-durability_lost = over_speed * (level + level * level) / 2 where level is an integer rounded down from over_speed / maximum speed * 20 + 10
+durability_lost = over_speed * (level + level * level) / 2 where level is an integer rounded down from over_speed / maximum_speed * 20 + 10
  
 Lastly player's speed is being multiplied by 0.9, because of friction.
 Test segment
- - 
+ - Firstly player loses durability with formula: speed - speed * (1 - 0.125 * attacking points). Then if current part is a turn he has to pass x of y tests, where both variables come from tire parameters.
+
+Test formula (chance of failure): sqrt(base * (-base) + 200 * base) + 2 * base / 3 It is different for drift: (speed + base) / 2 or (speed + base * 2) / 3  depending on which is better for player.
+
+Base is calculated as: speed / safe_speed * 100 + speed - safe_speed, but result cannot be lower than 0 or grater than 100. If the players fails to pass required number of test, he has an accident.
+
+Results of accidents are determined by the lowest roll. You can see all possibilities in the next page titled - "Accidents".
+Scoring segment 
+- This is last part of every turn. Scoring equation: 100 / (1 + speed * 10 / 36). If he has drifted, he instead gains 2 points to his score. An equivalent of passing turn with the speed of 176.4
+&&&
+
+If the players fails to pass required number of test, he has an accident. Results of accidents are determined by the lowest roll.
+
+If chance of failure was lower or equal to minimum roll + 50, then player loses durability equal to: speed * (100 + chance_of_failure - minimum_roll) / 50 and his speed is being set to 0
+
+If instead chance of failure was lower or equal to minimum roll + 40, then player loses durability equal to: speed * (100 + chance_of_failure - minimum_roll) / 75 and his speed is being set to 0
+
+If instead chance of failure was lower or equal to minimum roll + 30, then player loses durability equal to: speed * (100 + chance_of_failure - minimum_roll) / 100 and his speed is being divided by 15
+
+If instead chance of failure was lower or equal to minimum roll + 20, then player loses durability equal to his speed, when also his  speed is being divided by 7.5
+
+If instead chance of failure was lower or equal to minimum roll + 10, then player loses durability equal to his speed divided by 2, when also his  speed is being divided by 2
+
+If instead chance of failure was lower or equal to minimum roll, then player's speed is being divided by 1.2
 &&&
 Name
 Number of AIs
@@ -202,23 +225,21 @@ Slippery road with ice
  slipped,
 &&&
  
-Hello I am Michal Balicki and I am really happy that you are playing my game.
+Hello I am Michal Balicki and this is Tour of Turns, turn-based racing game.
  
-Tour of Turns was my first real project in my programming way and I hope you like it.
- 
-I would like to thank people who helped me with this project.
-Krystian Grzegorzewicz
-without him the game wouldn't be created.
- 
-He was patiently listening what problems do I have with ToT and the most important he gave me a main idea of the game.
+ToT was my first innocent programming project but because of my passion towards this idea it grew to the current size.
+
+I have started as a total noob, lacking experience. I rewrote this project multiple times, because I couldn't expand the game without fundamental changes to its structure.
+
+It took me way to long to finish ToT, but also I don't regret anything. Experience that I have gathered during this process is priceless.
+
+This was long lonely journey, but it doesn't mean that there were no helpful people around me. Special thanks to:
+Krystian Grzegorzewicz 
+who created pen and paper version. Precursor of whole idea of turn-based game and my friend from school years.
 Marek Loek 
-for making an icon image and inspiring me to hard work.
-Marcin Marzec 
-for giving me inspiration.
- 
-I admire how much work he put into Pan Zniszczenia and Zniwiarz Dusz maps for HoMM3, based on Diablo universe.
+- hard working graphic designer who created this beautiful icon. 
 Miroslaw Zelent 
-for getting me interested in programming
+superb teacher that got me started into programming world via his tutorial series on C++.
 &&&
 on
 off
@@ -271,7 +292,7 @@ Average durability burning per game
 Racer
  - Do you really want to do this ? (Y/N) 
 RIP 
-disintegrated his vehicle... 
+ disintegrated his vehicle... 
 Don't attack
  - You can't do this because you aren't moving...
 META

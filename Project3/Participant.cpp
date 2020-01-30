@@ -29,7 +29,7 @@ void Participant::Test(const std::string field, const bool show)
 	float local_score;
 	float formula = EvaluateChance(field, current_speed, drift);
 
-	float dmg = 1.0f - 0.05f*attacked;
+	float dmg = 1.0f - 0.125f*attacked;
 	if (static_cast<int>(attacked*10.0f) % 10)
 	{
 		++attacks_performed;
@@ -90,15 +90,15 @@ void Participant::Test(const std::string field, const bool show)
 			}
 			else if (formula > static_cast<float>(min + 30))
 			{
-				durablity_lost = current_speed * (100.0f + formula - static_cast<float>(min)) / 120.0f;
+				durablity_lost = current_speed * (100.0f + formula - static_cast<float>(min)) / 100.0f;
 				bad_case = 4;
-				current_speed /= 10.0f;
+				current_speed /= 15.0f;
 			}
 			else if (formula > static_cast<float>(min + 20))
 			{
 				durablity_lost = current_speed;
 				bad_case = 5;
-				current_speed /= 5.0f;
+				current_speed /= 7.5f;
 			}
 			else if (formula > static_cast<float>(min + 10))
 			{

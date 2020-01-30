@@ -18,6 +18,7 @@ namespace LanguagePack
 		car_information,
 		tire_information,
 		game_mechanics_information,
+		accidents_information,
 		game_lobby,
 		multiplayer,
 		game_options,
