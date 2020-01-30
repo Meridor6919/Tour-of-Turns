@@ -261,6 +261,29 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 	}
 	mutex.unlock();
 }
+void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short pos, int color, const bool clear)
+{
+	mutex.lock();
+	SetConsoleTextAttribute(main_window->GetHandle(), color);
+	for (int j = 0; j < static_cast<int>(text.size()); ++j)
+	{
+		const short x_pos = static_cast<short>(main_window->GetWidth() - 55 + 16 * j + 8) - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(text[j].size()));
+		const short y_pos = 16 + pos * 2;
+		SetConsoleCursorPosition(main_window->GetHandle(), { x_pos, y_pos });
+		if (clear)
+		{
+			for (int k = 0; k < static_cast<int>(text.size()); ++k)
+			{
+				std::cout << " ";
+			}
+		}
+		else
+		{
+			std::cout << text[j];
+		}
+	}
+	mutex.unlock();
+}
 void SinglePlayer::ShowChances(const int value, const bool reset)
 {
 	float speed_estimation = (participants[0].current_speed + static_cast<float>(value) * (0.9f + 0.2f*participants[0].TireEffectivness(current_field)));
@@ -317,34 +340,20 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 	this->tour = tour;
 	participants.emplace_back(name, car, tire, main_window);
 }
-std::vector<std::pair<float, std::string>> SinglePlayer::GetRankingInfo()
+void SinglePlayer::SortLeaderboard()
 {
-	bool flag = true;
-	std::pair<float, std::string> helper;
-	std::vector<std::pair<float, std::string>> ret;
-
-	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+	//ugly quadratic complexity but it is justified by the fact that n is at most 8
+	for (int i = 0; i < participants.size(); ++i)
 	{
-		if (participants[i].alive)
+		participants[i].place = 1;
+		for (int j = 0; j < participants.size(); ++j)
 		{
-			ret.emplace_back(participants[i].score, participants[i].name);
-		}
-	}
-	while (flag)
-	{
-		flag = false;
-		for (int i = 0; i < static_cast<int>(ret.size()) - 1; ++i)
-		{
-			if (ret[i].first > ret[i+1].first)
+			if (participants[i].score > participants[j].score)
 			{
-				flag = true;
-				helper = std::move(ret[i]);
-				ret[i] = std::move(ret[i + 1]);
-				ret[i + 1] = std::move(helper);
+				++participants[i].place;
 			}
 		}
 	}
-	return ret;
 }
 bool SinglePlayer::GetCurrentAtribs()
 {
@@ -585,36 +594,19 @@ int SinglePlayer::Possible_AIs()
 {
 	return 7;
 }
-int SinglePlayer::Ranking(const bool clear)
+void SinglePlayer::Leaderboard(const bool clear)
 {
-	std::vector<std::string> text = LanguagePack::vector_of_strings[LanguagePack::race_ranking];
-	int ret = 0;
-
-	if (clear)
+	ShowLeaderboard(LanguagePack::vector_of_strings[LanguagePack::leaderboard], 0, main_window->color2, clear);
+	if (!clear)
 	{
-		for (int i = 0; i < 8; ++i)
-		{
-			text.push_back(" ");
-			text.push_back("                             ");
-			text.push_back("         ");
-		}
+		SortLeaderboard();
 	}
-	else
+	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		auto ranking_info = GetRankingInfo();
-		for (int i = 0; i < static_cast<int>(ranking_info.size()); ++i)
-		{
-			text.push_back(std::to_string(i + 1));
-			text.push_back(ranking_info[i].second);
-			text.push_back(std::to_string(ranking_info[i].first));
-			const int text_size = static_cast<int>(text.size());
-			text[text_size - 1] = text[text_size - 1].substr(0, static_cast<int>(text[text_size - 1].size()) - 4);
-			if (ranking_info[i].second == participants[0].name && ranking_info[i].first == participants[0].score)
-				ret = i + 1;
-		}
+		std::vector<std::string> leaderboard_info = { std::to_string(participants[i].place), participants[i].name, std::to_string(participants[i].score) };
+		leaderboard_info[2] = leaderboard_info[2].substr(0, static_cast<int>(leaderboard_info[2].size()) - 4);
+		ShowLeaderboard(leaderboard_info, static_cast<short>(participants[i].place), main_window->color1, clear);
 	}
-	Text::TableText(text, 1, 3, 2, 16, { static_cast<short>(main_window->GetWidth() - 55), 16 }, *main_window, clear, &mutex);
-	return ret;	//returning players place
 }
 void SinglePlayer::Interface()
 {
@@ -716,7 +708,7 @@ void SinglePlayer::Finish()
 {
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		main_window->SaveRanking(tour, participants[i].name, 1, static_cast<int>(participants[i].score), participants[i].current_durability <= 0.0f, participants[i].attacks_performed, participants[i].drifts_performed, static_cast<int>(participants[i].durability_burned), participants[i].car_path, participants[i].tire_path);
+		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), participants[i].current_durability <= 0.0f, participants[i].attacks_performed, participants[i].drifts_performed, static_cast<int>(participants[i].durability_burned), participants[i].car_path, participants[i].tire_path);
 	}
 	main_window->infobox->info.clear();
 }

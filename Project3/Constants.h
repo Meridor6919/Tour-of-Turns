@@ -25,7 +25,7 @@ namespace LanguagePack
 		colors,
 		race_actions,
 		race_chances,
-		race_ranking,
+		leaderboard,
 		race_interface,
 		race_attribs,
 		race_distance,

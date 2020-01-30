@@ -13,6 +13,7 @@ public:
 	float score = 0.0f;
 	float current_speed = 0.0f;
 	float current_durability;
+	int place;
 
 	std::string car_path;
 	std::string tire_path ;

@@ -29,6 +29,7 @@ protected:
 	void ShowTourParameters(const std::string tire_path, bool clear = false);
 	void ShowRankingParameters(const std::string tire_path, bool clear = false);
 	void ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear);
+	void ShowLeaderboard(const std::vector<std::string> text, short pos, int color, const bool clear = false);
 	void ShowChances(int value, bool reset = false);
 
 public:
@@ -39,7 +40,7 @@ public:
 	
 	//Get methods
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
-	virtual std::vector<std::pair<float, std::string>> GetRankingInfo();
+	void SortLeaderboard();
 	virtual bool GetCurrentAtribs();
 	virtual void GetOthersAction(int turn);
 	std::string GetTour();
@@ -49,7 +50,7 @@ public:
 	virtual void Attack();
 	virtual void TakeAction();
 	virtual int Possible_AIs();
-	virtual int Ranking(bool clear);
+	virtual void Leaderboard(bool clear);
 	virtual void Interface();
 	virtual bool VisionBox(int turn);
 	virtual void Finish();
@@ -111,7 +112,7 @@ public:
 	Host(ToT_Window &main_window);
 	~Host();
 	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
-	std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
+	void SortLeaderboard();
 	bool GetCurrentAtribs();
 	void Attack();
 	void TakeAction();
@@ -138,7 +139,7 @@ public:
 	std::vector<std::string> GetTireParameters(std::string path);
 	std::vector<std::string> GetTourParameters(std::string path);
 	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
-	std::vector<std::pair<float, std::string>> GetRankingInfo(std::string current_field);
+	void SortLeaderboard();
 	bool GetCurrentAtribs();
 	void Attack();
 	void TakeAction();

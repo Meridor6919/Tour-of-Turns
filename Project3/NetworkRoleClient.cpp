@@ -238,7 +238,7 @@ std::vector<std::string> Client::GetTireParameters(std::string path)
 	tire_path = path;
 	return ret;
 }
-std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::string current_field)
+void Client::SortLeaderboard()
 {
 	this->current_field = current_field;
 	char buffer[254] = "0";
@@ -255,7 +255,7 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::string cu
 		{
 			MessageBox(0, "GetRankingInfo method failed", "Error", 0);
 			ret.clear();
-			return ret;
+			return;
 		}
 	}
 	stage++;
@@ -268,7 +268,7 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::string cu
 		{
 			MessageBox(0, "GetRankingInfo method failed", "Error", 0);
 			ret.clear();
-			return ret;
+			return;
 		}
 		if ((std::string)buffer != "exit")
 		{
@@ -277,13 +277,13 @@ std::vector<std::pair<float, std::string>> Client::GetRankingInfo(std::string cu
 			{
 				MessageBox(0, "GetRankingInfo method failed", "Error", 0);
 				ret.clear();
-				return ret;
+				return;
 			}
 			ret.push_back(std::make_pair(fhelper, (std::string)buffer));
 		}
 		else
 		{
-			return ret;
+			return;
 		}
 	}
 }

@@ -55,7 +55,7 @@ namespace LanguagePack
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::race_ranking].size()) != ValidationConstants::race_ranking_size)
+		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::leaderboard].size()) != ValidationConstants::race_ranking_size)
 		{
 			return false;
 		}

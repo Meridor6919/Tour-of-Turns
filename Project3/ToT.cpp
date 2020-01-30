@@ -483,7 +483,8 @@ void ToT::Game(const bool multiplayer)
 	if (network_role->GameLobby())
 	{
 		network_role->Interface();
-		network_role->Ranking(false);
+		network_role->Leaderboard(true);
+		network_role->Leaderboard(false);
 
 		for (int turn = 0; network_role->VisionBox(turn); turn++)
 		{
@@ -495,8 +496,8 @@ void ToT::Game(const bool multiplayer)
 			network_role->GetOthersAction(turn);
 			network_role->GetCurrentAtribs();
 			network_role->Interface();
-			network_role->Ranking(true);
-			network_role->Ranking(false);
+			network_role->Leaderboard(true);
+			network_role->Leaderboard(false);
 		}
 		network_role->Finish();
 		_getch();
