@@ -177,7 +177,7 @@ void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
 }
 void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 {
-	ShowRankingParameters(tour_path, clear);
+	ShowRankingParameters(tour_path.substr(0, static_cast<int>(tour_path.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking, clear);
 	const std::vector<std::string> tour_params = main_window->GetTourParameters(tour_path, 0, INT_MAX);
 	int segment_quantity[6] = { 0,0,0,0,0,0 };
 	int turns = 0;
@@ -199,7 +199,53 @@ void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 }
 void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool clear)
 {
-	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::champion], ""},{LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::win_rate], ""}, {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::avg_place], ""} };
+	std::ifstream fvar;
+	std::string temp;
+	std::string best_name = "", local_name;
+	int best_place = 0, local_place;
+	float winrate = 0;;
+	int local_won_games;
+	int local_games_in_total;
+	int classification = 0 + (main_window->GetAIs() == 7);
+	fvar.open(FolderName::tour + "\\" + ranking_path);
+	for (int i = 0; std::getline(fvar, temp); ++i)
+	{
+		if (i%ValidationConstants::ranking_details == 0)
+		{
+			local_name = temp;
+		}
+		else if (i%ValidationConstants::ranking_details == 1)
+		{
+			local_games_in_total = atoi(main_window->GetClassifiedDetail(temp, classification).c_str());
+		}
+		else if (i%ValidationConstants::ranking_details == 2)
+		{
+			local_won_games = atoi(main_window->GetClassifiedDetail(temp, classification).c_str());
+		}
+		else if (i%ValidationConstants::ranking_details == 3)
+		{
+			local_place = atoi(main_window->GetClassifiedDetail(temp, classification).c_str());
+		}
+		else if (i%ValidationConstants::ranking_details == 6)
+		{
+			int number_of_finished_games = local_games_in_total - atoi(main_window->GetClassifiedDetail(temp, classification).c_str());
+			if (!number_of_finished_games)
+			{
+				continue;
+			}
+			if (winrate < static_cast<float>(local_won_games) / static_cast<float>(local_games_in_total) * 100.0f)
+			{
+				winrate = static_cast<float>(local_won_games) / static_cast<float>(local_games_in_total) * 100.0f;
+				best_name = local_name;
+				best_place = local_place/ number_of_finished_games;
+			}
+		}
+	}
+	fvar.close();
+
+	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::champion], best_name},
+		{LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::win_rate],std::to_string(winrate).substr(0, static_cast<int>(std::to_string(winrate).size()) - 4) + "%"},
+		{LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::avg_place], std::to_string(best_place)} };
 	ShowLobbyInformation(LanguagePack::vector_of_strings[LanguagePack::information_box_titles][InformationBoxTitle::tour_info], vector, { static_cast<short>(main_window->GetWidth()) - static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size()), 19 }, 1, 2, clear);
 }
 void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear)
@@ -428,6 +474,9 @@ bool SinglePlayer::GameLobby()
 				text.push_back(std::to_string(i));
 			}
 			ais = Text::Choose::Horizontal(text, ais, { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window, &mutex);
+			ShowRankingParameters(tours[tours_pos] + ExtName::ranking, true);
+			main_window->SetAIs(ais);
+			ShowRankingParameters(tours[tours_pos] + ExtName::ranking);
 			break;
 		}
 		case 2://choosing tour
