@@ -1,1 +1,2 @@
-Eng.lang
+English.lang
+Polish.lang

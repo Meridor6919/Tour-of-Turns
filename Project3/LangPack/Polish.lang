@@ -1,0 +1,305 @@
+Maksymalna pr©dko˜†
+Maksymalne przyspieszenie
+Maksymalne hamowanie
+Warto˜† hamulca r©cznego
+Wytrzymaˆo˜†
+Widoczno˜†
+Modyfikator zakr©tu
+Modyfikator driftu
+&&&
+Asfalt
+Trawa
+½wir
+Piasek
+Bˆoto
+L¢d
+&&&
+Nowa Gra 
+Gra Wieloosobowa 
+Informacje o grze
+Ranking 
+Opcje 
+O grze 
+Wyj˜cie
+&&&
+Wst©p
+Trasy
+Samochody
+Opony
+Wzory dotycz¥ce mechaniki gry
+Wypadki
+&&&
+ 
+Tour of Turns to turowa gra wy˜cigowa, w kt¢rej gracz z najni¾szym wynikiem wygrywa
+ 
+Przed startem gry, gracz wybiera tras© na kt¢rej b©dzie si© ˜cigaˆ. Dodatkowo wybiera samoch¢d oraz opony, kt¢re zdefiniuj© jego szans© powodzenia w wy˜cigu.
+ 
+Wˆ‚a˜ciwy wy˜cig jest podzielony segmenty - cz©˜ci trasy na kt¢rych gracz b©dzie podejmowaˆ‚ decyzje.
+ 
+Ka¾da akcja skˆ‚ada si© z dw¢ch sekcji : fazy dostosowania pr©dko˜ci oraz fazy ataku.
+ 
+Po ukoäczeniu obu, gracz przesuwa si© na kolejny segment, a nowa tura rozpoczyna si©.
+ 
+Kiedy gracz ukoäczy wy˜cig jego wynik jest zapisywany do rankingu.
+&&&
+ 
+Trasa jest wykonana z segment¢w, kt¢re mo¾na zobaczy† po lewej stronie ekranu wraz z parametrami tego typu:
+Rodzaj terenu
+ - atrybuty opon s¥ bezpo˜rednio powi¥zane z tym parametrem.
+Krzywo˜† jezdni
+ - Informuje o tym czy segment jest zakr©tem czy te¾ nie.
+Bezpieczna pr©dko˜†
+ - Je¾eli gracz przekroczy t¥ warto˜† to b©dzie poddany testowi. Szansa powodzenia takiego testu jest pokazana z prawej strony ekranu.
+ 
+Proste cz©˜ci trasy nie maj¥ ¾adnych ograniczeä dotycz¥cych pr©dko˜ci
+&&&
+ 
+Wyb¢r samochodu jest najwa¾niejsz¥ decyzj¥ jak¥ gracz mo¾e podj¥† w Tour of Turns. Zapewnia ona tak kluczowe atrybuty jak:
+Maksymalna pr©dko˜†
+ - Pojazd gracza zachowuje 90% swojej pr©dko˜ci w ka¾dej turze. Ten parametr definiuje maksymaln¥ zakumulowan¥ warto˜†. Mo¾na j¥ przekroczy† do 125%, lecz b©dzie to kosztowa† wytrzymaˆo˜†.
+Maksymalne przyspieszenie
+ - Maksymalna warto˜† o jak¥ gracz mo¾e przyspieszy†. Wpˆywa na ni¥ teren wraz z odpowiadaj¥cym parametrem opon.
+Maksymalne hamowanie
+ - Maksymalna warto˜† o jak¥ gracz mo¾e zahamowa†. Wpˆywa na ni¥ teren wraz z odpowiadaj¥cym parametrem opon.
+Warto˜† hamulca r©cznego
+ - Gracz mo¾e u¾ycz hamulca r©cznego, zwalniaj¥c o staˆ¥ warto˜†. Je¾eli gracz wybierze t¥ akcje na nie prostym kawaˆku trasy i jedzie z pr©dko˜ci¥ 40km/h lub wi©ksz¥ to u¾ywa on driftu.
+Wytrzymaˆo˜†
+ - Kiedy gracz straci caˆ¥ wytrzymaˆo˜† wypada on z wy˜cigu. Jest wiele «r¢deˆ, kt¢re mog¥ obni¾y† t¥ warto˜†. Po pierwsze nieudane zakr©ty, po drugie przekraczanie maksymalnej pr©dko˜ci i na koäcu ataki rywali.
+Widoczno˜†
+ - Ustawia liczb© segment¢w widoczn¥ przez gracza po lewej stronie ekranu.
+Modyfikator zakr©tu
+ - Jest mno¾nikiem twojej szansy na powodzenie przy zakr©cie. Nie dziaˆa przy drifcie.
+Modyfikator driftu
+ - Jest mno¾nikiem twojej szansy na powodzenie przy drifcie.
+&&&
+ 
+Opony zapewniaj¥ atrybuty ˜ci˜le powi¥zane z typem terenu. Jest sze˜† parametr¢w - tyle ile typ¢w terenu
+ 
+Ka¾dy parametr jest reprezentowany przez dwie liczby przedzielone znakiem "x" oznaczaj¥ce - wymagan¥ liczb© test¢w i caˆkowit¥ liczb© test¢w. S¥ dwa sposoby jakimi wpˆywaj¥ one na rozgrywk© :
+Tarcie
+ - Modyfikuje zdolno˜† gracza do modulacji pr©dko˜ci. W zasadzie im lepsze opony, tym wi©kszy zakres modulacji. Dokˆadne informacje na ten temat znajduj¥ si© w panelu "Wzory dotycz¥ce mechaniki gry"
+Testy przy zakr©tach
+ -Na ka¾dym odcinku drogi z zakr©tem gracz jest poddawany testom. Liczba wszystkich test¢w i wymagana liczba test¢w wynika wprost z parametr¢w opon.
+&&&
+Segment ataku
+ - Ta cz©˜† zaczyna si© od drugiej tury. Gracze kt¢rzy maj¥ wynik wy¾szy maksymalnie o 6 punkt¢w lub ni¾szy maksymalnie o 4 punkty mog¥ zosta† zaatakowani. (Im mniejszy wynik, tym lepiej)
+ 
+Gdy wybierzesz cel otrzyma on pojedyäczy punkt ataku. Ty natomiast otrzymasz p¢ˆ punktu ataku.
+Segment akcji
+- Gracz modyfikuje swoj¥ pr©dko˜†. Nast©pnie warto˜† jest pomno¾ona prze 0.9 + Efektywno˜† opon.			 
+
+Efektywno˜† opon to parameter obliczany jako caˆo˜ciowe prawdopodobieästwona przej˜cie serii test¢w z lokalnym prawdopodobieästwem r¢wnym 50%.
+
+Liczba wymaganych test¢w oraz liczba wszystkich test¢w wynika z parametr¢w opon odpowiedzialnych za typ terenu obecnego odcinka trasy.
+ 
+Kolejn¥ obliczan¥ rzecz¥ jest palenie wytrzymaˆo˜ci. Gracz traci wytrzymaˆo˜† za ka¾dy punkt pr©dko˜ci, kt¢ry przekracza maksymalne mo¾liwo˜ci auta. Formuˆa na palenie wytrzymaˆo˜ci wygl¥da nast©puj¥co:
+ 
+stracona_wytrzymaˆo˜† = nadwy¾ka_pr©dko˜ci * (poziom + poziom * poziom) / 2 gdzie poziom to liczba caˆkowita zaokr¥glana w d¢ˆ z nadwy¾ka_pr©dko˜ci / maksymalna_pr©dko˜† * 20 + 10
+ 
+W koäcu pr©dko˜† gracza jest mno¾ona przez 0.9 w na rzecz tarcia.
+Segment testowania
+ - Po pierwsze gracz traci wytrzymaˆo˜† r¢wn¥: pr©dko˜† - pr©dko˜† * (1 - 0.125 * punkty_ataku). Dalej je¾eli droga jest zakr©tem musi on zda† "x" z "y" test¢w, gdzie oba parametry pochodz¥ od opon.
+
+R¢wnanie testowe: (szansa_niepowodzenia): pierwiastek(baza * (-baza) + 200 * baza) + 2 * baza / 3 Formuˆa dla driftu jest inna: (pr©dko˜† + baza) / 2 lub (pr©dko˜† + baza * 2) / 3  zale¾nie od tego kt¢re jest lepsze dla gracza
+
+Baza jest liczona jako: pr©dko˜† / bezpieczna_pr©ko˜† * 100 + pr©dko˜† - bezpieczna_pr©ko˜†, lecz wynik nie mo¾e by† mniejszy od 0 ani wi©kszy od 100. Je¾eli rajdowcu nie uda si© zda† test¢w ulega wypadkowi.
+
+Skutki wypadu s¥ wyznaczane przez najmniejszy rzut. Mo¾esz zobaczy† wszystkie mo¾liwo˜ci na nast©pnej stronie zatytuˆowanej - "Wypadki".
+Segment Wyniku 
+- Jest to ostatni etap ka¾dej tury. Funkcja wyniku: 100 / (1 + pr©dko˜† * 10 / 36). Je¾eli gracz driftowaˆ, zamiast tego dostaje 2 punkty do wyniku. Ekwiwalent jechania z pr©dko˜ci¥ 176.4
+&&&
+
+Je¾eli graczowi nie uda si© zda† test¢w, ulega wypadkowi. Skutki wypadu s¥ wyznaczane przez najmniejszy rzut.
+
+Je¾eli zamiast tego szansa na pora¾k© b©dzie mniejsza lub r¢wna minimalnemu rzutowi + 50, rajdowiec traci wytrzymaˆo˜† r¢wn¥: pr©dko˜† * (100 + szansa_niepowodzenia - minimalny_rzut) / 50, a pr©dko˜† ustawiana jest na 0
+
+Je¾eli zamiast tego szansa na pora¾k© b©dzie mniejsza lub r¢wna minimalnemu rzutowi + 40, rajdowiec traci wytrzymaˆo˜† r¢wn¥: pr©dko˜† * (100 + szansa_niepowodzenia - minimalny_rzut) / 75, a pr©dko˜† ustawiana jest na 0
+
+Je¾eli zamiast tego szansa na pora¾k© b©dzie mniejsza lub r¢wna minimalnemu rzutowi + 30, rajdowiec traci wytrzymaˆo˜† r¢wn¥: pr©dko˜† * (100 + szansa_niepowodzenia - minimalny_rzut) / 100, a pr©dko˜† jest dzielona przez 15
+
+Je¾eli zamiast tego szansa na pora¾k© b©dzie mniejsza lub r¢wna minimalnemu rzutowi + 20, rajdowiec traci wytrzymaˆo˜† r¢wn¥ swojej pr©dko˜ci, gdy jego pr©dko˜† jest dzielona prze 7.5
+
+Je¾eli zamiast tego szansa na pora¾k© b©dzie mniejsza lub r¢wna minimalnemu rzutowi + 10, rajdowiec traci wytrzymaˆo˜† r¢wn¥ pr©dko˜ci podzielonej na 2, jego pr©dko˜† r¢wnie¾ jest dzielona przez 2
+
+Je¾eli zamiast tego szansa na pora¾k© b©dzie mniejsza lub r¢wna minimalnemu rzutowi, pr©dko˜† rajdowca jest dzielona przez 1.2
+&&&
+Imi©
+Liczba graczy komputerowych
+Mapa
+Samoch¢d
+Opony
+Dalej
+&&&
+Zaˆ¢¾ gr©
+Szukaj gry
+Powr¢t
+&&&
+Gˆ¢wny kolor
+Drugorz©dny kolor
+Gˆo˜no˜† muzyki
+J©zyk
+Poˆ¥czenie Hamachi
+Powr¢t
+&&&
+Informacje o Graczu
+Informacje o Trasie
+dˆugo˜† trasy
+zakr©ty
+obecny czempion
+procent wygranych
+˜rednia pozycja
+&&&
+zielony
+bˆ©kitny
+czerwony
+magenta 
+br¥zowy 
+jasnoszary 
+ciemnoszary 
+niebieski 
+jasnozielony
+jasnobˆ©kitny 
+jasnoczerwony 
+jasnamagenta 
+¾¢ˆty 
+biaˆy
+&&&
+Przyspiesz 
+Zwolnij 
+Hamulec r©czny 
+Nic nie r¢b 
+Opu˜† rajd
+&&&
+Szansa: 
+Szacowany czas: 
+Palenie wytrzymaˆo˜ci: 
+Szacowana pr©dko˜†:
+&&&
+MIEJSCE
+RAJDOWIEC
+WYNIK
+&&&
+Mo¾esz przyspieszy† o (0 to 
+Mo¾esz zwolni† o (0 to 
+Warto˜† hamulca r©cznego - 
+Mo¾esz poczeka†, je¾eli si© ruszasz...
+Pami©taj, tylko sˆabi si© poddaj¥
+&&&
+ Je«dzisz jako: 
+ Obecna pr©dko˜† wynosi: 
+ Tw¢j pojazd ma 
+ wytrzymaˆo˜†   
+&&&
+Przed tob¥: 
+W niewielkiej odlegˆo˜ci: 
+Na pewnym dystansie: 
+Nieco dalej: 
+W powa¾nej odlegˆo˜ci: 
+Daleko przed tob¥: 
+Ledwo zauwa¾alne:
+&&&
+Panel informacyjny  
+Panel ataku
+Szansa na powodzenie
+&&&
+Zakr©t na asfalcie - bezpieczna pr©dko˜† to okoˆo 
+Prosta droga, teren to asfalt
+Zakr©t na trawie - bezpieczna pr©dko˜† to okoˆo 
+Prosta pokryta traw¥
+Zakr©t na ¾wirze - bezpieczna pr©dko˜† to okoˆo 
+Prosty odcinek na ¾wirze
+Zakr©t na piasku - bezpieczna pr©dko˜† to okoˆo 
+Prosta, piaszczysta droga
+Zakr©t na bˆocie - bezpieczna pr©dko˜† to okoˆo 
+Bˆotnista droga, ale prosta
+Zakr©t na lodzie - bezpieczna pr©dko˜† to okoˆo 
+—liska droga na lodzie
+&&&
+ udaˆo si© poprawnie pokona† zakr©t, 
+ pomyliˆ(a) si©, 
+ do˜wiadczyˆ(a) tragicznej kraksy !!! 
+ do˜wiadczyˆ(a) kraksy !!!
+ miaˆ(a) niebezpieczny wypadek,
+ wypadˆ(a) z trasy,
+ wpadˆ(a) w gro«ny po˜lizg,
+ wpadˆ(a) w po˜lizg,
+&&&
+ 
+Cze˜†, nazywam si© Michaˆ Balicki, a oto Tour of Turns, turowa gra wy˜cigowa.
+ 
+ToT byˆ moim pierwszym, niewinnym projektem, lecz z powodu mojej pasji dotycz¥cej idei gry, urosˆa ona do obecnych rozmiar¢w.
+
+Zacz¥ˆem jako zupeˆny nowicjusz. Brakowaˆo mi do˜wiadczenia. Wielokrotnie przepisywaˆem projekt, poniewa¾ nie byˆem w stanie rozszerza† projektu bez fundamentalnych zmian w jego strukturze.
+
+Ukoäczenie ToT zaj©ˆo mi stanowczo zbyt du¾o czasu, ale nie ¾aˆuj© ani jednej sekundy. Zdobyte do˜wiadczenie jest bezcenne.
+
+To byˆa dˆuga i samotna droga, co nie znaczy ¾e nie przewijali si© przez ni¥ pomocni ludzie. Chciaˆbym szczeg¢lnie podzi©kowa†:
+Krystianowi Grzegorzewiczowi 
+osobie, kt¢ra stworzyˆa papierow¥ wersj© gry. Prekursor idei turowej gry wy˜cigowej oraz m¢j przyjaciel z lat szkolnych.
+Marekowi Loekowi 
+- ci©¾ko pracuj¥cemu grafikowi, kt¢ry stworzyˆ przepi©kn¥ t© ikonk©. 
+Miroslawowi Zelentowi 
+wyj¥tkowemu nauczycielowi, dzi©ki kt¢remu zacz¥ˆem swoj¥ przygod© z programowaniem za pomoc¥ jego serii film¢w na temat C++.
+&&&
+wˆ¥cz
+wyˆ¥cz
+&&&
+  _______  ___         ___     
+     |    |   | |   | |   |    
+     |    |   | |   | |___|    
+     |    |   | |   | |  \     
+     |    |___| |___| |   \    
+                               
+                               
+                               
+                               
+                               
+_______        ___    __   __  
+   |    |   | |   |  |  | |    
+   |    |   | |___|  |  | |__  
+   |    |   | |  \   |  |    | 
+   |    |___| |   \  |  | ___| 
+&&&
+ ___   ___
+|   | |   
+|   | |_  
+|   | |   
+|___| |   
+&&&
+Mapa
+Gracz
+Klasyfikacja
+Reset rankingu
+Powr¢t
+&&&
+Wszystkie gry
+Tylko 8 graczy
+Tylko gry wieloosobowe
+&&&
+Rajdowiec
+Liczba gier
+Procent wygranych
+—rednie miejsce
+—redni wynik
+Najlepszy wynik
+Ulubiony samoch¢d
+Ulubione opony
+Fatalne wypadki
+Ataki na gr©
+Drifty na gr©
+Palenie wytrzymaˆo˜ci na gr©
+&&&
+Rajdowiec
+ - Czy napewno chcesz to zrobi† ? (Y/N) 
+RIP 
+ zdezintegrowaˆ sw¢j pojazd... 
+Nie atakuj
+ - Nie mo¾esz tego zrobi†, poniewa¾ si© nie ruszasz...
+META
+ stracono 
+ wymagane - 
+ najwy¾szy rzut - 
+ najni¾szy rzut - 
+w wyniku zachowania innych rajdowc¢w
+ pr©dko˜†,
+________________________________________________________ 

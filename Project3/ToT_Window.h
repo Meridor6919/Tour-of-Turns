@@ -60,7 +60,7 @@ public:
 	void SetHamachiConnectionFlag(const bool flag);
 	void SetAIs(int number_of_ais);
 	void SetName(std::string name);
-	bool SetLanguage(std::string lang);
+	void SetLanguage(std::string lang);
 	void SetMultiplayer(bool multiplayer);
 	void SaveRanking(std::string tour, std::string name, int place, int score, bool crash, int attacks, int drifts, int durability_burning, std::string car, std::string tires);
 	void SaveAtributes();

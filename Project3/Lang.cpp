@@ -103,6 +103,7 @@ namespace LanguagePack
 	}
 	bool LoadVector(std::string path)
 	{
+		LanguagePack::vector_of_strings.clear();
 		LanguagePack::vector_of_strings.push_back({});
 		std::ifstream fvar;
 		std::string line;

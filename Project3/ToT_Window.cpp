@@ -105,6 +105,7 @@ void ToT_Window::LoadAtributes()
 			if (LanguagePack::LoadVector(FolderName::language + "\\" + languages[i]))
 			{
 				no_valid_lang_packs = false;
+				lang = languages[i];
 				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language.c_str(), 0);
 				break;
 			}
@@ -436,9 +437,31 @@ void ToT_Window::SetName(std::string name)
 {
 	this->name = name;
 }
-bool ToT_Window::SetLanguage(std::string lang)
+void ToT_Window::SetLanguage(std::string lang)
 {
-	return LanguagePack::LoadVector(lang);
+	this->lang = lang;
+	if (!LanguagePack::LoadVector(FolderName::language + "\\" + lang))
+	{
+		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+
+		std::vector<std::string> languages = this->ReadFile(FolderName::language + "\\" + FileName::language);
+		bool no_valid_lang_packs = true;
+		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
+		{
+			if (LanguagePack::LoadVector(FolderName::language + "\\" + languages[i]))
+			{
+				no_valid_lang_packs = false;
+				lang = languages[i];
+				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language.c_str(), 0);
+				break;
+			}
+		}
+		if (no_valid_lang_packs)
+		{
+			MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
+			exit(0);
+		}
+	}
 }
 void ToT_Window::SetMultiplayer(bool multiplayer)
 {

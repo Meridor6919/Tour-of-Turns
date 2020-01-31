@@ -290,6 +290,7 @@ void ToT::Options()
 				int starting_pos = 0;
 				for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
 				{
+					main_window->GetLanguage();
 					if (language[starting_pos] == main_window->GetLanguage())
 					{
 						break;
@@ -299,7 +300,7 @@ void ToT::Options()
 				int current_pos = Text::Choose::Horizontal(language, starting_pos, local_starting_point, Text::TextAlign::left, true, *main_window);
 				if (current_pos != starting_pos)
 				{
-					main_window->SetLanguage(language[current_pos] + "\\" + ExtName::language);
+					main_window->SetLanguage(language[current_pos] + ExtName::language);
 					system("cls");
 					main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
 				}
