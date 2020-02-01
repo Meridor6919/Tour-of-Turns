@@ -66,7 +66,7 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 	}
 	else
 	{
-		float f = atof(ret[2].c_str()) / atof(ret[1].c_str()) * 100.0f;
+		double f = atof(ret[2].c_str()) / atof(ret[1].c_str()) * 100.0f;
 		ret[2] = std::to_string(f).substr(0, static_cast<int>(std::to_string(f).size()) - 4) + '%';
 
 		for (int i = 0; i < 5; ++i)
