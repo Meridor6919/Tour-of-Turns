@@ -17,6 +17,7 @@ protected:
 	std::vector<Participant> participants;
 	std::unique_ptr<GeneralMultiPlayer::RequestHandler> request_handler;
 	std::mutex mutex;
+	bool timer_running = true;
 
 	//Selection methods
 	int NumericalSelection(const COORD coords);

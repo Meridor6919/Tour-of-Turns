@@ -10,11 +10,12 @@ class ToT_Window : public Window
 {
 protected:
 	//Options
-	std::string name;
-	std::string lang;
-	bool hamachi_enabled;
-	bool multiplayer;
-	int ais;
+	std::string name = "";
+	std::string lang = "";
+	bool hamachi_enabled = false;
+	bool multiplayer = false;
+	int timer_settings = 0;
+	int ais = 0;
 
 	//Viability 
 	bool playable;
@@ -51,6 +52,7 @@ public:
 	bool GetHamachiConnectionFlag();
 	int GetAIs();
 	std::string GetName();
+	int GetTimerSettings();
 	std::string GetLanguage();
 	bool RankingFound();
 	bool IsPlayable();
@@ -60,6 +62,7 @@ public:
 	void SetHamachiConnectionFlag(const bool flag);
 	void SetAIs(int number_of_ais);
 	void SetName(std::string name);
+	void SetTimerSettings(int timer_settings);
 	void SetLanguage(std::string lang);
 	void SetMultiplayer(bool multiplayer);
 	void SaveRanking(std::string tour, std::string name, int place, int score, bool crash, int attacks, int drifts, int durability_burning, std::string car, std::string tires);

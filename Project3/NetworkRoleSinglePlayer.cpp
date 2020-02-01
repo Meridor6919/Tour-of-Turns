@@ -441,6 +441,7 @@ bool SinglePlayer::GameLobby()
 	const short spacing = 3;
 	short main_menu_position = 0;
 	std::string name = main_window->GetName();
+	int timer_settings = main_window->GetTimerSettings();
 	std::vector<std::string> tours = main_window->GetTourNames();
 	std::vector<std::string> tires = main_window->GetTireNames();
 	std::vector<std::string> cars = main_window->GetCarNames(tours[0]);
@@ -456,61 +457,96 @@ bool SinglePlayer::GameLobby()
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour);
 
-	while (main_menu_position != 5 || static_cast<int>(cars.size()) == 0)
+	while (true)
 	{
-		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::game_lobby], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window, &mutex))
+		main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::game_lobby], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window, &mutex, &timer_running);
+		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
+		switch (main_menu_position)
 		{
-		case 0://choosing name
-		{
-			name = StringSelection(name, 14, {starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][0].size()), 25 });
-			break;
-		}
-		case 1://Number of ais
-		{
-			std::vector<std::string> text;
+			case 0://choosing name
+			{
+				name = StringSelection(name, 14, {starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][0].size()), 25 });
+				main_window->SetName(name);
+				break;
+			}
+			case 1://Number of ais
+			{
+				std::vector<std::string> text;
 
-			for (int i = 0; i <= Possible_AIs(); ++i)
-			{
-				text.push_back(std::to_string(i));
+				for (int i = 0; i <= Possible_AIs(); ++i)
+				{
+					text.push_back(std::to_string(i));
+				}
+				ais = Text::Choose::Horizontal(text, ais, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				ShowRankingParameters(tours[tours_pos] + ExtName::ranking, true);
+				main_window->SetAIs(ais);
+				ShowRankingParameters(tours[tours_pos] + ExtName::ranking);
+				break;
 			}
-			ais = Text::Choose::Horizontal(text, ais, { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window, &mutex);
-			ShowRankingParameters(tours[tours_pos] + ExtName::ranking, true);
-			main_window->SetAIs(ais);
-			ShowRankingParameters(tours[tours_pos] + ExtName::ranking);
-			break;
-		}
-		case 2://choosing tour
-		{
-			int i = tours_pos;
-			tours_pos = Text::Choose::Horizontal(tours, tours_pos, { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window, &mutex);
-			if (i != tours_pos)
+			case 2: //timer
 			{
-				ShowCarParameters(cars[cars_pos] + ExtName::car, true);
-				cars = main_window->GetCarNames(tours[tours_pos] + ExtName::tour);
-				main_window->RemoveExtension(cars, ExtName::car);
-				cars_pos = 0;
-				ShowCarParameters(cars[cars_pos] + ExtName::car);
+				const int timer_values_max = 40;
+				std::vector<std::string> timer_values = { LanguagePack::vector_of_strings[LanguagePack::on_off][1]};
+				for (int i = 0; i < timer_values_max; ++i)
+				{
+					timer_values.push_back(std::to_string((i+1)/2) + ":");
+				}
+				for (int i = 0; i < timer_values_max; ++i)
+				{
+					timer_values[i+1] += i%2?"00":"30";
+				}
+				timer_settings = Text::Choose::Horizontal(timer_values, timer_settings, starting_local_pos, Text::TextAlign::left, true, *main_window);
+				main_window->SetTimerSettings(timer_settings);
+				break;
 			}
-			ShowTourParameters(tours[i] + ExtName::tour, true);
-			ShowTourParameters(tours[tours_pos] + ExtName::tour);
-			break;
+			case 3://choosing tour
+			{
+				int i = tours_pos;
+				tours_pos = Text::Choose::Horizontal(tours, tours_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				if (i != tours_pos)
+				{
+					ShowCarParameters(cars[cars_pos] + ExtName::car, true);
+					cars = main_window->GetCarNames(tours[tours_pos] + ExtName::tour);
+					main_window->RemoveExtension(cars, ExtName::car);
+					cars_pos = 0;
+					ShowCarParameters(cars[cars_pos] + ExtName::car);
+					ShowTourParameters(tours[i] + ExtName::tour, true);
+					ShowTourParameters(tours[tours_pos] + ExtName::tour);
+				}
+				
+				break;
+			}
+			case 4://choosing car
+			{
+				int i = cars_pos;
+				cars_pos = Text::Choose::Horizontal(cars, cars_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				if (i != cars_pos)
+				{
+					ShowCarParameters(cars[i] + ExtName::car, true);
+					ShowCarParameters(cars[cars_pos] + ExtName::car);
+				}
+				break;
+			}
+			case 5://choosing tires
+			{
+				int i = tires_pos;
+				tires_pos = Text::Choose::Horizontal(tires, tires_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				if (i != tires_pos)
+				{
+					ShowTiresParameters(tires[i] + ExtName::tire, true);
+					ShowTiresParameters(tires[tires_pos] + ExtName::tire);
+				}
+				break;
+			}
+			case 7://Back
+			{
+				main_window->SaveAtributes();
+				return false;
+			}
 		}
-		case 3://choosing car
+		if (main_menu_position == 6)//Next
 		{
-			int i = cars_pos;
-			cars_pos = Text::Choose::Horizontal(cars, cars_pos, { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window, &mutex);
-			ShowCarParameters(cars[i] + ExtName::car, true);
-			ShowCarParameters(cars[cars_pos] + ExtName::car);
 			break;
-		}
-		case 4://choosing tires
-		{
-			int i = tires_pos;
-			tires_pos = Text::Choose::Horizontal(tires, tires_pos, { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing }, Text::TextAlign::left, true, *main_window, &mutex);
-			ShowTiresParameters(tires[i] + ExtName::tire, true);
-			ShowTiresParameters(tires[tires_pos] + ExtName::tire);
-			break;
-		}
 		}
 	}
 	for (int i = 0; i < static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_lobby].size()); ++i)
@@ -523,8 +559,6 @@ bool SinglePlayer::GameLobby()
 		}
 		mutex.unlock();
 	}
-	main_window->SetAIs(ais);
-	main_window->SetName(name);
 	main_window->SaveAtributes();
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
@@ -558,7 +592,7 @@ void SinglePlayer::Attack()
 	}
 	if (rival_id.size() != 1 && participants[0].alive)
 	{
-		short i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, 2, Text::TextAlign::center, true, *main_window, &mutex);
+		short i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, 2, Text::TextAlign::center, true, *main_window, &mutex, &timer_running);
 		if (rival_id[i] != 10)
 		{
 			participants[rival_id[i]].attacked += 1;
@@ -587,7 +621,7 @@ void SinglePlayer::TakeAction()
 	int value;
 	while (true)
 	{
-		take_action_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::race_actions], take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window, &mutex);
+		take_action_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::race_actions], take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window, &mutex, &timer_running);
 		if (participants[0].current_speed == 0 && take_action_position % 4 != 0)
 		{
 			mutex.lock();

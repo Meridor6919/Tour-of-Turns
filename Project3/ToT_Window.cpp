@@ -92,6 +92,7 @@ void ToT_Window::LoadAtributes()
 	fvar >> ais;
 	fvar >> name;
 	fvar >> lang;
+	fvar >> timer_settings;
 	fvar.close();
 
 	if (!LanguagePack::LoadVector(FolderName::language + "\\" + lang))
@@ -132,6 +133,10 @@ void ToT_Window::LoadAtributes()
 	{
 		name = LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::default_name];
 	}
+	if (timer_settings < 0 || timer_settings > 40)
+	{
+		timer_settings = 0;
+	}
 	wav_transformer->ChangeVolume(music_volume);
 	if (music_volume)
 	{
@@ -148,7 +153,7 @@ bool ToT_Window::ValidateTourFiles()
 	const short number_of_tours = static_cast<short>(tours.size());
 	if (!number_of_tours)
 	{
-		MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		return false;
 	}
 	for (short i = 0; i < number_of_tours; ++i)
@@ -156,7 +161,7 @@ bool ToT_Window::ValidateTourFiles()
 		std::vector<std::string> params = GetTourParameters(tours[i], 0, INT_MAX);
 		if (static_cast<short>(params.size()) < 1)
 		{
-			MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 			return false;
 		}
 		for (short j = 0; j < static_cast<short>(params.size()); ++j)
@@ -164,17 +169,17 @@ bool ToT_Window::ValidateTourFiles()
 			const short size_of_segment = static_cast<short>(params[j].size());
 			if (params[j][0] - 48 < 0 || params[j][0] - 48 >= TireModifiers::last)//terrain type validation
 			{
-				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 				return false;
 			}
 			else if (size_of_segment > 11)//checking if safe speed isn't exceeding speed of light
 			{
-				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 				return false;
 			}
 			else if (size_of_segment != 1 && atoi(params[j].substr(1, size_of_segment - 1).c_str()) < 1)//checking if safe speed is at least 1
 			{
-				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 				return false;
 			}
 		}
@@ -191,7 +196,7 @@ bool ToT_Window::ValidateCarFiles()
 		const std::vector<std::string> cars = GetCarNames(tours[i]);
 		if (!static_cast<bool>(cars.size()))//checking if there is at least one car that can be driven for any given tour
 		{
-			MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			MessageBox(0, (tours[i] + " " + ErrorMsg::available_cars).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 			return false;
 		}		
 		for (short j = 0; j < static_cast<short>(cars.size()); ++j)
@@ -409,6 +414,10 @@ std::string ToT_Window::GetName()
 {
 	return name;
 }
+int ToT_Window::GetTimerSettings()
+{
+	return timer_settings;
+}
 std::string ToT_Window::GetLanguage()
 {
 	return lang;
@@ -436,6 +445,10 @@ void ToT_Window::SetAIs(int number_of_ais)
 void ToT_Window::SetName(std::string name)
 {
 	this->name = name;
+}
+void ToT_Window::SetTimerSettings(int timer_settings)
+{
+	this->timer_settings = timer_settings;
 }
 void ToT_Window::SetLanguage(std::string lang)
 {
@@ -574,5 +587,6 @@ void ToT_Window::SaveAtributes()
 	fvar << ais << "\n";
 	fvar << name << "\n";
 	fvar << lang << "\n";
+	fvar << timer_settings << "\n";
 	fvar.close();
 }

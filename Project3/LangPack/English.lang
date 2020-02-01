@@ -125,10 +125,12 @@ If instead chance of failure was lower or equal to minimum roll, then player's s
 &&&
 Name
 Number of AIs
+Timer
 Tours
 Cars
 Tires
 Next
+Back
 &&&
 Host game
 Search game

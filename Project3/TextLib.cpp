@@ -2,6 +2,10 @@
 
 char Text::Button(bool *loop, char default_value, int delay)
 {
+	if (loop == nullptr)
+	{
+		return default_value;
+	}
 	while (*loop)
 	{
 		if (_kbhit())
@@ -12,7 +16,7 @@ char Text::Button(bool *loop, char default_value, int delay)
 	}
 	return default_value;
 }
-int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window & main_window, std::mutex * mutex, char defalut_value, int delay, bool * loop)
+int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window & main_window, std::mutex * mutex, bool * loop, char defalut_value, int delay)
 {
 	if (!static_cast<short>(text.size()))
 	{
@@ -118,7 +122,7 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 
 	return starting_position;
 }
-int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_position, const COORD starting_point, const short spacing, const TextAlign text_align, const bool clear_after, Window & main_window, std::mutex * mutex, char default_value, int delay, bool * loop)
+int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_position, const COORD starting_point, const short spacing, const TextAlign text_align, const bool clear_after, Window & main_window, std::mutex * mutex, bool * loop, char default_value, int delay)
 {
 	const HANDLE handle = main_window.GetHandle();
 	const int color1 = main_window.color1;
@@ -278,7 +282,7 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 	}
 	return starting_position;
 }
-int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_allowed, Window & main_window, std::mutex * mutex, char default_value, int delay, bool * loop)
+int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_allowed, Window & main_window, std::mutex * mutex, bool * loop, char default_value, int delay)
 {
 	char button;
 	int number = 0;

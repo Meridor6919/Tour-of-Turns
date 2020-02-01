@@ -111,7 +111,7 @@ namespace TireModifiers
 namespace ValidationConstants
 {
 	const int main_menu_size = 7;
-	const int game_lobby_size = 6;
+	const int game_lobby_size = 8;
 	const int multiplayer_lobby_size = 3;
 	const int option_size = 6;
 	const int possible_colors = 14;
@@ -169,6 +169,7 @@ namespace ErrorMsg
 	const std::string pipe_error = "Please call a plumber";
 	const std::string language_error = "Game cannot find any valid language packs, please repair files or reinstall game";
 	const std::string placeholder_language = " is current language. \nPreviously selected language pack has been corrupted";
+	const std::string available_cars = " has no cars available";
 }
 namespace GameValues
 {
