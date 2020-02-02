@@ -15,7 +15,7 @@ int SinglePlayer::NumericalSelection(const COORD coords)
 	std::cout << ": ";
 	while (true)
 	{
-		button = _getch();
+		button = Text::Button(&timer_running, 13, 20);
 		mutex.lock();
 		SetConsoleCursorPosition(window, { coords.X + 2 + decimal_position, coords.Y });
 		if (button >= '0' && button <= '9')
@@ -75,7 +75,7 @@ int SinglePlayer::BinarySelection(const COORD coords)
 		SetConsoleCursorPosition(window, coords);
 		std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::action_confirm];
 		mutex.unlock();
-		button = _getch();
+		button = Text::Button(&timer_running, 13, 20);
 
 		mutex.lock();
 		SetConsoleCursorPosition(window, coords);
@@ -115,7 +115,7 @@ std::string SinglePlayer::StringSelection(const std::string current_name, const 
 	show_name_func();
 	do
 	{
-		button = _getch();
+		button = Text::Button(&timer_running, 13, 20);
 		if (name_size < max_name_size && ((button >= 48 && button <= 57) || (button >= 65 && button <= 90 && GetKeyState(VK_SHIFT) != 1 && GetKeyState(VK_SHIFT) != 0) || (button >= 97 && button <= 122)))
 		{
 			name += button;
@@ -436,6 +436,10 @@ bool SinglePlayer::GameLobby()
 	while (true)
 	{
 		main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::game_lobby], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window, &mutex, &timer_running);
+		if (!timer_running)
+		{
+			break;
+		}
 		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
 		switch (main_menu_position)
 		{
@@ -471,7 +475,7 @@ bool SinglePlayer::GameLobby()
 				{
 					timer_values[i+1] += i%2?"00":"30";
 				}
-				timer_settings = Text::Choose::Horizontal(timer_values, timer_settings, starting_local_pos, Text::TextAlign::left, true, *main_window);
+				timer_settings = Text::Choose::Horizontal(timer_values, timer_settings, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
 				main_window->SetTimerSettings(timer_settings);
 				break;
 			}
@@ -542,14 +546,12 @@ bool SinglePlayer::GameLobby()
 void SinglePlayer::Attack()
 {
 	const HANDLE handle = main_window->GetHandle();
-	std::vector<std::string> rival_name;
-	std::vector<int> rival_id;
+	std::vector<std::string> rival_name = { LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::attack] };
+	std::vector<int> rival_id = { 10 };
 	const int forward_attack_distance = 4;
 	const int backward_attack_distance = 6;
 	std::multimap<float, Participant*> sorted_participants;
 
-	rival_name.push_back(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::attack]);
-	rival_id.push_back(10);
 	participants[0].attacked = 0;
 	sorted_participants.insert(std::make_pair(participants[0].score, &participants[0]));
 
@@ -595,6 +597,11 @@ void SinglePlayer::TakeAction()
 	while (true)
 	{
 		take_action_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::race_actions], take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window, &mutex, &timer_running);
+		if (!timer_running)
+		{
+			participants[0].current_durability = 0;
+			return;
+		}
 		if (participants[0].current_speed == 0 && take_action_position % 4 != 0)
 		{
 			mutex.lock();

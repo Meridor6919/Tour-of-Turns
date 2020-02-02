@@ -26,7 +26,10 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 {
 	std::string line;
 	std::vector<std::string> ret = {};
-	Text::Spaces(ValidationConstants::ranking_details);
+	for (int i = 0; i < ValidationConstants::ranking_details; ++i)
+	{
+		ret.push_back(" ");
+	}
 	std::ifstream fvar;
 	fvar.open(tour.c_str());
 	for (int i = 0; i < ValidationConstants::ranking_details * racer_pos && std::getline(fvar, line); ++i);
