@@ -91,6 +91,9 @@
     <ClCompile Include="NetworkRoleClient.cpp">
       <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="VisibleTimer.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneralMultiPlayer.h">
@@ -118,6 +121,9 @@
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="AIConnector.h">
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="VisibleTimer.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>

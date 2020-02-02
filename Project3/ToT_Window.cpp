@@ -133,7 +133,7 @@ void ToT_Window::LoadAtributes()
 	{
 		name = LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::default_name];
 	}
-	if (timer_settings < 0 || timer_settings > 40)
+	if (timer_settings < 0 || timer_settings > ValidationConstants::maximum_timer)
 	{
 		timer_settings = 0;
 	}

@@ -110,6 +110,7 @@ namespace TireModifiers
 }
 namespace ValidationConstants
 {
+	const int maximum_timer = 60;
 	const int main_menu_size = 7;
 	const int game_lobby_size = 8;
 	const int multiplayer_lobby_size = 3;

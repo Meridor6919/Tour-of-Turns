@@ -465,15 +465,10 @@ bool SinglePlayer::GameLobby()
 			}
 			case 2: //timer
 			{
-				const int timer_values_max = 40;
 				std::vector<std::string> timer_values = { LanguagePack::vector_of_strings[LanguagePack::on_off][1]};
-				for (int i = 0; i < timer_values_max; ++i)
+				for (int i = 1; i <= ValidationConstants::maximum_timer; ++i)
 				{
-					timer_values.push_back(std::to_string((i+1)/2) + ":");
-				}
-				for (int i = 0; i < timer_values_max; ++i)
-				{
-					timer_values[i+1] += i%2?"00":"30";
+					timer_values.push_back((i < 60 ? "0" : "")+std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 				}
 				timer_settings = Text::Choose::Horizontal(timer_values, timer_settings, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
 				main_window->SetTimerSettings(timer_settings);

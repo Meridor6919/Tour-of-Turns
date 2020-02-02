@@ -134,12 +134,14 @@
     <ClCompile Include="ToT.h" />
     <ClCompile Include="ToT_Window.cpp" />
     <ClCompile Include="ToT_Window.h" />
+    <ClCompile Include="VisibleTimer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIConnector.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GeneralMultiPlayer.h" />
+    <ClInclude Include="VisibleTimer.h" />
     <ClInclude Include="WavTransformer.h" />
     <ClInclude Include="Infobox.h" />
     <ClInclude Include="NetworkRole.h" />
