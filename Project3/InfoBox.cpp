@@ -48,10 +48,7 @@ void InfoBox::Clear()
 	for (short i = 0; it != info.end(); ++it, ++i)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * static_cast<float>(it->size())), starting_point.Y + static_cast<short>(i  * spacing) });
-		for (int j = 0; j < it->size(); ++j)
-		{
-			std::cout << " ";
-		}
+		Text::Spaces(static_cast<int>(it->size()));
 	}
 }
 

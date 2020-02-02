@@ -54,10 +54,7 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		if (button != 13 || clear_after)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
-			for (float i = 0; i < line_size + 4; ++i)
-			{
-				std::cout << " ";
-			}
+			Text::Spaces(line_size + 4);
 		}
 		if (mutex != nullptr)
 		{
@@ -103,10 +100,7 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		if (button != 13 || clear_after)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
-			for (float i = 0; i < line_size + 4; ++i)
-			{
-				std::cout << " ";
-			}
+			Text::Spaces(line_size + 4);
 		}
 		//Changing index when left or right arrow button is pressed
 		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 75 && starting_position > 0)
@@ -200,10 +194,7 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 		for (short i = 0; i < text_size; ++i)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
-			for (int j = 0; j < static_cast<int>(text[i].size()); ++j)
-			{
-				std::cout << " ";
-			}
+			Text::Spaces(static_cast<int>(text[i].size()));
 		}
 	}
 	else
@@ -268,10 +259,7 @@ int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_p
 		for (short i = 0; i < text_size; ++i)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
-			for (int j = 0; j < static_cast<int>(text[i].size()); ++j)
-			{
-				std::cout << " ";
-			}
+			Text::Spaces(static_cast<int>(text[i].size()));
 		}
 	}
 	else
@@ -344,10 +332,7 @@ int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_a
 		mutex->lock();
 	}
 	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
-	for (int i = 1; i <= number; i *= 10)
-	{
-		std::cout << " ";
-	}
+	Text::Spaces(pos);
 	if (mutex != nullptr)
 	{
 		mutex->unlock();
@@ -396,10 +381,7 @@ int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_a
 	}
 	//Clearing text from the screen
 	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
-	for (int i = 1; i <= number; i *= 10)
-	{
-		std::cout << " ";
-	}
+	Text::Spaces(pos);
 	return number;
 }
 void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const COORD position, Window & main_window, std::mutex *mutex, const bool clearing)
@@ -560,10 +542,7 @@ void Text::Spaces(const int i, std::mutex *mutex)
 	{
 		mutex->lock();
 	}
-	for (int j = 0; j < i; ++j)
-	{
-		std::cout << " ";
-	}
+	Text::Spaces(i);
 	if (mutex != nullptr)
 	{
 		mutex->unlock();

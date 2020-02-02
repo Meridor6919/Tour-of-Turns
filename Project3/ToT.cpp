@@ -26,10 +26,7 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 {
 	std::string line;
 	std::vector<std::string> ret = {};
-	for (int i = 0; i < 12; ++i)
-	{
-		ret.push_back(" ");
-	}
+	Text::Spaces(ValidationConstants::ranking_details);
 	std::ifstream fvar;
 	fvar.open(tour.c_str());
 	for (int i = 0; i < ValidationConstants::ranking_details * racer_pos && std::getline(fvar, line); ++i);
@@ -84,7 +81,7 @@ std::string ToT::GetRankingFavourite(std::string text)
 {
 	std::string current_phrase = "";
 	std::string current_value = "";
-	std::string ret = " ";
+	std::string ret = "";
 	int highest_value = 0;
 	bool phrase_value_flag = true;
 
@@ -126,23 +123,14 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	{
 		const int border_size = static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size());
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		for (int i = 0; i < border_size; ++i)
-		{
-			std::cout << " ";
-		}
+		Text::Spaces(border_size);
 		for (short i = 0; i < static_cast<short>(ValidationConstants::ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
-			for (int j = 0; j < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2; ++j)
-			{
-				std::cout << " ";
-			}
+			Text::Spaces(static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2);
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(ValidationConstants::ranking_details) + 2) });
-		for (int i = 0; i < border_size; ++i)
-		{
-			std::cout << " ";
-		}
+		Text::Spaces(border_size);
 	}
 	else
 	{
@@ -321,10 +309,7 @@ void ToT::Options()
 	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options].size()); ++i)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size())), starting_point.Y + i * spacing });
-		for (int j = 0; j < static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size()); ++j)
-		{
-			std::cout << " ";
-		}
+		Text::Spaces(static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size()));
 	}
 	main_window->SaveAtributes();
 }
@@ -404,10 +389,7 @@ void ToT::Ranking()
 		for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu].size()); ++i)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][i].size())), starting_point.Y + i * spacing });
-			for (int j = 0; j < static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][i].size()); ++j)
-			{
-				std::cout << " ";
-			}
+			Text::Spaces(static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][i].size()));
 		}
 	}
 }
@@ -427,10 +409,7 @@ void ToT::Info()
 		{
 			const short text_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_information][info_pos].size());
 			SetConsoleCursorPosition(handle, {title_pos.X-text_size/2*text_align_title, title_pos.Y });
-			for (int j = 0; j < text_size + 4; ++j)
-			{
-				std::cout << " ";
-			}
+			Text::Spaces(text_size + 4);
 			break;
 		}
 		info_pos = temp_pos;
