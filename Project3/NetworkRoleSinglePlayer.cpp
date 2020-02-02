@@ -379,6 +379,7 @@ void SinglePlayer::SortLeaderboard()
 }
 bool SinglePlayer::GetCurrentAtribs()
 {
+	timer->StartTimer(main_window->GetTimerSettings());
 	mutex.lock();
 	for (int i = static_cast<int>(participants.size()) - 1; i >= 0; --i)
 	{
@@ -531,6 +532,12 @@ bool SinglePlayer::GameLobby()
 		Text::Spaces(static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_lobby][i].size()));
 		mutex.unlock();
 	}
+	if (timer_settings)
+	{
+		COORD coord = { 0,0 };
+		timer = std::make_unique<VisibleTimer>(coord, main_window->GetHandle(), &timer_running, &mutex);
+		timer->StartTimer(timer_settings);
+	}
 	main_window->SaveAtributes();
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
@@ -594,8 +601,16 @@ void SinglePlayer::TakeAction()
 		take_action_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::race_actions], take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window, &mutex, &timer_running);
 		if (!timer_running)
 		{
-			participants[0].current_durability = 0;
-			return;
+			if (participants[0].current_speed == 0)
+			{
+				participants[0].current_durability = 0;
+				return;
+			}
+			else
+			{
+				value = 0;
+				break;
+			}
 		}
 		if (participants[0].current_speed == 0 && take_action_position % 4 != 0)
 		{
@@ -766,4 +781,5 @@ void SinglePlayer::Finish()
 		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), participants[i].current_durability <= 0.0f, participants[i].attacks_performed, participants[i].drifts_performed, static_cast<int>(participants[i].durability_burned), participants[i].car_path, participants[i].tire_path);
 	}
 	main_window->infobox->info.clear();
+	timer->StopTimer();
 }

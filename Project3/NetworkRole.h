@@ -7,7 +7,7 @@
 #include <exception>
 #include "Participant.h"
 #include <mutex>
-
+#include "VisibleTimer.h"
 class SinglePlayer 
 {
 protected:
@@ -18,6 +18,7 @@ protected:
 	std::unique_ptr<GeneralMultiPlayer::RequestHandler> request_handler;
 	std::mutex mutex;
 	bool timer_running = true;
+	std::unique_ptr<VisibleTimer> timer;
 
 	//Selection methods
 	int NumericalSelection(const COORD coords);
