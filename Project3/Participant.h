@@ -13,6 +13,7 @@ public:
 	float score = 0.0f;
 	float current_speed = 0.0f;
 	float current_durability;
+	bool indicator = false;
 	int place;
 
 	std::string car_path;

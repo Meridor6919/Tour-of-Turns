@@ -357,6 +357,16 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 	}
 	mutex.unlock();
 }
+void SinglePlayer::ShowIndicator(int participant)
+{
+	const COORD coord = { main_window->GetWidth() - 55, 16 + participants[participant].place * 2 };
+	mutex.lock();
+	SetConsoleCursorPosition(main_window->GetHandle(), coord);
+	SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].indicator ? main_window->color2 : 8);
+	std::cout << '*';
+	mutex.unlock();
+	
+}
 void SinglePlayer::GetParticipants(const std::string name, const std::string tour, const std::string car, const std::string tire)
 {
 	this->tour = tour;
@@ -383,7 +393,6 @@ bool SinglePlayer::GetCurrentAtribs()
 	{
 		timer->StartTimer(main_window->GetTimerSettings());
 	}
-	mutex.lock();
 	for (int i = static_cast<int>(participants.size()) - 1; i >= 0; --i)
 	{
 		participants[i].Test(current_field, i < static_cast<int>(participants.size()) - main_window->GetAIs());
@@ -393,6 +402,7 @@ bool SinglePlayer::GetCurrentAtribs()
 			participants[i].alive = false;
 			if (i == 0)
 			{
+				mutex.lock();
 				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color1);
 				SetConsoleCursorPosition(main_window->GetHandle(), { 0, 20 });
 				std::cout << LanguagePack::vector_of_strings[LanguagePack::race_attribs][2];
@@ -403,7 +413,6 @@ bool SinglePlayer::GetCurrentAtribs()
 			}
 		}
 	}
-	mutex.unlock();
 	return true;
 }
 std::string SinglePlayer::GetTour()
@@ -551,7 +560,6 @@ void SinglePlayer::AttackPhase()
 void SinglePlayer::ActionPhase()
 {
 	ValidateAction(PerformAction(), 0);
-	
 }
 void SinglePlayer::ValidateAttack(int target, int participant)
 {
@@ -596,6 +604,9 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 			participants[participant].drift = true;
 		}
 		participants[participant].CalculateParameters(static_cast<float>(action.second), current_field);
+		participants[participant].indicator = true;
+		ShowIndicator(participant);
+		
 	}
 }
 int SinglePlayer::PerformAttack()
@@ -681,6 +692,11 @@ void SinglePlayer::Leaderboard(const bool clear)
 	if (!clear)
 	{
 		SortLeaderboard();
+		for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+		{
+			participants[i].indicator = false;
+			ShowIndicator(i);
+		}
 	}
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
