@@ -379,7 +379,10 @@ void SinglePlayer::SortLeaderboard()
 }
 bool SinglePlayer::GetCurrentAtribs()
 {
-	timer->StartTimer(main_window->GetTimerSettings());
+	if (main_window->GetTimerSettings())
+	{
+		timer->StartTimer(main_window->GetTimerSettings());
+	}
 	mutex.lock();
 	for (int i = static_cast<int>(participants.size()) - 1; i >= 0; --i)
 	{
@@ -789,5 +792,8 @@ void SinglePlayer::Finish()
 		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), participants[i].current_durability <= 0.0f, participants[i].attacks_performed, participants[i].drifts_performed, static_cast<int>(participants[i].durability_burned), participants[i].car_path, participants[i].tire_path);
 	}
 	main_window->infobox->info.clear();
-	timer->StopTimer();
+	if (main_window->GetTimerSettings())
+	{
+		timer->StopTimer();
+	}
 }
