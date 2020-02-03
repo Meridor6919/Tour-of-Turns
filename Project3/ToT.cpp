@@ -474,10 +474,9 @@ void ToT::Game(const bool multiplayer)
 		{
 			if (turn > 0)//attacks start with second turn 
 			{
-				network_role->Attack();
+				network_role->AttackPhase();
 			}
-			network_role->TakeAction();
-			network_role->GetOthersAction(turn);
+			network_role->ActionPhase();
 			network_role->GetCurrentAtribs();
 			network_role->Interface();
 			network_role->Leaderboard(true);

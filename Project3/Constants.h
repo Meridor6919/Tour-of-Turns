@@ -111,6 +111,8 @@ namespace TireModifiers
 namespace ValidationConstants
 {
 	const int maximum_timer = 60;
+	const int attack_forward_distance = 4;
+	const int attack_backward_distance = 6;
 	const int main_menu_size = 7;
 	const int game_lobby_size = 8;
 	const int multiplayer_lobby_size = 3;
@@ -160,6 +162,7 @@ namespace ErrorTitle
 	const std::string pipe_error = "Pipe error";
 	const std::string language_error = "Language pack critical error";
 	const std::string placeholder_language = "Used different language";
+	const std::string cheating_attempt = "Cheating detected";
 }
 namespace ErrorMsg
 {
@@ -171,6 +174,7 @@ namespace ErrorMsg
 	const std::string language_error = "Game cannot find any valid language packs, please repair files or reinstall game";
 	const std::string placeholder_language = " is current language. \nPreviously selected language pack has been corrupted";
 	const std::string available_cars = " has no cars available";
+	const std::string cheating_attempt = " has made an attempt to cheat. He is now eliminated :)";
 }
 namespace GameValues
 {

@@ -379,7 +379,7 @@ bool Host::GetCurrentAtribs()
 }
 void Host::Attack()
 {
-	SinglePlayer::Attack();
+	SinglePlayer::PerformAttack();
 
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
@@ -416,7 +416,7 @@ void Host::Attack()
 }
 void Host::TakeAction()
 {
-	SinglePlayer::TakeAction();
+	SinglePlayer::PerformAction();
 }
 void Host::GetOthersAction(std::vector<std::string>& tour)
 {
@@ -497,7 +497,6 @@ void Host::GetOthersAction(std::vector<std::string>& tour)
 			}
 		}
 	}
-	SinglePlayer::GetOthersAction(0);
 }
 int Host::Possible_AIs()
 {

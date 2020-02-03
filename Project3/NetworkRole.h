@@ -34,6 +34,12 @@ protected:
 	void ShowLeaderboard(const std::vector<std::string> text, short pos, int color, const bool clear = false);
 	void ShowChances(int value, bool reset = false);
 
+	//Game logic
+	int PerformAttack();
+	std::pair<int, int> PerformAction(); //action, value
+	virtual int Possible_AIs();
+
+
 public:
 	ToT_Window *main_window;
 
@@ -44,17 +50,15 @@ public:
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	void SortLeaderboard();
 	virtual bool GetCurrentAtribs();
-	virtual void GetOthersAction(int turn);
 	std::string GetTour();
 
 	//Game methods
 	bool GameLobby();
-	virtual void Attack();
-	virtual void TakeAction();
-	virtual int Possible_AIs();
+	virtual void AttackPhase();
+	virtual void ActionPhase();
 	virtual void Leaderboard(bool clear);
-	virtual void Interface();
 	virtual bool VisionBox(int turn);
+	virtual void Interface();
 	virtual void Finish();
 };
 
