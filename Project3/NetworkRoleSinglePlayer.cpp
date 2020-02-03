@@ -543,119 +543,130 @@ bool SinglePlayer::GameLobby()
 }
 void SinglePlayer::AttackPhase()
 {
-	if (participants[0].alive)
+	ValidateAttack(PerformAttack(), 0);
+}
+void SinglePlayer::ActionPhase()
+{
+	ValidateAction(PerformAction(), 0);
+	
+}
+void SinglePlayer::ValidateAttack(int target, int participant)
+{
+	if (participants[participant].alive)
 	{
-		int target = PerformAttack();
 		if (target != 10)
 		{
-			if (participants[target].score < participants[0].score + ValidationConstants::attack_backward_distance && participants[target].score >participants[0].score - ValidationConstants::attack_forward_distance && participants[target].alive)
+			if (participants[target].score < participants[participant].score + ValidationConstants::attack_backward_distance && participants[target].score >participants[participant].score - ValidationConstants::attack_forward_distance && participants[target].alive)
 			{
 				participants[target].attacked += 1;
-				participants[0].attacked += 0.5f;
+				participants[participant].attacked += 0.5f;
 			}
 			else
 			{
-				participants[0].current_durability = 0;
-				MessageBox(0, (participants[0].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
+				participants[participant].current_durability = 0;
+				MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
 				return;
 			}
 		}
 	}
 }
-void SinglePlayer::ActionPhase()
+void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 {
-	if (participants[0].alive)
+	if (participants[participant].alive)
 	{
-		std::pair<int, int> action = PerformAction();
-		
 		if (action.first == 4)
 		{
-			participants[0].current_durability = 0;
+			participants[participant].current_durability = 0;
 			return;
 		}
-		if ((action.first == 0 && (action.second > participants[0].car_modifiers[CarModifiers::max_accelerating] || action.second <= 0)) ||
-			(action.first == 1 && (action.second < participants[0].car_modifiers[CarModifiers::max_braking] * -1 || action.second >= 0 || participants[0].current_speed <= 0)) ||
-			(action.first == 2 && (action.second < participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1 || action.second >= 0 || participants[0].current_speed <= 0)) ||
-			(action.first == 3 && (action.second != 0 || participants[0].current_speed <= 0)))
+		if ((action.first == 0 && (action.second > participants[participant].car_modifiers[CarModifiers::max_accelerating] || action.second <= 0)) ||
+			(action.first == 1 && (action.second < participants[participant].car_modifiers[CarModifiers::max_braking] * -1 || action.second >= 0 || participants[participant].current_speed <= 0)) ||
+			(action.first == 2 && (action.second < participants[participant].car_modifiers[CarModifiers::hand_brake_value] * -1 || action.second >= 0 || participants[participant].current_speed <= 0)) ||
+			(action.first == 3 && (action.second != 0 || participants[participant].current_speed <= 0)))
 		{
-			participants[0].current_durability = 0;
-			MessageBox(0, (participants[0].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
+			participants[participant].current_durability = 0;
+			MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
 			return;
 		}
-
 		if (action.first == 2)
 		{
-			participants[0].drift = true;
+			participants[participant].drift = true;
 		}
-		participants[0].CalculateParameters(static_cast<float>(action.second), current_field);
+		participants[participant].CalculateParameters(static_cast<float>(action.second), current_field);
 	}
 }
 int SinglePlayer::PerformAttack()
 {
-	std::vector<std::string> rival_name = { LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::attack] };
-	std::vector<int> rival_id = { 10 };
+	if (participants[0].alive)
+	{
+		std::vector<std::string> rival_name = { LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::attack] };
+		std::vector<int> rival_id = { 10 };
 
-	for (int i = 1; i < static_cast<int>(participants.size()); ++i)
-	{
-		if (participants[i].score < participants[0].score + ValidationConstants::attack_backward_distance && participants[i].score >participants[0].score - ValidationConstants::attack_forward_distance && participants[i].alive)
+		for (int i = 1; i < static_cast<int>(participants.size()); ++i)
 		{
-			rival_name.push_back(participants[i].name);
-			rival_id.push_back(i);
+			if (participants[i].score < participants[0].score + ValidationConstants::attack_backward_distance && participants[i].score >participants[0].score - ValidationConstants::attack_forward_distance && participants[i].alive)
+			{
+				rival_name.push_back(participants[i].name);
+				rival_id.push_back(i);
+			}
 		}
-	}
-	if (static_cast<int>(rival_id.size()) != 1)
-	{
-		short i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, 2, Text::TextAlign::center, true, *main_window, &mutex, &timer_running);
-		return rival_id[i];
+		if (static_cast<int>(rival_id.size()) != 1)
+		{
+			short i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, 2, Text::TextAlign::center, true, *main_window, &mutex, &timer_running);
+			return rival_id[i];
+		}
 	}
 	return 10;
 }
 std::pair<int, int> SinglePlayer::PerformAction()
 {
-	const HANDLE window = main_window->GetHandle();
-	int value;
-	while (true)
+	if (participants[0].alive)
 	{
-		take_action_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::race_actions], take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window, &mutex, &timer_running);
-		if (!timer_running)
+		const HANDLE window = main_window->GetHandle();
+		int value;
+		while (true)
 		{
-			if (participants[0].current_speed == 0)
+			take_action_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::race_actions], take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window, &mutex, &timer_running);
+			if (!timer_running)
 			{
-				return std::make_pair<int>(4, 0);
+				if (participants[0].current_speed == 0)
+				{
+					return std::make_pair<int>(4, 0);
+				}
+				return std::make_pair(3, 0);
 			}
-			return std::make_pair(3, 0);
-		}
-		if (participants[0].current_speed == 0 && take_action_position % 4 != 0)
-		{
-			mutex.lock();
-			SetConsoleCursorPosition(window, { static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39+2*take_action_position });
-			std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::unable_to_move];
-			mutex.unlock();
-			main_window->Pause(1500);
-			mutex.lock();
-			SetConsoleCursorPosition(window, { static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
-			Text::Spaces(static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::unable_to_move].size()));
-			mutex.unlock();
-			continue;
-		}
-		if (take_action_position < 2)
-		{
-			value = NumericalSelection({ static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
-			if (value != 0)
+			if (participants[0].current_speed == 0 && take_action_position % 4 != 0)
 			{
-				return std::make_pair(take_action_position, value * (take_action_position ? -1: 1));
+				mutex.lock();
+				SetConsoleCursorPosition(window, { static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
+				std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::unable_to_move];
+				mutex.unlock();
+				main_window->Pause(1500);
+				mutex.lock();
+				SetConsoleCursorPosition(window, { static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
+				Text::Spaces(static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::unable_to_move].size()));
+				mutex.unlock();
+				continue;
 			}
-		}
-		else
-		{
-			int option = BinarySelection({ static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
-			if (option)
+			if (take_action_position < 2)
 			{
-				return std::make_pair(take_action_position, participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1 * (take_action_position == 2));
+				value = NumericalSelection({ static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
+				if (value != 0)
+				{
+					return std::make_pair(take_action_position, value * (take_action_position ? -1 : 1));
+				}
+			}
+			else
+			{
+				int option = BinarySelection({ static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
+				if (option)
+				{
+					return std::make_pair(take_action_position, participants[0].car_modifiers[CarModifiers::hand_brake_value] * -1 * (take_action_position == 2));
+				}
 			}
 		}
 	}
-	
+	return std::make_pair(4, 0);
 }
 int SinglePlayer::Possible_AIs()
 {

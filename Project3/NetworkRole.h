@@ -35,6 +35,8 @@ protected:
 	void ShowChances(int value, bool reset = false);
 
 	//Game logic
+	void ValidateAttack(int target, int participant);
+	void ValidateAction(std::pair<int, int> action, int participant);
 	int PerformAttack();
 	std::pair<int, int> PerformAction(); //action, value
 	virtual int Possible_AIs();
