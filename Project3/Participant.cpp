@@ -9,7 +9,7 @@ Participant::Participant(const std::string name, const std::string car_path, con
 	this->main_window = main_window;
 	this->car_modifiers = main_window->GetCarParameters(car_path);
 	this->tire_modifiers = main_window->GetTireParameters(tire_path);
-	this->current_durability = static_cast<float>(car_modifiers[CarModifiers::durability]);
+	this->current_durability = static_cast<float>(car_modifiers[CarAttributes::durability]);
 }
 void Participant::Test(const std::string field, const bool show)
 {
@@ -37,7 +37,7 @@ void Participant::Test(const std::string field, const bool show)
 	current_speed *= dmg;
 	if (dmg < 1.0f && show)
 	{
-		main_window->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::speed], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::behaviour]);
+		main_window->infobox->Push(name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::speed], LanguagePack::text[LanguagePack::other_strings][OtherStrings::in_result_of_attacks]);
 	}
 	attacked = 0;
 
@@ -67,14 +67,14 @@ void Participant::Test(const std::string field, const bool show)
 		{
 			if (show)
 			{
-				main_window->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][0], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::high_roll] + std::to_string(max));
+				main_window->infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][0], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::highest_roll] + std::to_string(max));
 			}
 		}
 		else
 		{
 			if (show)
 			{
-				main_window->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][1], LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::low_roll] + std::to_string(min));
+				main_window->infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][1], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lowest_roll] + std::to_string(min));
 			}
 			if (formula > static_cast<float>(min + 50))
 			{
@@ -113,7 +113,7 @@ void Participant::Test(const std::string field, const bool show)
 			}
 			if (show)
 			{
-				main_window->infobox->Push(name + LanguagePack::vector_of_strings[LanguagePack::participant_infobox][bad_case], name + LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::vector_of_strings[LanguagePack::race_attribs][3]);
+				main_window->infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][bad_case], name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::text[LanguagePack::race_general_informations][3]);
 			}
 			current_durability -= durablity_lost;
 		}
@@ -126,7 +126,7 @@ void Participant::Test(const std::string field, const bool show)
 	{
 		++drifts_performed;
 		drift = false;
-		score += GameValues::drift_value;
+		score += GameConstants::drift_value;
 	}
 	else
 	{
@@ -148,7 +148,7 @@ float Participant::EvaluateChance(std::string field, const float speed, const bo
 	}
 	if (drift == true)
 	{
-		base /= (static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - 7.5f * attacked) / 100.0f;
+		base /= (static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - 7.5f * attacked) / 100.0f;
 		if (base > 100.0f)
 		{
 			base = 100.0f;
@@ -166,7 +166,7 @@ float Participant::EvaluateChance(std::string field, const float speed, const bo
 	}
 	else
 	{
-		base /= (static_cast<float>(car_modifiers[CarModifiers::turn_mod]) - 5.0f * attacked) / 100.0f;
+		base /= (static_cast<float>(car_modifiers[CarAttributes::turn_mod]) - 5.0f * attacked) / 100.0f;
 		if (base > 100.0f)
 		{
 			base = 100.0f;
@@ -184,17 +184,17 @@ float Participant::EvaluateSpeed(std::string field, const float chance, const bo
 
 	if (drift)
 	{
-		float result = (2.0f * chance*(static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - (7.5f * attacked)) + 10000.0f + 100.0f * static_cast<float>(atof(field.c_str()))) /
-			(10000.0f / static_cast<float>(atof(field.c_str())) + 100.0f + static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - 7.5f*attacked);
-		float secondary_result = (3.0f * chance*(static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - (7.5f * attacked)) + 20000.0f + 200.0f * static_cast<float>(atof(field.c_str()))) /
-			(20000.0f / static_cast<float>(atof(field.c_str())) + 200.0f + static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - 7.5f*attacked);
+		float result = (2.0f * chance*(static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - (7.5f * attacked)) + 10000.0f + 100.0f * static_cast<float>(atof(field.c_str()))) /
+			(10000.0f / static_cast<float>(atof(field.c_str())) + 100.0f + static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - 7.5f*attacked);
+		float secondary_result = (3.0f * chance*(static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - (7.5f * attacked)) + 20000.0f + 200.0f * static_cast<float>(atof(field.c_str()))) /
+			(20000.0f / static_cast<float>(atof(field.c_str())) + 200.0f + static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - 7.5f*attacked);
 
 		if (secondary_result > result)
 		{
 			result = secondary_result;
 		}
 		float base = ((result / static_cast<float>(atof(field.c_str())) - 1.0f) * 100.0f + result - static_cast<float>(atof(field.c_str()))) /
-			((static_cast<float>(car_modifiers[CarModifiers::drift_mod]) - (7.5f * attacked)) / 100.0f);
+			((static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - (7.5f * attacked)) / 100.0f);
 
 		if (base > 100.0f)
 		{
@@ -209,7 +209,7 @@ float Participant::EvaluateSpeed(std::string field, const float chance, const bo
 	else
 	{
 		float delta = (200.0f + 12.0f * chance)*(200.0f + 12.0f * chance) - 180.0f * chance*chance;
-		float base = (-(200.0f + 12.0f * chance) + sqrt(delta)) / -10.0f*((static_cast<float>(car_modifiers[CarModifiers::turn_mod]) - (5.0f * attacked)) / 100.0f);
+		float base = (-(200.0f + 12.0f * chance) + sqrt(delta)) / -10.0f*((static_cast<float>(car_modifiers[CarAttributes::turn_mod]) - (5.0f * attacked)) / 100.0f);
 		return static_cast<float>(atof(field.c_str())) + base / (100.0f / static_cast<float>(atof(field.c_str())) + 1.0f);
 	}
 }
@@ -220,17 +220,17 @@ void Participant::CalculateParameters(float value, std::string current_field)
 	{
 		current_speed = 0;
 	}
-	else if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed]))
+	else if (current_speed > static_cast<float>(car_modifiers[CarAttributes::max_speed]))
 	{
-		if (current_speed > static_cast<float>(car_modifiers[CarModifiers::max_speed])*1.25f)
+		if (current_speed > static_cast<float>(car_modifiers[CarAttributes::max_speed])*1.25f)
 		{
-			current_speed = static_cast<float>(car_modifiers[CarModifiers::max_speed] * 1.25f);
+			current_speed = static_cast<float>(car_modifiers[CarAttributes::max_speed] * 1.25f);
 		}
-		float temp = CalculateBurning(current_speed - car_modifiers[CarModifiers::max_speed]);
+		float temp = CalculateBurning(current_speed - car_modifiers[CarAttributes::max_speed]);
 		durability_burned += temp;
 		current_durability -= temp;
 	}
-	current_speed *= GameValues::friction_scalar;
+	current_speed *= GameConstants::friction_scalar;
 }
 float Participant::TireEffectivness(std::string field)
 {
@@ -253,7 +253,7 @@ float Participant::TireEffectivness(std::string field)
 }
 float Participant::CalculateBurning(float value)
 {
-	float raw = value / static_cast<float>(car_modifiers[CarModifiers::max_speed]);
+	float raw = value / static_cast<float>(car_modifiers[CarAttributes::max_speed]);
 	float result = 0.0f;
 
 	if (raw < 0.0f)
@@ -263,7 +263,7 @@ float Participant::CalculateBurning(float value)
 	if (raw > 0.25f)
 	{
 		raw = 0.25f;
-		value = static_cast<float>(car_modifiers[CarModifiers::max_speed]) * 0.25f;
+		value = static_cast<float>(car_modifiers[CarAttributes::max_speed]) * 0.25f;
 	}
 	int level = static_cast<int>(raw*20.0f) + 10;
 	result = value * static_cast<float>(level + level * level) / 2.0f;

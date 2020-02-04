@@ -445,7 +445,7 @@ void Client::TakeAction()
 
 			std::cout << ": ";
 			GetConsoleScreenBufferInfo(window, &console_screen_buffer_info);
-			value = Text::Choose::Numeric(participants[0].car_modifiers[CarModifiers::max_accelerating + position], { console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y }, true, *main_window);
+			value = Text::Choose::Numeric(participants[0].car_modifiers[CarAttributes::max_accelerating + position], { console_screen_buffer_info.dwCursorPosition.X, console_screen_buffer_info.dwCursorPosition.Y }, true, *main_window);
 			SetConsoleCursorPosition(window, { console_screen_buffer_info.dwCursorPosition.X - 2,console_screen_buffer_info.dwCursorPosition.Y });
 			std::cout << "  ";
 			if (value == 0)

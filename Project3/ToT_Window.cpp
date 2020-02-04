@@ -95,7 +95,7 @@ void ToT_Window::LoadAtributes()
 	fvar >> timer_settings;
 	fvar.close();
 
-	if (!LanguagePack::LoadVector(FolderName::language + "\\" + lang))
+	if (!LanguagePack::LoadLanguagePack(FolderName::language + "\\" + lang))
 	{
 		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		
@@ -103,7 +103,7 @@ void ToT_Window::LoadAtributes()
 		bool no_valid_lang_packs = true;
 		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
 		{
-			if (LanguagePack::LoadVector(FolderName::language + "\\" + languages[i]))
+			if (LanguagePack::LoadLanguagePack(FolderName::language + "\\" + languages[i]))
 			{
 				no_valid_lang_packs = false;
 				lang = languages[i];
@@ -131,9 +131,9 @@ void ToT_Window::LoadAtributes()
 	}
 	if (name.size() < 1 || name.size() > 14)
 	{
-		name = LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::default_name];
+		name = LanguagePack::text[LanguagePack::other_strings][OtherStrings::default_name];
 	}
-	if (timer_settings < 0 || timer_settings > ValidationConstants::maximum_timer)
+	if (timer_settings < 0 || timer_settings > GameConstants::maximum_timer)
 	{
 		timer_settings = 0;
 	}
@@ -167,7 +167,7 @@ bool ToT_Window::ValidateTourFiles()
 		for (short j = 0; j < static_cast<short>(params.size()); ++j)
 		{
 			const short size_of_segment = static_cast<short>(params[j].size());
-			if (params[j][0] - 48 < 0 || params[j][0] - 48 >= TireModifiers::last)//terrain type validation
+			if (params[j][0] - 48 < 0 || params[j][0] - 48 >= TerrainTypes::last)//terrain type validation
 			{
 				MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 				return false;
@@ -201,7 +201,7 @@ bool ToT_Window::ValidateCarFiles()
 		}		
 		for (short j = 0; j < static_cast<short>(cars.size()); ++j)
 		{
-			if (static_cast<short>(GetCarParameters(cars[j]).size()) != CarModifiers::last)//checking if car has all parameters set
+			if (static_cast<short>(GetCarParameters(cars[j]).size()) != CarAttributes::last)//checking if car has all parameters set
 			{
 				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 				return false;
@@ -219,12 +219,12 @@ bool ToT_Window::ValidateTireFiles()
 	for (short i = 0; i < static_cast<short>(tires.size()); ++i)
 	{
 		const std::vector<std::string> params = GetTireParameters(tires[i]);
-		if (static_cast<short>(params.size()) != TireModifiers::last)//checking if tires have all parameters set
+		if (static_cast<short>(params.size()) != TerrainTypes::last)//checking if tires have all parameters set
 		{
 			MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 			return false;
 		}
-		for (short j = 0; j < TireModifiers::last; ++j)//getting tires attributes
+		for (short j = 0; j < TerrainTypes::last; ++j)//getting tires attributes
 		{
 			short tire_param_size = static_cast<short>(params[j].size());
 			for (short k = 0; k < tire_param_size; ++k)
@@ -254,7 +254,7 @@ bool ToT_Window::ValidateRanking()
 		std::string line;
 		int iterations = 0;
 		for (; std::getline(fvar, line); ++iterations);
-		if (iterations % ValidationConstants::ranking_details != 0)
+		if (iterations % GameConstants::validate_ranking_details != 0)
 		{
 			MessageBox(0, (+" " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 			return false;
@@ -286,32 +286,32 @@ void ToT_Window::RemoveExtension(std::vector<std::string>& vector, std::string e
 }
 void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
 {
-	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::vector_of_strings[LanguagePack::title_main][0].size()), starting_point.Y };
+	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::text[LanguagePack::title_main][0].size()), starting_point.Y };
 	const short decoration_distance = 5;
 	const std::string main_decoration = "{ }";
 	const std::string additional_decoration = "*";
-	const short main_title_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main].size());
-	const short additional_title_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional].size());
+	const short main_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main].size());
+	const short additional_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional].size());
 	//Main text
 	SetConsoleTextAttribute(window_handle, color2);
 	for (short i = 0; i < main_title_size; ++i)
 	{
 		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
-		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_main][i];
+		std::cout << LanguagePack::text[LanguagePack::title_main][i];
 	}
 	SetConsoleTextAttribute(window_handle, color1);
 	for (short i = 0; i < additional_title_size; ++i)
 	{
-		const short main_line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size());
-		const short additional_line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_additional][i].size());
+		const short main_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
+		const short additional_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional][i].size());
 		SetConsoleCursorPosition(window_handle, { orientation_point.X + main_line_size / 2 - additional_line_size / 2, orientation_point.Y + i + main_title_size / 3 });
-		std::cout << LanguagePack::vector_of_strings[LanguagePack::title_additional][i];
+		std::cout << LanguagePack::text[LanguagePack::title_additional][i];
 	}
 	//Decoration
 	for (short i = 0; i < main_title_size; ++i)
 	{
 		const short decoration_size = static_cast<short>(decoration_distance + main_decoration.size());
-		const short line_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::title_main][i].size());
+		const short line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
 		SetConsoleTextAttribute(window_handle, color2);
 		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size - i % 2, orientation_point.Y + i });
 		std::cout << main_decoration;
@@ -389,7 +389,7 @@ std::vector<int> ToT_Window::GetCarParameters(const std::string path)
 {
 	const std::vector<std::string> data = ReadFile(FolderName::car + "\\" + path);
 	std::vector<int> car_parameters;
-	for (short i = 0; i < CarModifiers::last; ++i)
+	for (short i = 0; i < CarAttributes::last; ++i)
 	{
 		if (atoi(data[i].c_str()) < 1 || atoi(data[i].c_str()))
 		{
@@ -453,7 +453,7 @@ void ToT_Window::SetTimerSettings(int timer_settings)
 void ToT_Window::SetLanguage(std::string lang)
 {
 	this->lang = lang;
-	if (!LanguagePack::LoadVector(FolderName::language + "\\" + lang))
+	if (!LanguagePack::LoadLanguagePack(FolderName::language + "\\" + lang))
 	{
 		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 
@@ -461,7 +461,7 @@ void ToT_Window::SetLanguage(std::string lang)
 		bool no_valid_lang_packs = true;
 		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
 		{
-			if (LanguagePack::LoadVector(FolderName::language + "\\" + languages[i]))
+			if (LanguagePack::LoadLanguagePack(FolderName::language + "\\" + languages[i]))
 			{
 				no_valid_lang_packs = false;
 				lang = languages[i];
@@ -482,7 +482,7 @@ void ToT_Window::SetMultiplayer(bool multiplayer)
 }
 void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int score, bool crash, int attacks, int drifts, int durability_burning, std::string car, std::string tires)
 {
-	const bool classification[ValidationConstants::ranking_classification_types] = { true, ais == 7, multiplayer && ais != 7 };
+	const bool classification[GameConstants::validate_ranking_classification] = { true, ais == 7, multiplayer && ais != 7 };
 	const std::string ranking_path = FolderName::tour + "\\" + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
 	std::vector<std::string> ranking_data = { "" };
 	int racer_index = -1;
@@ -499,7 +499,7 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 	}
 	fvar.close();
 	//Searching if the racer is already in the data
-	for (int i = 0; i < static_cast<int>(ranking_data.size()); i+=ValidationConstants::ranking_details)
+	for (int i = 0; i < static_cast<int>(ranking_data.size()); i+=GameConstants::validate_ranking_details)
 	{
 		if (ranking_data[i] == name)
 		{
@@ -512,7 +512,7 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 	{
 		racer_index = static_cast<int>(ranking_data.size());
 		ranking_data[racer_index - 1] = name;
-		for (int i = 0; i < ValidationConstants::ranking_details - 1; ++i)
+		for (int i = 0; i < GameConstants::validate_ranking_details - 1; ++i)
 		{
 			ranking_data.push_back("");
 		}
@@ -525,14 +525,14 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 		for (int i = 0; i < static_cast<int>(added_value.size()); ++i)
 		{
 			temp = "";
-			for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
+			for (int j = 0; j < GameConstants::validate_ranking_classification; ++j)
 			{
 				temp += std::to_string(atoi(GetClassifiedDetail(ranking_data[racer_index + i], j).c_str()) + added_value[i] * classification[j]) + '\t';
 			}
 			ranking_data[racer_index + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 		}
 		temp = "";
-		for (int i = 0; i < ValidationConstants::ranking_classification_types; ++i)
+		for (int i = 0; i < GameConstants::validate_ranking_classification; ++i)
 		{
 			int local_score = atoi(GetClassifiedDetail(ranking_data[racer_index + 4], i).c_str());
 			if (classification[i] && (score < local_score || local_score == 0))
@@ -548,7 +548,7 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 		for (int i = 0; i < 10; i += 5)
 		{
 			temp = "";
-			for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
+			for (int j = 0; j < GameConstants::validate_ranking_classification; ++j)
 			{
 				temp += std::to_string(atoi(GetClassifiedDetail(ranking_data[racer_index + i], j).c_str()) + 1 * classification[j]) + '\t';
 			}
@@ -558,7 +558,7 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 	for (int i = 0; i < 2; ++i)
 	{
 		temp = "";
-		for (int j = 0; j < ValidationConstants::ranking_classification_types; ++j)
+		for (int j = 0; j < GameConstants::validate_ranking_classification; ++j)
 		{
 			temp += UpdateRankingFavorites(GetClassifiedDetail(ranking_data[racer_index + 9 + i], j), i % 2 ? car : tires, 1) + "\t";
 		}

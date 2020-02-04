@@ -1,18 +1,24 @@
-Maksymalna pr©dko˜†
-Maksymalne przyspieszenie
-Maksymalne hamowanie
-Warto˜† hamulca r©cznego
-Wytrzymaˆo˜†
-Widoczno˜†
-Modyfikator zakr©tu
-Modyfikator driftu
+  _______  ___         ___     
+     |    |   | |   | |   |    
+     |    |   | |   | |___|    
+     |    |   | |   | |  \     
+     |    |___| |___| |   \    
+                               
+                               
+                               
+                               
+                               
+_______        ___    __   __  
+   |    |   | |   |  |  | |    
+   |    |   | |___|  |  | |__  
+   |    |   | |  \   |  |    | 
+   |    |___| |   \  |  | ___| 
 &&&
-Asfalt
-Trawa
-½wir
-Piasek
-Bˆoto
-L¢d
+ ___   ___
+|   | |   
+|   | |_  
+|   | |   
+|___| |   
 &&&
 Nowa Gra 
 Gra Wieloosobowa 
@@ -21,6 +27,28 @@ Ranking
 Opcje 
 O grze 
 Wyj˜cie
+&&&
+Gˆ¢wny kolor
+Drugorz©dny kolor
+Gˆo˜no˜† muzyki
+J©zyk
+Poˆ¥czenie Hamachi
+Powr¢t
+&&&
+zielony
+bˆ©kitny
+czerwony
+magenta 
+br¥zowy 
+jasnoszary 
+ciemnoszary 
+niebieski 
+jasnozielony
+jasnobˆ©kitny 
+jasnoczerwony 
+jasnamagenta 
+¾¢ˆty 
+biaˆy
 &&&
 Wst©p
 Trasy
@@ -123,6 +151,46 @@ Je¾eli zamiast tego szansa na pora¾k© b©dzie mniejsza lub r¢wna minimalnemu rzut
 
 Je¾eli zamiast tego szansa na pora¾k© b©dzie mniejsza lub r¢wna minimalnemu rzutowi, pr©dko˜† rajdowca jest dzielona przez 1.2
 &&&
+ 
+Cze˜†, nazywam si© Michaˆ Balicki, a oto Tour of Turns, turowa gra wy˜cigowa.
+ 
+ToT byˆ moim pierwszym, niewinnym projektem, lecz z powodu mojej pasji dotycz¥cej idei gry, urosˆa ona do obecnych rozmiar¢w.
+
+Zacz¥ˆem jako zupeˆny nowicjusz. Brakowaˆo mi do˜wiadczenia. Wielokrotnie przepisywaˆem projekt, poniewa¾ nie byˆem w stanie rozszerza† projektu bez fundamentalnych zmian w jego strukturze.
+
+Ukoäczenie ToT zaj©ˆo mi stanowczo zbyt du¾o czasu, ale nie ¾aˆuj© ani jednej sekundy. Zdobyte do˜wiadczenie jest bezcenne.
+
+To byˆa dˆuga i samotna droga, co nie znaczy ¾e nie przewijali si© przez ni¥ pomocni ludzie. Chciaˆbym szczeg¢lnie podzi©kowa†:
+Krystianowi Grzegorzewiczowi 
+osobie, kt¢ra stworzyˆa papierow¥ wersj© gry. Prekursor idei turowej gry wy˜cigowej oraz m¢j przyjaciel z lat szkolnych.
+Marekowi Loekowi 
+- ci©¾ko pracuj¥cemu grafikowi, kt¢ry stworzyˆ przepi©kn¥ t© ikonk©. 
+Miroslawowi Zelentowi 
+wyj¥tkowemu nauczycielowi, dzi©ki kt¢remu zacz¥ˆem swoj¥ przygod© z programowaniem za pomoc¥ jego serii film¢w na temat C++.
+&&&
+Mapa
+Gracz
+Klasyfikacja
+Reset rankingu
+Powr¢t
+&&&
+Wszystkie gry
+Tylko 8 graczy
+Tylko gry wieloosobowe
+&&&
+Rajdowiec
+Liczba gier
+Procent wygranych
+—rednie miejsce
+—redni wynik
+Najlepszy wynik
+Ulubiony samoch¢d
+Ulubione opony
+Fatalne wypadki
+Ataki na gr©
+Drifty na gr©
+Palenie wytrzymaˆo˜ci na gr©
+&&&
 Imi©
 Liczba graczy komputerowych
 Czasomierz
@@ -136,13 +204,6 @@ Zaˆ¢¾ gr©
 Szukaj gry
 Powr¢t
 &&&
-Gˆ¢wny kolor
-Drugorz©dny kolor
-Gˆo˜no˜† muzyki
-J©zyk
-Poˆ¥czenie Hamachi
-Powr¢t
-&&&
 Informacje o Graczu
 Informacje o Trasie
 dˆugo˜† trasy
@@ -150,21 +211,6 @@ zakr©ty
 obecny czempion
 procent wygranych
 ˜rednia pozycja
-&&&
-zielony
-bˆ©kitny
-czerwony
-magenta 
-br¥zowy 
-jasnoszary 
-ciemnoszary 
-niebieski 
-jasnozielony
-jasnobˆ©kitny 
-jasnoczerwony 
-jasnamagenta 
-¾¢ˆty 
-biaˆy
 &&&
 Przyspiesz 
 Zwolnij 
@@ -226,70 +272,24 @@ Zakr©t na lodzie - bezpieczna pr©dko˜† to okoˆo
  wpadˆ(a) w gro«ny po˜lizg,
  wpadˆ(a) w po˜lizg,
 &&&
- 
-Cze˜†, nazywam si© Michaˆ Balicki, a oto Tour of Turns, turowa gra wy˜cigowa.
- 
-ToT byˆ moim pierwszym, niewinnym projektem, lecz z powodu mojej pasji dotycz¥cej idei gry, urosˆa ona do obecnych rozmiar¢w.
-
-Zacz¥ˆem jako zupeˆny nowicjusz. Brakowaˆo mi do˜wiadczenia. Wielokrotnie przepisywaˆem projekt, poniewa¾ nie byˆem w stanie rozszerza† projektu bez fundamentalnych zmian w jego strukturze.
-
-Ukoäczenie ToT zaj©ˆo mi stanowczo zbyt du¾o czasu, ale nie ¾aˆuj© ani jednej sekundy. Zdobyte do˜wiadczenie jest bezcenne.
-
-To byˆa dˆuga i samotna droga, co nie znaczy ¾e nie przewijali si© przez ni¥ pomocni ludzie. Chciaˆbym szczeg¢lnie podzi©kowa†:
-Krystianowi Grzegorzewiczowi 
-osobie, kt¢ra stworzyˆa papierow¥ wersj© gry. Prekursor idei turowej gry wy˜cigowej oraz m¢j przyjaciel z lat szkolnych.
-Marekowi Loekowi 
-- ci©¾ko pracuj¥cemu grafikowi, kt¢ry stworzyˆ przepi©kn¥ t© ikonk©. 
-Miroslawowi Zelentowi 
-wyj¥tkowemu nauczycielowi, dzi©ki kt¢remu zacz¥ˆem swoj¥ przygod© z programowaniem za pomoc¥ jego serii film¢w na temat C++.
+Maksymalna pr©dko˜†
+Maksymalne przyspieszenie
+Maksymalne hamowanie
+Warto˜† hamulca r©cznego
+Wytrzymaˆo˜†
+Widoczno˜†
+Modyfikator zakr©tu
+Modyfikator driftu
+&&&
+Asfalt
+Trawa
+½wir
+Piasek
+Bˆoto
+L¢d
 &&&
 wˆ¥cz
 wyˆ¥cz
-&&&
-  _______  ___         ___     
-     |    |   | |   | |   |    
-     |    |   | |   | |___|    
-     |    |   | |   | |  \     
-     |    |___| |___| |   \    
-                               
-                               
-                               
-                               
-                               
-_______        ___    __   __  
-   |    |   | |   |  |  | |    
-   |    |   | |___|  |  | |__  
-   |    |   | |  \   |  |    | 
-   |    |___| |   \  |  | ___| 
-&&&
- ___   ___
-|   | |   
-|   | |_  
-|   | |   
-|___| |   
-&&&
-Mapa
-Gracz
-Klasyfikacja
-Reset rankingu
-Powr¢t
-&&&
-Wszystkie gry
-Tylko 8 graczy
-Tylko gry wieloosobowe
-&&&
-Rajdowiec
-Liczba gier
-Procent wygranych
-—rednie miejsce
-—redni wynik
-Najlepszy wynik
-Ulubiony samoch¢d
-Ulubione opony
-Fatalne wypadki
-Ataki na gr©
-Drifty na gr©
-Palenie wytrzymaˆo˜ci na gr©
 &&&
 Rajdowiec
  - Czy napewno chcesz to zrobi† ? (Y/N) 

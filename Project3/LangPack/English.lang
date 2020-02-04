@@ -1,18 +1,24 @@
-Max speed
-Max Acceleration
-Max Braking
-Hand Brake Value
-Durability
-Visibility
-Turn Modifier
-Drift Modifier
+  _______  ___         ___     
+     |    |   | |   | |   |    
+     |    |   | |   | |___|    
+     |    |   | |   | |  \     
+     |    |___| |___| |   \    
+                               
+                               
+                               
+                               
+                               
+_______        ___    __   __  
+   |    |   | |   |  |  | |    
+   |    |   | |___|  |  | |__  
+   |    |   | |  \   |  |    | 
+   |    |___| |   \  |  | ___| 
 &&&
-Asphalt
-Grass
-Gravel
-Sand
-Mud
-Ice
+ ___   ___
+|   | |   
+|   | |_  
+|   | |   
+|___| |   
 &&&
 New Game 
 Multiplayer 
@@ -21,6 +27,28 @@ Ranking
 Options 
 Credits 
 Exit
+&&&
+Main Color
+Secondary Color
+Music volume
+Language
+Hamachi connection
+Back
+&&&
+green
+cyan
+red
+magenta 
+brown 
+light gray 
+dark gray 
+blue 
+light green
+light cyan 
+light red 
+light magenta 
+yellow 
+white
 &&&
 Introduction
 Tours
@@ -123,6 +151,46 @@ If instead chance of failure was lower or equal to minimum roll + 10, then playe
 
 If instead chance of failure was lower or equal to minimum roll, then player's speed is being divided by 1.2
 &&&
+ 
+Hello I am Michal Balicki and this is Tour of Turns, turn-based racing game.
+ 
+ToT was my first innocent programming project but because of my passion towards this idea it grew to the current size.
+
+I have started as a total noob, lacking experience. I rewrote this project multiple times, because I couldn't expand the game without fundamental changes to its structure.
+
+It took me way to long to finish ToT, but also I don't regret anything. Experience that I have gathered during this process is priceless.
+
+This was long lonely journey, but it doesn't mean that there were no helpful people around me. Special thanks to:
+Krystian Grzegorzewicz 
+who created pen and paper version. Precursor of whole idea of turn-based game and my friend from school years.
+Marek Loek 
+- hard working graphic designer who created this beautiful icon. 
+Miroslaw Zelent 
+superb teacher that got me started into programming world via his tutorial series on C++.
+&&&
+Map
+Player
+Classification
+Reset map details
+Back
+&&&
+All games
+8 Players only
+Multiplayer only
+&&&
+Racer
+Games played
+Win rate
+Average Place
+Average Score
+Best Score
+Favorite Car
+Favorite Tire
+Fatal Crashes
+Average attacks per game
+Average drifts per game
+Average durability burning per game
+&&&
 Name
 Number of AIs
 Timer
@@ -136,35 +204,13 @@ Host game
 Search game
 Back
 &&&
-Main Color
-Secondary Color
-Music volume
-Language
-Hamachi connection
-Back
-&&&
 Player Informations
 Tour Informations
-tour_length
-turns
-current_champion
-winrate
-average_place
-&&&
-green
-cyan
-red
-magenta 
-brown 
-light gray 
-dark gray 
-blue 
-light green
-light cyan 
-light red 
-light magenta 
-yellow 
-white
+Length of the tour
+Number of turns
+Current champion
+Win ratio
+Average place
 &&&
 Speed up 
 Slow down 
@@ -226,70 +272,24 @@ Slippery road with ice
  fell into a dangerous slip,
  slipped,
 &&&
- 
-Hello I am Michal Balicki and this is Tour of Turns, turn-based racing game.
- 
-ToT was my first innocent programming project but because of my passion towards this idea it grew to the current size.
-
-I have started as a total noob, lacking experience. I rewrote this project multiple times, because I couldn't expand the game without fundamental changes to its structure.
-
-It took me way to long to finish ToT, but also I don't regret anything. Experience that I have gathered during this process is priceless.
-
-This was long lonely journey, but it doesn't mean that there were no helpful people around me. Special thanks to:
-Krystian Grzegorzewicz 
-who created pen and paper version. Precursor of whole idea of turn-based game and my friend from school years.
-Marek Loek 
-- hard working graphic designer who created this beautiful icon. 
-Miroslaw Zelent 
-superb teacher that got me started into programming world via his tutorial series on C++.
+Max speed
+Max Acceleration
+Max Braking
+Hand Brake Value
+Durability
+Visibility
+Turn Modifier
+Drift Modifier
+&&&
+Asphalt
+Grass
+Gravel
+Sand
+Mud
+Ice
 &&&
 on
 off
-&&&
-  _______  ___         ___     
-     |    |   | |   | |   |    
-     |    |   | |   | |___|    
-     |    |   | |   | |  \     
-     |    |___| |___| |   \    
-                               
-                               
-                               
-                               
-                               
-_______        ___    __   __  
-   |    |   | |   |  |  | |    
-   |    |   | |___|  |  | |__  
-   |    |   | |  \   |  |    | 
-   |    |___| |   \  |  | ___| 
-&&&
- ___   ___
-|   | |   
-|   | |_  
-|   | |   
-|___| |   
-&&&
-Map
-Player
-Classification
-Reset map details
-Back
-&&&
-All games
-8 Players only
-Multiplayer only
-&&&
-Racer
-Games played
-Win rate
-Average Place
-Average Score
-Best Score
-Favorite Car
-Favorite Tire
-Fatal Crashes
-Average attacks per game
-Average drifts per game
-Average durability burning per game
 &&&
 Racer
  - Do you really want to do this ? (Y/N) 

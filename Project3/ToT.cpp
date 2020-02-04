@@ -14,7 +14,7 @@ std::vector<std::string> ToT::GetRankingNames(std::string tour)
 	fvar.open(tour.c_str());
 	for (int i = 0; std::getline(fvar, temp); ++i)
 	{
-		if (!(i %  ValidationConstants::ranking_details))
+		if (!(i %  GameConstants::validate_ranking_details))
 		{
 			ret.push_back(temp);
 		}
@@ -26,14 +26,14 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 {
 	std::string line;
 	std::vector<std::string> ret = {};
-	for (int i = 0; i < ValidationConstants::ranking_details; ++i)
+	for (int i = 0; i < GameConstants::validate_ranking_details; ++i)
 	{
 		ret.push_back(" ");
 	}
 	std::ifstream fvar;
 	fvar.open(tour.c_str());
-	for (int i = 0; i < ValidationConstants::ranking_details * racer_pos && std::getline(fvar, line); ++i);
-	for (int i = 0; i < ValidationConstants::ranking_details && std::getline(fvar, line); ++i)
+	for (int i = 0; i < GameConstants::validate_ranking_details * racer_pos && std::getline(fvar, line); ++i);
+	for (int i = 0; i < GameConstants::validate_ranking_details && std::getline(fvar, line); ++i)
 	{
 		if (i == 0)
 		{
@@ -59,7 +59,7 @@ std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos,
 		{
 			ret[i] = "";
 		}
-		for (int i = 9; i < ValidationConstants::ranking_details; ++i)
+		for (int i = 9; i < GameConstants::validate_ranking_details; ++i)
 		{
 			ret[i] = "";
 		}
@@ -124,33 +124,33 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	std::vector<std::string> details = GetRankingDetails(tour, racer_pos, classification_type);
 	if (clearing)
 	{
-		const int border_size = static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border].size());
+		const int border_size = static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size());
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
 		Text::Spaces(border_size);
-		for (short i = 0; i < static_cast<short>(ValidationConstants::ranking_details); ++i)
+		for (short i = 0; i < static_cast<short>(GameConstants::validate_ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
-			Text::Spaces(static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2);
+			Text::Spaces(static_cast<short>(LanguagePack::text[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2);
 		}
-		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(ValidationConstants::ranking_details) + 2) });
+		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(GameConstants::validate_ranking_details) + 2) });
 		Text::Spaces(border_size);
 	}
 	else
 	{
 		SetConsoleTextAttribute(handle, main_window->color2);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border];
-		for (short i = 0; i < static_cast<short>(ValidationConstants::ranking_details); ++i)
+		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
+		for (short i = 0; i < static_cast<short>(GameConstants::validate_ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
 			SetConsoleTextAttribute(handle, main_window->color1);
-			std::cout << LanguagePack::vector_of_strings[LanguagePack::ranking_details][i] + ": ";
+			std::cout << LanguagePack::text[LanguagePack::ranking_details][i] + ": ";
 			SetConsoleTextAttribute(handle, main_window->color2);
 			std::cout << details[i];
 		}
 		SetConsoleTextAttribute(handle, main_window->color2);
-		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(ValidationConstants::ranking_details) + 2) });
-		std::cout << LanguagePack::vector_of_strings[LanguagePack::other_string][OtherStrings::border];
+		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(GameConstants::validate_ranking_details) + 2) });
+		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
 	}
 }
 void ToT::MainMenu()
@@ -158,7 +158,7 @@ void ToT::MainMenu()
 	main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
 	while (true)
 	{
-		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::main_menu], main_menu_position, { game_window_center + 1, 25 }, 3, Text::TextAlign::center, true, *main_window))
+		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::main_menu_options], main_menu_position, { game_window_center + 1, 25 }, 3, Text::TextAlign::center, true, *main_window))
 		{
 		case 0:
 		case 1:
@@ -209,9 +209,9 @@ void ToT::MainMenu()
 }
 void ToT::Credits()
 {
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], Text::TextAlign::center, 3, { game_window_center,25 }, *main_window);
+	OrdinaryText(LanguagePack::text[LanguagePack::credits], Text::TextAlign::center, 3, { game_window_center,25 }, *main_window);
 	_getch();
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::credits], Text::TextAlign::center, 3, { game_window_center,25 }, *main_window, true);
+	OrdinaryText(LanguagePack::text[LanguagePack::credits], Text::TextAlign::center, 3, { game_window_center,25 }, *main_window, true);
 }
 void ToT::Options()
 {
@@ -222,15 +222,15 @@ void ToT::Options()
 
 	while (loop)
 	{
-		main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::game_options], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window);
-		const short submenu_horizontal_position = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options][main_menu_position].size()) / 2 + 3;
+		main_menu_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::tot_general_options], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window);
+		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::tot_general_options][main_menu_position].size()) / 2 + 3;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
 		const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 		switch (main_menu_position)
 		{
 			case 0://set primary color
 			{
-				std::vector<std::string> local_text = LanguagePack::vector_of_strings[LanguagePack::colors];
+				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = main_window->color1;
 				local_text.erase(local_text.begin() + (main_window->color2 - 2));
 				main_window->color1 = Text::Choose::Horizontal(local_text, main_window->color1 - 2 - (main_window->color1 > main_window->color2), local_starting_point, Text::TextAlign::left, true, *main_window) + 2;
@@ -246,7 +246,7 @@ void ToT::Options()
 			}
 			case 1://set secondary color
 			{
-				std::vector<std::string> local_text = LanguagePack::vector_of_strings[LanguagePack::colors];
+				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = main_window->color2;
 				local_text.erase(local_text.begin() + (main_window->color1 - 2));
 				main_window->color2 = Text::Choose::Horizontal(local_text, main_window->color2 - 2 - (main_window->color2 > main_window->color1), local_starting_point, Text::TextAlign::left, true, *main_window) + 2;
@@ -262,7 +262,7 @@ void ToT::Options()
 			}
 			case 2://set music
 			{
-				std::vector<std::string> text = { LanguagePack::vector_of_strings[LanguagePack::on_off][1] };
+				std::vector<std::string> text = { LanguagePack::text[LanguagePack::on_off][1] };
 				for (int i = 1; i < 11; ++i)
 				{
 					text.push_back(std::to_string(i));
@@ -299,7 +299,7 @@ void ToT::Options()
 			}
 			case 4://set hamachi flag
 			{
-				main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, true, *main_window)));
+				main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(LanguagePack::text[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, true, *main_window)));
 				break;
 			}
 			case 5://clearing
@@ -309,10 +309,10 @@ void ToT::Options()
 			}
 		}
 	}
-	for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_options].size()); ++i)
+	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::tot_general_options].size()); ++i)
 	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size())), starting_point.Y + i * spacing });
-		Text::Spaces(static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_options][i].size()));
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::tot_general_options][i].size())), starting_point.Y + i * spacing });
+		Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::tot_general_options][i].size()));
 	}
 	main_window->SaveAtributes();
 }
@@ -334,8 +334,8 @@ void ToT::Ranking()
 	while (loop)
 	{
 		const std::string starting_map_path = FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking;
-		main_menu_position = Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window);
-		const short submenu_horizontal_position = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][main_menu_position].size()) / 2 + 3;
+		main_menu_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::ranking_search_menu], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window);
+		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::ranking_search_menu][main_menu_position].size()) / 2 + 3;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
 		const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 		switch (main_menu_position)
@@ -366,7 +366,7 @@ void ToT::Ranking()
 			case 2://Classification type
 			{
 				const int temp = classification_type;
-				classification_type = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::ranking_classification_types], classification_type, local_starting_point, Text::TextAlign::left, true, *main_window);
+				classification_type = Text::Choose::Horizontal(LanguagePack::text[LanguagePack::ranking_classification_types], classification_type, local_starting_point, Text::TextAlign::left, true, *main_window);
 				if (temp != classification_type)
 				{
 					ShowRankingDetails(starting_map_path, racer_pos, temp, true);
@@ -389,10 +389,10 @@ void ToT::Ranking()
 				break;
 			}
 		}
-		for (short i = 0; i < static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu].size()); ++i)
+		for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::ranking_search_menu].size()); ++i)
 		{
-			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][i].size())), starting_point.Y + i * spacing });
-			Text::Spaces(static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu][i].size()));
+			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::ranking_search_menu][i].size())), starting_point.Y + i * spacing });
+			Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::ranking_search_menu][i].size()));
 		}
 	}
 }
@@ -405,19 +405,19 @@ void ToT::Info()
 	const COORD title_pos = { game_window_center - 2, text_pos.Y - 3 };
 	while (true)
 	{
-		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_pos, *main_window);
-		int temp_pos = Text::Choose::Horizontal(LanguagePack::vector_of_strings[LanguagePack::game_information], info_pos, title_pos, text_align_title, false,* main_window);
-		OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction + info_pos], text_align_content, spacing, text_pos, *main_window, true);
+		OrdinaryText(LanguagePack::text[LanguagePack::game_information_introduction + info_pos], text_align_content, spacing, text_pos, *main_window);
+		int temp_pos = Text::Choose::Horizontal(LanguagePack::text[LanguagePack::game_information_options], info_pos, title_pos, text_align_title, false,* main_window);
+		OrdinaryText(LanguagePack::text[LanguagePack::game_information_introduction + info_pos], text_align_content, spacing, text_pos, *main_window, true);
 		if (temp_pos == info_pos)
 		{
-			const short text_size = static_cast<short>(LanguagePack::vector_of_strings[LanguagePack::game_information][info_pos].size());
+			const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::game_information_options][info_pos].size());
 			SetConsoleCursorPosition(handle, {title_pos.X-text_size/2*text_align_title, title_pos.Y });
 			Text::Spaces(text_size + 4);
 			break;
 		}
 		info_pos = temp_pos;
 	}
-	OrdinaryText(LanguagePack::vector_of_strings[LanguagePack::introduction], text_align_content, 3, text_pos, *main_window, true);
+	OrdinaryText(LanguagePack::text[LanguagePack::game_information_introduction], text_align_content, 3, text_pos, *main_window, true);
 }
 void ToT::Game(const bool multiplayer)
 {
@@ -425,7 +425,7 @@ void ToT::Game(const bool multiplayer)
 	std::shared_ptr<SinglePlayer> network_role;
 	if (multiplayer)
 	{	
-		switch (Text::Choose::Veritcal(LanguagePack::vector_of_strings[LanguagePack::multiplayer], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window))
+		switch (Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window))
 		{
 			case 0:
 			{

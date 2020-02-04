@@ -3,108 +3,108 @@
 
 namespace LanguagePack
 {
-	std::vector<std::vector<std::string>> vector_of_strings;
+	std::vector<std::vector<std::string>> text;
 	
 	bool ValidateVectorOfStrings()
 	{
-		if (static_cast<int>(LanguagePack::vector_of_strings.size()) != LanguagePack::last)
+		if (static_cast<int>(LanguagePack::text.size()) != LanguagePack::last)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::car_modifiers].size()) != CarModifiers::last)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::car_attributes].size()) != CarAttributes::last)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::tire_modifiers].size()) != TireModifiers::last)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::terrain_types].size()) != TerrainTypes::last)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::main_menu].size()) != ValidationConstants::main_menu_size)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::main_menu_options].size()) != GameConstants::validate_main_menu)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_lobby].size()) != ValidationConstants::game_lobby_size)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options].size()) != GameConstants::validate_game_menu)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::multiplayer].size()) != ValidationConstants::multiplayer_lobby_size)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options].size()) != GameConstants::validate_multiplayer_menu)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::game_options].size()) != ValidationConstants::option_size)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::tot_general_options].size()) != GameConstants::validate_tot_options)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::information_box_titles].size()) != InformationBoxTitle::last)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::game_lobby_informations].size()) != GameLobbyInformations::last)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::colors].size()) != ValidationConstants::possible_colors)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::selectable_colors].size()) != GameConstants::validate_colors)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::race_actions].size()) != ValidationConstants::possible_actions)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_actions].size()) != GameConstants::validate_actions)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::race_chances].size()) != ValidationConstants::race_chances_size)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_chancebox_informations].size()) != GameConstants::validate_chancebox)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::race_attribs].size()) != ValidationConstants::race_attribs)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_general_informations].size()) != GameConstants::validate_general_info)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::leaderboard].size()) != ValidationConstants::race_ranking_size)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_leaderboard].size()) != GameConstants::validate_leaderboard)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::race_interface].size()) != ValidationConstants::possible_actions)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_actions_descritions].size()) != GameConstants::validate_actions)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::race_distance].size()) != ValidationConstants::race_distance_size)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_distances].size()) != GameConstants::validate_distances)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::race_boxes].size()) != ValidationConstants::race_boxes)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_names_of_boxes].size()) != GameConstants::validate_names_of_boxes)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::race_infobox].size()) != TireModifiers::last * 2)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_segments_descriptions].size()) != TerrainTypes::last * 2)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::participant_infobox].size()) != ValidationConstants::participant_infobox_size)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::race_accident_effects].size()) != GameConstants::validate_accidents)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::on_off].size()) != 2)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::on_off].size()) != 2)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_search_menu].size()) != ValidationConstants::ranking_search_menu)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::ranking_search_menu].size()) != GameConstants::validate_ranking_menu)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_classification_types].size()) != ValidationConstants::ranking_classification_types)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::ranking_classification_types].size()) != GameConstants::validate_ranking_classification)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::ranking_details].size()) != ValidationConstants::ranking_details)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::ranking_details].size()) != GameConstants::validate_ranking_details)
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::vector_of_strings[LanguagePack::other_string].size()) != OtherStrings::last)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::other_strings].size()) != OtherStrings::last)
 		{
 			return false;
 		}
 		return true;
 	}
-	bool LoadVector(std::string path)
+	bool LoadLanguagePack(std::string path)
 	{
-		LanguagePack::vector_of_strings.clear();
-		LanguagePack::vector_of_strings.push_back({});
+		LanguagePack::text.clear();
+		LanguagePack::text.push_back({});
 		std::ifstream fvar;
 		std::string line;
 		int position = 0;
@@ -113,12 +113,12 @@ namespace LanguagePack
 		{
 			if (line == "&&&")
 			{
-				LanguagePack::vector_of_strings.push_back({});
+				LanguagePack::text.push_back({});
 				++position;
 			}
 			else
 			{
-				LanguagePack::vector_of_strings[position].push_back(line);
+				LanguagePack::text[position].push_back(line);
 			}
 		}
 		return ValidateVectorOfStrings();

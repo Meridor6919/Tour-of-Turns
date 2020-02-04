@@ -447,8 +447,8 @@ void Host::GetOthersAction(std::vector<std::string>& tour)
 					case '0':
 					{
 						participants[i + 1].current_speed += atoi((*msgs)[j].substr(3, (*msgs)[j].size() - 3).c_str());
-						if (participants[i + 1].current_speed > static_cast<float>(participants[i + 1].car_modifiers[CarModifiers::max_speed]))
-							participants[i + 1].current_speed = static_cast<float>(participants[i + 1].car_modifiers[CarModifiers::max_speed]);
+						if (participants[i + 1].current_speed > static_cast<float>(participants[i + 1].car_modifiers[CarAttributes::max_speed]))
+							participants[i + 1].current_speed = static_cast<float>(participants[i + 1].car_modifiers[CarAttributes::max_speed]);
 						participants[i + 1].current_speed = participants[i + 1].current_speed*0.9f;
 						msgs->erase(msgs->begin() + j);
 						action = true;
@@ -482,7 +482,7 @@ void Host::GetOthersAction(std::vector<std::string>& tour)
 							{
 								if (participants[i+1].current_speed > 40)
 									participants[i+1].drift = true;
-								participants[i+1].current_speed -= static_cast<float>(participants[i+1].car_modifiers[CarModifiers::hand_brake_value]);
+								participants[i+1].current_speed -= static_cast<float>(participants[i+1].car_modifiers[CarAttributes::hand_brake_value]);
 								if (participants[i+1].current_speed < 0)
 									participants[i+1].current_speed = 0.0f;
 							}

@@ -5,82 +5,61 @@
 
 namespace LanguagePack
 {
-	bool LoadVector(std::string path);
-	extern std::vector<std::vector<std::string>> vector_of_strings;
+	bool LoadLanguagePack(std::string path);
+	extern std::vector<std::vector<std::string>> text;
 	enum
 	{
-		car_modifiers,
-		tire_modifiers,
-		main_menu,
-		game_information,
-		introduction,
-		tour_information,
-		car_information,
-		tire_information,
-		game_mechanics_information,
-		accidents_information,
-		game_lobby,
-		multiplayer,
-		game_options,
-		information_box_titles,
-		colors,
-		race_actions,
-		race_chances,
-		leaderboard,
-		race_interface,
-		race_attribs,
-		race_distance,
-		race_boxes,
-		race_infobox,
-		participant_infobox,
-		credits,
-		on_off,
 		title_main,
 		title_additional,
+		main_menu_options,
+		tot_general_options,
+		selectable_colors,
+		game_information_options,
+		game_information_introduction,
+		game_information_tours,
+		game_information_cars,
+		game_information_tires,
+		game_information_gameplay_formulas,
+		game_information_accidents,
+		credits,
 		ranking_search_menu,
 		ranking_classification_types,
 		ranking_details,
-		other_string,
+		game_menu_options,
+		multiplayer_menu_options,
+		game_lobby_informations,
+		race_actions,
+		race_chancebox_informations,
+		race_leaderboard,
+		race_actions_descritions,
+		race_general_informations,
+		race_distances,
+		race_names_of_boxes,
+		race_segments_descriptions,
+		race_accident_effects,
+		car_attributes,
+		terrain_types,
+		on_off,
+		other_strings,
 		last
 	};
 }
-namespace InformationBoxTitle
+namespace GameLobbyInformations
 {
 	enum
 	{
-		player_info,
-		tour_info,
-		tour_length,
-		turns,
-		champion,
-		win_rate,
-		avg_place,
+		player_information_title,
+		tour_information_title,
+		length_of_tour,
+		number_of_turns,
+		current_champion,
+		win_ratio,
+		average_place,
 		last
 
 	};
 }
-namespace OtherStrings
-{
-	enum
-	{
-		default_name,
-		action_confirm,
-		infobox_RIP1,
-		infobox_RIP2,
-		attack,
-		unable_to_move,
-		meta,
-		lost,
-		required,
-		high_roll,
-		low_roll,
-		behaviour,
-		speed,
-		border,
-		last
-	};
-}
-namespace CarModifiers
+namespace CarAttributes
 {
 	enum
 	{
@@ -95,7 +74,7 @@ namespace CarModifiers
 		last
 	};
 }
-namespace TireModifiers
+namespace TerrainTypes
 {
 	enum
 	{
@@ -108,27 +87,54 @@ namespace TireModifiers
 		last
 	};
 }
-namespace ValidationConstants
+namespace OtherStrings
 {
+	enum
+	{
+		default_name,
+		action_confirm,
+		infobox_RIP_title,
+		infobox_RIP_msg,
+		dont_attack,
+		unable_to_move,
+		meta,
+		lost,
+		required,
+		highest_roll,
+		lowest_roll,
+		in_result_of_attacks,
+		speed,
+		border,
+		last
+	};
+}
+
+namespace GameConstants
+{
+	//game balance
 	const int maximum_timer = 60;
 	const int minimum_drift_speed = 40;
 	const int attack_forward_distance = 4;
 	const int attack_backward_distance = 6;
-	const int main_menu_size = 7;
-	const int game_lobby_size = 8;
-	const int multiplayer_lobby_size = 3;
-	const int option_size = 6;
-	const int possible_colors = 14;
-	const int possible_actions = 5;
-	const int race_attribs = 4;
-	const int race_chances_size = 4;
-	const int race_ranking_size = 3;
-	const int race_distance_size = 7;
-	const int race_boxes = 3;
-	const int participant_infobox_size = 8;
-	const int ranking_search_menu = 5;
-	const int ranking_classification_types = 3;
-	const int ranking_details = 12;
+	const float drift_value = 2.0f;
+	const float friction_scalar = 0.9f;
+
+	//validation
+	const int validate_main_menu = 7;
+	const int validate_game_menu = 8;
+	const int validate_multiplayer_menu = 3;
+	const int validate_tot_options = 6;
+	const int validate_colors = 14;
+	const int validate_actions = 5;
+	const int validate_general_info = 4;
+	const int validate_chancebox = 4;
+	const int validate_leaderboard = 3;
+	const int validate_distances = 7;
+	const int validate_names_of_boxes = 3;
+	const int validate_accidents = 8;
+	const int validate_ranking_menu = 5;
+	const int validate_ranking_classification = 3;
+	const int validate_ranking_details = 12;
 }
 namespace FolderName
 {
@@ -176,11 +182,6 @@ namespace ErrorMsg
 	const std::string placeholder_language = " is current language. \nPreviously selected language pack has been corrupted";
 	const std::string available_cars = " has no cars available";
 	const std::string cheating_attempt = " has made an attempt to cheat. He is now eliminated :)";
-}
-namespace GameValues
-{
-	const float drift_value = 2.0f;
-	const float friction_scalar = 0.9f;
 }
 namespace MathFunctions
 {
