@@ -111,6 +111,7 @@ namespace TireModifiers
 namespace ValidationConstants
 {
 	const int maximum_timer = 60;
+	const int minimum_drift_speed = 40;
 	const int attack_forward_distance = 4;
 	const int attack_backward_distance = 6;
 	const int main_menu_size = 7;

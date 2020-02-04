@@ -362,7 +362,7 @@ void SinglePlayer::ShowIndicator(int participant)
 	const COORD coord = { main_window->GetWidth() - 55, 16 + participants[participant].place * 2 };
 	mutex.lock();
 	SetConsoleCursorPosition(main_window->GetHandle(), coord);
-	SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].indicator ? main_window->color2 : 8);
+	SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].action_indicator ? main_window->color2 : 8);
 	std::cout << '*';
 	mutex.unlock();
 	
@@ -560,6 +560,13 @@ void SinglePlayer::AttackPhase()
 void SinglePlayer::ActionPhase()
 {
 	ValidateAction(PerformAction(), 0);
+	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+	{
+		while (!participants[i].alive && !participants[i].action_indicator)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		}
+	}
 }
 void SinglePlayer::ValidateAttack(int target, int participant)
 {
@@ -567,10 +574,14 @@ void SinglePlayer::ValidateAttack(int target, int participant)
 	{
 		if (target != 10)
 		{
-			if (participants[target].score < participants[participant].score + ValidationConstants::attack_backward_distance && participants[target].score >participants[participant].score - ValidationConstants::attack_forward_distance && participants[target].alive)
+			if (participants[target].score < participants[participant].score + ValidationConstants::attack_backward_distance && 
+				participants[target].score >participants[participant].score - ValidationConstants::attack_forward_distance && 
+				participants[target].alive &&
+				!participants[participant].attack_performed)
 			{
 				participants[target].attacked += 1;
 				participants[participant].attacked += 0.5f;
+				participants[participant].attack_performed = true;
 			}
 			else
 			{
@@ -593,18 +604,19 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 		if ((action.first == 0 && (action.second > participants[participant].car_modifiers[CarModifiers::max_accelerating] || action.second <= 0)) ||
 			(action.first == 1 && (action.second < participants[participant].car_modifiers[CarModifiers::max_braking] * -1 || action.second >= 0 || participants[participant].current_speed <= 0)) ||
 			(action.first == 2 && (action.second < participants[participant].car_modifiers[CarModifiers::hand_brake_value] * -1 || action.second >= 0 || participants[participant].current_speed <= 0)) ||
-			(action.first == 3 && (action.second != 0 || participants[participant].current_speed <= 0)))
+			(action.first == 3 && (action.second != 0 || participants[participant].current_speed <= 0)) ||
+			participants[participant].action_indicator)
 		{
 			participants[participant].current_durability = 0;
 			MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
 			return;
 		}
-		if (action.first == 2)
+		if (action.first == 2 && participants[participant].current_speed >= ValidationConstants::minimum_drift_speed)
 		{
 			participants[participant].drift = true;
 		}
 		participants[participant].CalculateParameters(static_cast<float>(action.second), current_field);
-		participants[participant].indicator = true;
+		participants[participant].action_indicator = true;
 		ShowIndicator(participant);
 		
 	}
@@ -694,7 +706,8 @@ void SinglePlayer::Leaderboard(const bool clear)
 		SortLeaderboard();
 		for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 		{
-			participants[i].indicator = false;
+			participants[i].attack_performed = false;
+			participants[i].action_indicator = false;
 			ShowIndicator(i);
 		}
 	}
