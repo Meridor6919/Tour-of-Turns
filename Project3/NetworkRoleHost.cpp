@@ -275,7 +275,7 @@ void Host::MsgHandling(std::string msg, int client_id)
 			if (i == client_id + 1)
 				continue;
 
-			if (participants[i].score < participants[client_id + 1].score + 5 && participants[i].score >participants[client_id + 1].score - 5 && participants[i].alive)
+			if (participants[i].score < participants[client_id + 1].score + 5 && participants[i].score >participants[client_id + 1].score - 5 && participants[i].current_durability > 0)
 			{
 				strcpy(buffer, participants[i].name.c_str());
 				send((*clients)[client_id].first, buffer, 254, 0);
@@ -371,11 +371,10 @@ void Host::SortLeaderboard()
 {
 	SinglePlayer::SortLeaderboard();
 }
-bool Host::GetCurrentAtribs()
+void Host::GetCurrentAttributes()
 {
-	bool ret = SinglePlayer::GetCurrentAtribs();
+	SinglePlayer::GetCurrentAttributes();
 	stage++;
-	return ret;
 }
 void Host::Attack()
 {

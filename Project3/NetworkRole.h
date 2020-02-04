@@ -52,7 +52,7 @@ public:
 	//Get methods
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	void SortLeaderboard();
-	virtual bool GetCurrentAtribs();
+	virtual void GetCurrentAttributes();
 	std::string GetTour();
 
 	//Game methods
@@ -122,7 +122,7 @@ public:
 	~Host();
 	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	void SortLeaderboard();
-	bool GetCurrentAtribs();
+	void GetCurrentAttributes();
 	void Attack();
 	void TakeAction();
 	void GetOthersAction(std::vector<std::string> &tour);
@@ -149,7 +149,7 @@ public:
 	std::vector<std::string> GetTourParameters(std::string path);
 	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	void SortLeaderboard();
-	bool GetCurrentAtribs();
+	void GetCurrentAttributes();
 	void Attack();
 	void TakeAction();
 	void GetOthersAction(std::vector<std::string> &tour);

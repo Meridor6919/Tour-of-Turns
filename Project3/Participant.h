@@ -5,35 +5,38 @@ class ToT_Window;
 
 class Participant 
 {
+private:
+	ToT_Window *main_window;
+
 public:
-	bool alive = true;
+	//Attributes
 	std::string name;
 	std::vector<int>car_modifiers;
 	std::vector<std::string>tire_modifiers;
 	float score = 0.0f;
 	float current_speed = 0.0f;
-	float current_durability;
-	bool action_indicator = false;
+	float current_durability = 0.0f;
+	bool action_performed = false;
 	bool attack_performed = false;
-	int place;
-
-	std::string car_path;
-	std::string tire_path ;
-	int drifts_performed = 0;
-	int attacks_performed = 0;
-	float durability_burned = 0.0f;
-
-	ToT_Window *main_window;
 	float attacked = 0.0f;
 	bool drift = false;
+	int place;
+
+	//Ranking data
+	std::string car_path;
+	std::string tire_path ;
+	int sum_of_performed_drifts = 0;
+	int sum_of_performed_attacks = 0;
+	float sum_of_durability_burned = 0.0f;
 
 	Participant(const std::string name, const std::string car_path, const std::string tire_path, ToT_Window *main_window);
-	Participant() = delete;
 	void Test(const std::string field, const bool show);
 	float EvaluateChance(std::string field, const float speed, const bool drift);
 	float CalculateBurning(float value);
 	float EvaluateSpeed(std::string field, const float chance, const bool drift);
 	void CalculateParameters(float value, std::string current_field);
 	float TireEffectivness(std::string field);
+	bool IsAlive();
+	void KillParticipant();
 };
 

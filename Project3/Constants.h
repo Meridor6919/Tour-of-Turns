@@ -183,29 +183,5 @@ namespace ErrorMsg
 	const std::string available_cars = " has no cars available";
 	const std::string cheating_attempt = " has made an attempt to cheat. He is now eliminated :)";
 }
-namespace MathFunctions
-{
-	inline long Factorial(int i) 
-	{
-		if (i > 1)
-		{
-			return Factorial(i - 1)*i;
-		}
-		else
-		{
-			return 1;
-		}
-	};
-	template<class T>
-	inline T PowerInt(T number, int power)
-	{
-		T value = 1;
-		for (int i = 0; i < power; i++)
-		{
-			value *= number;
-		}
-		return value;
-	}
-}
 
 

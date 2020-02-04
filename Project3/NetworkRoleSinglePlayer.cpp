@@ -362,7 +362,7 @@ void SinglePlayer::ShowIndicator(int participant)
 	const COORD coord = { main_window->GetWidth() - 55, 16 + participants[participant].place * 2 };
 	mutex.lock();
 	SetConsoleCursorPosition(main_window->GetHandle(), coord);
-	SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].action_indicator ? main_window->color2 : 8);
+	SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].action_performed ? main_window->color2 : 8);
 	std::cout << '*';
 	mutex.unlock();
 	
@@ -387,7 +387,7 @@ void SinglePlayer::SortLeaderboard()
 		}
 	}
 }
-bool SinglePlayer::GetCurrentAtribs()
+void SinglePlayer::GetCurrentAttributes()
 {
 	if (main_window->GetTimerSettings())
 	{
@@ -395,25 +395,11 @@ bool SinglePlayer::GetCurrentAtribs()
 	}
 	for (int i = static_cast<int>(participants.size()) - 1; i >= 0; --i)
 	{
-		participants[i].Test(current_field, i < static_cast<int>(participants.size()) - main_window->GetAIs());
-		if (participants[i].current_durability <= 0.0f && participants[i].alive)
+		if (participants[i].IsAlive())
 		{
-			main_window->infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::infobox_RIP_title] +participants[i].name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::infobox_RIP_msg], "");
-			participants[i].alive = false;
-			if (i == 0)
-			{
-				mutex.lock();
-				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color1);
-				SetConsoleCursorPosition(main_window->GetHandle(), { 0, 20 });
-				std::cout << LanguagePack::text[LanguagePack::race_general_informations][2];
-				SetConsoleTextAttribute(main_window->GetHandle(), main_window->color2);
-				std::cout << static_cast<int>(participants[0].current_durability) << LanguagePack::text[LanguagePack::race_general_informations][3];
-				mutex.unlock();
-				return false;
-			}
+			participants[i].Test(current_field, i < static_cast<int>(participants.size()) - main_window->GetAIs());
 		}
 	}
-	return true;
 }
 std::string SinglePlayer::GetTour()
 {
@@ -562,7 +548,7 @@ void SinglePlayer::ActionPhase()
 	ValidateAction(PerformAction(), 0);
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		while (!participants[i].alive && !participants[i].action_indicator)
+		while (participants[i].IsAlive() && !participants[i].action_performed)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		}
@@ -570,13 +556,13 @@ void SinglePlayer::ActionPhase()
 }
 void SinglePlayer::ValidateAttack(int target, int participant)
 {
-	if (participants[participant].alive)
+	if (participants[participant].IsAlive())
 	{
 		if (target != 10)
 		{
 			if (participants[target].score < participants[participant].score + GameConstants::attack_backward_distance && 
 				participants[target].score >participants[participant].score - GameConstants::attack_forward_distance && 
-				participants[target].alive &&
+				participants[target].IsAlive() &&
 				!participants[participant].attack_performed)
 			{
 				participants[target].attacked += 1;
@@ -585,7 +571,7 @@ void SinglePlayer::ValidateAttack(int target, int participant)
 			}
 			else
 			{
-				participants[participant].current_durability = 0;
+				participants[participant].KillParticipant();
 				MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
 				return;
 			}
@@ -594,20 +580,20 @@ void SinglePlayer::ValidateAttack(int target, int participant)
 }
 void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 {
-	if (participants[participant].alive)
+	if (participants[participant].IsAlive())
 	{
 		if (action.first == 4)
 		{
-			participants[participant].current_durability = 0;
+			participants[participant].KillParticipant();
 			return;
 		}
 		if ((action.first == 0 && (action.second > participants[participant].car_modifiers[CarAttributes::max_accelerating] || action.second <= 0)) ||
 			(action.first == 1 && (action.second < participants[participant].car_modifiers[CarAttributes::max_braking] * -1 || action.second >= 0 || participants[participant].current_speed <= 0)) ||
 			(action.first == 2 && (action.second < participants[participant].car_modifiers[CarAttributes::hand_brake_value] * -1 || action.second >= 0 || participants[participant].current_speed <= 0)) ||
 			(action.first == 3 && (action.second != 0 || participants[participant].current_speed <= 0)) ||
-			participants[participant].action_indicator)
+			participants[participant].action_performed)
 		{
-			participants[participant].current_durability = 0;
+			participants[participant].KillParticipant();
 			MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
 			return;
 		}
@@ -616,21 +602,21 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 			participants[participant].drift = true;
 		}
 		participants[participant].CalculateParameters(static_cast<float>(action.second), current_field);
-		participants[participant].action_indicator = true;
+		participants[participant].action_performed = true;
 		ShowIndicator(participant);
 		
 	}
 }
 int SinglePlayer::PerformAttack()
 {
-	if (participants[0].alive)
+	if (participants[0].IsAlive())
 	{
 		std::vector<std::string> rival_name = { LanguagePack::text[LanguagePack::other_strings][OtherStrings::dont_attack] };
 		std::vector<int> rival_id = { 10 };
 
 		for (int i = 1; i < static_cast<int>(participants.size()); ++i)
 		{
-			if (participants[i].score < participants[0].score + GameConstants::attack_backward_distance && participants[i].score >participants[0].score - GameConstants::attack_forward_distance && participants[i].alive)
+			if (participants[i].score < participants[0].score + GameConstants::attack_backward_distance && participants[i].score >participants[0].score - GameConstants::attack_forward_distance && participants[i].IsAlive())
 			{
 				rival_name.push_back(participants[i].name);
 				rival_id.push_back(i);
@@ -646,7 +632,7 @@ int SinglePlayer::PerformAttack()
 }
 std::pair<int, int> SinglePlayer::PerformAction()
 {
-	if (participants[0].alive)
+	if (participants[0].IsAlive())
 	{
 		const HANDLE window = main_window->GetHandle();
 		int value;
@@ -707,7 +693,7 @@ void SinglePlayer::Leaderboard(const bool clear)
 		for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 		{
 			participants[i].attack_performed = false;
-			participants[i].action_indicator = false;
+			participants[i].action_performed = false;
 			ShowIndicator(i);
 		}
 	}
@@ -818,7 +804,7 @@ void SinglePlayer::Finish()
 {
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), participants[i].current_durability <= 0.0f, participants[i].attacks_performed, participants[i].drifts_performed, static_cast<int>(participants[i].durability_burned), participants[i].car_path, participants[i].tire_path);
+		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), !participants[i].IsAlive(), participants[i].sum_of_performed_attacks, participants[i].sum_of_performed_drifts, static_cast<int>(participants[i].sum_of_durability_burned), participants[i].car_path, participants[i].tire_path);
 	}
 	main_window->infobox->info.clear();
 	if (main_window->GetTimerSettings())

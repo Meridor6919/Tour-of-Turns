@@ -289,8 +289,6 @@ void Client::SortLeaderboard()
 }
 void Client::Attack()
 {
-	if (!participants[0].alive)
-		return;
 	char buffer[254] = "08";
 	send(host, buffer, 254, 0);
 	std::vector<std::string> id;
@@ -321,7 +319,7 @@ void Client::Attack()
 	strcpy(buffer, ("54" + id[i]).c_str());
 	send(host, buffer, 254, 0);
 }
-bool Client::GetCurrentAtribs()
+void Client::GetCurrentAttributes()
 {
 
 	char buffer[254] = "0";
@@ -334,8 +332,7 @@ bool Client::GetCurrentAtribs()
 		send(host, buffer, 254, 0);
 		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
-			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-			return false;
+			MessageBox(0, "GetCurrentAttributes method failed", "Error", 0);
 		}
 	}
 
@@ -344,23 +341,20 @@ bool Client::GetCurrentAtribs()
 
 	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
-		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		return false;
+		MessageBox(0, "GetCurrentAttributes method failed", "Error", 0);
 	}
 	participants[0].current_speed = atof(buffer);
 
 	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
-		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		return false;
+		MessageBox(0, "GetCurrentAttributes method failed", "Error", 0);
 	}
 	participants[0].current_durability = atof(buffer);
 
 
 	if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 	{
-		MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-		return false;
+		MessageBox(0, "GetCurrentAttributes method failed", "Error", 0);
 	}
 	participants[0].score = atof(buffer);
 
@@ -369,8 +363,7 @@ bool Client::GetCurrentAtribs()
 	{
 		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 		{
-			MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-			return false;
+			MessageBox(0, "GetCurrentAttributes method failed", "Error", 0);
 		}
 		
 		if ((std::string)buffer != "exit")
@@ -378,22 +371,12 @@ bool Client::GetCurrentAtribs()
 			std::string helper = ((std::string)buffer).c_str();
 			if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))
 			{
-				MessageBox(0, "GetCurrentAtribs method failed", "Error", 0);
-				return false;
+				MessageBox(0, "GetCurrentAttributes method failed", "Error", 0);
 			}
 			main_window->infobox->Push(helper, (std::string)buffer);
 		}
 		else
 			break;
-	}
-	if (participants[0].current_durability <= 0.0f)
-	{
-		participants[0].alive = false;
-		return false;
-	}
-	else
-	{
-		return true;
 	}
 }
 void Client::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
@@ -414,8 +397,6 @@ void Client::GetParticipants(std::string name, std::string tour, std::string car
 }
 void Client::TakeAction()
 {
-	if (!participants[0].alive)
-		return;
 
 	char buffer[254];
 

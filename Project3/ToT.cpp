@@ -477,7 +477,7 @@ void ToT::Game(const bool multiplayer)
 				network_role->AttackPhase();
 			}
 			network_role->ActionPhase();
-			network_role->GetCurrentAtribs();
+			network_role->GetCurrentAttributes();
 			network_role->Interface();
 			network_role->Leaderboard(true);
 			network_role->Leaderboard(false);

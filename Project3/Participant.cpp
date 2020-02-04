@@ -13,14 +13,14 @@ Participant::Participant(const std::string name, const std::string car_path, con
 }
 void Participant::Test(const std::string field, const bool show)
 {
-	if (!alive)
+	if (!IsAlive())
 	{
 		return;
 	}
 	const char terrain = field[0];
 	std::string tire = tire_modifiers[atoi(&terrain)];
 	std::string helper = tire;
-	int find = static_cast<int>(tire.find("x"));
+	const int find = static_cast<int>(tire.find("x"));
 	int reqired_tests = atoi(helper.erase(find, helper.size() - find).c_str());
 	int number_of_tests = atoi(tire.erase(0, find + 1).c_str());
 	int passed_tests = 0;
@@ -32,7 +32,7 @@ void Participant::Test(const std::string field, const bool show)
 	float dmg = 1.0f - 0.125f*attacked;
 	if (static_cast<int>(attacked*10.0f) % 10)
 	{
-		++attacks_performed;
+		++sum_of_performed_attacks;
 	}
 	current_speed *= dmg;
 	if (dmg < 1.0f && show)
@@ -124,7 +124,7 @@ void Participant::Test(const std::string field, const bool show)
 	}
 	if (drift == true)
 	{
-		++drifts_performed;
+		++sum_of_performed_drifts;
 		drift = false;
 		score += GameConstants::drift_value;
 	}
@@ -227,13 +227,30 @@ void Participant::CalculateParameters(float value, std::string current_field)
 			current_speed = static_cast<float>(car_modifiers[CarAttributes::max_speed] * 1.25f);
 		}
 		float temp = CalculateBurning(current_speed - car_modifiers[CarAttributes::max_speed]);
-		durability_burned += temp;
+		sum_of_durability_burned += temp;
 		current_durability -= temp;
 	}
 	current_speed *= GameConstants::friction_scalar;
 }
 float Participant::TireEffectivness(std::string field)
 {
+	auto Factorial = [](int number) {
+		float ret = 1.0f;
+		for (int i = 1; i <= number; ++i)
+		{
+			ret *= static_cast<float>(i);
+		}
+		return ret;
+	};
+	auto Power = [](float number, int power) {
+		
+		float ret = 1.0f;
+		for (int i = 0; i < power; ++i)
+		{
+			ret *= number;
+		}
+		return ret;
+	};
 	int terrain = atoi(field.substr(0, 1).c_str());
 	int x, y;
 	float result = 0.0f;
@@ -243,13 +260,23 @@ float Participant::TireEffectivness(std::string field)
 		{
 			x = static_cast<int>(atoi(tire_modifiers[terrain].substr(0, i).c_str()));
 			y = static_cast<int>(atoi(tire_modifiers[terrain].substr(i + 1, static_cast<int>(tire_modifiers[terrain].size()) - i - 1).c_str()));
+			break;
 		}
 	}
 	for (int j = 0; j <= y - x; ++x)
 	{
-		result += static_cast<float>(MathFunctions::Factorial(y)) / static_cast<float>(MathFunctions::Factorial(y - x)) / static_cast<float>(MathFunctions::Factorial(x)) * MathFunctions::PowerInt(0.5f, x) * MathFunctions::PowerInt(0.5f, y - x);
+		result += Factorial(y) / Factorial(y - x) / Factorial(x) * Power(0.5f, x) * Power(0.5f, y - x);
 	}
 	return result;
+}
+bool Participant::IsAlive()
+{
+	return current_durability > 0;
+}
+void Participant::KillParticipant()
+{
+	current_durability = 0;
+	main_window->infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::infobox_RIP_title] + name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::infobox_RIP_msg], "");
 }
 float Participant::CalculateBurning(float value)
 {
