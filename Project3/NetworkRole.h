@@ -8,6 +8,8 @@
 #include "Participant.h"
 #include <mutex>
 #include "VisibleTimer.h"
+#include "AIConnector.h"
+
 class SinglePlayer 
 {
 protected:
@@ -16,6 +18,7 @@ protected:
 	short take_action_position = 0;
 	std::vector<Participant> participants;
 	std::unique_ptr<GeneralMultiPlayer::RequestHandler> request_handler;
+	std::unique_ptr<AIConnector> ai_connector;
 	std::mutex mutex;
 	bool timer_running = true;
 	std::unique_ptr<VisibleTimer> timer;
@@ -39,6 +42,7 @@ protected:
 	void ValidateAttack(int target, int participant);
 	void ValidateAction(std::pair<int, int> action, int participant);
 	int PerformAttack();
+	void HandleAIConnection(std::string msg_received);
 	std::pair<int, int> PerformAction(); //action, value
 	virtual int Possible_AIs();
 

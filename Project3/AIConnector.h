@@ -40,12 +40,12 @@ bool AIConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* object
 
 	if (!CreatePipe(&output_pipe_read, &output_pipe_write, &security_atributes, 0))
 	{
-		MessageBox(0, std::to_string(GetLastError()).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
 		return false;
 	}
 	if(!CreatePipe(&input_pipe_read, &input_pipe_write, &security_atributes, 0))
 	{
-		MessageBox(0, std::to_string(GetLastError()).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
 		return false;
 	}
 
@@ -56,12 +56,12 @@ bool AIConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* object
 
 	if (!CreateProcessA(NULL, (LPSTR)connector_path.c_str(), NULL, NULL, TRUE, 0, NULL, NULL, &startup_info, &process_info))
 	{
-		MessageBox(0, std::to_string(GetLastError()).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
 		return false;
 	}
 	if(!Write(start_command))
 	{
-		MessageBox(0, std::to_string(GetLastError()).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
 		return false;
 	}
 	handling_connection = true;

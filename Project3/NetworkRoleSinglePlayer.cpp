@@ -534,6 +534,15 @@ bool SinglePlayer::GameLobby()
 		timer = std::make_unique<VisibleTimer>(coord, main_window->GetHandle(), &timer_running, &mutex);
 		timer->StartTimer(timer_settings);
 	}
+	if (main_window->GetAIs())
+	{
+		ai_connector = std::make_unique<AIConnector>(FolderName::main+'\\'+FileName::ai,255);
+		if (!ai_connector->HandleConnection(&SinglePlayer::HandleAIConnection, this))
+		{
+			MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+			return false;
+		}
+	}
 	main_window->SaveAtributes();
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
@@ -637,6 +646,10 @@ int SinglePlayer::PerformAttack()
 		}
 	}
 	return 10;
+}
+void SinglePlayer::HandleAIConnection(std::string msg_received)
+{
+	
 }
 std::pair<int, int> SinglePlayer::PerformAction()
 {
@@ -819,4 +832,5 @@ void SinglePlayer::Finish()
 	{
 		timer->StopTimer();
 	}
+	ai_connector.reset();
 }

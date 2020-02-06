@@ -11,9 +11,9 @@ bool AIConnector::Write(std::string msg)
 	char *buffer = new char[buffer_size];
 	strcpy_s(buffer, buffer_size, (msg+'\n').c_str());
 	const bool result = WriteFile(input_pipe_write, buffer, buffer_size, &bytes_written, NULL);
-	if (result)
+	if (!result)
 	{
-		MessageBox(0, std::to_string(GetLastError()).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
 	}
 	delete [] buffer;
 	return result;
@@ -31,7 +31,7 @@ bool AIConnector::Read(std::string &msg_received)
 	}
 	else
 	{
-		MessageBox(0, std::to_string(GetLastError()).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
 	}
 	delete[] buffer;
 	return result;
@@ -40,7 +40,7 @@ AIConnector::~AIConnector()
 {
 	Write(exit_command);
 	handling_connection = false;
-	if (connection_thread->joinable())
+	if (connection_thread != nullptr && connection_thread->joinable())
 	{
 		connection_thread->join();
 	}
@@ -62,6 +62,10 @@ AIConnector::~AIConnector()
 	}
 	if (process_info.hProcess != NULL)
 	{
+		if (WaitForSingleObject(process_info.hProcess, 200) == WAIT_TIMEOUT)
+		{
+			TerminateProcess(process_info.hProcess, 0);
+		}
 		CloseHandle(process_info.hProcess);
 	}
 	if (process_info.hThread != NULL)

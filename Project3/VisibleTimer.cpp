@@ -22,7 +22,7 @@ void VisibleTimer::ShowTime()
 			int minutes_required = (seconds - miliseconds_elapsed / 1000) / 60;
 			mutex->lock();
 			SetConsoleCursorPosition(window_handle, position_of_timer);
-			std::cout << (minutes_required < 10 ? "0" : "") << minutes_required << ':' + (seconds_required < 10 ? "0" : "") << seconds_required;
+			std::cout << (minutes_required < 10 ? "0" : "") << minutes_required << ':' << (seconds_required < 10 ? "0" : "") << seconds_required;
 			mutex->unlock();
 			if (miliseconds_elapsed > seconds * 1000)
 			{

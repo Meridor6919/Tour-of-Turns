@@ -152,6 +152,7 @@ namespace FileName
 	const std::string config = "config.txt";
 	const std::string music = "test.wav";
 	const std::string language = "lang.txt";
+	const std::string ai = "ToTAI.exe";
 }
 namespace ExtName
 {
@@ -170,6 +171,7 @@ namespace ErrorTitle
 	const std::string language_error = "Language pack critical error";
 	const std::string placeholder_language = "Used different language";
 	const std::string cheating_attempt = "Cheating detected";
+	const std::string ai_connection = "AI module error";
 }
 namespace ErrorMsg
 {
@@ -182,6 +184,7 @@ namespace ErrorMsg
 	const std::string placeholder_language = " is current language. \nPreviously selected language pack has been corrupted";
 	const std::string available_cars = " has no cars available";
 	const std::string cheating_attempt = " has made an attempt to cheat. He is now eliminated :)";
+	const std::string ai_connection = "There is an issue with your AI module, please repair files or reinstall the game";
 }
 
 
