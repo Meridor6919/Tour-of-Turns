@@ -358,7 +358,7 @@ void Client::GetCurrentAttributes()
 	}
 	participants[0].score = atof(buffer);
 
-	main_window->infobox->info.clear();
+	main_window->infobox->infobox.clear();
 	while (true)
 	{
 		if (!GeneralMultiPlayer::Recv(host, buffer, 254, 0))

@@ -3,7 +3,7 @@
 ToT_Window::ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
 {
 	const COORD infobox_position = { 0,static_cast<short>(GetHeight() - 12) };
-	this->infobox = std::make_shared<InfoBox>(10, Text::TextAlign::left, infobox_position, 1, *this);
+	this->infobox = std::make_shared<InfoBox>(10, infobox_position, 1, *this);
 	playable = true;
 	enable_ranking = true;
 	const std::string error_msg = " " + ErrorMsg::missing_file;

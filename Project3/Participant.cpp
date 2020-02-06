@@ -116,6 +116,10 @@ void Participant::Test(const std::string field, const bool show)
 				main_window->infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][bad_case], name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::text[LanguagePack::race_general_informations][3]);
 			}
 			current_durability -= durablity_lost;
+			if (current_durability <= 0.f)
+			{
+				KillParticipant();
+			}
 		}
 	}
 	else
@@ -229,6 +233,10 @@ void Participant::CalculateParameters(float value, std::string current_field)
 		float temp = CalculateBurning(current_speed - car_modifiers[CarAttributes::max_speed]);
 		sum_of_durability_burned += temp;
 		current_durability -= temp;
+		if (current_durability <= 0.f)
+		{
+			KillParticipant();
+		}
 	}
 	current_speed *= GameConstants::friction_scalar;
 }

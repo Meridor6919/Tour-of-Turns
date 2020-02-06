@@ -397,7 +397,9 @@ void SinglePlayer::GetCurrentAttributes()
 	{
 		if (participants[i].IsAlive())
 		{
+			mutex.lock();
 			participants[i].Test(current_field, i < static_cast<int>(participants.size()) - main_window->GetAIs());
+			mutex.unlock();
 		}
 	}
 }
@@ -571,7 +573,9 @@ void SinglePlayer::ValidateAttack(int target, int participant)
 			}
 			else
 			{
+				mutex.lock();
 				participants[participant].KillParticipant();
+				mutex.unlock();
 				MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
 				return;
 			}
@@ -584,7 +588,9 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 	{
 		if (action.first == 4)
 		{
+			mutex.lock();
 			participants[participant].KillParticipant();
+			mutex.unlock();
 			return;
 		}
 		if ((action.first == 0 && (action.second > participants[participant].car_modifiers[CarAttributes::max_accelerating] || action.second <= 0)) ||
@@ -593,7 +599,9 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 			(action.first == 3 && (action.second != 0 || participants[participant].current_speed <= 0)) ||
 			participants[participant].action_performed)
 		{
+			mutex.lock();
 			participants[participant].KillParticipant();
+			mutex.unlock();
 			MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), 0);
 			return;
 		}
@@ -806,7 +814,7 @@ void SinglePlayer::Finish()
 	{
 		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), !participants[i].IsAlive(), participants[i].sum_of_performed_attacks, participants[i].sum_of_performed_drifts, static_cast<int>(participants[i].sum_of_durability_burned), participants[i].car_path, participants[i].tire_path);
 	}
-	main_window->infobox->info.clear();
+	main_window->infobox->infobox.clear();
 	if (main_window->GetTimerSettings())
 	{
 		timer->StopTimer();

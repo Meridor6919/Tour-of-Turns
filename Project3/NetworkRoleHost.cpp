@@ -295,14 +295,14 @@ void Host::MsgHandling(std::string msg, int client_id)
 		strcpy(buffer, std::to_string(participants[client_id + 1].score).c_str());
 		send((*clients)[client_id].first, buffer, 254, 0);
 
-		for (int i = 0; i < main_window->infobox->info.size(); i++)
+		for (int i = 0; i < main_window->infobox->infobox.size(); i++)
 		{
-			std::string info = main_window->infobox->info[i];
+			std::string info = main_window->infobox->infobox[i];
 
 			strcpy(buffer, info.substr(0, info.find("  ")).c_str());
 			send((*clients)[client_id].first, buffer, 254, 0);
 
-			strcpy(buffer, info.substr(main_window->infobox->info[i].find("  ") + 2, info.size() - info.find("  ")).c_str());
+			strcpy(buffer, info.substr(main_window->infobox->infobox[i].find("  ") + 2, info.size() - info.find("  ")).c_str());
 			send((*clients)[client_id].first, buffer, 254, 0);
 		}
 		send((*clients)[client_id].first, "exit", 254, 0);

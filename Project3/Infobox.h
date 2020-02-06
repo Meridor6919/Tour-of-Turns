@@ -6,16 +6,14 @@
 class InfoBox
 {
 	Window *main_window;
-	Text::TextAlign text_align;
 	COORD starting_point;
-	int spacing;
-	int size;
+	short spacing;
+	int size_of_visible_infobox;
 
 public:
 
-	std::vector<std::string> info;
-	InfoBox(const int size, const Text::TextAlign text_align, const COORD starting_point, const int spacing, Window &main_window);
+	std::vector<std::string> infobox;
+	InfoBox(const int size, const COORD starting_point, const short spacing, Window &main_window);
 	void Push(const std::string special_text, const std::string text);
 	void Clear();
-	
 };
