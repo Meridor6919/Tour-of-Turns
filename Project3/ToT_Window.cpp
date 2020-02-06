@@ -9,28 +9,28 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	const std::string error_msg = " " + ErrorMsg::missing_file;
 	const char* errot_title = ErrorTitle::missing_file.c_str();
 
-	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::ranking, ExtName::ranking))
+	if (!SaveFileNames(FolderName::tour, FolderName::tour + '\\' + FileName::ranking, ExtName::ranking))
 	{
 		enable_ranking = false;
 	}
-	if (!SaveFileNames(FolderName::tire, FolderName::tire + "\\" + FileName::tire, ExtName::tire))
+	if (!SaveFileNames(FolderName::tire, FolderName::tire + '\\' + FileName::tire, ExtName::tire))
 	{
 		MessageBox(0, (ExtName::tire +error_msg).c_str(), errot_title, 0);
 		playable = false;
 	}
-	if (!SaveFileNames(FolderName::tour, FolderName::tour + "\\" + FileName::tour, ExtName::tour))
+	if (!SaveFileNames(FolderName::tour, FolderName::tour + '\\' + FileName::tour, ExtName::tour))
 	{
 		MessageBox(0, (ExtName::tour + error_msg).c_str(), errot_title, 0);
 		playable = false;
 	}
-	if (!SaveFileNames(FolderName::language, FolderName::language + "\\" + FileName::language, ExtName::language))
+	if (!SaveFileNames(FolderName::language, FolderName::language + '\\' + FileName::language, ExtName::language))
 	{
 		MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
 		exit(0);
 	}
 	enable_ranking = enable_ranking & ValidateRanking();
 	playable = playable & ValidateGameFiles();
-	wav_transformer = new WavTransformer(FolderName::main + "\\" + FileName::music);
+	wav_transformer = new WavTransformer(FolderName::main + '\\' + FileName::music);
 	LoadAtributes();
 }
 std::string ToT_Window::UpdateRankingFavorites(std::string text, std::string phrase, int added_value)
@@ -75,7 +75,7 @@ std::string ToT_Window::UpdateRankingFavorites(std::string text, std::string phr
 			value += text[i];
 		}
 	}
-	return text + phrase + ":" + std::to_string(added_value) + ":";
+	return text + phrase + ':' + std::to_string(added_value) + ':';
 }
 void ToT_Window::LoadAtributes()
 {
@@ -84,7 +84,7 @@ void ToT_Window::LoadAtributes()
 	music_volume = 1.0f;
 	ais = 0;
 
-	fvar.open(FolderName::main + "\\" + FileName::config, std::ios::in);
+	fvar.open(FolderName::main + '\\' + FileName::config, std::ios::in);
 	fvar >> color1;
 	fvar >> color2;
 	fvar >> music_volume;
@@ -95,15 +95,15 @@ void ToT_Window::LoadAtributes()
 	fvar >> timer_settings;
 	fvar.close();
 
-	if (!LanguagePack::LoadLanguagePack(FolderName::language + "\\" + lang))
+	if (!LanguagePack::LoadLanguagePack(FolderName::language + '\\' + lang))
 	{
 		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		
-		std::vector<std::string> languages = this->ReadFile(FolderName::language + "\\" + FileName::language);
+		std::vector<std::string> languages = this->ReadFile(FolderName::language + '\\' + FileName::language);
 		bool no_valid_lang_packs = true;
 		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
 		{
-			if (LanguagePack::LoadLanguagePack(FolderName::language + "\\" + languages[i]))
+			if (LanguagePack::LoadLanguagePack(FolderName::language + '\\' + languages[i]))
 			{
 				no_valid_lang_packs = false;
 				lang = languages[i];
@@ -153,7 +153,7 @@ bool ToT_Window::ValidateTourFiles()
 	const short number_of_tours = static_cast<short>(tours.size());
 	if (!number_of_tours)
 	{
-		MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		return false;
 	}
 	for (short i = 0; i < number_of_tours; ++i)
@@ -161,7 +161,7 @@ bool ToT_Window::ValidateTourFiles()
 		std::vector<std::string> params = GetTourParameters(tours[i], 0, INT_MAX);
 		if (static_cast<short>(params.size()) < 1)
 		{
-			MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 			return false;
 		}
 		for (short j = 0; j < static_cast<short>(params.size()); ++j)
@@ -169,17 +169,17 @@ bool ToT_Window::ValidateTourFiles()
 			const short size_of_segment = static_cast<short>(params[j].size());
 			if (params[j][0] - 48 < 0 || params[j][0] - 48 >= TerrainTypes::last)//terrain type validation
 			{
-				MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 				return false;
 			}
 			else if (size_of_segment > 11)//checking if safe speed isn't exceeding speed of light
 			{
-				MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 				return false;
 			}
 			else if (size_of_segment != 1 && atoi(params[j].substr(1, size_of_segment - 1).c_str()) < 1)//checking if safe speed is at least 1
 			{
-				MessageBox(0, (FolderName::tour + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + ' '  + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 				return false;
 			}
 		}
@@ -246,11 +246,11 @@ bool ToT_Window::ValidateTireFiles()
 }
 bool ToT_Window::ValidateRanking()
 {
-	std::vector<std::string> ranking_files = ReadFile(FolderName::tour + "\\" + FileName::ranking);
+	std::vector<std::string> ranking_files = ReadFile(FolderName::tour + '\\' + FileName::ranking);
 	std::ifstream fvar;
 	for (short i = 0; i < static_cast<short>(ranking_files.size()); ++i)
 	{
-		fvar.open(FolderName::tour + "\\" +  ranking_files[i]);
+		fvar.open(FolderName::tour + '\\' +  ranking_files[i]);
 		std::string line;
 		int iterations = 0;
 		for (; std::getline(fvar, line); ++iterations);
@@ -348,15 +348,15 @@ std::string ToT_Window::GetClassifiedDetail(std::string text, int classification
 }
 std::vector<std::string> ToT_Window::GetTourNames()
 {
-	return ReadFile(FolderName::tour + "\\" + FileName::tour);
+	return ReadFile(FolderName::tour + '\\' + FileName::tour);
 }
 std::vector<std::string> ToT_Window::GetCarNames(const std::string tour)
 {
-	return ReadFile(FolderName::tour + "\\" + tour);
+	return ReadFile(FolderName::tour + '\\' + tour);
 }
 std::vector<std::string> ToT_Window::GetTireNames()
 {
-	return ReadFile(FolderName::tire + "\\" + FileName::tire);
+	return ReadFile(FolderName::tire + '\\' + FileName::tire);
 }
 std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int position, const int visibility)
 {
@@ -364,7 +364,7 @@ std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int pos
 	std::fstream fvar;
 	std::string helper;
 
-	fvar.open((FolderName::tour + "\\" + tour).c_str());
+	fvar.open((FolderName::tour + '\\' + tour).c_str());
 	do
 	{
 		std::getline(fvar, helper);
@@ -387,7 +387,7 @@ std::vector<std::string> ToT_Window::GetTourParameters(std::string tour, int pos
 }
 std::vector<int> ToT_Window::GetCarParameters(const std::string path)
 {
-	const std::vector<std::string> data = ReadFile(FolderName::car + "\\" + path);
+	const std::vector<std::string> data = ReadFile(FolderName::car + '\\' + path);
 	std::vector<int> car_parameters;
 	for (short i = 0; i < CarAttributes::last; ++i)
 	{
@@ -400,7 +400,7 @@ std::vector<int> ToT_Window::GetCarParameters(const std::string path)
 }
 std::vector<std::string> ToT_Window::GetTireParameters(const std::string path)
 {
-	return ReadFile(FolderName::tire + "\\" + path);
+	return ReadFile(FolderName::tire + '\\' + path);
 }
 bool ToT_Window::GetHamachiConnectionFlag()
 {
@@ -453,15 +453,15 @@ void ToT_Window::SetTimerSettings(int timer_settings)
 void ToT_Window::SetLanguage(std::string lang)
 {
 	this->lang = lang;
-	if (!LanguagePack::LoadLanguagePack(FolderName::language + "\\" + lang))
+	if (!LanguagePack::LoadLanguagePack(FolderName::language + '\\' + lang))
 	{
 		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 
-		std::vector<std::string> languages = this->ReadFile(FolderName::language + "\\" + FileName::language);
+		std::vector<std::string> languages = this->ReadFile(FolderName::language + '\\' + FileName::language);
 		bool no_valid_lang_packs = true;
 		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
 		{
-			if (LanguagePack::LoadLanguagePack(FolderName::language + "\\" + languages[i]))
+			if (LanguagePack::LoadLanguagePack(FolderName::language + '\\' + languages[i]))
 			{
 				no_valid_lang_packs = false;
 				lang = languages[i];
@@ -483,7 +483,7 @@ void ToT_Window::SetMultiplayer(bool multiplayer)
 void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int score, bool crash, int attacks, int drifts, int durability_burning, std::string car, std::string tires)
 {
 	const bool classification[GameConstants::validate_ranking_classification] = { true, ais == 7, multiplayer && ais != 7 };
-	const std::string ranking_path = FolderName::tour + "\\" + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
+	const std::string ranking_path = FolderName::tour + '\\' + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
 	std::vector<std::string> ranking_data = { "" };
 	int racer_index = -1;
 	std::fstream fvar;
@@ -570,7 +570,7 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 	{
 		if(i)
 		{
-			fvar << "\n";
+			fvar << '\n';
 		}
 		fvar << ranking_data[i];
 	}
@@ -579,14 +579,14 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 void ToT_Window::SaveAtributes()
 {
 	std::fstream fvar;
-	fvar.open(FolderName::main + "\\" + FileName::config);
-	fvar << color1 << "\n";
-	fvar << color2 << "\n";;
-	fvar << music_volume << "\n";;
-	fvar << hamachi_enabled << "\n";;
-	fvar << ais << "\n";
-	fvar << name << "\n";
-	fvar << lang << "\n";
-	fvar << timer_settings << "\n";
+	fvar.open(FolderName::main + '\\' + FileName::config);
+	fvar << color1 << '\n';
+	fvar << color2 << '\n';
+	fvar << music_volume << '\n';
+	fvar << hamachi_enabled << '\n';
+	fvar << ais << '\n';
+	fvar << name + '\n';
+	fvar << lang + '\n';
+	fvar << timer_settings << '\n';
 	fvar.close();
 }

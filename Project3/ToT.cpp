@@ -117,7 +117,6 @@ std::string ToT::GetRankingFavourite(std::string text)
 }
 void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing)
 {
-	const HANDLE handle = main_window->GetHandle();
 	const int spacing = 2;
 	const int paragraph_size = 2;
 	const COORD base_position = { 0, 19 };
@@ -277,7 +276,7 @@ void ToT::Options()
 			}
 			case 3://language
 			{
-				std::vector<std::string> language = main_window->ReadFile(FolderName::language+"\\"+FileName::language);
+				std::vector<std::string> language = main_window->ReadFile(FolderName::language+'\\'+FileName::language);
 				int starting_pos = 0;
 				for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
 				{
@@ -323,17 +322,17 @@ void ToT::Ranking()
 	const short spacing = 3;
 	bool loop = true;
 
-	std::vector<std::string> maps = main_window->ReadFile(FolderName::tour + "\\" + FileName::ranking);
+	std::vector<std::string> maps = main_window->ReadFile(FolderName::tour + '\\' + FileName::ranking);
 	int map_pos = 0;
 	main_window->RemoveExtension(maps, ExtName::ranking);
 
 	int racer_pos = 0;
 	int classification_type = 0;
 
-	ShowRankingDetails(FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
+	ShowRankingDetails(FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
 	while (loop)
 	{
-		const std::string starting_map_path = FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking;
+		const std::string starting_map_path = FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking;
 		main_menu_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::ranking_search_menu], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window);
 		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::ranking_search_menu][main_menu_position].size()) / 2 + 3;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
@@ -348,14 +347,14 @@ void ToT::Ranking()
 				{
 					ShowRankingDetails(starting_map_path, racer_pos, classification_type, true);
 					racer_pos = 0;
-					ShowRankingDetails(FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
+					ShowRankingDetails(FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
 				}
 				break;
 			}
 			case 1://Player
 			{
 				const int temp = racer_pos;
-				racer_pos = Text::Choose::Horizontal(GetRankingNames(FolderName::tour+ "\\" + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, Text::TextAlign::left, true, *main_window);
+				racer_pos = Text::Choose::Horizontal(GetRankingNames(FolderName::tour+ '\\' + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, Text::TextAlign::left, true, *main_window);
 				if(temp != racer_pos)
 				{
 					ShowRankingDetails(starting_map_path, temp, classification_type, true);
@@ -377,7 +376,7 @@ void ToT::Ranking()
 			case 3://Reset map details
 			{
 				ShowRankingDetails(starting_map_path, racer_pos, classification_type, true);
-				std::fstream fvar((FolderName::tour + "\\" + maps[map_pos] + ExtName::ranking).c_str(), std::ios::out);
+				std::fstream fvar((FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking).c_str(), std::ios::out);
 				ShowRankingDetails(starting_map_path, racer_pos, classification_type);
 				fvar.close();
 				break;

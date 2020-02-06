@@ -184,7 +184,7 @@ void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 	std::vector<std::pair<std::string, std::string>> text = { {LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::length_of_tour], std::to_string(static_cast<int>(tour_params.size()))}, {LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::number_of_turns], std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(tour_params.size())*100.f)) + "%"} };
 	for (short i = 0; i < 6; ++i)
 	{
-		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::terrain_types][i], std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(tour_params.size())*100.f)) + "%"));
+		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::terrain_types][i], std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(tour_params.size())*100.f)) + '%'));
 	}
 	ShowLobbyInformation("", text, { static_cast<short>(main_window->GetWidth()) - static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()), 28 }, 1, 2, clear);
 }
@@ -198,7 +198,7 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 	int local_won_games;
 	int local_games_in_total;
 	int classification = 0 + (main_window->GetAIs() == 7);
-	fvar.open(FolderName::tour + "\\" + ranking_path);
+	fvar.open(FolderName::tour + '\\' + ranking_path);
 	for (int i = 0; std::getline(fvar, temp); ++i)
 	{
 		if (i%GameConstants::validate_ranking_details == 0)
@@ -235,7 +235,7 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 	fvar.close();
 
 	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::current_champion], best_name},
-		{LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::win_ratio],std::to_string(winrate).substr(0, static_cast<int>(std::to_string(winrate).size()) - 4) + "%"},
+		{LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::win_ratio],std::to_string(winrate).substr(0, static_cast<int>(std::to_string(winrate).size()) - 4) + '%'},
 		{LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::average_place], std::to_string(best_place)} };
 	ShowLobbyInformation(LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::tour_information_title], vector, { static_cast<short>(main_window->GetWidth()) - static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()), 19 }, 1, 2, clear);
 }

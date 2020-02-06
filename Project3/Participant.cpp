@@ -20,7 +20,7 @@ void Participant::Test(const std::string field, const bool show)
 	const char terrain = field[0];
 	std::string tire = tire_modifiers[atoi(&terrain)];
 	std::string helper = tire;
-	const int find = static_cast<int>(tire.find("x"));
+	const int find = static_cast<int>(tire.find('x'));
 	int reqired_tests = atoi(helper.erase(find, helper.size() - find).c_str());
 	int number_of_tests = atoi(tire.erase(0, find + 1).c_str());
 	int passed_tests = 0;
