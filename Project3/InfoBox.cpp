@@ -12,7 +12,7 @@ void InfoBox::Push(const std::string special_text, const std::string text)
 	const HANDLE handle = main_window->GetHandle();
 	
 	Clear();	
-	infobox.push_back(special_text + "  " + text);	
+	infobox.push_back(special_text + ' ' + text);	
 	//Deleting outdated elements
 	if (size_of_visible_infobox < static_cast<int>(infobox.size()))	
 	{
@@ -22,9 +22,9 @@ void InfoBox::Push(const std::string special_text, const std::string text)
 	const short vector_size = static_cast<short>(infobox.size());
 	SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + (vector_size - 1) * spacing });
 	SetConsoleTextAttribute(handle, main_window->color1);
-	std::cout << special_text << "  ";
+	std::cout << special_text + ' ';
 	SetConsoleTextAttribute(handle, main_window->color2);
-	std::cout << text << "  ";
+	std::cout << text + ' ';
 	//Showing rest of elements
 	SetConsoleTextAttribute(handle, 8);
 	for (short i = 0; i < vector_size - 1; ++i)

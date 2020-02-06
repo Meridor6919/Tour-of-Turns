@@ -552,6 +552,6 @@ void Text::Spaces(const int i)
 {
 	for (int j = 0; j < i; ++j)
 	{
-		std::cout << " ";
+		std::cout << ' ';
 	}
 }

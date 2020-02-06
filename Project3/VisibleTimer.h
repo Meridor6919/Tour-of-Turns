@@ -14,7 +14,7 @@ class VisibleTimer
 	std::mutex *mutex;
 	std::unique_ptr<std::thread> thread;
 
-	int delay = 50;
+	const int delay = 50;
 	int seconds;
 	std::chrono::time_point<std::chrono::system_clock> time;
 	void ShowTime();

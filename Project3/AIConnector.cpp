@@ -40,7 +40,10 @@ AIConnector::~AIConnector()
 {
 	Write(exit_command);
 	handling_connection = false;
-	connection_thread->join();
+	if (connection_thread->joinable())
+	{
+		connection_thread->join();
+	}
 	if (input_pipe_write != NULL)
 	{
 		CloseHandle(input_pipe_write);
