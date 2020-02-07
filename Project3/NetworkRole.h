@@ -22,6 +22,7 @@ protected:
 	std::mutex mutex;
 	bool timer_running = true;
 	std::unique_ptr<VisibleTimer> timer;
+	int ai_init = 0;
 
 	//Selection methods
 	int NumericalSelection(const COORD coords);

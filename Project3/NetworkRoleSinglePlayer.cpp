@@ -371,6 +371,19 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 {
 	this->tour = tour;
 	participants.emplace_back(name, car, tire, main_window);
+	if (main_window->GetAIs())
+	{
+		ai_connector = std::make_unique<AIConnector>(FolderName::main + '\\' + FileName::ai, 255);
+		if (!ai_connector->HandleConnection(&SinglePlayer::HandleAIConnection, this))
+		{
+			MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+			return;
+		}
+	}
+	while (ai_init != main_window->GetAIs())
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
 }
 void SinglePlayer::SortLeaderboard()
 {
@@ -381,6 +394,10 @@ void SinglePlayer::SortLeaderboard()
 		for (int j = 0; j < participants.size(); ++j)
 		{
 			if (participants[i].score > participants[j].score)
+			{
+				++participants[i].place;
+			}
+			else if (participants[i].score == participants[j].score && i > j)
 			{
 				++participants[i].place;
 			}
@@ -533,15 +550,6 @@ bool SinglePlayer::GameLobby()
 		COORD coord = { 0,0 };
 		timer = std::make_unique<VisibleTimer>(coord, main_window->GetHandle(), &timer_running, &mutex);
 		timer->StartTimer(timer_settings);
-	}
-	if (main_window->GetAIs())
-	{
-		ai_connector = std::make_unique<AIConnector>(FolderName::main+'\\'+FileName::ai,255);
-		if (!ai_connector->HandleConnection(&SinglePlayer::HandleAIConnection, this))
-		{
-			MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
-			return false;
-		}
 	}
 	main_window->SaveAtributes();
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
