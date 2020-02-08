@@ -330,7 +330,7 @@ void Host::GetParticipants(std::string name, std::string tour, std::string car, 
 	std::vector<std::string>* msgs;
 	std::chrono::milliseconds ms(20);
 
-	participants.push_back(Participant(name, car, tire, main_window));
+	participants.push_back(Participant(main_window));
 
 	for (int i = clients->size() - 1; i >= 0; i--)
 	{
@@ -363,7 +363,7 @@ void Host::GetParticipants(std::string name, std::string tour, std::string car, 
 			}
 			std::this_thread::sleep_for(ms);
 		}
-		participants.push_back(Participant(name, car_path, tires_path, main_window));
+		participants.push_back(Participant(main_window));
 	}
 	stage =1;
 }

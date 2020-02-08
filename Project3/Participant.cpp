@@ -1,12 +1,41 @@
 #include "Participant.h"
 #include "ToT_Window.h"
 
-Participant::Participant(const std::string name, const std::string car_path, const std::string tire_path, ToT_Window *main_window)
+Participant::Participant(ToT_Window *main_window)
 {
-	this->name = name;
-	this->car_path = car_path;
-	this->tire_path = tire_path;
 	this->main_window = main_window;
+}
+void Participant::Init(std::string tour_path)
+{
+	bool valid = false;
+	std::vector<std::string> car_names = main_window->GetCarNames(tour_path);
+	std::vector<std::string> tire_names = main_window->GetTireNames();
+
+	for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
+	{
+		if (car_names[i] == car_path)
+		{
+			valid = true;
+			break;
+		}
+	}
+	if (!valid)
+	{
+		car_path = car_names[0];
+	}
+	valid = false;
+	for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
+	{
+		if (tire_names[i] == tire_path)
+		{
+			valid = true;
+			break;
+		}
+	}
+	if (!valid)
+	{
+		tire_path = tire_names[0];
+	}
 	this->car_modifiers = main_window->GetCarParameters(car_path);
 	this->tire_modifiers = main_window->GetTireParameters(tire_path);
 	this->current_durability = static_cast<float>(car_modifiers[CarAttributes::durability]);

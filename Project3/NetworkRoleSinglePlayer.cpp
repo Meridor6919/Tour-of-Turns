@@ -4,6 +4,7 @@ SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
 	request_handler = std::make_unique<GeneralMultiPlayer::RequestHandler>();
+	participants.push_back(Participant(this->main_window));
 }
 int SinglePlayer::NumericalSelection(const COORD coords)
 {
@@ -369,9 +370,18 @@ void SinglePlayer::ShowIndicator(int participant)
 }
 void SinglePlayer::GetParticipants(const std::string name, const std::string tour, const std::string car, const std::string tire)
 {
+	const int number_of_ais = main_window->GetAIs();
+	
 	this->tour = tour;
-	participants.emplace_back(name, car, tire, main_window);
-	if (main_window->GetAIs())
+	participants[0].name = name; 
+	participants[0].car_path = car; 
+	participants[0].tire_path = tire;
+
+	for (int i = 0; i < number_of_ais; ++i)
+	{
+		participants.push_back(Participant(main_window));
+	}
+	if (number_of_ais)
 	{
 		ai_connector = std::make_unique<AIConnector>(FolderName::main + '\\' + FileName::ai, 255);
 		if (!ai_connector->HandleConnection(&SinglePlayer::HandleAIConnection, this))
@@ -380,9 +390,13 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 			return;
 		}
 	}
-	while (ai_init != main_window->GetAIs())
+	while (ai_init != number_of_ais)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+	{
+		participants[i].Init(tour);
 	}
 }
 void SinglePlayer::SortLeaderboard()
