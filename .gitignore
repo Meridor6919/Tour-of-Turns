@@ -259,3 +259,6 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Project3/GameFiles/ToTAI.iobj
+/Project3/GameFiles/ToTAI.ipdb
+/Project3/GameFiles/ToTAI.exe
