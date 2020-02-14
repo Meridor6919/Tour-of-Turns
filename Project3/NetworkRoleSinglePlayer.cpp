@@ -583,6 +583,17 @@ void SinglePlayer::ActionPhase()
 	{
 		while (participants[i].IsAlive() && !participants[i].action_performed)
 		{
+			if (!timer_running)
+			{
+				if (participants[i].current_speed > 0.f)
+				{
+					ValidateAction(std::make_pair<int>(3, 0), i);
+				}
+				else
+				{
+					ValidateAction(std::make_pair<int>(4, 0), i);
+				}
+			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		}
 	}

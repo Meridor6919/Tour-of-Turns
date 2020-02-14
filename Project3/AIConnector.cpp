@@ -22,16 +22,21 @@ bool AIConnector::Read(std::string &msg_received)
 {
 	unsigned long bytes_read;
 	char *buffer = new char[buffer_size];
-	const bool result = ReadFile(output_pipe_read, buffer, buffer_size, &bytes_read, NULL);
-
-	if (result)
+	bool result = true;
+	DWORD bytes_available;
+	PeekNamedPipe(output_pipe_read, 0, 0, 0, &bytes_available, 0);
+	if (bytes_available)
 	{
-		msg_received = buffer;
-		msg_received = msg_received.substr(0, bytes_read);
-	}
-	else
-	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
+		result = ReadFile(output_pipe_read, buffer, buffer_size, &bytes_read, NULL);
+		if (result)
+		{
+			msg_received = buffer;
+			msg_received = msg_received.substr(0, bytes_read);
+		}
+		else
+		{
+			MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
+		}
 	}
 	delete[] buffer;
 	return result;

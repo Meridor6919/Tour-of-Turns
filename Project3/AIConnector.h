@@ -8,7 +8,6 @@
 class AIConnector
 {
 	int buffer_size;
-	const std::string start_command = "start";
 	const std::string exit_command = "exit";
 	PROCESS_INFORMATION process_info = { 0 };
 	HANDLE input_pipe_write;
@@ -37,7 +36,7 @@ bool AIConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* object
 {
 	SECURITY_ATTRIBUTES security_atributes = { 0 };
 	security_atributes.bInheritHandle = 1;
-
+	
 	if (!CreatePipe(&output_pipe_read, &output_pipe_write, &security_atributes, 0))
 	{
 		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
@@ -55,11 +54,6 @@ bool AIConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* object
 	startup_info.hStdOutput = output_pipe_write;
 
 	if (!CreateProcessA(NULL, (LPSTR)connector_path.c_str(), NULL, NULL, TRUE, 0, NULL, NULL, &startup_info, &process_info))
-	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
-		return false;
-	}
-	if(!Write(start_command))
 	{
 		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
 		return false;
@@ -82,6 +76,6 @@ void  AIConnector::RecvFunction(void(T::*MsgHandling)(std::string), T* object)
 		{
 			std::invoke(MsgHandling, object, msg_received);
 		}
-
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}
 }
