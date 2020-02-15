@@ -44,6 +44,27 @@ namespace LanguagePack
 		last
 	};
 }
+namespace ConnectionCodes
+{
+	enum
+	{
+		Start = 10,
+		GetInit,
+		NewTurn,
+		GetCarNames,
+		GetTireNames,
+		GetCarParams,
+		GetTireParams,
+		GetAllAttributes,
+		GetTour,
+		SetName,
+		SetCar,
+		SetTires,
+		SetAction,
+		SetAttack,
+		last
+	};
+}
 namespace GameLobbyInformations
 {
 	enum

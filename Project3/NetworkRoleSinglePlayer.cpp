@@ -682,7 +682,37 @@ int SinglePlayer::PerformAttack()
 }
 void SinglePlayer::HandleAIConnection(std::string msg_received)
 {
-	
+	const int msg_length = static_cast<int>(msg_received.size());
+	const int code = atoi(msg_received.substr(0, 2).c_str());
+	switch (code)
+	{
+		case ConnectionCodes::Start:
+		{
+			ai_connector->Write(std::to_string(code));
+			break;
+		}
+		case ConnectionCodes::GetInit:
+		{
+			ai_connector->Write(std::to_string(code) + std::to_string(main_window->GetAIs()));
+			break;
+		}
+		case ConnectionCodes::NewTurn:
+		{
+			if (msg_length < 3)
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			const int ai_position_start = static_cast<int>(participants.size()) - main_window->GetAIs();
+			const int id = msg_received[2] - 48 + ai_position_start;
+			if (id < ai_position_start || id >= static_cast<int>(participants.size()))
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			ai_connector->Write(std::to_string(code) + std::to_string(participants[id].action_performed));
+		}
+	}
 }
 std::pair<int, int> SinglePlayer::PerformAction()
 {
