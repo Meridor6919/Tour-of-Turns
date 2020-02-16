@@ -687,9 +687,9 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 	{
 		return;
 	}
-	OutputDebugString(msg_received.c_str());
 	const int code = atoi(msg_received.substr(0, 2).c_str());
-	const std::string msg = msg_received.substr(2, msg_length - 2);
+	OutputDebugString(msg_received.c_str());
+	const std::string msg = msg_received.substr(2, msg_length - 4);
 	switch (code)
 	{
 		case ConnectionCodes::Start:
@@ -764,6 +764,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			{
 				ai_connector->Write(std::to_string(car_param[i]));
 			}
+			break;
 		}
 		case ConnectionCodes::GetTireParams:
 		{
@@ -787,6 +788,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			{
 				ai_connector->Write(tires_param[i]);
 			}
+			break;
 		}
 		case ConnectionCodes::GetAllAttributes:
 		{
@@ -796,6 +798,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 				ai_connector->Write(std::to_string(participants[i].current_durability));
 				ai_connector->Write(std::to_string(participants[i].score));
 			}
+			break;
 		}
 		case ConnectionCodes::GetTour:
 		{
