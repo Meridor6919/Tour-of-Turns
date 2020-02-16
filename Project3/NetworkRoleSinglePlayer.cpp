@@ -473,7 +473,7 @@ bool SinglePlayer::GameLobby()
 		{
 			case 0://choosing name
 			{
-				name = StringSelection(name, 14, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_menu_options][0].size()), 25 });
+				name = StringSelection(name, GameConstants::maximum_name_length, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_menu_options][0].size()), 25 });
 				main_window->SetName(name);
 				break;
 			}
@@ -809,6 +809,85 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			{
 				ai_connector->Write(tour_param[i]);
 			}
+			break;
+		}
+		case ConnectionCodes::SetName:
+		{
+			const std::string selected_name = msg.substr(1, msg.size() - 1);
+			const int ai_id = msg[0] - 48;
+			//name validation
+			const int selected_name_size = static_cast<int>(selected_name.size());
+			if (selected_name_size > GameConstants::maximum_name_length || selected_name_size <= 0)
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			//ai id validation
+			if (ai_id < 0 || ai_id > main_window->GetAIs())
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].name = selected_name;
+			break;
+		}
+		case ConnectionCodes::SetCar:
+		{
+			bool valid = false;
+			const std::vector<std::string> car_names = main_window->GetCarNames(tour);
+			const std::string selected_car = msg.substr(1, msg.size() - 1);
+			const int ai_id = msg[0] - 48;
+			//car validation
+			for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
+			{
+				if (selected_car == car_names[i])
+				{
+					valid = true;
+					break;
+				}
+			}
+			if (!valid)
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			//ai id validation
+			if(ai_id < 0 || ai_id > main_window->GetAIs())
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].car_path = selected_car;
+			break;
+		}
+		case ConnectionCodes::SetTires:
+		{
+			bool valid = false;
+			const std::vector<std::string> tire_names = main_window->GetTireNames();
+			const std::string selected_tires = msg.substr(1, msg.size() - 1);
+			const int ai_id = msg[0] - 48;
+			//car validation
+			for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
+			{
+				if (selected_tires == tire_names[i])
+				{
+					valid = true;
+					break;
+				}
+			}
+			if (!valid)
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			//ai id validation
+			if (ai_id < 0 || ai_id > main_window->GetAIs())
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].tire_path = selected_tires;
+			++ai_init;
 			break;
 		}
 	}
