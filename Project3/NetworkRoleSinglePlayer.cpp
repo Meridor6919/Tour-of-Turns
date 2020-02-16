@@ -683,7 +683,13 @@ int SinglePlayer::PerformAttack()
 void SinglePlayer::HandleAIConnection(std::string msg_received)
 {
 	const int msg_length = static_cast<int>(msg_received.size());
+	if (msg_length < 2)
+	{
+		return;
+	}
+	OutputDebugString(msg_received.c_str());
 	const int code = atoi(msg_received.substr(0, 2).c_str());
+	const std::string msg = msg_received.substr(2, msg_length - 2);
 	switch (code)
 	{
 		case ConnectionCodes::Start:
@@ -693,7 +699,8 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		}
 		case ConnectionCodes::GetInit:
 		{
-			ai_connector->Write(std::to_string(code) + std::to_string(main_window->GetAIs()));
+			ai_connector->Write(std::to_string(main_window->GetAIs()));
+			ai_connector->Write(std::to_string(static_cast<int>(participants.size())));
 			break;
 		}
 		case ConnectionCodes::NewTurn:
@@ -710,7 +717,96 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
 				exit(0);
 			}
-			ai_connector->Write(std::to_string(code) + std::to_string(participants[id].action_performed));
+			ai_connector->Write(std::to_string(participants[id].action_performed));
+			break;
+		}
+		case ConnectionCodes::GetCarNames:
+		{
+			const std::vector<std::string> car_names = main_window->GetCarNames(tour);
+			const int car_names_size = static_cast<int>(car_names.size());
+			ai_connector->Write(std::to_string(car_names_size));
+			for (int i = 0; i < car_names_size; ++i)
+			{
+				ai_connector->Write(car_names[i]);
+			}
+			break;
+		}
+		case ConnectionCodes::GetTireNames:
+		{
+			const std::vector<std::string> tire_names = main_window->GetTireNames();
+			const int tire_names_size = static_cast<int>(tire_names.size());
+			ai_connector->Write(std::to_string(tire_names_size));
+			for (int i = 0; i < tire_names_size; ++i)
+			{
+				ai_connector->Write(tire_names[i]);
+			}
+			break;
+		}
+		case ConnectionCodes::GetCarParams:
+		{
+			bool valid = false;
+			const std::vector<std::string> car_names = main_window->GetCarNames(tour);
+			for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
+			{
+				if (msg == car_names[i])
+				{
+					valid = true;
+					break;
+				}
+			}
+			if (!valid)
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			const std::vector<int> car_param = main_window->GetCarParameters(msg);
+			for (int i = 0; i < static_cast<int>(car_param.size()); ++i)
+			{
+				ai_connector->Write(std::to_string(car_param[i]));
+			}
+		}
+		case ConnectionCodes::GetTireParams:
+		{
+			bool valid = false;
+			const std::vector<std::string> tire_names = main_window->GetTireNames();
+			for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
+			{
+				if (msg == tire_names[i])
+				{
+					valid = true;
+					break;
+				}
+			}
+			if (!valid)
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			const std::vector<std::string> tires_param = main_window->GetTireParameters(msg);
+			for (int i = 0; i < static_cast<int>(tires_param.size()); ++i)
+			{
+				ai_connector->Write(tires_param[i]);
+			}
+		}
+		case ConnectionCodes::GetAllAttributes:
+		{
+			for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+			{
+				ai_connector->Write(std::to_string(participants[i].current_speed));
+				ai_connector->Write(std::to_string(participants[i].current_durability));
+				ai_connector->Write(std::to_string(participants[i].score));
+			}
+		}
+		case ConnectionCodes::GetTour:
+		{
+			const std::vector<std::string> tour_param = main_window->GetTourParameters(tour, 0, INT_MAX);
+			const int tour_size = static_cast<int>(tour_param.size());
+			ai_connector->Write(std::to_string(tour_size));
+			for (int i = 0; i < tour_size; ++i)
+			{
+				ai_connector->Write(tour_param[i]);
+			}
+			break;
 		}
 	}
 }
