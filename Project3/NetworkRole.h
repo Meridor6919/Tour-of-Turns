@@ -36,6 +36,7 @@ protected:
 	void ShowRankingParameters(const std::string tire_path, bool clear = false);
 	void ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear);
 	void ShowLeaderboard(const std::vector<std::string> text, short pos, int color, const bool clear = false);
+	void ShowLoadingAI(const bool clear = false);
 	void ShowChances(int value, bool reset = false);
 	void ShowIndicator(int participant);
 

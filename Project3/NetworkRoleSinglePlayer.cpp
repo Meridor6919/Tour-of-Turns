@@ -307,6 +307,56 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 	}
 	mutex.unlock();
 }
+void SinglePlayer::ShowLoadingAI(const bool clear)
+{
+	const COORD loading_screen_postion = { static_cast<int>(main_window->GetWidth()) / 2, static_cast<int>(main_window->GetHeight()) / 2 - 5 };
+	const HANDLE handle = main_window->GetHandle();
+	const short title_length = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_title].size());
+	if (clear)
+	{
+		mutex.lock();
+		SetConsoleCursorPosition(handle, { loading_screen_postion.X -  title_length/ 2, loading_screen_postion.Y });
+		for (int i = 0; i < title_length; ++i)
+		{
+			std::cout << ' ';
+		}
+		for (short i = 0; i < 3; ++i)
+		{
+			SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2+i });
+			std::cout << "   ";
+		}
+		mutex.unlock();
+		return;
+	}
+	else
+	{
+		int iteration = 0;
+		while (ai_init != main_window->GetAIs())
+		{
+			std::string loading_wheel = LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_wheel];;
+			iteration = (iteration + 1) % 8;
+			for (int i = 0; i < 4; ++i)
+			{
+				loading_wheel[(i + iteration) % 8] = ' ';
+			}
+			mutex.lock();
+			SetConsoleCursorPosition(handle, { loading_screen_postion.X - title_length /2, loading_screen_postion.Y });
+			SetConsoleTextAttribute(handle, main_window->color1);
+			std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_title];
+			SetConsoleTextAttribute(handle, main_window->color2);
+			{
+				SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2 });
+				std::cout << loading_wheel.substr(0, 3);
+				SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 3 });
+				std::cout << loading_wheel[7] << ' ' << loading_wheel[3];
+				SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 4 });
+				std::cout << loading_wheel[6] << loading_wheel[5] << loading_wheel[4];
+			}
+			mutex.unlock();
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
+	}	
+}
 void SinglePlayer::ShowChances(const int value, const bool reset)
 {
 	float speed_estimation = (participants[0].current_speed + static_cast<float>(value) * (0.9f + 0.2f*participants[0].TireEffectivness(current_field)));
@@ -390,14 +440,12 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 			return;
 		}
 	}
-	while (ai_init != number_of_ais)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
+	ShowLoadingAI();
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
 		participants[i].Init(tour);
 	}
+	ShowLoadingAI(true);
 }
 void SinglePlayer::SortLeaderboard()
 {
@@ -559,17 +607,17 @@ bool SinglePlayer::GameLobby()
 		Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
 		mutex.unlock();
 	}
+	main_window->SaveAtributes();
+	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
+	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
+	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
+	GetParticipants(name, tours[tours_pos] + ExtName::tour, cars[cars_pos] + ExtName::car, tires[tires_pos] + ExtName::tire);
 	if (timer_settings)
 	{
 		COORD coord = { 0,0 };
 		timer = std::make_unique<VisibleTimer>(coord, main_window->GetHandle(), &timer_running, &mutex);
 		timer->StartTimer(timer_settings);
 	}
-	main_window->SaveAtributes();
-	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
-	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
-	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
-	GetParticipants(name, tours[tours_pos] + ExtName::tour, cars[cars_pos] + ExtName::car, tires[tires_pos] + ExtName::tire);
 	return true;
 }
 void SinglePlayer::AttackPhase()

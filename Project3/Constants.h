@@ -126,6 +126,8 @@ namespace OtherStrings
 		in_result_of_attacks,
 		speed,
 		border,
+		loadingai_title,
+		loadingai_wheel,
 		last
 	};
 }

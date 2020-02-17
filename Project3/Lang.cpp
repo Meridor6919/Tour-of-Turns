@@ -99,6 +99,10 @@ namespace LanguagePack
 		{
 			return false;
 		}
+		if (static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_wheel].size()) != 8)
+		{
+			return false;
+		}
 		return true;
 	}
 	bool LoadLanguagePack(std::string path)
