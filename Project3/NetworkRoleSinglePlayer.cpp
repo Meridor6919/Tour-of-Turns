@@ -602,12 +602,13 @@ void SinglePlayer::ValidateAttack(int target, int participant)
 {
 	if (participants[participant].IsAlive())
 	{
-		if (target != 10)
+		if (target < static_cast<int>(participants.size()))
 		{
 			if (participants[target].score < participants[participant].score + GameConstants::attack_backward_distance && 
 				participants[target].score >participants[participant].score - GameConstants::attack_forward_distance && 
 				participants[target].IsAlive() &&
-				!participants[participant].attack_performed)
+				!participants[participant].attack_performed &&
+				target != participant)
 			{
 				participants[target].attacked += 1;
 				participants[participant].attacked += 0.5f;
@@ -888,6 +889,44 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			}
 			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].tire_path = selected_tires;
 			++ai_init;
+			break;
+		}
+		case ConnectionCodes::SetAction:
+		{
+			const int ai_id = msg[0] - 48;
+			const int selected_action_id = msg[1] - 48;
+			const int selected_action_value = atoi(msg.substr(2, msg.size() - 2).c_str());
+			//ai id validation
+			if (ai_id < 0 || ai_id > main_window->GetAIs())
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			//action pre-validation
+			if(selected_action_id < 0 ||selected_action_id > 5 || !participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			ValidateAction({ selected_action_id, selected_action_value }, static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id);
+			break;
+		}
+		case ConnectionCodes::SetAttack:
+		{
+			const int ai_id = msg[0] - 48;
+			const int selected_target = atoi(msg.substr(1, msg.size()-1).c_str());
+			//ai id validation
+			if (ai_id < 0 || ai_id > main_window->GetAIs())
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			if (!participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
+			{
+				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
+				exit(0);
+			}
+			ValidateAttack(selected_target, static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id);
 			break;
 		}
 	}
