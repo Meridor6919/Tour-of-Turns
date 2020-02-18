@@ -738,7 +738,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 	}
 	const int code = atoi(msg_received.substr(0, 2).c_str());
 	OutputDebugString(msg_received.c_str());
-	const std::string msg = msg_received.substr(2, msg_length - 4);
+	const std::string msg = msg_received.substr(2, msg_length - 2);
 	switch (code)
 	{
 		case ConnectionCodes::Start:
