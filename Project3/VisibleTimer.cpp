@@ -1,11 +1,12 @@
 #include "VisibleTimer.h"
 
-VisibleTimer::VisibleTimer(COORD coords, HANDLE handle, bool *timer_running, std::mutex *mutex)
+VisibleTimer::VisibleTimer(COORD coords, HANDLE handle, bool *timer_running, int color, std::mutex *mutex)
 {
 	this->position_of_timer = coords;
 	this->window_handle = handle;
 	this->timer_running = timer_running;
 	this->mutex = mutex;
+	this->color = color;
 	*timer_running = false;
 	thread = std::make_unique<std::thread>(&VisibleTimer::ShowTime, this);
 
@@ -22,6 +23,7 @@ void VisibleTimer::ShowTime()
 			int minutes_required = (seconds - miliseconds_elapsed / 1000) / 60;
 			mutex->lock();
 			SetConsoleCursorPosition(window_handle, position_of_timer);
+			SetConsoleTextAttribute(window_handle, color);
 			std::cout << (minutes_required < 10 ? "0" : "") << minutes_required << ':' << (seconds_required < 10 ? "0" : "") << seconds_required;
 			mutex->unlock();
 			if (miliseconds_elapsed > seconds * 1000)

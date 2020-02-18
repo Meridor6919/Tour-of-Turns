@@ -298,7 +298,7 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 		SetConsoleCursorPosition(main_window->GetHandle(), { x_pos, y_pos });
 		if (clear)
 		{
-			Text::Spaces(static_cast<int>(text.size()));
+			Text::Spaces(static_cast<int>(text[j].size()));
 		}
 		else
 		{
@@ -615,7 +615,7 @@ bool SinglePlayer::GameLobby()
 	if (timer_settings)
 	{
 		COORD coord = { 0,0 };
-		timer = std::make_unique<VisibleTimer>(coord, main_window->GetHandle(), &timer_running, &mutex);
+		timer = std::make_unique<VisibleTimer>(coord, main_window->GetHandle(), &timer_running, main_window->color1, &mutex);
 		timer->StartTimer(timer_settings);
 	}
 	return true;

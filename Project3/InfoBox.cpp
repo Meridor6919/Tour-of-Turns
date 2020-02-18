@@ -24,13 +24,13 @@ void InfoBox::Push(const std::string special_text, const std::string text)
 	SetConsoleTextAttribute(handle, main_window->color1);
 	std::cout << special_text + ' ';
 	SetConsoleTextAttribute(handle, main_window->color2);
-	std::cout << text + ' ';
+	std::cout << text;
 	//Showing rest of elements
 	SetConsoleTextAttribute(handle, 8);
 	for (short i = 0; i < vector_size - 1; ++i)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + i  * spacing });
-		std::cout << infobox[vector_size - i - 1];
+		std::cout << infobox[i];
 	}
 }
 void InfoBox::Clear()
@@ -40,7 +40,7 @@ void InfoBox::Clear()
 	for (short i = 0; i < vector_size; ++i)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + i  * spacing });
-		Text::Spaces(static_cast<short>(infobox[0].size()));
+		Text::Spaces(static_cast<short>(infobox[i].size()));
 	}
 }
 

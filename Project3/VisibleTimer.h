@@ -11,6 +11,7 @@ class VisibleTimer
 	HANDLE window_handle;
 	bool *timer_running;
 	bool iterate = true;
+	int color;
 	std::mutex *mutex;
 	std::unique_ptr<std::thread> thread;
 
@@ -21,7 +22,7 @@ class VisibleTimer
 
 
 public:
-	VisibleTimer(COORD coords, HANDLE handle, bool *timer_running, std::mutex *mutex);
+	VisibleTimer(COORD coords, HANDLE handle, bool *timer_running, int color, std::mutex *mutex);
 	void StartTimer(int timer_settings);
 	void StopTimer();
 	~VisibleTimer();
