@@ -293,7 +293,7 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 	SetConsoleTextAttribute(main_window->GetHandle(), color);
 	for (int j = 0; j < static_cast<int>(text.size()); ++j)
 	{
-		const short x_pos = static_cast<short>(main_window->GetWidth() - 55 + 16 * j + 8) - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(text[j].size()));
+		const short x_pos = static_cast<short>(main_window->GetWidth() - (16 * static_cast<int>(text.size())) + 16 * j) - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(text[j].size()));
 		const short y_pos = 16 + pos * 2;
 		SetConsoleCursorPosition(main_window->GetHandle(), { x_pos, y_pos });
 		if (clear)
@@ -408,13 +408,13 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 	}
 	mutex.unlock();
 }
-void SinglePlayer::ShowIndicator(int participant)
+void SinglePlayer::ShowIndicator(int participant, bool clear)
 {
 	const COORD coord = { main_window->GetWidth() - 55, 16 + participants[participant].place * 2 };
 	mutex.lock();
 	SetConsoleCursorPosition(main_window->GetHandle(), coord);
 	SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].action_performed ? main_window->color2 : 8);
-	std::cout << '*';
+	std::cout << (clear ? ' ' : '*');
 	mutex.unlock();
 	
 }
@@ -452,14 +452,14 @@ void SinglePlayer::SortLeaderboard()
 	//ugly quadratic complexity but it is justified by the fact that n is at most 8
 	for (int i = 0; i < participants.size(); ++i)
 	{
-		participants[i].place = 1;
+		participants[i].place = participants[i].IsAlive() ? 1 : 9;
 		for (int j = 0; j < participants.size(); ++j)
 		{
-			if (participants[i].score > participants[j].score)
+			if (participants[i].score > participants[j].score && participants[j].IsAlive())
 			{
 				++participants[i].place;
 			}
-			else if (participants[i].score == participants[j].score && i > j)
+			else if (participants[i].score == participants[j].score && i > j && participants[j].IsAlive())
 			{
 				++participants[i].place;
 			}
@@ -618,6 +618,7 @@ bool SinglePlayer::GameLobby()
 		timer = std::make_unique<VisibleTimer>(coord, main_window->GetHandle(), &timer_running, main_window->color1, &mutex);
 		timer->StartTimer(timer_settings);
 	}
+	SortLeaderboard();
 	return true;
 }
 void SinglePlayer::AttackPhase()
@@ -703,7 +704,10 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 		participants[participant].CalculateParameters(static_cast<float>(action.second), current_field);
 		participants[participant].action_performed = true;
 		ShowIndicator(participant);
-		
+	}
+	else
+	{
+		ShowIndicator(participant, true);
 	}
 }
 int SinglePlayer::PerformAttack()
@@ -1038,19 +1042,22 @@ void SinglePlayer::Leaderboard(const bool clear)
 	ShowLeaderboard(LanguagePack::text[LanguagePack::race_leaderboard], 0, main_window->color2, clear);
 	if (!clear)
 	{
-		SortLeaderboard();
 		for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 		{
 			participants[i].attack_performed = false;
 			participants[i].action_performed = false;
-			ShowIndicator(i);
+			ShowIndicator(i, !participants[i].IsAlive());
 		}
+		SortLeaderboard();
 	}
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		std::vector<std::string> leaderboard_info = { std::to_string(participants[i].place), participants[i].name, std::to_string(participants[i].score) };
-		leaderboard_info[2] = leaderboard_info[2].substr(0, static_cast<int>(leaderboard_info[2].size()) - 4);
-		ShowLeaderboard(leaderboard_info, static_cast<short>(participants[i].place), main_window->color1, clear);
+		if (participants[i].IsAlive() || clear)
+		{
+			std::vector<std::string> leaderboard_info = { std::to_string(participants[i].place), participants[i].name, std::to_string(participants[i].score) };
+			leaderboard_info[2] = leaderboard_info[2].substr(0, static_cast<int>(leaderboard_info[2].size()) - 4);
+			ShowLeaderboard(leaderboard_info, static_cast<short>(participants[i].place), main_window->color1, clear);
+		}
 	}
 }
 void SinglePlayer::Interface()

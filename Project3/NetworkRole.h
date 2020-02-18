@@ -38,7 +38,7 @@ protected:
 	void ShowLeaderboard(const std::vector<std::string> text, short pos, int color, const bool clear = false);
 	void ShowLoadingAI(const bool clear = false);
 	void ShowChances(int value, bool reset = false);
-	void ShowIndicator(int participant);
+	void ShowIndicator(int participant, bool clear = false);
 
 	//Game logic
 	void ValidateAttack(int target, int participant);
