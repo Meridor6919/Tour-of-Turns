@@ -75,6 +75,7 @@ namespace GameLobbyInformations
 		number_of_turns,
 		current_champion,
 		win_ratio,
+		games_in_total,
 		average_place,
 		last
 
