@@ -1162,10 +1162,20 @@ void SinglePlayer::Finish()
 	{
 		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), !participants[i].IsAlive(), participants[i].sum_of_performed_attacks, participants[i].sum_of_performed_drifts, static_cast<int>(participants[i].sum_of_durability_burned), participants[i].car_path, participants[i].tire_path);
 	}
-	main_window->infobox->infobox.clear();
 	if (main_window->GetTimerSettings())
 	{
 		timer->StopTimer();
 	}
 	ai_connector.reset();
+	take_action_position = 0;
+	participants.clear();
+	participants.push_back(Participant(this->main_window));
+	ai_init = 0;
+	main_window->infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::race_finished],"");
+	char c = _getch();
+	if (c < 0)
+	{
+		_getch();
+	}
+	main_window->infobox->infobox.clear();
 }

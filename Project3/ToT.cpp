@@ -463,7 +463,7 @@ void ToT::Game(const bool multiplayer)
 	{
 		network_role = std::make_shared<SinglePlayer>(*main_window);
 	}
-	if (network_role->GameLobby())
+	while (network_role->GameLobby())
 	{
 		network_role->Interface();
 		network_role->Leaderboard(true);
@@ -482,8 +482,8 @@ void ToT::Game(const bool multiplayer)
 			network_role->Leaderboard(false);
 		}
 		network_role->Finish();
-		_getch();
-		_getch();
+		system("cls");
+		main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
 	}
 	system("cls");
 	main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);

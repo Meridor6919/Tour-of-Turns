@@ -128,6 +128,7 @@ namespace OtherStrings
 		border,
 		loadingai_title,
 		loadingai_wheel,
+		race_finished,
 		last
 	};
 }
