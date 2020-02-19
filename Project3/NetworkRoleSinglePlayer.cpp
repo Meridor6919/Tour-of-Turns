@@ -18,6 +18,7 @@ int SinglePlayer::NumericalSelection(const COORD coords)
 	{
 		button = Text::Button(&timer_running, 13, 20);
 		mutex.lock();
+		SetConsoleTextAttribute(window, main_window->color1);
 		SetConsoleCursorPosition(window, { coords.X + 2 + decimal_position, coords.Y });
 		if (button >= '0' && button <= '9')
 		{
@@ -74,6 +75,7 @@ int SinglePlayer::BinarySelection(const COORD coords)
 		ShowChances(participants[0].car_modifiers[CarAttributes::hand_brake_value] * -1 * static_cast<int>(take_action_position == 2), take_action_position == 4);
 		mutex.lock();
 		SetConsoleCursorPosition(window, coords);
+		SetConsoleTextAttribute(window, main_window->color1);
 		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::action_confirm];
 		mutex.unlock();
 		button = Text::Button(&timer_running, 13, 20);
@@ -407,7 +409,6 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 			SetConsoleCursorPosition(window, { static_cast<short>(main_window->GetWidth() - 51), static_cast<short>(main_window->GetHeight() - 28 + i) });
 			std::cout << values[i].second << "                   ";
 		}
-		SetConsoleTextAttribute(window, main_window->color2);
 	}
 	mutex.unlock();
 }
