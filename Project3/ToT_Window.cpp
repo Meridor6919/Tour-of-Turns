@@ -94,6 +94,20 @@ void ToT_Window::LoadAtributes()
 	fvar >> lang;
 	fvar >> timer_settings;
 	fvar.close();
+	
+	bool name_valid = true;
+	for (int i = 0; i < static_cast<int>(name.size()); ++i)
+	{
+		if (name[i] == '_')
+		{
+			name[i] = ' ';
+		}
+		else if (!(name[i] >= 'a' && name[i] <= 'z' || name[i] >= 'A' && name[i] <= 'Z'))
+		{
+			name_valid = false;
+			break;
+		}
+	}
 
 	if (!LanguagePack::LoadLanguagePack(FolderName::language + '\\' + lang))
 	{
@@ -129,7 +143,7 @@ void ToT_Window::LoadAtributes()
 	{
 		ais = 7;
 	}
-	if (name.size() < 1 || name.size() > 14)
+	if (static_cast<int>(name.size()) < 1 || static_cast<int>(name.size()) > GameConstants::maximum_name_length || !name_valid)
 	{
 		name = LanguagePack::text[LanguagePack::other_strings][OtherStrings::default_name];
 	}
@@ -578,7 +592,14 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 }
 void ToT_Window::SaveAtributes()
 {
-	std::fstream fvar;
+	for (int i = 0; i < static_cast<int>(name.size()); ++i)
+	{
+		if (name[i] == ' ')
+		{
+			name[i] = '_';
+		}
+	}
+	std::ofstream fvar;
 	fvar.open(FolderName::main + '\\' + FileName::config);
 	fvar << color1 << '\n';
 	fvar << color2 << '\n';
