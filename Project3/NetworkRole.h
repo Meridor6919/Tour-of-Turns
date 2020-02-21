@@ -13,7 +13,7 @@
 class SinglePlayer 
 {
 protected:
-	std::string current_field;
+	std::string current_field = "0";
 	std::string tour;
 	short take_action_position = 0;
 	std::vector<Participant> participants;

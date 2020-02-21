@@ -271,40 +271,39 @@ void Participant::CalculateParameters(float value, std::string current_field)
 }
 float Participant::TireEffectivness(std::string field)
 {
-	auto Factorial = [](int number) {
-		float ret = 1.0f;
-		for (int i = 1; i <= number; ++i)
+	auto Probability = [](double number_of_tests, double wanted_number) {
+
+		double result = 1;
+		int extra = static_cast<int>(number_of_tests - wanted_number);
+		extra < 1 ? extra = 1 : 0;
+		wanted_number < 1 ? wanted_number = 1 : 0;
+		while (number_of_tests > 1)
 		{
-			ret *= static_cast<float>(i);
+			result *= number_of_tests / wanted_number / extra / 2;
+			--number_of_tests;
+			--wanted_number < 1 ? wanted_number = 1 : 0;
+			--extra < 1 ? extra = 1 : 0;
 		}
-		return ret;
+		return result / 2;
 	};
-	auto Power = [](float number, int power) {
-		
-		float ret = 1.0f;
-		for (int i = 0; i < power; ++i)
-		{
-			ret *= number;
-		}
-		return ret;
-	};
-	int terrain = atoi(field.substr(0, 1).c_str());
-	int x, y;
-	float result = 0.0f;
+
+	const int terrain = field[0] - 48;
+	double x, y;
+	double result = 0.0;
 	for (int i = 0; i < static_cast<int>(tire_modifiers[terrain].size()); ++i)
 	{
 		if (tire_modifiers[terrain][i] == 'x')
 		{
-			x = static_cast<int>(atoi(tire_modifiers[terrain].substr(0, i).c_str()));
-			y = static_cast<int>(atoi(tire_modifiers[terrain].substr(i + 1, static_cast<int>(tire_modifiers[terrain].size()) - i - 1).c_str()));
+			x = atof(tire_modifiers[terrain].substr(0, i).c_str());
+			y = atof(tire_modifiers[terrain].substr(i + 1, static_cast<int>(tire_modifiers[terrain].size()) - i - 1).c_str());
 			break;
 		}
 	}
-	for (int j = 0; j <= y - x; ++x)
+	for (int j = 0; j < static_cast<int>(y - x + 1); ++j)
 	{
-		result += Factorial(y) / Factorial(y - x) / Factorial(x) * Power(0.5f, x) * Power(0.5f, y - x);
+		result += Probability(y, j);
 	}
-	return result;
+	return static_cast<float>(result);
 }
 bool Participant::IsAlive()
 {

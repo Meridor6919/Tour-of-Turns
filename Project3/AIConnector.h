@@ -76,7 +76,7 @@ void  AIConnector::RecvFunction(void(T::*MsgHandling)(std::string), T* object)
 		{
 			while (static_cast<int>(msg_received.size()) > 0)
 			{
-				int found = msg_received.find("\r\n");
+				int found = static_cast<int>(msg_received.find("\r\n"));
 				std::invoke(MsgHandling, object, msg_received.substr(0, found));
 				msg_received.erase(0, found + 2);
 			}

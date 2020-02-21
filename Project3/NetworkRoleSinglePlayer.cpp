@@ -314,7 +314,7 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 }
 void SinglePlayer::ShowLoadingAI(const bool clear)
 {
-	const COORD loading_screen_postion = { static_cast<int>(main_window->GetWidth()) / 2, static_cast<int>(main_window->GetHeight()) / 2 - 5 };
+	const COORD loading_screen_postion = { static_cast<short>(main_window->GetWidth()) / 2, static_cast<short>(main_window->GetHeight()) / 2 - 5 };
 	const HANDLE handle = main_window->GetHandle();
 	const short title_length = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_title].size());
 	if (clear)
@@ -414,7 +414,7 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 }
 void SinglePlayer::ShowIndicator(int participant, bool clear)
 {
-	const COORD coord = { main_window->GetWidth() - 55, 16 + participants[participant].place * 2 };
+	const COORD coord = { static_cast<short>(main_window->GetWidth()) - 55, 16 + static_cast<short>(participants[participant].place) * 2 };
 	mutex.lock();
 	SetConsoleCursorPosition(main_window->GetHandle(), coord);
 	SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].action_performed ? main_window->color2 : 8);
@@ -745,7 +745,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		return;
 	}
 	const int code = atoi(msg_received.substr(0, 2).c_str());
-	OutputDebugString(msg_received.c_str());
+	OutputDebugString((msg_received+'\n').c_str());
 	const std::string msg = msg_received.substr(2, msg_length - 2);
 	switch (code)
 	{
