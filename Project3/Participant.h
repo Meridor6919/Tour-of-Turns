@@ -17,8 +17,8 @@ public:
 	float score = 0.0f;
 	float current_speed = 0.0f;
 	float current_durability = 0.0f;
-	bool action_performed = false;
-	bool attack_performed = false;
+	bool action_performed = true;
+	bool attack_performed = true;
 	float attacked = 0.0f;
 	bool drift = false;
 	int place;

@@ -39,6 +39,8 @@ void Participant::Init(std::string tour_path)
 	this->car_modifiers = main_window->GetCarParameters(car_path);
 	this->tire_modifiers = main_window->GetTireParameters(tire_path);
 	this->current_durability = static_cast<float>(car_modifiers[CarAttributes::durability]);
+	action_performed = false;
+	attack_performed = false;
 }
 void Participant::Test(const std::string field, const bool show)
 {
