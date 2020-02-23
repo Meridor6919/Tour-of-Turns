@@ -574,7 +574,7 @@ void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int 
 		temp = "";
 		for (int j = 0; j < GameConstants::validate_ranking_classification; ++j)
 		{
-			temp += UpdateRankingFavorites(GetClassifiedDetail(ranking_data[racer_index + 9 + i], j), i % 2 ? car : tires, 1) + "\t";
+			temp += UpdateRankingFavorites(GetClassifiedDetail(ranking_data[racer_index + 9 + i], j), i % 2 ? tires : car, 1) + "\t";
 		}
 		ranking_data[racer_index + 9 + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 	}
