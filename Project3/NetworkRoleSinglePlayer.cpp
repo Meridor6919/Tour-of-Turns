@@ -745,7 +745,6 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		return;
 	}
 	const int code = atoi(msg_received.substr(0, 2).c_str());
-	OutputDebugString((msg_received+'\n').c_str());
 	const std::string msg = msg_received.substr(2, msg_length - 2);
 	switch (code)
 	{
@@ -979,10 +978,14 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			}
 			if (!participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
-				exit(0);
+				break;
 			}
 			ValidateAttack(selected_target, static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id);
+			break;
+		}
+		default:
+		{
+			OutputDebugString((msg_received + '\n').c_str());
 			break;
 		}
 	}
