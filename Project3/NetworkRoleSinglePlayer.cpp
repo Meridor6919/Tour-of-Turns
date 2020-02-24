@@ -414,11 +414,22 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 }
 void SinglePlayer::ShowIndicator(int participant, bool clear)
 {
-	const COORD coord = { static_cast<short>(main_window->GetWidth()) - 55, 16 + static_cast<short>(participants[participant].place) * 2 };
+	const COORD coord = { static_cast<short>(main_window->GetWidth()) - 55, 16 };
 	mutex.lock();
-	SetConsoleCursorPosition(main_window->GetHandle(), coord);
-	SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].action_performed ? main_window->color2 : 8);
-	std::cout << (clear ? ' ' : '*');
+	if (clear)
+	{
+		for (short i = 1; i <= static_cast<int>(participants.size()); ++i)
+		{
+			SetConsoleCursorPosition(main_window->GetHandle(), { coord.X, coord.Y + i * 2 });
+			std::cout << ' ';
+		}
+	}
+	else
+	{
+		SetConsoleCursorPosition(main_window->GetHandle(), { coord.X, coord.Y + static_cast<short>(participants[participant].place) * 2 });
+		SetConsoleTextAttribute(main_window->GetHandle(), participants[participant].action_performed ? main_window->color2 : 8);
+		std::cout << '*';
+	}
 	mutex.unlock();
 	
 }
