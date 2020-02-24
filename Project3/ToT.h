@@ -1,6 +1,8 @@
 #pragma once
 #include <fstream>
 #include "NetworkRole.h"
+#include "NetworkRoleHost.h"
+#include "NetworkRoleClient.h"
 #include "ToT_Window.h"
 #include "Constants.h"
 

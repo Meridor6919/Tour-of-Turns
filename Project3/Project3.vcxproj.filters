@@ -126,6 +126,12 @@
     <ClInclude Include="VisibleTimer.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkRoleClient.h">
+      <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkRoleHost.h">
+      <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />

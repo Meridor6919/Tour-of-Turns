@@ -41,8 +41,8 @@ protected:
 	void ShowIndicator(int participant, bool clear = false);
 
 	//Game logic
-	void ValidateAttack(int target, int participant);
-	void ValidateAction(std::pair<int, int> action, int participant);
+	virtual void ValidateAttack(int target, int participant);
+	virtual void ValidateAction(std::pair<int, int> action, int participant);
 	int PerformAttack();
 	void HandleAIConnection(std::string msg_received);
 	std::pair<int, int> PerformAction(); //action, value
@@ -59,10 +59,10 @@ public:
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	void SortLeaderboard();
 	virtual void GetCurrentAttributes();
-	std::string GetTour();
+	virtual std::string GetTour();
 
 	//Game methods
-	bool GameLobby();
+	virtual bool GameLobby();
 	virtual void AttackPhase();
 	virtual void ActionPhase();
 	virtual void Leaderboard(bool clear);
@@ -70,95 +70,3 @@ public:
 	virtual void Interface();
 	virtual void Finish();
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Host : public SinglePlayer {
-
-	GeneralMultiPlayer::Host *host;
-	std::vector<std::pair<SOCKET, sockaddr_in>> *clients;
-	bool StartNetwork();
-	int stage = 0;
-
-public:
-
-	void MsgHandling(std::string msg, int client_id);
-	Host(ToT_Window &main_window);
-	~Host();
-	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
-	void SortLeaderboard();
-	void GetCurrentAttributes();
-	void Attack();
-	void TakeAction();
-	void GetOthersAction(std::vector<std::string> &tour);
-
-	int Possible_AIs();
-};
-class Client : public SinglePlayer {
-
-	GeneralMultiPlayer::Client *client;
-	SOCKET host;
-	bool StartNetwork();
-	std::string tire_path; //needed for communication with host
-	int stage;
-
-public:
-
-	Client(ToT_Window &main_window);
-	~Client();
-	void GetTourNames(std::vector<std::string>&tours);
-	void GetCarNames(std::vector<std::string>&cars, std::string tour);
-	void GetTireNames(std::vector<std::string>&tires);
-	std::vector<int> GetCarParameters(std::string path);
-	std::vector<std::string> GetTireParameters(std::string path);
-	std::vector<std::string> GetTourParameters(std::string path);
-	void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
-	void SortLeaderboard();
-	void GetCurrentAttributes();
-	void Attack();
-	void TakeAction();
-	void GetOthersAction(std::vector<std::string> &tour);
-	int Possible_AIs();
-};
-

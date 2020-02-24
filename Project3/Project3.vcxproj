@@ -141,6 +141,8 @@
     <ClInclude Include="AIConnector.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="GeneralMultiPlayer.h" />
+    <ClInclude Include="NetworkRoleClient.h" />
+    <ClInclude Include="NetworkRoleHost.h" />
     <ClInclude Include="VisibleTimer.h" />
     <ClInclude Include="WavTransformer.h" />
     <ClInclude Include="Infobox.h" />
