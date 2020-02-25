@@ -55,15 +55,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="GeneralMultiPlayerHost.cpp">
-      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneralMultiPlayerClient.cpp">
-      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneralMultiPlayerGeneric.cpp">
-      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
-    </ClCompile>
     <ClCompile Include="NetworkRoleSinglePlayer.cpp">
       <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
@@ -72,9 +63,6 @@
     </ClCompile>
     <ClCompile Include="ToT_Window.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneralMultiPlayerRequestHandler.cpp">
-      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="ToT.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
@@ -94,11 +82,14 @@
     <ClCompile Include="VisibleTimer.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="MeridorMultiplayerHost.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorMultiplayerClient.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneralMultiPlayer.h">
-      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
-    </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
@@ -131,6 +122,15 @@
     </ClInclude>
     <ClInclude Include="NetworkRoleHost.h">
       <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorMultiplayerHost.h">
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorMultiplayer.h">
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorMultiplayerClient.h">
+      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

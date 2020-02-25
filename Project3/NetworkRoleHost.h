@@ -4,7 +4,7 @@
 class Host : public SinglePlayer {
 
 	std::vector<std::pair<SOCKET, sockaddr_in>> clients;
-	std::unique_ptr<GeneralMultiPlayer::Host> host;
+	std::unique_ptr<MeridorMultiplayer::Host> host;
 
 	bool StartNetwork();
 	void HandleClientConnection(std::string msg, int client_id);

@@ -119,16 +119,14 @@
   <ItemGroup>
     <ClCompile Include="AIConnector.cpp" />
     <ClCompile Include="Lang.cpp" />
-    <ClCompile Include="GeneralMultiPlayerGeneric.cpp" />
-    <ClCompile Include="GeneralMultiPlayerClient.cpp" />
-    <ClCompile Include="GeneralMultiPlayerHost.cpp" />
+    <ClCompile Include="MeridorMultiplayerClient.cpp" />
     <ClCompile Include="InfoBox.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MeridorMultiplayerHost.cpp" />
     <ClCompile Include="NetworkRoleClient.cpp" />
     <ClCompile Include="NetworkRoleHost.cpp" />
     <ClCompile Include="NetworkRoleSinglePlayer.cpp" />
     <ClCompile Include="Participant.cpp" />
-    <ClCompile Include="GeneralMultiPlayerRequestHandler.cpp" />
     <ClCompile Include="TextLib.cpp" />
     <ClCompile Include="ToT.cpp" />
     <ClCompile Include="ToT.h" />
@@ -140,7 +138,9 @@
   <ItemGroup>
     <ClInclude Include="AIConnector.h" />
     <ClInclude Include="Constants.h" />
-    <ClInclude Include="GeneralMultiPlayer.h" />
+    <ClInclude Include="MeridorMultiplayer.h" />
+    <ClInclude Include="MeridorMultiplayerClient.h" />
+    <ClInclude Include="MeridorMultiplayerHost.h" />
     <ClInclude Include="NetworkRoleClient.h" />
     <ClInclude Include="NetworkRoleHost.h" />
     <ClInclude Include="VisibleTimer.h" />

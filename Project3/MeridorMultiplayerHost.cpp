@@ -1,26 +1,25 @@
-#include "GeneralMultiPlayer.h"
+#include	"MeridorMultiplayerHost.h"
 
-void GeneralMultiPlayer::Host::Broadcast(const unsigned long addr_range, const int ms_interval)
+void MeridorMultiplayer::Host::Broadcast(const unsigned long addr_range, const int ms_interval)
 {
 	//UDP protocol to broadcast messages to all addresses in local network and virtual local network if flag is set
 	SOCKET broadcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	sockaddr_in sock_addr;
-	memset(&sock_addr, 0, sizeof(sock_addr));
+	sockaddr_in sock_addr = {};
 	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(6919);
+	sock_addr.sin_port = htons(Constants::port_number);
 	sock_addr.sin_addr.s_addr = addr_range;
 	broadcast_running = true;
 
 	if (broadcast_socket < 0)
 	{
-		MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		WSACleanup();
 		exit(0);
 	}
 	char option = '1';
 	if (setsockopt(broadcast_socket, SOL_SOCKET, SO_BROADCAST, &option, sizeof(int)) < 0)
 	{
-		MessageBox(0, ("Socket option error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		WSACleanup();
 		exit(0);
 	}
@@ -28,7 +27,7 @@ void GeneralMultiPlayer::Host::Broadcast(const unsigned long addr_range, const i
 	char host_name[50];
 	if (gethostname(host_name, sizeof(host_name)) < 0)
 	{
-		MessageBox(0, ("Gethostname error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		WSACleanup();
 		exit(0);
 	}
@@ -36,7 +35,7 @@ void GeneralMultiPlayer::Host::Broadcast(const unsigned long addr_range, const i
 	{
 		if (sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr *)&sock_addr, sizeof(sock_addr)) < 0)
 		{
-			MessageBox(0, ("Sending error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+			MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 			WSACleanup();
 			exit(0);
 		}
@@ -46,26 +45,25 @@ void GeneralMultiPlayer::Host::Broadcast(const unsigned long addr_range, const i
 	}
 	closesocket(broadcast_socket);
 }
-void GeneralMultiPlayer::Host::AcceptClients(const int max)
+void MeridorMultiplayer::Host::AcceptClients(const int max)
 {
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-	sockaddr_in sock_addr;
-	memset(&sock_addr, 0, sizeof(sock_addr));
+	sockaddr_in sock_addr = {};
 	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(6919);
+	sock_addr.sin_port = htons(Constants::port_number);
 	sock_addr.sin_addr.s_addr = INADDR_ANY;
 	int addr_size = sizeof(sockaddr_in);
 	accepting_running = true;
 
 	if (sock < 0)
 	{
-		MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		WSACleanup();
 		exit(0);
 	}
 	if (bind(sock, reinterpret_cast<sockaddr*>(&sock_addr), sizeof(sockaddr)) < 0)
 	{
-		MessageBox(0, ("Binding error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		WSACleanup();
 		exit(0);
 	}
@@ -108,7 +106,7 @@ void GeneralMultiPlayer::Host::AcceptClients(const int max)
 	}
 	closesocket(sock);
 }
-void GeneralMultiPlayer::Host::StopAcceptingClients()
+void MeridorMultiplayer::Host::StopAcceptingClients()
 {
 	//Connecting with myself to process accept function that would otherwise wait forever
 	SOCKET temp = socket(AF_INET, SOCK_STREAM, 0);
@@ -116,20 +114,19 @@ void GeneralMultiPlayer::Host::StopAcceptingClients()
 
 	if (temp < 0)
 	{
-		MessageBox(0, ("Socket error: " + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		WSACleanup();
 		exit(0);
 	}
-	sockaddr_in SocketAddress;
-	memset(&SocketAddress, 0, sizeof(SocketAddress));
+	sockaddr_in SocketAddress = {};
 	SocketAddress.sin_family = AF_INET;
-	SocketAddress.sin_port = htons(6919);
-	SocketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+	SocketAddress.sin_port = htons(Constants::port_number);
+	SocketAddress.sin_addr.s_addr = inet_addr(Constants::ip_loopback.c_str());
 
 	connect(temp, reinterpret_cast<sockaddr*>(&SocketAddress), sizeof(SocketAddress));
 	closesocket(temp);
 }
-void GeneralMultiPlayer::Host::CloseActiveConnections()
+void MeridorMultiplayer::Host::CloseActiveConnections()
 {
 	handling_connection = false;
 	for (int i = 0; i < static_cast<int>(clients.size()); ++i)
@@ -141,10 +138,10 @@ void GeneralMultiPlayer::Host::CloseActiveConnections()
 		recv_threads[i].join();
 	}
 }
-std::string GeneralMultiPlayer::Host::GetThisIp(const sockaddr_in sock_addr)
+std::string MeridorMultiplayer::Host::GetThisIp(const sockaddr_in sock_addr)
 {
 	char helper[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &sock_addr.sin_addr, helper, INET_ADDRSTRLEN);
 
-	return helper;
+	return static_cast<std::string>(helper);
 }

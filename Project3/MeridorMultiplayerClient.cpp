@@ -1,10 +1,10 @@
-#include "GeneralMultiPlayer.h"
+#include "MeridorMultiplayerClient.h"
 
-GeneralMultiPlayer::Client::Client(SOCKET *host)
+MeridorMultiplayer::Client::Client(SOCKET *host)
 {
 	this->host = host;
 }
-bool GeneralMultiPlayer::Client::RecvBroadcast(const int max_hosts, int ms_interval)
+bool MeridorMultiplayer::Client::RecvBroadcast(const int max_hosts, int ms_interval)
 {
 	//UDP protocol to broadcast messages to all addresses in local network and virtual local network if flag is set
 	SOCKET intercept_brodcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -12,24 +12,24 @@ bool GeneralMultiPlayer::Client::RecvBroadcast(const int max_hosts, int ms_inter
 	int addr_size = sizeof(addr);
 	memset(&addr, 0, addr_size);
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(port);
+	addr.sin_port = htons(Constants::port_number);
 	addr.sin_addr.s_addr = ADDR_ANY;
 	receiving_broadcast = true;
 
 	if (intercept_brodcast_socket < 0)
 	{
-		MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		return false;
 	}
 	//Reducing time that program will wait for messages
 	if (setsockopt(intercept_brodcast_socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&ms_interval), sizeof(ms_interval)) < 0)
 	{
-		MessageBox(0, ("Socket option error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		return false;
 	}
 	if (bind(intercept_brodcast_socket, reinterpret_cast<sockaddr*>(&addr), addr_size))
 	{
-		MessageBox(0, ("Binding error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		return false;
 	}
 	char host_name_buffer[50];
@@ -84,7 +84,7 @@ bool GeneralMultiPlayer::Client::RecvBroadcast(const int max_hosts, int ms_inter
 	closesocket(intercept_brodcast_socket);
 	return true;
 }
-bool GeneralMultiPlayer::Client::Connect(const std::string ip)
+bool MeridorMultiplayer::Client::Connect(const std::string ip)
 {
 	*host = socket(AF_INET, SOCK_STREAM, 0);
 	int addr_size = sizeof(addr);
@@ -95,25 +95,19 @@ bool GeneralMultiPlayer::Client::Connect(const std::string ip)
 
 	if (*host == INVALID_SOCKET)
 	{
-		MessageBox(0, ("Socket error" + std::to_string(WSAGetLastError())).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		return false;
 	}
 	if (connect(*host, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)))
 	{
-		int result = WSAGetLastError();
-		if (result == 10061)
-		{
-			MessageBox(0, "Target stopped hosting", "Error", 0);
-			return false;
-		}
-		MessageBox(0, ("Connection error" + std::to_string(result)).c_str(), "Error", 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 		return false;
 	}
 	//Waiting until host is ready for handling connection
 	char temp[6] = "";
 	while (static_cast<std::string>(temp) != static_cast<std::string>("start"))
 	{
-		if (!GeneralMultiPlayer::Recv(*host, temp, 6, 0))
+		if (!Recv(*host, temp, 0))
 		{
 			return false;
 			break;
@@ -121,7 +115,25 @@ bool GeneralMultiPlayer::Client::Connect(const std::string ip)
 	}
 	return true;
 }
-std::string GeneralMultiPlayer::Client::GetIpFromMapValue(const std::string value)
+std::string MeridorMultiplayer::Client::GetIpFromMapValue(const std::string value)
 {
 	return value.substr(value.find_last_of(" ") + 1, value.size() - value.find_last_of(" ") - 1);
+}
+std::vector<std::string> MeridorMultiplayer::Client::GetCurrentHosts()
+{
+	std::vector<std::string> ret = {};
+	for (auto it = current_hosts.begin(); it != current_hosts.end(); ++it)
+	{
+		ret.emplace_back(it->second);
+	}
+	return ret;
+}
+bool MeridorMultiplayer::Client::Recv(SOCKET socket, char * buffer, const int flags)
+{
+	if ((recv(socket, buffer, Constants::buffer_size, flags) < 0) || (((std::string)buffer).size() > Constants::buffer_size))
+	{
+		MessageBox(0, "", ErrorTitle::disconnect.c_str(), 0);
+		return false;
+	}
+	return true;
 }

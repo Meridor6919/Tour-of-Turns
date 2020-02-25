@@ -4,7 +4,7 @@
 class Client : public SinglePlayer {
 
 	SOCKET host;
-	std::unique_ptr<GeneralMultiPlayer::Client> client;
+	std::unique_ptr<MeridorMultiplayer::Client> client;
 
 	bool StartNetwork();
 	virtual void ValidateAttack(int target, int participant)override;

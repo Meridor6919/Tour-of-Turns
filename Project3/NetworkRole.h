@@ -1,5 +1,6 @@
 #pragma once
-#include "GeneralMultiPlayer.h"
+#include "MeridorMultiplayerClient.h"
+#include "MeridorMultiplayerHost.h"
 #include "ToT_Window.h"
 #include <fstream>
 #include <set>
@@ -17,7 +18,6 @@ protected:
 	std::string tour;
 	short take_action_position = 0;
 	std::vector<Participant> participants;
-	std::unique_ptr<GeneralMultiPlayer::RequestHandler> request_handler;
 	std::unique_ptr<AIConnector> ai_connector;
 	std::mutex mutex;
 	bool timer_running = true;
