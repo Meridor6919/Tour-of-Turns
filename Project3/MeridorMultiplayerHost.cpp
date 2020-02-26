@@ -133,7 +133,7 @@ void MeridorMultiplayer::Host::CloseActiveConnections()
 	{
 		closesocket(clients[i].first);
 	}
-	for (int i = 0; i < static_cast<int>(clients.size()); ++i)
+	for (int i = 0; i < static_cast<int>(recv_threads.size()); ++i)
 	{
 		recv_threads[i].join();
 	}
