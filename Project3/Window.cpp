@@ -27,9 +27,10 @@ Window::Window(const std::string title, const int color1, const int color2, cons
 	font_size = ConsoleFontInfoEx.dwFontSize.Y;
 	
 	//Setting window size
-	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 	window_size = GetLargestConsoleWindowSize(window_handle);
 	SetConsoleScreenBufferSize(window_handle, { window_size.X - 1,window_size.Y - 1 });
+	SetWindowLongA(window_hwnd, GWL_STYLE, GetWindowLong(window_hwnd, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX & ~WS_CAPTION);
+	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 	
 	//Cursor visibility	set to false by default							
 	SetCursor(false);
