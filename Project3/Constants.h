@@ -40,6 +40,7 @@ namespace LanguagePack
 		car_attributes,
 		terrain_types,
 		on_off,
+		multiplayer_lobby,
 		other_strings,
 		last
 	};
@@ -133,7 +134,16 @@ namespace OtherStrings
 		last
 	};
 }
-
+namespace Multiplayer {
+	enum
+	{
+		active_games = 0,
+		join,
+		refresh,
+		back,
+		last
+	};
+}
 namespace GameConstants
 {
 	//game balance

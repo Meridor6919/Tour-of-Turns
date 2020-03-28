@@ -18,8 +18,9 @@ bool Client::StartNetwork()
 	char button = ' ';
 
 	client = std::make_unique<MeridorMultiplayer::Client>(&host);
-
 	std::vector<std::string> current_hosts = client->GetCurrentHosts();
+	int selected_game = Multiplayer::back;
+	bool return_value = false;
 
 	//recv hosts from local network	
 	std::thread receiving_broadcast([&]() {
@@ -28,15 +29,37 @@ bool Client::StartNetwork()
 			return false;
 		}
 	});
-	while (current_hosts.size() == 0)
+	while (true)
 	{
-		current_hosts = client->GetCurrentHosts();
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+		int option = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_lobby], 0, starting_point, 2, Text::TextAlign::center, true, *main_window);
+		if(option == Multiplayer::active_games)
+		{
+			//choose game
+			//horizontal choose
+			//highlight choosen game
+		}
+		else if(option == Multiplayer::join)
+		{
+			if (selected_game != Multiplayer::back)
+			{
+				client->Connect(client->GetIpFromMapValue(current_hosts[selected_game]));
+				return_value = true;
+				break;
+			}
+		}
+		else if(option == Multiplayer::refresh)
+		{
+			current_hosts = client->GetCurrentHosts();
+		}
+		else if(option == Multiplayer::back)
+		{
+			break;
+		}
 	}
 	client->FinishBroadcast();
 	receiving_broadcast.join();
-	client->Connect(client->GetIpFromMapValue(current_hosts[0]));
-	return true;
+	return return_value;
 }
 void Client::ValidateAttack(int target, int participant)
 {

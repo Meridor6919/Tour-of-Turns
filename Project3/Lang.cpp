@@ -103,6 +103,10 @@ namespace LanguagePack
 		{
 			return false;
 		}
+		if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_lobby].size()) < Multiplayer::last)
+		{
+			return false;
+		}
 		return true;
 	}
 	bool LoadLanguagePack(std::string path)
