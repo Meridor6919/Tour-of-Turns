@@ -100,8 +100,8 @@ bool MeridorMultiplayer::Client::Connect(const std::string ip)
 	}
 	if (connect(*host, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)))
 	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
-		return false;
+		MessageBox(0, ErrorMsg::connection.c_str(), ErrorTitle::connection.c_str(), 0);
+		return false; 
 	}
 	//Waiting until host is ready for handling connection
 	char temp[6] = "";

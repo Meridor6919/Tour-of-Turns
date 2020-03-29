@@ -7,6 +7,7 @@ class Client : public SinglePlayer {
 	std::unique_ptr<MeridorMultiplayer::Client> client;
 
 	bool StartNetwork();
+	void HighlightSelectedGame(std::string game, bool clear);
 	virtual void ValidateAttack(int target, int participant)override;
 	virtual void ValidateAction(std::pair<int, int> action, int participant)override;
 	virtual int Possible_AIs()override;

@@ -15,11 +15,16 @@ namespace MeridorMultiplayer
 	{
 		const std::string winsock = "Winsock Error";
 		const std::string disconnect = "Disconnected from game";
+		const std::string connection = "Connection error";
 	}
 	namespace Constants
 	{
 		const int buffer_size = 255;
 		const int port_number = 6919;
 		const std::string ip_loopback = "127.0.0.1";
+	}
+	namespace ErrorMsg
+	{
+		const std::string connection = "Player probably finished hosting";
 	}
 }

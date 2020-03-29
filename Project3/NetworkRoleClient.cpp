@@ -19,7 +19,8 @@ bool Client::StartNetwork()
 
 	client = std::make_unique<MeridorMultiplayer::Client>(&host);
 	std::vector<std::string> current_hosts = client->GetCurrentHosts();
-	int selected_game = Multiplayer::back;
+	const short spacing = 2;
+	std::string selected_game = "";
 	bool return_value = false;
 
 	//recv hosts from local network	
@@ -31,21 +32,41 @@ bool Client::StartNetwork()
 	});
 	while (true)
 	{
-
-		int option = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_lobby], 0, starting_point, 2, Text::TextAlign::center, true, *main_window);
+		mutex.lock();
+		int option = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_lobby], 0, starting_point, spacing, Text::TextAlign::center, false, *main_window);
+		mutex.unlock();
 		if(option == Multiplayer::active_games)
 		{
-			//choose game
-			//horizontal choose
-			//highlight choosen game
+			std::vector<std::string>active_games = current_hosts;
+			active_games.insert(active_games.begin(), LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back]);
+			mutex.lock();
+			int i = Text::Choose::Horizontal(active_games, 0, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::active_games].size())/2 + 1, starting_point.Y}, Text::TextAlign::left, true, *main_window);
+			mutex.unlock();
+			HighlightSelectedGame(selected_game, true);
+			if (i != 0)
+			{
+				selected_game = current_hosts[i-1];
+			}
+			else
+			{
+				selected_game = "";
+			}
+			HighlightSelectedGame(selected_game, false);
 		}
 		else if(option == Multiplayer::join)
 		{
-			if (selected_game != Multiplayer::back)
+			if (selected_game != "")
 			{
-				client->Connect(client->GetIpFromMapValue(current_hosts[selected_game]));
-				return_value = true;
-				break;
+				if (client->Connect(client->GetIpFromMapValue(selected_game)))
+				{
+					return_value = true;
+					break;
+				}
+				else
+				{
+					HighlightSelectedGame(selected_game, true);
+					current_hosts = client->GetCurrentHosts();
+				}
 			}
 		}
 		else if(option == Multiplayer::refresh)
@@ -59,7 +80,32 @@ bool Client::StartNetwork()
 	}
 	client->FinishBroadcast();
 	receiving_broadcast.join();
+	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby].size()); ++i)
+	{
+		const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][i].size());
+		SetConsoleCursorPosition(handle, { starting_point.X - text_size/2, starting_point.Y + i * spacing });
+		for (int j = 0; j < text_size; ++j)
+		{
+			std::cout << ' ';
+		}
+	}
 	return return_value;
+}
+void Client::HighlightSelectedGame(std::string game, bool clear)
+{
+	HANDLE handle = main_window->GetHandle();
+	if (clear)
+	{
+		for (int i = 0; i < static_cast<int>(game.size()); ++i)
+		{
+			game[i] = ' ';
+		}
+	}
+	mutex.lock();
+	SetConsoleCursorPosition(handle, { 0,0 });
+	SetConsoleTextAttribute(handle, main_window->color1);
+	std::cout << game;
+	mutex.unlock();
 }
 void Client::ValidateAttack(int target, int participant)
 {
