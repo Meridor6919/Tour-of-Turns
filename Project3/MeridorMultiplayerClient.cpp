@@ -103,15 +103,10 @@ bool MeridorMultiplayer::Client::Connect(const std::string ip)
 		MessageBox(0, ErrorMsg::connection.c_str(), ErrorTitle::connection.c_str(), 0);
 		return false; 
 	}
-	//Waiting until host is ready for handling connection
 	char temp[6] = "";
-	while (static_cast<std::string>(temp) != static_cast<std::string>("start"))
+	if (!Recv(*host, temp, 0) || temp != "start")
 	{
-		if (!Recv(*host, temp, 0))
-		{
-			return false;
-			break;
-		}
+		return false;
 	}
 	return true;
 }
@@ -130,7 +125,7 @@ std::vector<std::string> MeridorMultiplayer::Client::GetCurrentHosts()
 }
 bool MeridorMultiplayer::Client::Recv(SOCKET socket, char * buffer, const int flags)
 {
-	if ((recv(socket, buffer, Constants::buffer_size, flags) < 0) || (((std::string)buffer).size() > Constants::buffer_size))
+	if ((recv(socket, buffer, Constants::buffer_size, flags) < 0) || (((std::string)buffer).size() > Constants::buffer_size) || buffer[0] == '\0')
 	{
 		MessageBox(0, "", ErrorTitle::disconnect.c_str(), 0);
 		return false;

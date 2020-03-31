@@ -66,6 +66,7 @@ bool Client::StartNetwork()
 				{
 					HighlightSelectedGame(selected_game, true);
 					current_hosts = client->GetCurrentHosts();
+					selected_game = "";
 				}
 			}
 		}
