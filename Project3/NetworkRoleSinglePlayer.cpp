@@ -417,11 +417,8 @@ void SinglePlayer::ShowIndicator(int participant, bool clear)
 	mutex.lock();
 	if (clear)
 	{
-		for (short i = 1; i <= static_cast<int>(participants.size()); ++i)
-		{
-			SetConsoleCursorPosition(main_window->GetHandle(), { coord.X, coord.Y + i * 2 });
-			std::cout << ' ';
-		}
+		SetConsoleCursorPosition(main_window->GetHandle(), { coord.X, coord.Y + static_cast<short>(participants[participant].place) * 2 });
+		std::cout << ' ';	
 	}
 	else
 	{
@@ -1106,11 +1103,18 @@ void SinglePlayer::Leaderboard(const bool clear)
 	{
 		for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 		{
-			participants[i].attack_performed = false;
-			participants[i].action_performed = false;
-			ShowIndicator(i, !participants[i].IsAlive());
+			ShowIndicator(i, true);
 		}
 		SortLeaderboard();
+		for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+		{
+			participants[i].attack_performed = false;
+			participants[i].action_performed = false;
+			if (participants[i].IsAlive())
+			{
+				ShowIndicator(i);
+			}
+		}
 	}
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
