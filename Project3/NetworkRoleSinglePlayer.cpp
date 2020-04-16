@@ -463,7 +463,7 @@ void SinglePlayer::SortLeaderboard()
 	//ugly quadratic complexity but it is justified by the fact that n is at most 8
 	for (int i = 0; i < participants.size(); ++i)
 	{
-		participants[i].place = participants[i].IsAlive() ? 1 : 9;
+		participants[i].place = 1;
 		for (int j = 0; j < participants.size(); ++j)
 		{
 			if (participants[i].score > participants[j].score && participants[j].IsAlive())
@@ -474,6 +474,10 @@ void SinglePlayer::SortLeaderboard()
 			{
 				++participants[i].place;
 			}
+		}
+		if (!participants[i].IsAlive())
+		{
+			participants[i].place = 9;
 		}
 	}
 }
