@@ -1224,7 +1224,6 @@ bool SinglePlayer::VisionBox(const int turn)
 }
 void SinglePlayer::Finish()
 {
-	mutex.lock();
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
 		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), !participants[i].IsAlive(), participants[i].sum_of_performed_attacks, participants[i].sum_of_performed_drifts, static_cast<int>(participants[i].sum_of_durability_burned), participants[i].car_path, participants[i].tire_path);
@@ -1233,6 +1232,7 @@ void SinglePlayer::Finish()
 	{
 		timer->StopTimer();
 	}
+	mutex.lock();
 	ai_connector.reset();
 	take_action_position = 0;
 	participants.clear();

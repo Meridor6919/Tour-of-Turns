@@ -33,6 +33,7 @@ void VisibleTimer::ShowTime()
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 	}
+	OutputDebugStringA("koniec pracy");
 }
 void VisibleTimer::StartTimer(int timer_settings)
 {
