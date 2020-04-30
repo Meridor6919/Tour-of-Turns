@@ -20,6 +20,7 @@ protected:
 	std::vector<Participant> participants;
 	std::unique_ptr<AIConnector> ai_connector;
 	std::mutex mutex;
+	bool attack_phase = false;
 	bool timer_running = true;
 	std::unique_ptr<VisibleTimer> timer;
 	int ai_init = 0;

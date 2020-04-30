@@ -727,6 +727,7 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 }
 int SinglePlayer::PerformAttack()
 {
+	attack_phase = true;
 	if (participants[0].IsAlive())
 	{
 		std::vector<std::string> rival_name = { LanguagePack::text[LanguagePack::other_strings][OtherStrings::dont_attack] };
@@ -1027,7 +1028,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			const int ai_id = msg[0] - 48;
 			const int selected_target = atoi(msg.substr(1, msg.size()-1).c_str());
 			//ai id validation
-			if (ai_id < 0 || ai_id > main_window->GetAIs())
+			if (ai_id < 0 || ai_id > main_window->GetAIs() || !attack_phase)
 			{
 				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
 				exit(0);
@@ -1236,6 +1237,7 @@ void SinglePlayer::Finish()
 	{
 		timer->StopTimer();
 	}
+	attack_phase = false;
 	mutex.lock();
 	ai_connector.reset();
 	take_action_position = 0;
