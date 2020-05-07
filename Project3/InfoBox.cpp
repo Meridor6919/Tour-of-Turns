@@ -9,15 +9,14 @@ InfoBox::InfoBox(const int size, const COORD starting_point, const short spacing
 }
 void InfoBox::Push(const std::string special_text, const std::string text)
 {
-	const HANDLE handle = main_window->GetHandle();
-	
-	Clear();	
 	infobox.push_back(special_text + ' ' + text);	
-	//Deleting outdated elements
-	if (size_of_visible_infobox < static_cast<int>(infobox.size()))	
-	{
-		infobox.erase(infobox.begin());
-	}
+	this->special_text = special_text;
+	this->text = text;
+}
+void InfoBox::Show()
+{
+	Clear();
+	const HANDLE handle = main_window->GetHandle();
 	//Showing recent info
 	const short vector_size = static_cast<short>(infobox.size());
 	SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + (vector_size - 1) * spacing });
@@ -29,7 +28,7 @@ void InfoBox::Push(const std::string special_text, const std::string text)
 	SetConsoleTextAttribute(handle, 8);
 	for (short i = 0; i < vector_size - 1; ++i)
 	{
-		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + i  * spacing });
+		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + i * spacing });
 		std::cout << infobox[i];
 	}
 }
@@ -37,10 +36,15 @@ void InfoBox::Clear()
 {
 	const HANDLE handle = main_window->GetHandle();
 	const short vector_size = static_cast<short>(infobox.size());
-	for (short i = 0; i < vector_size; ++i)
+	for (short i = 0; i < vector_size - 1; ++i)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + i  * spacing });
 		Text::Spaces(static_cast<short>(infobox[i].size()));
+	}
+	//Deleting outdated elements
+	if (size_of_visible_infobox < static_cast<int>(infobox.size()))
+	{
+		infobox.erase(infobox.begin());
 	}
 }
 

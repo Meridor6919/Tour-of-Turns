@@ -496,6 +496,9 @@ void SinglePlayer::GetCurrentAttributes()
 			mutex.unlock();
 		}
 	}
+	mutex.lock();
+	main_window->infobox->Show();
+	mutex.unlock();
 }
 std::string SinglePlayer::GetTour()
 {
@@ -697,6 +700,7 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 		{
 			mutex.lock();
 			participants[participant].KillParticipant();
+			participants[participant].action_performed = true;
 			mutex.unlock();
 			return;
 		}
@@ -717,13 +721,13 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 			participants[participant].drift = true;
 		}
 		participants[participant].CalculateParameters(static_cast<float>(action.second), current_field);
-		participants[participant].action_performed = true;
 		ShowIndicator(participant);
 	}
 	else
 	{
 		ShowIndicator(participant, true);
 	}
+	participants[participant].action_performed = true;
 }
 int SinglePlayer::PerformAttack()
 {
@@ -1015,7 +1019,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 				exit(0);
 			}
 			//action pre-validation
-			if(selected_action_id < 0 ||selected_action_id > 5 || !participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
+			if(selected_action_id < 0 ||selected_action_id > 4 || !participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
 			{
 				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
 				exit(0);
