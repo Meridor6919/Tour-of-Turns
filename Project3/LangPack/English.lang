@@ -126,7 +126,7 @@ durability_lost = over_speed * (level + level * level) / 2 where level is an int
  
 Lastly player's speed is being multiplied by 0.9, because of friction.
 Test segment
- - Firstly player loses durability with formula: speed - speed * (1 - 0.125 * attacking points). Then if current part is a turn he has to pass x of y tests, where both variables come from tire parameters.
+ - Player loses speed according to the number of attacking points on him: speed = speed * (1 - 0.125 * attacking points). Then if current part is a turn he has to pass x of y tests, where both variables come from tire parameters.
 
 Test formula (chance of failure): sqrt(base * (-base) + 200 * base) + 2 * base / 3 It is different for drift: (speed + base) / 2 or (speed + base * 2) / 3  depending on which is better for player.
 

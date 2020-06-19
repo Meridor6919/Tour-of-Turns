@@ -126,7 +126,7 @@ stracona_wytrzymaˆo˜† = nadwy¾ka_pr©dko˜ci * (poziom + poziom * poziom) / 2 gdzi
  
 W koäcu pr©dko˜† gracza jest mno¾ona przez 0.9 w na rzecz tarcia.
 Segment testowania
- - Po pierwsze gracz traci wytrzymaˆo˜† r¢wn¥: pr©dko˜† - pr©dko˜† * (1 - 0.125 * punkty_ataku). Dalej je¾eli droga jest zakr©tem musi on zda† "x" z "y" test¢w, gdzie oba parametry pochodz¥ od opon.
+ - Po pierwsze gracz traci szybko˜†. Wz¢r to: pr©dko˜† = pr©dko˜† * (1 - 0.125 * punkty_ataku). Dalej je¾eli droga jest zakr©tem musi on zda† "x" z "y" test¢w, gdzie oba parametry pochodz¥ od opon.
 
 R¢wnanie testowe: (szansa_niepowodzenia): pierwiastek(baza * (-baza) + 200 * baza) + 2 * baza / 3 Formuˆa dla driftu jest inna: (pr©dko˜† + baza) / 2 lub (pr©dko˜† + baza * 2) / 3  zale¾nie od tego kt¢re jest lepsze dla gracza
 

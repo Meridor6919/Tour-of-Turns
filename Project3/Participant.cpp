@@ -66,8 +66,10 @@ void Participant::Test(const std::string field, const bool show)
 	current_speed *= dmg;
 	if (dmg < 1.0f && show)
 	{
-		main_window->infobox->Push(name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::speed], LanguagePack::text[LanguagePack::other_strings][OtherStrings::in_result_of_attacks]);
+		main_window->infobox->Push(name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::speed],
+			LanguagePack::text[LanguagePack::other_strings][OtherStrings::in_result_of_attacks]);
 	}
+
 	attacked = 0;
 
 	if (static_cast<int>(field.size()) > 1)
@@ -173,19 +175,18 @@ float Participant::EvaluateChance(std::string field, const float speed, const bo
 		return 0.0f;
 	}
 	field.erase(0, 1);
-	float base = (speed / static_cast<float>(atof(field.c_str())) - 1) * 100.0f + speed - static_cast<float>(atof(field.c_str()));
+	float base = ((speed / static_cast<float>(atof(field.c_str())) - 1) * 100.0f + speed - static_cast<float>(atof(field.c_str()))) * 100 / (static_cast<float>(car_modifiers[CarAttributes::turn_mod + drift]) - 5.0f * attacked);
 
 	if (base < 0.0f)
 	{
 		base = 0.0f;
 	}
+	if (base > 100.0f)
+	{
+		base = 100.0f;
+	}
 	if (drift == true)
 	{
-		base /= (static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - 7.5f * attacked) / 100.0f;
-		if (base > 100.0f)
-		{
-			base = 100.0f;
-		}
 		float result = (speed + base) / 2.0f;
 		if (base < speed)
 		{
@@ -199,51 +200,7 @@ float Participant::EvaluateChance(std::string field, const float speed, const bo
 	}
 	else
 	{
-		base /= (static_cast<float>(car_modifiers[CarAttributes::turn_mod]) - 5.0f * attacked) / 100.0f;
-		if (base > 100.0f)
-		{
-			base = 100.0f;
-		}
 		return (sqrt(base * -base + 200.0f * base) + 2.0f * base) / 3.0f;
-	}
-}
-float Participant::EvaluateSpeed(std::string field, const float chance, const bool drift)
-{
-	if (static_cast<int>(field.size()) < 2)
-	{
-		return 0.0f;
-	}
-	field.erase(0, 1);
-
-	if (drift)
-	{
-		float result = (2.0f * chance*(static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - (7.5f * attacked)) + 10000.0f + 100.0f * static_cast<float>(atof(field.c_str()))) /
-			(10000.0f / static_cast<float>(atof(field.c_str())) + 100.0f + static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - 7.5f*attacked);
-		float secondary_result = (3.0f * chance*(static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - (7.5f * attacked)) + 20000.0f + 200.0f * static_cast<float>(atof(field.c_str()))) /
-			(20000.0f / static_cast<float>(atof(field.c_str())) + 200.0f + static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - 7.5f*attacked);
-
-		if (secondary_result > result)
-		{
-			result = secondary_result;
-		}
-		float base = ((result / static_cast<float>(atof(field.c_str())) - 1.0f) * 100.0f + result - static_cast<float>(atof(field.c_str()))) /
-			((static_cast<float>(car_modifiers[CarAttributes::drift_mod]) - (7.5f * attacked)) / 100.0f);
-
-		if (base > 100.0f)
-		{
-			result = 2.0f * chance - 100.0f;
-		}
-		else if (base < 0.0f)
-		{
-			result = 3.0f * chance;
-		}
-		return result;
-	}
-	else
-	{
-		float delta = (200.0f + 12.0f * chance)*(200.0f + 12.0f * chance) - 180.0f * chance*chance;
-		float base = (-(200.0f + 12.0f * chance) + sqrt(delta)) / -10.0f*((static_cast<float>(car_modifiers[CarAttributes::turn_mod]) - (5.0f * attacked)) / 100.0f);
-		return static_cast<float>(atof(field.c_str())) + base / (100.0f / static_cast<float>(atof(field.c_str())) + 1.0f);
 	}
 }
 void Participant::CalculateParameters(float value, std::string current_field)

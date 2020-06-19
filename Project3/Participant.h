@@ -35,7 +35,6 @@ public:
 	void Test(const std::string field, const bool show);
 	float EvaluateChance(std::string field, const float speed, const bool drift);
 	float CalculateBurning(float value);
-	float EvaluateSpeed(std::string field, const float chance, const bool drift);
 	void CalculateParameters(float value, std::string current_field);
 	float TireEffectivness(std::string field);
 	bool IsAlive();
