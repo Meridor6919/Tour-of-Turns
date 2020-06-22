@@ -1,15 +1,15 @@
 Meridor
-16	2	0
+20	6	0
 0	0	0
 3	3	0
 80	80	0
 80	80	0
-15	1	0
+19	5	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:16:	mikrus:16:	mikrus:16:
-A1:16:	A1:16:	A1:16:
+mikrus:20:	mikrus:20:	mikrus:20:
+A1:20:	A1:20:	A1:20:
 Neel Hartley
 1	0	0
 1	0	0
@@ -59,17 +59,17 @@ Conrad Payne
 mikrus:1:	mikrus:1:	mikrus:1:
 A1:1:	A1:1:	A1:1:
 Jerrod Presley
-2	0	0
-1	0	0
-5	0	0
-92	0	0
-46	0	0
+6	4	0
+5	4	0
+9	4	0
+352	260	0
+46	65	0
 0	0	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:2:	mikrus:2:	mikrus:2:
-A1:2:	A1:2:	A1:2:
+mikrus:6:	mikrus:6:	mikrus:6:
+A1:6:	A1:6:	A1:6:
 Yuzo Yamanaka
 2	0	0
 1	0	0
@@ -143,17 +143,17 @@ Paul Reynolds
 mikrus:1:	mikrus:1:	mikrus:1:
 A1:1:	A1:1:	A1:1:
 Anatoly Samusenko
+6	4	0
+0	0	0
+15	15	0
+274	274	0
+68	68	0
 2	0	0
-
-
-
-
-2	0	0
-
-
-
-mikrus:2:	mikrus:2:	mikrus:2:
-A1:2:	A1:2:	A1:2:
+12	12	0
+0	0	0
+0	0	0
+mikrus:6:	mikrus:6:	mikrus:6:
+A1:6:	A1:6:	A1:6:
 Sam Samson
 2	0	0
 0	0	0
@@ -167,17 +167,17 @@ Sam Samson
 mikrus:2:	mikrus:2:	mikrus:2:
 A1:2:	A1:2:	A1:2:
 Tatsuo Okabe
-2	1	0
+6	5	0
 0	0	0
-4	2	0
-130	65	0
+23	21	0
+410	345	0
 65	65	0
 0	0	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:2:	mikrus:2:	mikrus:2:
-A1:2:	A1:2:	A1:2:
+mikrus:6:	mikrus:6:	mikrus:6:
+A1:6:	A1:6:	A1:6:
 Vladimir Zhdanovich
 1	0	0
 
@@ -299,17 +299,17 @@ Timour Bernhard
 mikrus:1:	mikrus:1:	mikrus:1:
 A1:1:	A1:1:	A1:1:
 Jacques Bouissou
+5	5	0
+0	0	0
+28	28	0
+304	304	0
+76	76	0
 1	1	0
-
-
-
-
-1	1	0
-
-
-
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
+9	9	0
+0	0	0
+0	0	0
+mikrus:5:	mikrus:5:	mikrus:5:
+A1:5:	A1:5:	A1:5:
 Mark Driver
 1	1	0
 0	0	0
@@ -418,3 +418,39 @@ Leszek Murzyn
 
 mikrus:1:	mikrus:1:	mikrus:1:
 A1:1:	A1:1:	A1:1:
+Yuri Voronin
+4	4	0
+0	0	0
+15	15	0
+277	277	0
+68	68	0
+0	0	0
+12	12	0
+0	0	0
+0	0	0
+mikrus:4:	mikrus:4:	mikrus:4:
+A1:4:	A1:4:	A1:4:
+Lester King
+4	4	0
+0	0	0
+8	8	0
+270	270	0
+66	66	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:4:	mikrus:4:	mikrus:4:
+A1:4:	A1:4:	A1:4:
+Roman Torbon
+4	4	0
+0	0	0
+23	23	0
+284	284	0
+71	71	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:4:	mikrus:4:	mikrus:4:
+A1:4:	A1:4:	A1:4:

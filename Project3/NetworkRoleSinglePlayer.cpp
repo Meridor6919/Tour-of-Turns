@@ -672,7 +672,7 @@ void SinglePlayer::ValidateAttack(int target, int participant)
 		if (target < static_cast<int>(participants.size()))
 		{
 			if (participants[target].score < participants[participant].score + GameConstants::attack_backward_distance && 
-				participants[target].score >participants[participant].score - GameConstants::attack_forward_distance && 
+				participants[target].score > participants[participant].score - GameConstants::attack_forward_distance && 
 				participants[target].IsAlive() &&
 				!participants[participant].attack_performed &&
 				target != participant)
@@ -721,13 +721,15 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 			participants[participant].drift = true;
 		}
 		participants[participant].CalculateParameters(static_cast<float>(action.second), current_field);
+		participants[participant].action_performed = true;
 		ShowIndicator(participant);
 	}
 	else
 	{
+		participants[participant].action_performed = true;
 		ShowIndicator(participant, true);
 	}
-	participants[participant].action_performed = true;
+	
 }
 int SinglePlayer::PerformAttack()
 {
