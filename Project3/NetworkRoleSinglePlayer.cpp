@@ -702,6 +702,7 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 			participants[participant].KillParticipant();
 			participants[participant].action_performed = true;
 			mutex.unlock();
+			ShowIndicator(participant);
 			return;
 		}
 		if ((action.first == 0 && (action.second > participants[participant].car_modifiers[CarAttributes::max_accelerating] || action.second <= 0)) ||
@@ -1119,10 +1120,10 @@ void SinglePlayer::Leaderboard(const bool clear)
 		SortLeaderboard();
 		for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 		{
-			participants[i].attack_performed = false;
-			participants[i].action_performed = false;
 			if (participants[i].IsAlive())
 			{
+				participants[i].attack_performed = false;
+				participants[i].action_performed = false;
 				ShowIndicator(i);
 			}
 		}
