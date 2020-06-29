@@ -707,7 +707,7 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 		}
 		if ((action.first == 0 && (action.second > participants[participant].car_modifiers[CarAttributes::max_accelerating] || action.second <= 0)) ||
 			(action.first == 1 && (action.second < participants[participant].car_modifiers[CarAttributes::max_braking] * -1 || action.second >= 0 || participants[participant].current_speed <= 0)) ||
-			(action.first == 2 && (action.second < participants[participant].car_modifiers[CarAttributes::hand_brake_value] * -1 || action.second >= 0 || participants[participant].current_speed <= 0)) ||
+			(action.first == 2 && (action.second != participants[participant].car_modifiers[CarAttributes::hand_brake_value] * -1 || participants[participant].current_speed <= 0)) ||
 			(action.first == 3 && (action.second != 0 || participants[participant].current_speed <= 0)) ||
 			participants[participant].action_performed)
 		{
