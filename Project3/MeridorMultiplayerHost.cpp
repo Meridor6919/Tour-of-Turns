@@ -1,13 +1,12 @@
 #include	"MeridorMultiplayerHost.h"
 
-void MeridorMultiplayer::Host::Broadcast(const unsigned long addr_range, const int ms_interval)
+void MeridorMultiplayer::Host::Broadcast(bool hamachi, const int ms_interval)
 {
 	//UDP protocol to broadcast messages to all addresses in local network and virtual local network if flag is set
 	SOCKET broadcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	sockaddr_in sock_addr = {};
 	sock_addr.sin_family = AF_INET;
 	sock_addr.sin_port = htons(Constants::port_number);
-	sock_addr.sin_addr.s_addr = addr_range;
 	broadcast_running = true;
 
 	if (broadcast_socket < 0)
@@ -33,7 +32,24 @@ void MeridorMultiplayer::Host::Broadcast(const unsigned long addr_range, const i
 	}
 	while (broadcast_running)
 	{
-		if (sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr *)&sock_addr, sizeof(sock_addr)) < 0)
+		bool result = false;
+		for (int i = 0; i < 255; ++i)
+		{
+			sock_addr.sin_addr.s_addr = inet_addr(("192.168." + std::to_string(i) + ".255").c_str());
+			if (!(sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr *)&sock_addr, sizeof(sock_addr)) < 0))
+			{
+				result = true;
+			}
+		}
+		if(hamachi)
+		{
+			sock_addr.sin_addr.s_addr = inet_addr("25.255.255.255");
+			if (!(sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr *)&sock_addr, sizeof(sock_addr)) < 0))
+			{
+				result = true;
+			}
+		}
+		if (!result)
 		{
 			MessageBox(0, std::to_string(WSAGetLastError()).c_str(), ErrorTitle::winsock.c_str(), 0);
 			WSACleanup();

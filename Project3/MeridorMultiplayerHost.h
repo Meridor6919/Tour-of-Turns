@@ -18,7 +18,7 @@ namespace MeridorMultiplayer
 
 	public:
 		std::string GetThisIp(const sockaddr_in sock_addr);
-		void Broadcast(const unsigned long addr_range, int ms_interval);
+		void Broadcast(bool hamachi, int ms_interval);
 		void AcceptClients(const int max);
 		std::vector<std::pair<SOCKET, sockaddr_in>>* GetClientsPtr() { return &clients; }
 		std::vector<sockaddr_in>* GetBlackListPtr() { return &black_list; }

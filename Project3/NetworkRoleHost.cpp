@@ -54,7 +54,7 @@ void Host::GetCurrentAttributes()
 bool Host::GameLobby()
 {
 	bool show_clients = true;
-	std::thread broadcast(&MeridorMultiplayer::Host::Broadcast, host.get(), inet_addr("192.168.x.x"), 200);
+	std::thread broadcast(&MeridorMultiplayer::Host::Broadcast, host.get(), main_window->GetHamachiConnectionFlag(), 200);
 	std::thread accept_clients(&MeridorMultiplayer::Host::AcceptClients, host.get(), 8);
 	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, &show_clients);
 	const HANDLE handle = main_window->GetHandle();
