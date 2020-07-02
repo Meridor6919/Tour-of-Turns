@@ -424,7 +424,7 @@ void ToT::Game(const bool multiplayer)
 	std::shared_ptr<SinglePlayer> network_role;
 	if (multiplayer)
 	{	
-		switch (Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window))
+		switch (Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, false, *main_window))
 		{
 			case 0:
 			{
@@ -463,6 +463,9 @@ void ToT::Game(const bool multiplayer)
 	{
 		network_role = std::make_shared<SinglePlayer>(*main_window);
 	}
+	bool temp = false;
+	Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window, nullptr, &temp);
+
 	while (network_role->GameLobby())
 	{
 		network_role->Interface();

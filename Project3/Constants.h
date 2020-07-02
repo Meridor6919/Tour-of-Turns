@@ -131,6 +131,7 @@ namespace OtherStrings
 		loadingai_title,
 		loadingai_wheel,
 		race_finished,
+		lobby_size,
 		last
 	};
 }

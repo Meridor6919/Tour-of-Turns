@@ -5,6 +5,7 @@ class Host : public SinglePlayer {
 
 	std::vector<std::pair<SOCKET, sockaddr_in>> clients;
 	std::unique_ptr<MeridorMultiplayer::Host> host;
+	int lobby_size;
 
 	void HandleClientConnection(std::string msg, int client_id);
 	virtual int Possible_AIs() override;

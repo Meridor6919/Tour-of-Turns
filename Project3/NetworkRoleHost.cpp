@@ -4,13 +4,29 @@ Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	host = std::make_unique<MeridorMultiplayer::Host>();
+
+
+	std::vector<std::string> horizontal_menu_text;
+
+	for (int i = 0; i <= SinglePlayer::Possible_AIs(); ++i)
+	{
+		horizontal_menu_text.push_back(std::to_string(i));
+	}
+	COORD starting_point = { static_cast<short>(main_window.GetWidth() + LanguagePack::text[LanguagePack::multiplayer_menu_options][0].size()) / 2 + 1, 25 };
+	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
+	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
+	std::cout << text;
+
+	lobby_size = Text::Choose::Horizontal(horizontal_menu_text, 1, {starting_point.X + static_cast<short>(text.size()) + 2, starting_point.Y}, Text::TextAlign::left, true, main_window, &mutex, &timer_running);
+	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
+	Text::Spaces(static_cast<short>(text.size()));
 }
 void Host::HandleClientConnection(std::string msg, int client_id)
 {
 }
 int Host::Possible_AIs()
 {
-	return 0;
+	return SinglePlayer::Possible_AIs() - lobby_size;
 }
 void Host::ShowClientsInLobby(bool *running)
 {
@@ -47,15 +63,17 @@ void Host::ShowClientsInLobby(bool *running)
 }
 void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
+	SinglePlayer::GetParticipants(name, tour, car, tire);
 }
 void Host::GetCurrentAttributes()
 {
+	SinglePlayer::GetCurrentAttributes();
 }
 bool Host::GameLobby()
 {
 	bool show_clients = true;
 	std::thread broadcast(&MeridorMultiplayer::Host::Broadcast, host.get(), main_window->GetHamachiConnectionFlag(), 200);
-	std::thread accept_clients(&MeridorMultiplayer::Host::AcceptClients, host.get(), 8);
+	std::thread accept_clients(&MeridorMultiplayer::Host::AcceptClients, host.get(), lobby_size);
 	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, &show_clients);
 	const HANDLE handle = main_window->GetHandle();
 	COORD starting_point = { static_cast<short>(main_window->GetWidth()) / 2, 25 };
@@ -69,7 +87,7 @@ bool Host::GameLobby()
 	main_window->RemoveExtension(tours, ExtName::tour);
 	main_window->RemoveExtension(tires, ExtName::tire);
 	main_window->RemoveExtension(cars, ExtName::car);
-	int ais = main_window->GetAIs();
+	int ais = (main_window->GetAIs() > Possible_AIs() ? Possible_AIs() : main_window->GetAIs());
 	int tires_pos = 0;
 	int cars_pos = 0;
 	int tours_pos = 0;
@@ -205,20 +223,26 @@ bool Host::GameLobby()
 }
 void Host::AttackPhase()
 {
+	SinglePlayer::AttackPhase();
 }
 void Host::ActionPhase()
 {
+	SinglePlayer::ActionPhase();
 }
 void Host::Leaderboard(bool clear)
 {
+	SinglePlayer::Leaderboard(clear);
 }
 bool Host::VisionBox(int turn)
 {
-	return false;
+	return SinglePlayer::VisionBox(turn);
 }
 void Host::Interface()
 {
+	SinglePlayer::Interface();
 }
 void Host::Finish()
 {
+	SinglePlayer::Finish();
+	host->CloseActiveConnections();
 }
