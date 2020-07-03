@@ -129,7 +129,8 @@ namespace OtherStrings
 		speed,
 		border,
 		loadingai_title,
-		loadingai_wheel,
+		loadingplayer_title,
+		loading_wheel,
 		race_finished,
 		lobby_size,
 		last

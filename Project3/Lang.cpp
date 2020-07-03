@@ -99,7 +99,7 @@ namespace LanguagePack
 		{
 			return false;
 		}
-		if (static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_wheel].size()) != 8)
+		if (static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loading_wheel].size()) != 8)
 		{
 			return false;
 		}

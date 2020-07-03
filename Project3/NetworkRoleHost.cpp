@@ -64,10 +64,8 @@ void Host::ShowClientsInLobby(bool *running)
 void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
 	SinglePlayer::GetParticipants(name, tour, car, tire);
-}
-void Host::GetCurrentAttributes()
-{
-	SinglePlayer::GetCurrentAttributes();
+	ShowLoading(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingplayer_title], player_init, lobby_size);
+	ShowLoading(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingplayer_title], player_init, lobby_size, true);
 }
 bool Host::GameLobby()
 {
@@ -220,26 +218,6 @@ bool Host::GameLobby()
 	accept_clients.join();
 	show_clients_in_lobby.join();
 	return true;
-}
-void Host::AttackPhase()
-{
-	SinglePlayer::AttackPhase();
-}
-void Host::ActionPhase()
-{
-	SinglePlayer::ActionPhase();
-}
-void Host::Leaderboard(bool clear)
-{
-	SinglePlayer::Leaderboard(clear);
-}
-bool Host::VisionBox(int turn)
-{
-	return SinglePlayer::VisionBox(turn);
-}
-void Host::Interface()
-{
-	SinglePlayer::Interface();
 }
 void Host::Finish()
 {

@@ -311,22 +311,22 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 	}
 	mutex.unlock();
 }
-void SinglePlayer::ShowLoadingAI(const bool clear)
+void SinglePlayer::ShowLoading(std::string title, int & init, int condition, bool clear)
 {
 	const COORD loading_screen_postion = { static_cast<short>(main_window->GetWidth()) / 2, static_cast<short>(main_window->GetHeight()) / 2 - 5 };
 	const HANDLE handle = main_window->GetHandle();
-	const short title_length = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_title].size());
+	const short title_length = static_cast<short>(title.size());
 	if (clear)
 	{
 		mutex.lock();
-		SetConsoleCursorPosition(handle, { loading_screen_postion.X -  title_length/ 2, loading_screen_postion.Y });
+		SetConsoleCursorPosition(handle, { loading_screen_postion.X - title_length / 2, loading_screen_postion.Y });
 		for (int i = 0; i < title_length; ++i)
 		{
 			std::cout << ' ';
 		}
 		for (short i = 0; i < 3; ++i)
 		{
-			SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2+i });
+			SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2 + i });
 			std::cout << "   ";
 		}
 		mutex.unlock();
@@ -335,18 +335,18 @@ void SinglePlayer::ShowLoadingAI(const bool clear)
 	else
 	{
 		int iteration = 0;
-		while (ai_init != main_window->GetAIs())
+		while (init != condition)
 		{
-			std::string loading_wheel = LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_wheel];;
+			std::string loading_wheel = LanguagePack::text[LanguagePack::other_strings][OtherStrings::loading_wheel];;
 			iteration = (iteration + 1) % 8;
 			for (int i = 0; i < 4; ++i)
 			{
 				loading_wheel[(i + iteration) % 8] = ' ';
 			}
 			mutex.lock();
-			SetConsoleCursorPosition(handle, { loading_screen_postion.X - title_length /2, loading_screen_postion.Y });
+			SetConsoleCursorPosition(handle, { loading_screen_postion.X - title_length / 2, loading_screen_postion.Y });
 			SetConsoleTextAttribute(handle, main_window->color1);
-			std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_title];
+			std::cout << title;
 			SetConsoleTextAttribute(handle, main_window->color2);
 			{
 				SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2 });
@@ -359,7 +359,7 @@ void SinglePlayer::ShowLoadingAI(const bool clear)
 			mutex.unlock();
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
-	}	
+	}
 }
 void SinglePlayer::ShowChances(const int value, const bool reset)
 {
@@ -451,12 +451,8 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 			return;
 		}
 	}
-	ShowLoadingAI();
-	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
-	{
-		participants[i].Init(tour);
-	}
-	ShowLoadingAI(true);
+	ShowLoading(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_title], ai_init, main_window->GetAIs());
+	ShowLoading(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingai_title], ai_init, main_window->GetAIs(), true);
 }
 void SinglePlayer::SortLeaderboard()
 {
@@ -630,6 +626,10 @@ bool SinglePlayer::GameLobby()
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
 	GetParticipants(name, tours[tours_pos] + ExtName::tour, cars[cars_pos] + ExtName::car, tires[tires_pos] + ExtName::tire);
+	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+	{
+		participants[i].Init(tour);
+	}
 	if (timer_settings)
 	{
 		COORD coord = { 0,0 };
