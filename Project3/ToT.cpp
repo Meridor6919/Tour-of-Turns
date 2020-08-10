@@ -431,15 +431,21 @@ void ToT::Game(const bool multiplayer)
 				case 0:
 				{
 					network_role = std::make_unique<Host>(*main_window);
+					bool temp = false;
+					Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window, nullptr, &temp);
 					break;
 				}
 				case 1:
 				{
+					bool temp = false;
+					Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window, nullptr, &temp);
 					network_role = std::make_unique<Client>(*main_window);
 					break;
 				}
 				case 2:
 				{
+					bool temp = false;
+					Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window, nullptr, &temp);
 					return;
 				}
 			}
@@ -449,9 +455,7 @@ void ToT::Game(const bool multiplayer)
 	{
 		network_role = std::make_unique<SinglePlayer>(*main_window);
 	}
-	bool temp = false;
-	Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window, nullptr, &temp);
-
+	
 	while (network_role->GameLobby())
 	{
 		network_role->Interface();
