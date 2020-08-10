@@ -204,6 +204,10 @@ bool Host::GameLobby()
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
 	GetParticipants(name, tours[tours_pos] + ExtName::tour, cars[cars_pos] + ExtName::car, tires[tires_pos] + ExtName::tire);
+	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+	{
+		participants[i].Init(tour);
+	}
 	if (timer_settings)
 	{
 		COORD coord = { 0,0 };
