@@ -42,6 +42,7 @@ void Participant::Init(std::string tour_path)
 }
 void Participant::Test(const std::string field, const bool show)
 {
+	CalculateParameters();
 	if (!IsAlive())
 	{
 		return;
@@ -203,9 +204,9 @@ float Participant::EvaluateChance(std::string field, const float speed, const bo
 		return (sqrt(base * -base + 200.0f * base) + 2.0f * base) / 3.0f;
 	}
 }
-void Participant::CalculateParameters(float value, std::string current_field)
+void Participant::CalculateParameters()
 {
-	current_speed += value*(0.9f + 0.2f*TireEffectivness(current_field));
+	current_speed += pending_action.first*(0.9f + 0.2f*TireEffectivness(pending_action.second));
 	if (current_speed < 0)
 	{
 		current_speed = 0;
@@ -288,5 +289,10 @@ float Participant::CalculateBurning(float value)
 	int level = static_cast<int>(raw*20.0f) + 10;
 	result = value * static_cast<float>(level + level * level) / 2.0f;
 	return result / 50.0f;
+}
+
+void Participant::QueueAction(float value, std::string current_field)
+{
+	pending_action = std::make_pair(value, current_field);
 }
 

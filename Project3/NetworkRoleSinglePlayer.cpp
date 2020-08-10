@@ -726,7 +726,7 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 		{
 			participants[participant].drift = true;
 		}
-		participants[participant].CalculateParameters(static_cast<float>(action.second), current_field);
+		participants[participant].QueueAction(static_cast<float>(action.second), current_field);
 		participants[participant].action_performed = true;
 		ShowIndicator(participant);
 	}
