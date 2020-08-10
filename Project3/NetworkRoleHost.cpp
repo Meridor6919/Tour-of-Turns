@@ -8,7 +8,7 @@ Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 
 	std::vector<std::string> horizontal_menu_text;
 
-	for (int i = 0; i <= SinglePlayer::Possible_AIs(); ++i)
+	for (int i = 1; i <= SinglePlayer::Possible_AIs(); ++i)
 	{
 		horizontal_menu_text.push_back(std::to_string(i));
 	}
@@ -17,7 +17,7 @@ Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
 	std::cout << text;
 
-	lobby_size = Text::Choose::Horizontal(horizontal_menu_text, 1, {starting_point.X + static_cast<short>(text.size()) + 2, starting_point.Y}, Text::TextAlign::left, true, main_window, &mutex, &timer_running);
+	lobby_size = Text::Choose::Horizontal(horizontal_menu_text, 0, {starting_point.X + static_cast<short>(text.size()) + 2, starting_point.Y}, Text::TextAlign::left, true, main_window, &mutex, &timer_running) + 1;
 	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
 	Text::Spaces(static_cast<short>(text.size()));
 }
@@ -64,8 +64,13 @@ void Host::ShowClientsInLobby(bool *running)
 void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
 	SinglePlayer::GetParticipants(name, tour, car, tire);
-	ShowLoading(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingplayer_title], player_init, lobby_size);
-	ShowLoading(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingplayer_title], player_init, lobby_size, true);
+	int human_players = static_cast<int>(player_init, host->GetClientsPtr()->size());
+	if (human_players == 0)
+	{
+		main_window->SetMultiplayer(false);
+	}
+	ShowLoading(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingplayer_title], player_init, human_players);
+	ShowLoading(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loadingplayer_title], player_init, human_players, true);
 }
 bool Host::GameLobby()
 {

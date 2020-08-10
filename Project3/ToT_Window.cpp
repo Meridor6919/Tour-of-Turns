@@ -496,7 +496,7 @@ void ToT_Window::SetMultiplayer(bool multiplayer)
 }
 void ToT_Window::SaveRanking(std::string tour, std::string name, int place, int score, bool crash, int attacks, int drifts, int durability_burning, std::string car, std::string tires)
 {
-	const bool classification[GameConstants::validate_ranking_classification] = { true, ais == 7, multiplayer && ais != 7 };
+	const bool classification[GameConstants::validate_ranking_classification] = { true, ais == 7, multiplayer };
 	const std::string ranking_path = FolderName::tour + '\\' + tour.substr(0, static_cast<int>(tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
 	std::vector<std::string> ranking_data = { "" };
 	int racer_index = -1;
