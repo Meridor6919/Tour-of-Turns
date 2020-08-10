@@ -421,47 +421,33 @@ void ToT::Info()
 void ToT::Game(const bool multiplayer)
 {
 	main_window->SetMultiplayer(multiplayer);
-	std::shared_ptr<SinglePlayer> network_role;
+	std::unique_ptr<SinglePlayer> network_role;
 	if (multiplayer)
 	{	
-		switch (Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, false, *main_window))
+		do
 		{
-			case 0:
+			switch (Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, false, *main_window))
 			{
-				try
+				case 0:
 				{
-					network_role = std::make_shared<Host>(*main_window);
+					network_role = std::make_unique<Host>(*main_window);
+					break;
 				}
-				catch (int err)
+				case 1:
 				{
-					UNREFERENCED_PARAMETER(err);
+					network_role = std::make_unique<Client>(*main_window);
+					break;
+				}
+				case 2:
+				{
 					return;
 				}
-				break;
 			}
-			case 1:
-			{
-				try
-				{
-					network_role = std::make_shared<Client>(*main_window);
-				}
-				catch (int err)
-				{
-					UNREFERENCED_PARAMETER(err);
-					return;
-				}
-
-				break;
-			}
-			case 2:
-			{
-				return;
-			}
-		}
+		} while (!network_role->isInit());
 	}
 	else
 	{
-		network_role = std::make_shared<SinglePlayer>(*main_window);
+		network_role = std::make_unique<SinglePlayer>(*main_window);
 	}
 	bool temp = false;
 	Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], 0, { game_window_center, 25 }, 3, Text::TextAlign::center, true, *main_window, nullptr, &temp);

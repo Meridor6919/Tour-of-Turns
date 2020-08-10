@@ -4,6 +4,11 @@ SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
 	participants.push_back(Participant(this->main_window));
+	initiazlized = true;
+}
+bool SinglePlayer::isInit()
+{
+	return initiazlized;
 }
 int SinglePlayer::NumericalSelection(const COORD coords)
 {

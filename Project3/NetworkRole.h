@@ -24,6 +24,7 @@ protected:
 	bool timer_running = true;
 	std::unique_ptr<VisibleTimer> timer;
 	int ai_init = 0;
+	bool initiazlized = false;
 
 	//Selection methods
 	int NumericalSelection(const COORD coords);
@@ -49,12 +50,12 @@ protected:
 	std::pair<int, int> PerformAction(); //action, value
 	virtual int Possible_AIs();
 
-
 public:
 	ToT_Window *main_window;
 
 	//General
 	SinglePlayer(ToT_Window &main_window);
+	bool isInit();
 	
 	//Get methods
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);

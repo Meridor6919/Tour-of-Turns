@@ -7,7 +7,7 @@ Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 	if (!StartNetwork())
 	{
 		closesocket(host);
-		throw 1;
+		initiazlized = false;
 	}
 }
 bool Client::StartNetwork()
