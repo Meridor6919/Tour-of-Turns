@@ -32,8 +32,8 @@ protected:
 	std::string StringSelection(const std::string current_name, const int max_size, const COORD coords);
 
 	//Showing methods
-	void ShowCarParameters(const std::string tire_path, bool clear = false);
-	void ShowTiresParameters(const std::string tire_path, bool clear = false);
+	void ShowCarParameters(const std::string tire_path, bool clear = false, const COORD starting_pos = { 0,19 });
+	void ShowTiresParameters(const std::string tire_path, bool clear = false, const COORD starting_pos = { 0,38 });
 	void ShowTourParameters(const std::string tire_path, bool clear = false);
 	void ShowRankingParameters(const std::string tire_path, bool clear = false);
 	void ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear);

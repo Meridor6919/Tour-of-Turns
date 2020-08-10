@@ -151,7 +151,7 @@ std::string SinglePlayer::StringSelection(const std::string current_name, const 
 	}
 	return name;
 }
-void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear)
+void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear, const COORD starting_pos)
 {
 	const std::vector<int> car_params = main_window->GetCarParameters(car_path);
 	std::vector < std::pair<std::string, std::string>> text;
@@ -160,9 +160,9 @@ void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clea
 	{
 		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::car_attributes][i], std::to_string(car_params[i])));
 	}
-	ShowLobbyInformation(LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::player_information_title], text, { 0, 19 }, 1, 2, clear);
+	ShowLobbyInformation(LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::player_information_title], text, starting_pos, 1, 2, clear);
 }
-void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
+void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear, const COORD starting_pos)
 {
 	const std::vector<std::string> tire_params = main_window->GetTireParameters(tire_path);
 	std::vector < std::pair<std::string, std::string>> text;
@@ -171,7 +171,7 @@ void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear)
 	{
 		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::terrain_types][i], tire_params[i]));
 	}
-	ShowLobbyInformation("", text, { 0, 38 }, 1, 2, clear);
+	ShowLobbyInformation("", text, starting_pos, 1, 2, clear);
 }
 void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 {

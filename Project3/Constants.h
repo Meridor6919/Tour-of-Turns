@@ -133,6 +133,7 @@ namespace OtherStrings
 		loading_wheel,
 		race_finished,
 		lobby_size,
+		players_in_lobby,
 		last
 	};
 }

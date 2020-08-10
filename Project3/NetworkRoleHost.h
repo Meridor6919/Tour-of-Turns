@@ -10,7 +10,7 @@ class Host : public SinglePlayer {
 
 	void HandleClientConnection(std::string msg, int client_id);
 	virtual int Possible_AIs() override;
-	void ShowClientsInLobby(bool *running);
+	void ShowClientsInLobby(const COORD starting_position, bool *running);
 public:
 	//General
 	Host(ToT_Window &main_window);

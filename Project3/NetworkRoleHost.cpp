@@ -28,38 +28,65 @@ int Host::Possible_AIs()
 {
 	return SinglePlayer::Possible_AIs() - lobby_size;
 }
-void Host::ShowClientsInLobby(bool *running)
+void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 {
 	const HANDLE handle = main_window->GetHandle();
+	
 	mutex.lock();
-	SetConsoleCursorPosition(handle, { 0,0 });
+	const short border_size = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size());
+	const short title_size = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby].size());
+	const short box_size = (lobby_size < 4 ? 4 : lobby_size);
+
 	SetConsoleTextAttribute(handle, main_window->color2);
-	std::cout << "Players in lobby: ";
+	SetConsoleCursorPosition(handle, { starting_position.X + border_size/2 - title_size/2, starting_position.Y });
+	std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby];
+	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y+1 });
+	std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
+	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(box_size) * 2 });
+	std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
 	mutex.unlock();
+
 	while (*running)
 	{
 		const std::vector<std::pair<SOCKET, sockaddr_in>>*  clients = host->GetClientsPtr();
 		mutex.lock();
-		for (short i = 0; i < 7; ++i)
+		for (short i = 0; i < lobby_size; ++i)
 		{
 			SetConsoleCursorPosition(handle, { 0,i+1 });
 			SetConsoleTextAttribute(handle, main_window->color1);
 			for (short j = 0; j < static_cast<short>(MeridorMultiplayer::Constants::ip_loopback.size()); ++j)
 			{
-				SetConsoleCursorPosition(handle, { j,i+1 });
+				SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2*(i+1) + 2 });
 				std::cout << ' ';
 			}
 		}
 		for (short i = 0; i < static_cast<short>(clients->size()); ++i)
 		{
 			
-			SetConsoleCursorPosition(handle, { 0,i+1 });
+			SetConsoleCursorPosition(handle, { starting_position.X + 1, starting_position.Y + 2 * (i + 1) + 2 });
 			SetConsoleTextAttribute(handle, main_window->color1);
 			std::cout << host->GetThisIp((*clients)[i].second);
 		}
 		mutex.unlock();
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
+
+	mutex.lock();
+	for (short i = 0; i < lobby_size; ++i)
+	{
+		for (short j = 0; j < static_cast<short>(MeridorMultiplayer::Constants::ip_loopback.size()); ++j)
+		{
+			SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2 * (i + 1) + 2 });
+			std::cout << ' ';
+		}
+	}
+	SetConsoleCursorPosition(handle, { starting_position.X + border_size / 2 - title_size / 2, starting_position.Y });
+	Text::Spaces(title_size);
+	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 1 });
+	Text::Spaces(border_size);
+	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(lobby_size) * 2 });
+	Text::Spaces(border_size);
+	mutex.unlock();
 }
 void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
@@ -74,10 +101,20 @@ void Host::GetParticipants(std::string name, std::string tour, std::string car, 
 }
 bool Host::GameLobby()
 {
+
+	short box_shift = 2 * (lobby_size - 4);
+	if (box_shift < 0)
+	{
+		box_shift = 0;
+	}
+	const COORD client_box_starting_pos = { 0, 1 };
+	const COORD car_box_starting_pos = { 0, 19 + box_shift };
+	const COORD tire_box_starting_pos = { 0, 38 + box_shift };
+
 	bool show_clients = true;
 	std::thread broadcast(&MeridorMultiplayer::Host::Broadcast, host.get(), main_window->GetHamachiConnectionFlag(), 200);
 	std::thread accept_clients(&MeridorMultiplayer::Host::AcceptClients, host.get(), lobby_size);
-	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, &show_clients);
+	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, client_box_starting_pos, &show_clients);
 	const HANDLE handle = main_window->GetHandle();
 	COORD starting_point = { static_cast<short>(main_window->GetWidth()) / 2, 25 };
 	const short spacing = 3;
@@ -95,8 +132,8 @@ bool Host::GameLobby()
 	int cars_pos = 0;
 	int tours_pos = 0;
 
-	ShowCarParameters(cars[cars_pos] + ExtName::car);
-	ShowTiresParameters(tires[tires_pos] + ExtName::tire);
+	ShowCarParameters(cars[cars_pos] + ExtName::car, false, car_box_starting_pos);
+	ShowTiresParameters(tires[tires_pos] + ExtName::tire, false, tire_box_starting_pos);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour);
 
 	while (true)
@@ -146,11 +183,11 @@ bool Host::GameLobby()
 			tours_pos = Text::Choose::Horizontal(tours, tours_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
 			if (i != tours_pos)
 			{
-				ShowCarParameters(cars[cars_pos] + ExtName::car, true);
+				ShowCarParameters(cars[cars_pos] + ExtName::car, true, car_box_starting_pos);
 				cars = main_window->GetCarNames(tours[tours_pos] + ExtName::tour);
 				main_window->RemoveExtension(cars, ExtName::car);
 				cars_pos = 0;
-				ShowCarParameters(cars[cars_pos] + ExtName::car);
+				ShowCarParameters(cars[cars_pos] + ExtName::car, false, car_box_starting_pos);
 				ShowTourParameters(tours[i] + ExtName::tour, true);
 				ShowTourParameters(tours[tours_pos] + ExtName::tour);
 			}
@@ -163,8 +200,8 @@ bool Host::GameLobby()
 			cars_pos = Text::Choose::Horizontal(cars, cars_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
 			if (i != cars_pos)
 			{
-				ShowCarParameters(cars[i] + ExtName::car, true);
-				ShowCarParameters(cars[cars_pos] + ExtName::car);
+				ShowCarParameters(cars[i] + ExtName::car, true, car_box_starting_pos);
+				ShowCarParameters(cars[cars_pos] + ExtName::car, false, car_box_starting_pos);
 			}
 			break;
 		}
@@ -174,8 +211,8 @@ bool Host::GameLobby()
 			tires_pos = Text::Choose::Horizontal(tires, tires_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
 			if (i != tires_pos)
 			{
-				ShowTiresParameters(tires[i] + ExtName::tire, true);
-				ShowTiresParameters(tires[tires_pos] + ExtName::tire);
+				ShowTiresParameters(tires[i] + ExtName::tire, true, tire_box_starting_pos);
+				ShowTiresParameters(tires[tires_pos] + ExtName::tire, false, tire_box_starting_pos);
 			}
 			break;
 		}
@@ -205,8 +242,8 @@ bool Host::GameLobby()
 		mutex.unlock();
 	}
 	main_window->SaveAtributes();
-	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
-	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
+	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true, tire_box_starting_pos);
+	ShowCarParameters(cars[cars_pos] + ExtName::car, true, car_box_starting_pos);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
 	GetParticipants(name, tours[tours_pos] + ExtName::tour, cars[cars_pos] + ExtName::car, tires[tires_pos] + ExtName::tire);
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
