@@ -110,7 +110,6 @@ void MeridorMultiplayer::Host::AcceptClients(const int max)
 				if (black_list[i].sin_addr.s_addr == sock_addr.sin_addr.s_addr)
 				{
 					playable = false;
-					closesocket(sock);
 					break;
 				}
 			}
@@ -118,6 +117,10 @@ void MeridorMultiplayer::Host::AcceptClients(const int max)
 			{
 				clients.push_back(std::make_pair(temp, sock_addr));
 				accept(clients[static_cast<int>(clients.size()) - 1].first, reinterpret_cast<sockaddr*>(&sock_addr), &addr_size);
+			}
+			else
+			{
+				closesocket(temp);
 			}
 		}
 	}
