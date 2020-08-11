@@ -24,6 +24,7 @@ namespace MeridorMultiplayer
 		const std::vector<sockaddr_in>* GetBlackListPtr() { return &black_list; }
 		void BanPlayer(sockaddr_in address);
 		void UnbanPlayer(sockaddr_in address);
+		void CheckClientsConnection();
 		void StopBroadcasting() { broadcast_running = false; }
 		void StopAcceptingClients();
 		void CloseActiveConnections();

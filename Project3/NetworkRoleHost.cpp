@@ -48,6 +48,7 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 
 	while (*running)
 	{
+		host->CheckClientsConnection();
 		const std::vector<std::pair<SOCKET, sockaddr_in>> clients = *(host->GetClientsPtr());
 		mutex.lock();
 		for (short i = 0; i < lobby_size; ++i)

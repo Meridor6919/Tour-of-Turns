@@ -156,6 +156,17 @@ void MeridorMultiplayer::Host::UnbanPlayer(sockaddr_in address)
 	}		
 	
 }
+void MeridorMultiplayer::Host::CheckClientsConnection()
+{
+	for (int i = static_cast<int>(clients.size()) - 1; i >= 0; --i)
+	{
+		if (send(clients[i].first, NULL, 0, 0) == SOCKET_ERROR && WSAGetLastError() == WSAECONNRESET) 
+		{
+			closesocket(clients[i].first);
+			clients.erase(clients.begin() + i);
+		}
+	}
+}
 void MeridorMultiplayer::Host::StopAcceptingClients()
 {
 	//Connecting with myself to process accept function that would otherwise wait forever
