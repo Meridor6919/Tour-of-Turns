@@ -27,6 +27,7 @@ namespace LanguagePack
 		ranking_details,
 		game_menu_options,
 		multiplayer_menu_options,
+		multiplayer_before_game_lobby,
 		game_lobby_informations,
 		race_actions,
 		race_chancebox_informations,
@@ -161,7 +162,8 @@ namespace GameConstants
 	//validation
 	const int validate_main_menu = 7;
 	const int validate_game_menu = 8;
-	const int validate_multiplayer_menu = 3;
+	const int validate_multiplayer_menu = 10;
+	const int validate_multiplayer_before_game_lobby = 3;
 	const int validate_tot_options = 6;
 	const int validate_colors = 14;
 	const int validate_actions = 5;

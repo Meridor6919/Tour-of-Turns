@@ -12,7 +12,7 @@ Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 	{
 		horizontal_menu_text.push_back(std::to_string(i));
 	}
-	COORD starting_point = { static_cast<short>(main_window.GetWidth() + LanguagePack::text[LanguagePack::multiplayer_menu_options][0].size()) / 2 + 1, 25 };
+	COORD starting_point = { static_cast<short>(main_window.GetWidth() + LanguagePack::text[LanguagePack::multiplayer_before_game_lobby][0].size()) / 2 + 1, 25 };
 	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
 	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
 	std::cout << text;
@@ -48,7 +48,7 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 
 	while (*running)
 	{
-		const std::vector<std::pair<SOCKET, sockaddr_in>>*  clients = host->GetClientsPtr();
+		const std::vector<std::pair<SOCKET, sockaddr_in>> clients = *(host->GetClientsPtr());
 		mutex.lock();
 		for (short i = 0; i < lobby_size; ++i)
 		{
@@ -60,12 +60,12 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 				std::cout << ' ';
 			}
 		}
-		for (short i = 0; i < static_cast<short>(clients->size()); ++i)
+		for (short i = 0; i < static_cast<short>(clients.size()); ++i)
 		{
 			
 			SetConsoleCursorPosition(handle, { starting_position.X + 1, starting_position.Y + 2 * (i + 1) + 2 });
 			SetConsoleTextAttribute(handle, main_window->color1);
-			std::cout << host->GetThisIp((*clients)[i].second);
+			std::cout << host->GetThisIp(clients[i].second);
 		}
 		mutex.unlock();
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -138,17 +138,17 @@ bool Host::GameLobby()
 
 	while (true)
 	{
-		main_menu_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::game_menu_options], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window, &mutex, &timer_running);
+		main_menu_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_menu_options], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window, &mutex, &timer_running);
 		if (!timer_running)
 		{
 			break;
 		}
-		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_menu_options][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
+		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_menu_options][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
 		switch (main_menu_position)
 		{
 		case 0://choosing name
 		{
-			name = StringSelection(name, GameConstants::maximum_name_length, { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_menu_options][0].size()), 25 });
+			name = StringSelection(name, GameConstants::maximum_name_length, { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_menu_options][0].size()), 25 });
 			main_window->SetName(name);
 			break;
 		}
@@ -166,7 +166,43 @@ bool Host::GameLobby()
 			ShowRankingParameters(tours[tours_pos] + ExtName::ranking);
 			break;
 		}
-		case 2: //timer
+		case 2://ban players
+		{
+			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_before_game_lobby][Multiplayer::back] };
+			const std::vector<std::pair<SOCKET, sockaddr_in>> clients = *(host->GetClientsPtr());
+			for (int i = 0; i < static_cast<int>(clients.size()); ++i)
+			{
+				text.push_back(host->GetThisIp(clients[i].second));
+			}
+			int target = Text::Choose::Horizontal(text, 0, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+			if (target > 0)
+			{
+				//add to blacklist
+				//remove connection
+
+				//index = target - 1
+			}
+			break;
+		}
+		case 3://blacklist
+		{
+			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_before_game_lobby][Multiplayer::back] };
+			const std::vector<sockaddr_in> blacklist = *(host->GetBlackListPtr());
+			for (int i = 0; i < static_cast<int>(blacklist.size()); ++i)
+			{
+				text.push_back(host->GetThisIp(blacklist[i]));
+			}
+			int target = Text::Choose::Horizontal(text, 0, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+			if (target > 0)
+			{
+				//remove from blacklist
+
+				//index = target - 1
+			}
+			break;
+
+		}
+		case 4: //timer
 		{
 			std::vector<std::string> timer_values = { LanguagePack::text[LanguagePack::on_off][1] };
 			for (int i = 1; i <= GameConstants::maximum_timer; ++i)
@@ -177,7 +213,7 @@ bool Host::GameLobby()
 			main_window->SetTimerSettings(timer_settings);
 			break;
 		}
-		case 3://choosing tour
+		case 5://choosing tour
 		{
 			int i = tours_pos;
 			tours_pos = Text::Choose::Horizontal(tours, tours_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
@@ -194,7 +230,7 @@ bool Host::GameLobby()
 
 			break;
 		}
-		case 4://choosing car
+		case 6://choosing car
 		{
 			int i = cars_pos;
 			cars_pos = Text::Choose::Horizontal(cars, cars_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
@@ -205,7 +241,7 @@ bool Host::GameLobby()
 			}
 			break;
 		}
-		case 5://choosing tires
+		case 7://choosing tires
 		{
 			int i = tires_pos;
 			tires_pos = Text::Choose::Horizontal(tires, tires_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
@@ -216,7 +252,7 @@ bool Host::GameLobby()
 			}
 			break;
 		}
-		case 7://Back
+		case 9://Back
 		{
 			main_window->SaveAtributes();
 			host->StopBroadcasting();
@@ -229,16 +265,16 @@ bool Host::GameLobby()
 			return false;
 		}
 		}
-		if (main_menu_position == 6)//Next
+		if (main_menu_position == 8)//Next
 		{
 			break;
 		}
 	}
-	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options].size()); ++i)
+	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options].size()); ++i)
 	{
 		mutex.lock();
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_menu_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
-		Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::multiplayer_menu_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
+		Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options][i].size()));
 		mutex.unlock();
 	}
 	main_window->SaveAtributes();

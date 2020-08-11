@@ -31,6 +31,10 @@ namespace LanguagePack
 		{
 			return false;
 		}
+		if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_before_game_lobby].size()) != GameConstants::validate_multiplayer_before_game_lobby)
+		{
+			return false;
+		}
 		if (static_cast<int>(LanguagePack::text[LanguagePack::tot_general_options].size()) != GameConstants::validate_tot_options)
 		{
 			return false;

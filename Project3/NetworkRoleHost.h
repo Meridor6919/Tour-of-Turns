@@ -3,7 +3,7 @@
 
 class Host : public SinglePlayer {
 
-	std::vector<std::pair<SOCKET, sockaddr_in>> clients;
+	//std::vector<std::pair<SOCKET, sockaddr_in>> clients;
 	std::unique_ptr<MeridorMultiplayer::Host> host;
 	int lobby_size;
 	int player_init = 0;
