@@ -18,7 +18,7 @@ void VisibleTimer::ShowTime()
 		if (*timer_running)
 		{
 			auto time_elapsed = std::chrono::system_clock::now() - time;
-			int miliseconds_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(time_elapsed).count();
+			int miliseconds_elapsed = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(time_elapsed).count());
 			int seconds_required = (seconds - miliseconds_elapsed / 1000) % 60;
 			int minutes_required = (seconds - miliseconds_elapsed / 1000) / 60;
 			mutex->lock();

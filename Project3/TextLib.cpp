@@ -54,7 +54,7 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		if (button != 13 || clear_after)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
-			Text::Spaces(line_size + 4);
+			Text::Spaces(static_cast<int>(line_size) + 4);
 		}
 		if (mutex != nullptr)
 		{
@@ -100,7 +100,7 @@ int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_p
 		if (button != 13 || clear_after)
 		{
 			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
-			Text::Spaces(line_size + 4);
+			Text::Spaces(static_cast<int>(line_size) + 4);
 		}
 		//Changing index when left or right arrow button is pressed
 		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 75 && starting_position > 0)

@@ -54,7 +54,7 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 		{
 			SetConsoleCursorPosition(handle, { 0,i+1 });
 			SetConsoleTextAttribute(handle, main_window->color1);
-			for (short j = 0; j < static_cast<short>(MeridorMultiplayer::Constants::ip_loopback.size()); ++j)
+			for (short j = 0; j < MeridorMultiplayer::Constants::max_ip_size; ++j)
 			{
 				SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2*(i+1) + 2 });
 				std::cout << ' ';
@@ -168,7 +168,7 @@ bool Host::GameLobby()
 		}
 		case 2://ban players
 		{
-			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_before_game_lobby][Multiplayer::back] };
+			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
 			const std::vector<std::pair<SOCKET, sockaddr_in>> clients = *(host->GetClientsPtr());
 			for (int i = 0; i < static_cast<int>(clients.size()); ++i)
 			{
@@ -177,16 +177,13 @@ bool Host::GameLobby()
 			int target = Text::Choose::Horizontal(text, 0, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
 			if (target > 0)
 			{
-				//add to blacklist
-				//remove connection
-
-				//index = target - 1
+				host->BanPlayer(clients[target - 1].second);
 			}
 			break;
 		}
 		case 3://blacklist
 		{
-			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_before_game_lobby][Multiplayer::back] };
+			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
 			const std::vector<sockaddr_in> blacklist = *(host->GetBlackListPtr());
 			for (int i = 0; i < static_cast<int>(blacklist.size()); ++i)
 			{
@@ -195,9 +192,7 @@ bool Host::GameLobby()
 			int target = Text::Choose::Horizontal(text, 0, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
 			if (target > 0)
 			{
-				//remove from blacklist
-
-				//index = target - 1
+				host->UnbanPlayer(blacklist[target - 1]);
 			}
 			break;
 

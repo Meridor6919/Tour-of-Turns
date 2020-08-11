@@ -110,6 +110,7 @@ void MeridorMultiplayer::Host::AcceptClients(const int max)
 				if (black_list[i].sin_addr.s_addr == sock_addr.sin_addr.s_addr)
 				{
 					playable = false;
+					closesocket(sock);
 					break;
 				}
 			}
@@ -121,6 +122,39 @@ void MeridorMultiplayer::Host::AcceptClients(const int max)
 		}
 	}
 	closesocket(sock);
+}
+void MeridorMultiplayer::Host::BanPlayer(sockaddr_in address)
+{
+	for (int i = 0; i < black_list.size(); ++i)
+	{
+		if (black_list[i].sin_addr.s_addr == address.sin_addr.s_addr)//already banned
+		{
+			return;
+		}
+	}
+	black_list.push_back(address);
+	for (int i = 0; i < static_cast<int>(clients.size()); ++i)
+	{
+		if (clients[i].second.sin_addr.s_addr == address.sin_addr.s_addr)
+		{
+			closesocket(clients[i].first);
+			clients.erase(clients.begin() + i);
+			break;
+		}
+	}
+
+}
+void MeridorMultiplayer::Host::UnbanPlayer(sockaddr_in address)
+{
+	for (int i = 0; i < black_list.size(); ++i)
+	{
+		if (black_list[i].sin_addr.s_addr == address.sin_addr.s_addr)//found
+		{
+			black_list.erase(black_list.begin() + i);
+			break;
+		}
+	}		
+	
 }
 void MeridorMultiplayer::Host::StopAcceptingClients()
 {

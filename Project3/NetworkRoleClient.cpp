@@ -27,7 +27,7 @@ bool Client::StartNetwork()
 	std::thread receiving_broadcast([&]() {
 		if (!client->RecvBroadcast(8, 200))
 		{
-			return false;
+			exit(0);
 		}
 	});
 	while (true)

@@ -22,6 +22,7 @@ namespace MeridorMultiplayer
 		const int buffer_size = 255;
 		const int port_number = 6919;
 		const std::string ip_loopback = "127.0.0.1";
+		const short max_ip_size = 17;
 	}
 	namespace ErrorMsg
 	{
