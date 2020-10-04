@@ -82,12 +82,6 @@
     <ClCompile Include="VisibleTimer.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorMultiplayerHost.cpp">
-      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorMultiplayerClient.cpp">
-      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -123,13 +117,13 @@
     <ClInclude Include="NetworkRoleHost.h">
       <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorMultiplayerHost.h">
+    <ClInclude Include="NetworkConnectorHost.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorMultiplayer.h">
+    <ClInclude Include="NetworkConnectorGeneral.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorMultiplayerClient.h">
+    <ClInclude Include="NetworkConnectorClient.h">
       <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>

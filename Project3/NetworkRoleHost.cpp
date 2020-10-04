@@ -3,26 +3,12 @@
 Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
-	host = std::make_unique<MeridorMultiplayer::Host>();
-
-
-	std::vector<std::string> horizontal_menu_text;
-
-	for (int i = 1; i <= SinglePlayer::Possible_AIs(); ++i)
-	{
-		horizontal_menu_text.push_back(std::to_string(i));
-	}
-	COORD starting_point = { static_cast<short>(main_window.GetWidth() + LanguagePack::text[LanguagePack::multiplayer_before_game_lobby][0].size()) / 2 + 1, 25 };
-	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
-	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
-	std::cout << text;
-
-	lobby_size = Text::Choose::Horizontal(horizontal_menu_text, 0, {starting_point.X + static_cast<short>(text.size()) + 2, starting_point.Y}, Text::TextAlign::left, true, main_window, &mutex, &timer_running) + 1;
-	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
-	Text::Spaces(static_cast<short>(text.size()));
+	SetLobbySize();
+	network_connector = std::make_unique<NetworkConnectorHost<Host, &Host::HandleClientConnection>>(this);
 }
 void Host::HandleClientConnection(std::string msg, int client_id)
 {
+
 }
 int Host::Possible_AIs()
 {
@@ -48,34 +34,35 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 
 	while (*running)
 	{
-		host->CheckClientsConnection();
-		const std::vector<std::pair<SOCKET, sockaddr_in>> clients = *(host->GetClientsPtr());
+		network_connector->GetDisconnectedClientsUnmappedID();
+		
+		const std::vector<std::string> clients_names = network_connector->GetClientsNames();
 		mutex.lock();
 		for (short i = 0; i < lobby_size; ++i)
 		{
 			SetConsoleCursorPosition(handle, { 0,i+1 });
 			SetConsoleTextAttribute(handle, main_window->color1);
-			for (short j = 0; j < MeridorMultiplayer::Constants::max_ip_size; ++j)
+			for (short j = 0; j < NetworkConnector::Constants::max_ip_size; ++j)
 			{
 				SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2*(i+1) + 2 });
 				std::cout << ' ';
 			}
 		}
-		for (short i = 0; i < static_cast<short>(clients.size()); ++i)
+		for (short i = 0; i < static_cast<short>(clients_names.size()); ++i)
 		{
 			
 			SetConsoleCursorPosition(handle, { starting_position.X + 1, starting_position.Y + 2 * (i + 1) + 2 });
 			SetConsoleTextAttribute(handle, main_window->color1);
-			std::cout << host->GetThisIp(clients[i].second);
+			std::cout << clients_names[i];
 		}
 		mutex.unlock();
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
 	}
 
 	mutex.lock();
 	for (short i = 0; i < lobby_size; ++i)
 	{
-		for (short j = 0; j < static_cast<short>(MeridorMultiplayer::Constants::ip_loopback.size()); ++j)
+		for (short j = 0; j < static_cast<short>(NetworkConnector::Constants::ip_loopback.size()); ++j)
 		{
 			SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2 * (i + 1) + 2 });
 			std::cout << ' ';
@@ -89,10 +76,27 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 	Text::Spaces(border_size);
 	mutex.unlock();
 }
+void Host::SetLobbySize()
+{
+	std::vector<std::string> horizontal_menu_text;
+
+	for (int i = 1; i <= SinglePlayer::Possible_AIs(); ++i)
+	{
+		horizontal_menu_text.push_back(std::to_string(i));
+	}
+	COORD starting_point = { static_cast<short>(main_window->GetWidth() + LanguagePack::text[LanguagePack::multiplayer_before_game_lobby][0].size()) / 2 + 1, 25 };
+	SetConsoleCursorPosition(main_window->GetHandle(), starting_point);
+	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
+	std::cout << text;
+
+	lobby_size = Text::Choose::Horizontal(horizontal_menu_text, 0, { starting_point.X + static_cast<short>(text.size()) + 2, starting_point.Y }, Text::TextAlign::left, true, *main_window, &mutex, &timer_running) + 1;
+	SetConsoleCursorPosition(main_window->GetHandle(), starting_point);
+	Text::Spaces(static_cast<short>(text.size()));
+}
 void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
 	SinglePlayer::GetParticipants(name, tour, car, tire);
-	int human_players = static_cast<int>(player_init, host->GetClientsPtr()->size());
+	int human_players = static_cast<int>(network_connector->GetClientsNames().size());
 	if (human_players == 0)
 	{
 		main_window->SetMultiplayer(false);
@@ -113,8 +117,9 @@ bool Host::GameLobby()
 	const COORD tire_box_starting_pos = { 0, 38 + box_shift };
 
 	bool show_clients = true;
-	std::thread broadcast(&MeridorMultiplayer::Host::Broadcast, host.get(), main_window->GetHamachiConnectionFlag(), 200);
-	std::thread accept_clients(&MeridorMultiplayer::Host::AcceptClients, host.get(), lobby_size);
+	network_connector->StartBroadcast(main_window->GetHamachiConnectionFlag(), 200);
+	network_connector->StartAcceptingClients(lobby_size);
+
 	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, client_box_starting_pos, &show_clients);
 	const HANDLE handle = main_window->GetHandle();
 	COORD starting_point = { static_cast<short>(main_window->GetWidth()) / 2, 25 };
@@ -170,33 +175,30 @@ bool Host::GameLobby()
 		case 2://ban players
 		{
 			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
-			const std::vector<std::pair<SOCKET, sockaddr_in>> clients = *(host->GetClientsPtr());
-			for (int i = 0; i < static_cast<int>(clients.size()); ++i)
+			const std::vector<sockaddr_in> blacklist = network_connector->GetBlacklist();
+			for (size_t i = 0; i < blacklist.size(); ++i)
 			{
-				text.push_back(host->GetThisIp(clients[i].second));
+				text.push_back(network_connector->GetIP(blacklist[i]));
 			}
-			int target = Text::Choose::Horizontal(text, 0, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
-			if (target > 0)
+			if (int target = Text::Choose::Horizontal(text, 0, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running))
 			{
-				host->BanPlayer(clients[target - 1].second);
+				network_connector->BanClient(blacklist[target-1]);
 			}
 			break;
 		}
 		case 3://blacklist
 		{
-			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
-			const std::vector<sockaddr_in> blacklist = *(host->GetBlackListPtr());
-			for (int i = 0; i < static_cast<int>(blacklist.size()); ++i)
+			std::vector<std::string> unban_options = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
+			const std::vector<sockaddr_in> banned_addresses = network_connector->GetBlacklist();
+			for (size_t i = 0; i < banned_addresses.size(); ++i)
 			{
-				text.push_back(host->GetThisIp(blacklist[i]));
+				unban_options.push_back(network_connector->GetIP(banned_addresses[i]));
 			}
-			int target = Text::Choose::Horizontal(text, 0, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
-			if (target > 0)
+			if (int target = Text::Choose::Horizontal(unban_options, 0, starting_local_pos, Text::TextAlign::center, true, *main_window))
 			{
-				host->UnbanPlayer(blacklist[target - 1]);
+				network_connector->UnbanClient(banned_addresses[target - 1]);
 			}
 			break;
-
 		}
 		case 4: //timer
 		{
@@ -251,13 +253,9 @@ bool Host::GameLobby()
 		case 9://Back
 		{
 			main_window->SaveAtributes();
-			host->StopBroadcasting();
-			host->StopAcceptingClients();
 			show_clients = false;
-			broadcast.join();
-			accept_clients.join();
 			show_clients_in_lobby.join();
-			host->CloseActiveConnections();
+			network_connector->CloseAllConnections();
 			return false;
 		}
 		}
@@ -289,16 +287,14 @@ bool Host::GameLobby()
 		timer->StartTimer(timer_settings);
 	}
 	SortLeaderboard();
-	host->StopBroadcasting();
-	host->StopAcceptingClients();
+	network_connector->StopBroadcast();
+	network_connector->StopAcceptingClients();
 	show_clients = false;
-	broadcast.join();
-	accept_clients.join();
 	show_clients_in_lobby.join();
 	return true;
 }
 void Host::Finish()
 {
 	SinglePlayer::Finish();
-	host->CloseActiveConnections();
+	network_connector->CloseAllConnections();
 }

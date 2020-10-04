@@ -9,23 +9,27 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-namespace MeridorMultiplayer
+namespace NetworkConnector
 {
+	static bool network_initialized = false;
 	namespace ErrorTitle
 	{
 		const std::string winsock = "Winsock Error";
 		const std::string disconnect = "Disconnected from game";
 		const std::string connection = "Connection error";
+		const std::string initialization = "Initialization error";
 	}
 	namespace Constants
 	{
-		const int buffer_size = 255;
-		const int port_number = 6919;
+		const std::vector<std::string> host_multiplayer_lobby = { "Start Game", "Ban players", "Unban players", "Back" };
+		constexpr int buffer_size = 255;
+		constexpr int port_number = 6919;
+		constexpr short max_ip_size = 17;
 		const std::string ip_loopback = "127.0.0.1";
-		const short max_ip_size = 17;
 	}
 	namespace ErrorMsg
 	{
 		const std::string connection = "Player probably finished hosting";
+		const std::string initialization = "Only one network instance allowed";
 	}
 }

@@ -4,7 +4,7 @@
 class Client : public SinglePlayer {
 
 	SOCKET host;
-	std::unique_ptr<MeridorMultiplayer::Client> client;
+	//std::unique_ptr<MeridorMultiplayer::Client> client;
 
 	bool StartNetwork();
 	void HighlightSelectedGame(std::string game, bool clear);

@@ -1,6 +1,6 @@
 #pragma once
-#include "MeridorMultiplayerClient.h"
-#include "MeridorMultiplayerHost.h"
+#include "NetworkConnectorClient.h"
+#include "NetworkConnectorHost.h"
 #include "ToT_Window.h"
 #include <fstream>
 #include <set>

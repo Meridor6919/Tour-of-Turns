@@ -12,6 +12,7 @@ Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 }
 bool Client::StartNetwork()
 {
+	/*
 	HANDLE handle = main_window->GetHandle();
 	COORD starting_point = { (short)main_window->GetWidth() / 2, 25 };
 	short cursor_pos = 0;
@@ -91,6 +92,8 @@ bool Client::StartNetwork()
 		}
 	}
 	return return_value;
+	*/
+	return 0;
 }
 void Client::HighlightSelectedGame(std::string game, bool clear)
 {

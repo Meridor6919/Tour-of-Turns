@@ -1,16 +1,20 @@
 #pragma once
 #include "NetworkRole.h"
+#include <map>
 
 class Host : public SinglePlayer {
 
-	//std::vector<std::pair<SOCKET, sockaddr_in>> clients;
-	std::unique_ptr<MeridorMultiplayer::Host> host;
 	int lobby_size;
 	int player_init = 0;
 
 	void HandleClientConnection(std::string msg, int client_id);
 	virtual int Possible_AIs() override;
 	void ShowClientsInLobby(const COORD starting_position, bool *running);
+
+	void SetLobbySize();
+
+	std::map<int, int> client_map;
+	std::unique_ptr<NetworkConnectorHost<Host, &Host::HandleClientConnection>> network_connector;
 public:
 	//General
 	Host(ToT_Window &main_window);
@@ -21,4 +25,6 @@ public:
 	//Game methods
 	virtual bool GameLobby() override;
 	virtual void Finish() override;
+
+	friend class NetworkConnectorHost<Host, &Host::HandleClientConnection>;
 };
