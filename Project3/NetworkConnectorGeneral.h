@@ -6,6 +6,7 @@
 #include <string>
 #include <ws2tcpip.h>
 #include <vector>
+#include <mutex>
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -25,6 +26,7 @@ namespace NetworkConnector
 		constexpr int buffer_size = 255;
 		constexpr int port_number = 6919;
 		constexpr short max_ip_size = 17;
+		constexpr int ms_delay = 100;
 		const std::string ip_loopback = "127.0.0.1";
 	}
 	namespace ErrorMsg

@@ -82,6 +82,9 @@
     <ClCompile Include="VisibleTimer.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkConnectorClient.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

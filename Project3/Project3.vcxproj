@@ -121,6 +121,7 @@
     <ClCompile Include="Lang.cpp" />
     <ClCompile Include="InfoBox.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NetworkConnectorClient.cpp" />
     <ClCompile Include="NetworkRoleClient.cpp" />
     <ClCompile Include="NetworkRoleHost.cpp" />
     <ClCompile Include="NetworkRoleSinglePlayer.cpp" />

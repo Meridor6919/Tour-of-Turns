@@ -1,6 +1,5 @@
 #pragma once
 #include "NetworkConnectorGeneral.h"
-#include <mutex>
 
 //Singleton class that uses template to pass any class method to handle connection between host and client
 template<class T, void (T::* Method)(std::string, int)>
@@ -26,7 +25,7 @@ class NetworkConnectorHost
 	std::unique_ptr<std::thread> accepting_thread;
 	std::mutex network_mutex;
 
-	void Broadcast(const bool hamachi, const int ms_delay);
+	void Broadcast(const bool hamachi);
 	void AcceptingClients(int max);
 	void Handling(int unmapped_id);
 	int GetClientIndexFromUnmappedID(int unmapped_id, bool lock = true);
@@ -34,7 +33,7 @@ class NetworkConnectorHost
 
 public:
 	NetworkConnectorHost(T* main_object_ptr);
-	void StartBroadcast(const bool hamachi, const int ms_delay);
+	void StartBroadcast(const bool hamachi);
 	void StopBroadcast();
 	void StartAcceptingClients(int max);
 	void StopAcceptingClients();
@@ -65,17 +64,17 @@ inline NetworkConnectorHost<T, Method>::NetworkConnectorHost(T* main_object_ptr)
 }
 
 template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::StartBroadcast(const bool hamachi, const int ms_delay)
+inline void NetworkConnectorHost<T, Method>::StartBroadcast(const bool hamachi)
 {
 	if (!broadcasting)
 	{
 		//Broadcast method sets broadcasting to true
-		broadcasting_thread = std::make_unique<std::thread>(&NetworkConnectorHost::Broadcast, this, hamachi, ms_delay);
+		broadcasting_thread = std::make_unique<std::thread>(&NetworkConnectorHost::Broadcast, this, hamachi);
 	}
 }
 
 template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::Broadcast(const bool hamachi, const int ms_delay)
+inline void NetworkConnectorHost<T, Method>::Broadcast(const bool hamachi)
 {
 	//UDP protocol to broadcast messages to all addresses in local network and virtual local network if flag is set
 	SOCKET broadcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -130,7 +129,7 @@ inline void NetworkConnectorHost<T, Method>::Broadcast(const bool hamachi, const
 			WSACleanup();
 			exit(0);
 		}
-		std::chrono::milliseconds ms(ms_delay);
+		std::chrono::milliseconds ms(NetworkConnector::Constants::ms_delay);
 		std::this_thread::sleep_for(ms);
 
 	}
