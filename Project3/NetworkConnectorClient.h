@@ -10,10 +10,11 @@ class NetworkConnectorClient
 	std::mutex network_mutex;
 
 	static bool Recv(SOCKET socket, char* buffer, int len, const int flags);
-	void Connect(const std::string ip);
+	std::string GetIPFromHostID(std::string host_id);
 	void BroadcastSearch(bool hamachi);
 public:
 	NetworkConnectorClient();
+	bool Connect(const std::string host_id);
 	void StartLookingForHosts(bool hamachi);
 	void StopLookingForHosts();
 	void SendRequest(const std::string request);
@@ -21,6 +22,7 @@ public:
 	std::string GetResponse();
 	std::vector<std::string> GetHostsBroadcasting();
 	void ResetHostsBroadcastingVector();
+	void CloseAllConnections();
 };
 
 

@@ -10,8 +10,21 @@ bool NetworkConnectorClient::Recv(SOCKET socket, char* buffer, int len, const in
 	return true;
 }
 
-void NetworkConnectorClient::Connect(const std::string ip)
+std::string NetworkConnectorClient::GetIPFromHostID(std::string host_id)
 {
+	for (int i = host_id.size() - 1; i >= 0; --i)
+	{
+		if (host_id[i] == ' ')
+		{
+			return std::string(host_id.begin() + i + 1, host_id.end());
+		}
+	}
+	return std::string();
+}
+
+bool NetworkConnectorClient::Connect(const std::string host_id)
+{
+	const std::string ip = GetIPFromHostID(host_id);
 	host = socket(AF_INET, SOCK_STREAM, 0);
 	sockaddr_in address = {};
 	address.sin_family = AF_INET;
@@ -26,8 +39,9 @@ void NetworkConnectorClient::Connect(const std::string ip)
 	if (connect(host, reinterpret_cast<sockaddr*>(&address), sizeof(address)))
 	{
 		MessageBox(0, NetworkConnector::ErrorMsg::connection.c_str(), NetworkConnector::ErrorTitle::disconnect.c_str(), 0);
-		abort();
+		return false;
 	}
+	return true;
 }
 
 void NetworkConnectorClient::BroadcastSearch(bool hamachi)
@@ -41,14 +55,14 @@ void NetworkConnectorClient::BroadcastSearch(bool hamachi)
 	addr.sin_port = htons(NetworkConnector::Constants::port_number);
 	addr.sin_addr.s_addr = ADDR_ANY;
 	broadcast_active = true;
-	const char* ms_delay = std::to_string(NetworkConnector::Constants::ms_delay).c_str();
 
 	if (intercept_brodcast_socket < 0)
 	{
 		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
 		abort();
 	}
-	if (setsockopt(intercept_brodcast_socket, SOL_SOCKET, SO_RCVTIMEO, ms_delay, sizeof(ms_delay)) < 0)
+	int ms_delay = NetworkConnector::Constants::ms_delay;
+	if (setsockopt(intercept_brodcast_socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&ms_delay), sizeof(ms_delay)) < 0)
 	{
 		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
 		abort();
@@ -94,16 +108,12 @@ void NetworkConnectorClient::BroadcastSearch(bool hamachi)
 }
 NetworkConnectorClient::NetworkConnectorClient()
 {
-	if (NetworkConnector::network_initialized)
-	{
-		MessageBox(0, NetworkConnector::ErrorMsg::initialization.c_str(), NetworkConnector::ErrorTitle::initialization.c_str(), 0);
-	}
-	else
+	if (!NetworkConnector::network_initialized)
 	{
 		WSAData wsa_data;
 		WSAStartup(MAKEWORD(2, 2), &wsa_data);
 		NetworkConnector::network_initialized = true;
-	}	
+	}
 }
 
 void NetworkConnectorClient::StartLookingForHosts(bool hamachi)
@@ -167,4 +177,11 @@ void NetworkConnectorClient::ResetHostsBroadcastingVector()
 	network_mutex.unlock();
 	std::chrono::milliseconds ms(NetworkConnector::Constants::ms_delay);
 	std::this_thread::sleep_for(ms);
+}
+
+void NetworkConnectorClient::CloseAllConnections()
+{
+	StopLookingForHosts();
+	closesocket(host);
+	WSACleanup();
 }

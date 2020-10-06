@@ -50,11 +50,7 @@ public:
 template<class T, void(T::* Method)(std::string, int)>
 inline NetworkConnectorHost<T, Method>::NetworkConnectorHost(T* main_object_ptr)
 {
-	if (NetworkConnector::network_initialized)
-	{
-		MessageBox(0, NetworkConnector::ErrorMsg::initialization.c_str(), NetworkConnector::ErrorTitle::initialization.c_str(), 0);
-	}
-	else
+	if(!NetworkConnector::network_initialized)
 	{
 		WSAData wsa_data;
 		WSAStartup(MAKEWORD(2, 2), &wsa_data);
@@ -270,8 +266,6 @@ inline void NetworkConnectorHost<T, Method>::AcceptingClients(int max)
 	while (accepting)
 	{
 		//Creating temporary socket to check if accepted connection is valid
-		char buff[4];
-		recv(sock, buff, 4, 0);
 		SOCKET temp = accept(sock, reinterpret_cast<sockaddr*>(&sock_addr), &addr_size);
 		if (temp != INVALID_SOCKET && accepting)
 		{
@@ -361,6 +355,7 @@ inline void NetworkConnectorHost<T, Method>::CloseAllConnections()
 	clients.clear();
 	disconnected_clients.clear();
 	blacklist.clear();
+	WSACleanup();
 
 }
 

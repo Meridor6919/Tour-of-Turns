@@ -6,59 +6,43 @@ Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 	this->main_window = &main_window;
 	if (!StartNetwork())
 	{
-		closesocket(host);
 		initiazlized = false;
 	}
 }
 bool Client::StartNetwork()
 {
-	/*
 	HANDLE handle = main_window->GetHandle();
 	COORD starting_point = { (short)main_window->GetWidth() / 2, 25 };
-	short cursor_pos = 0;
-	char button = ' ';
-
-	client = std::make_unique<MeridorMultiplayer::Client>(&host);
-	std::vector<std::string> current_hosts = client->GetCurrentHosts();
-	const short spacing = 2;
+	constexpr short spacing = 2;
 	std::string selected_game = "";
 	bool return_value = false;
+	client_connector = std::make_unique<NetworkConnectorClient>();
 
-	//recv hosts from local network	
-	std::thread receiving_broadcast([&]() {
-		if (!client->RecvBroadcast(8, 200))
-		{
-			exit(0);
-		}
-	});
+	client_connector->StartLookingForHosts(main_window->GetHamachiConnectionFlag());
+	
 	while (true)
 	{
-		mutex.lock();
 		int option = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::multiplayer_lobby], 0, starting_point, spacing, Text::TextAlign::center, false, *main_window);
-		mutex.unlock();
 		if(option == Multiplayer::active_games)
 		{
-			std::vector<std::string>active_games = current_hosts;
-			active_games.insert(active_games.begin(), LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back]);
-			mutex.lock();
-			int i = Text::Choose::Horizontal(active_games, 0, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::active_games].size())/2 + 1, starting_point.Y}, Text::TextAlign::left, true, *main_window);
-			mutex.unlock();
-			HighlightSelectedGame(selected_game, true);
-			if (i != 0)
+			std::vector<std::string>active_games = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
 			{
-				selected_game = current_hosts[i-1];
+				auto temp_vector = client_connector->GetHostsBroadcasting();
+				active_games.insert(active_games.begin() + 1, temp_vector.begin(), temp_vector.end());
 			}
-			else
+			const COORD submenu_position = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::active_games].size()) / 2 + 1,
+												starting_point.Y };
+			if (int target = Text::Choose::Horizontal(active_games, 0, submenu_position, Text::TextAlign::left, true, *main_window))
 			{
-				selected_game = "";
+				selected_game = active_games[target];
+				HighlightSelectedGame(selected_game, false);
 			}
-			HighlightSelectedGame(selected_game, false);
 		}
 		else if(option == Multiplayer::join)
 		{
 			if (selected_game != "")
 			{
-				if (client->Connect(client->GetIpFromMapValue(selected_game)))
+				if (client_connector->Connect(selected_game))
 				{
 					return_value = true;
 					break;
@@ -66,22 +50,23 @@ bool Client::StartNetwork()
 				else
 				{
 					HighlightSelectedGame(selected_game, true);
-					current_hosts = client->GetCurrentHosts();
 					selected_game = "";
 				}
 			}
 		}
 		else if(option == Multiplayer::refresh)
 		{
-			current_hosts = client->GetCurrentHosts();
+			client_connector->ResetHostsBroadcastingVector();
+			HighlightSelectedGame(selected_game, true);
+			selected_game = "";
 		}
 		else if(option == Multiplayer::back)
 		{
 			break;
 		}
 	}
-	client->FinishBroadcast();
-	receiving_broadcast.join();
+	HighlightSelectedGame(selected_game, true);
+	client_connector->StopLookingForHosts();
 	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby].size()); ++i)
 	{
 		const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][i].size());
@@ -92,8 +77,6 @@ bool Client::StartNetwork()
 		}
 	}
 	return return_value;
-	*/
-	return 0;
 }
 void Client::HighlightSelectedGame(std::string game, bool clear)
 {
@@ -105,11 +88,9 @@ void Client::HighlightSelectedGame(std::string game, bool clear)
 			game[i] = ' ';
 		}
 	}
-	mutex.lock();
 	SetConsoleCursorPosition(handle, { 0,0 });
 	SetConsoleTextAttribute(handle, main_window->color1);
 	std::cout << game;
-	mutex.unlock();
 }
 void Client::ValidateAttack(int target, int participant)
 {

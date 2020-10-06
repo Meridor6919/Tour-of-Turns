@@ -5,9 +5,6 @@
 
 int main()
 {
-	WSAData wsa_data;
-	WSAStartup(MAKEWORD(2, 2), &wsa_data);
-
 	ToT game;
 	game.MainMenu();
 	WSACleanup();
