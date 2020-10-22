@@ -1,5 +1,6 @@
 #pragma once
 #include "NetworkConnectorGeneral.h"
+#include "BroadcastSender.h"
 
 //Singleton class that uses template to pass any class method to handle connection between host and client
 template<class T, void (T::* Method)(std::string, int)>
@@ -19,22 +20,23 @@ class NetworkConnectorHost
 	std::vector<ClientContainer> clients;
 	std::vector<int> disconnected_clients;
 	std::vector<sockaddr_in> blacklist;
-	bool broadcasting = false;
 	bool accepting = false;
+	bool error_handling = false;
 	std::unique_ptr<std::thread> broadcasting_thread;
 	std::unique_ptr<std::thread> accepting_thread;
+	std::unique_ptr<std::thread> error_handling_thread;
 	std::mutex network_mutex;
 
-	void Broadcast(const bool hamachi);
 	void AcceptingClients(int max);
-	void Handling(int unmapped_id);
+	void ProcessingMessages(int unmapped_id);
+	void HandlingErrors() {};
 	int GetClientIndexFromUnmappedID(int unmapped_id, bool lock = true);
 	void RemoveClientConnection(int id, bool join_thread = true, bool lock = true);
 
 public:
+	NetworkConnector::BroadcastSender broadcast;
+
 	NetworkConnectorHost(T* main_object_ptr);
-	void StartBroadcast(const bool hamachi);
-	void StopBroadcast();
 	void StartAcceptingClients(int max);
 	void StopAcceptingClients();
 	void CloseAllConnections();
@@ -59,81 +61,9 @@ inline NetworkConnectorHost<T, Method>::NetworkConnectorHost(T* main_object_ptr)
 	}
 }
 
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::StartBroadcast(const bool hamachi)
-{
-	if (!broadcasting)
-	{
-		//Broadcast method sets broadcasting to true
-		broadcasting_thread = std::make_unique<std::thread>(&NetworkConnectorHost::Broadcast, this, hamachi);
-	}
-}
 
 template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::Broadcast(const bool hamachi)
-{
-	//UDP protocol to broadcast messages to all addresses in local network and virtual local network if flag is set
-	SOCKET broadcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	sockaddr_in sock_addr = {};
-	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(NetworkConnector::Constants::port_number);
-	broadcasting = true;
-
-	if (broadcast_socket < 0)
-	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
-		WSACleanup();
-		exit(0);
-	}
-	char option = '1';
-	if (setsockopt(broadcast_socket, SOL_SOCKET, SO_BROADCAST, &option, sizeof(int)) < 0)
-	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
-		WSACleanup();
-		exit(0);
-	}
-
-	char host_name[50];
-	if (gethostname(host_name, sizeof(host_name)) < 0)
-	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
-		WSACleanup();
-		exit(0);
-	}
-	while (broadcasting)
-	{
-		bool result = false;
-		for (int i = 0; i < 255; ++i)
-		{
-			sock_addr.sin_addr.s_addr = inet_addr(("192.168." + std::to_string(i) + ".255").c_str());
-			if (!(sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr*)&sock_addr, sizeof(sock_addr)) < 0))
-			{
-				result = true;
-			}
-		}
-		if (hamachi)
-		{
-			sock_addr.sin_addr.s_addr = inet_addr("25.255.255.255");
-			if (!(sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr*)&sock_addr, sizeof(sock_addr)) < 0))
-			{
-				result = true;
-			}
-		}
-		if (!result)
-		{
-			MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
-			WSACleanup();
-			exit(0);
-		}
-		std::chrono::milliseconds ms(NetworkConnector::Constants::ms_delay);
-		std::this_thread::sleep_for(ms);
-
-	}
-	closesocket(broadcast_socket);
-}
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::Handling(int unmapped_id)
+inline void NetworkConnectorHost<T, Method>::ProcessingMessages(int unmapped_id)
 {
 	network_mutex.lock();
 	int client_index = GetClientIndexFromUnmappedID(unmapped_id, false);
@@ -145,8 +75,7 @@ inline void NetworkConnectorHost<T, Method>::Handling(int unmapped_id)
 	{
 		char buffer[NetworkConnector::Constants::buffer_size];
 
-		//TODO add disconnect checks
-		if (recv(client_socket, buffer, NetworkConnector::Constants::buffer_size, 0) != SOCKET_ERROR)
+		if (recv(client_socket, buffer, NetworkConnector::Constants::buffer_size, 0) > 0)
 		{
 			std::string msg = buffer;
 			std::invoke(Method, main_object_ptr, msg, 0);
@@ -226,17 +155,6 @@ inline void NetworkConnectorHost<T, Method>::RemoveClientConnection(int id, bool
 		network_mutex.unlock();
 	}
 }
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::StopBroadcast()
-{
-	if (broadcasting)
-	{
-		broadcasting = false;
-		broadcasting_thread->join();
-	}
-}
-
 template<class T, void(T::* Method)(std::string, int)>
 inline void NetworkConnectorHost<T, Method>::AcceptingClients(int max)
 {
@@ -297,7 +215,7 @@ inline void NetworkConnectorHost<T, Method>::AcceptingClients(int max)
 				new_client.id = next_client_id++;
 				new_client.address = sock_addr;
 				new_client.socket = temp;
-				new_client.handling_thread = std::make_unique<std::thread>(&NetworkConnectorHost::Handling, this, new_client.id);
+				new_client.handling_thread = std::make_unique<std::thread>(&NetworkConnectorHost::ProcessingMessages, this, new_client.id);
 
 				clients.push_back(std::move(new_client));
 				accept(temp, reinterpret_cast<sockaddr*>(&sock_addr), &addr_size);
@@ -346,7 +264,7 @@ inline void NetworkConnectorHost<T, Method>::StopAcceptingClients()
 template<class T, void(T::* Method)(std::string, int)>
 inline void NetworkConnectorHost<T, Method>::CloseAllConnections()
 {
-	StopBroadcast();
+	broadcast.Stop();
 	StopAcceptingClients();
 	for (size_t i = 0; i < clients.size(); ++i)
 	{

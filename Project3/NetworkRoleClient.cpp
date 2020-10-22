@@ -7,6 +7,7 @@ Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 	if (!StartNetwork())
 	{
 		initiazlized = false;
+		client_connector->CloseAllConnections();
 	}
 }
 bool Client::StartNetwork()
@@ -114,6 +115,15 @@ std::string Client::GetTour()
 }
 bool Client::GameLobby()
 {
+
+
+
+
+
+
+
+
+	client_connector->CloseAllConnections();
 	return false;
 }
 

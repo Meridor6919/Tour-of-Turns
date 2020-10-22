@@ -34,4 +34,13 @@ namespace NetworkConnector
 		const std::string connection = "Player probably finished hosting";
 		const std::string initialization = "Only one network instance allowed";
 	}
+	inline void Validate(bool error)
+	{
+		if (error)
+		{
+			MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
+			WSACleanup();
+			exit(0);
+		}
+	}
 }

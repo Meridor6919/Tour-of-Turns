@@ -117,7 +117,8 @@ bool Host::GameLobby()
 	const COORD tire_box_starting_pos = { 0, 38 + box_shift };
 
 	bool show_clients = true;
-	network_connector->StartBroadcast(main_window->GetHamachiConnectionFlag());
+	network_connector->broadcast.SetHamachiFlag(main_window->GetHamachiConnectionFlag());
+	network_connector->broadcast.Start();
 	network_connector->StartAcceptingClients(lobby_size);
 
 	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, client_box_starting_pos, &show_clients);
@@ -287,7 +288,7 @@ bool Host::GameLobby()
 		timer->StartTimer(timer_settings);
 	}
 	SortLeaderboard();
-	network_connector->StopBroadcast();
+	network_connector->broadcast.Stop();
 	network_connector->StopAcceptingClients();
 	show_clients = false;
 	show_clients_in_lobby.join();

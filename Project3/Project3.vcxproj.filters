@@ -35,6 +35,9 @@
     <Filter Include="Files\ToTFiles\GameLogic\SourceFiles">
       <UniqueIdentifier>{99f0d8c6-c8fd-41d4-a712-de48e4a7f1d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Files\GeneralLibraries\NetworkConnector">
+      <UniqueIdentifier>{4c22952c-1832-480f-9cb1-36dedca007ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextLib.cpp">
@@ -83,7 +86,10 @@
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="NetworkConnectorClient.cpp">
-      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="BroadcastSender.cpp">
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -120,14 +126,20 @@
     <ClInclude Include="NetworkRoleHost.h">
       <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkConnectorHost.h">
-      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+    <ClInclude Include="NetworkConnectorClient.h">
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClInclude>
     <ClInclude Include="NetworkConnectorGeneral.h">
-      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkConnectorClient.h">
-      <Filter>Files\GeneralLibraries\HeaderFiles</Filter>
+    <ClInclude Include="NetworkConnectorHost.h">
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="BroadcastSender.h">
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadOperatingClass.h">
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

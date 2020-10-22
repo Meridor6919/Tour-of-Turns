@@ -2,7 +2,7 @@
 
 bool NetworkConnectorClient::Recv(SOCKET socket, char* buffer, int len, const int flags)
 {
-	if ((recv(socket, buffer, len, flags) < 0) || (((std::string)buffer).size() > len) || buffer[0] == '\0')
+	if ((recv(socket, buffer, len, flags) < 0) <= 0)
 	{
 		MessageBox(0, NetworkConnector::ErrorMsg::connection.c_str(), NetworkConnector::ErrorTitle::disconnect.c_str(), 0);
 		return false;
@@ -61,12 +61,6 @@ void NetworkConnectorClient::BroadcastSearch(bool hamachi)
 		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
 		abort();
 	}
-	int ms_delay = NetworkConnector::Constants::ms_delay;
-	if (setsockopt(intercept_brodcast_socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&ms_delay), sizeof(ms_delay)) < 0)
-	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
-		abort();
-	}
 	if (bind(intercept_brodcast_socket, reinterpret_cast<sockaddr*>(&addr), addr_size))
 	{
 		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
@@ -78,7 +72,6 @@ void NetworkConnectorClient::BroadcastSearch(bool hamachi)
 		int recv_result = recvfrom(intercept_brodcast_socket, host_name_buffer, 50, 0, reinterpret_cast<sockaddr*>(&addr), &addr_size);
 		in_addr temp_addr;
 		hostent* hostent = gethostbyname(host_name_buffer);
-
 		if (hostent != nullptr && recv_result != -1)
 		{
 			for (int i = 0; hostent->h_addr_list[i] != 0; ++i)
@@ -157,7 +150,10 @@ std::string NetworkConnectorClient::GetResponse()
 	{
 		abort();
 	}
-	Recv(host, buffer, NetworkConnector::Constants::buffer_size, 0);
+	if (!Recv(host, buffer, NetworkConnector::Constants::buffer_size, 0))
+	{
+		//TODO disconnect
+	}
 	
 	return std::string(buffer);
 }
@@ -182,6 +178,6 @@ void NetworkConnectorClient::ResetHostsBroadcastingVector()
 void NetworkConnectorClient::CloseAllConnections()
 {
 	StopLookingForHosts();
+	shutdown(host, SD_BOTH);
 	closesocket(host);
-	WSACleanup();
 }

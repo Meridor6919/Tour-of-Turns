@@ -118,6 +118,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AIConnector.cpp" />
+    <ClCompile Include="BroadcastSender.cpp" />
     <ClCompile Include="Lang.cpp" />
     <ClCompile Include="InfoBox.cpp" />
     <ClCompile Include="main.cpp" />
@@ -136,12 +137,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIConnector.h" />
+    <ClInclude Include="BroadcastSender.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="NetworkConnectorGeneral.h" />
     <ClInclude Include="NetworkConnectorClient.h" />
     <ClInclude Include="NetworkConnectorHost.h" />
     <ClInclude Include="NetworkRoleClient.h" />
     <ClInclude Include="NetworkRoleHost.h" />
+    <ClInclude Include="ThreadOperatingClass.h" />
     <ClInclude Include="VisibleTimer.h" />
     <ClInclude Include="WavTransformer.h" />
     <ClInclude Include="Infobox.h" />
