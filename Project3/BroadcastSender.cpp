@@ -1,6 +1,6 @@
 #include "BroadcastSender.h"
 
-void NetworkConnector::BroadcastSender::ThreadFunctionality()
+void NetworkConnector::BroadcastSender::Broadcasting()
 {
 	//UDP protocol to broadcast messages to all addresses in local network and virtual local network if flag is set
 	SOCKET broadcast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -41,4 +41,30 @@ void NetworkConnector::BroadcastSender::ThreadFunctionality()
 void NetworkConnector::BroadcastSender::SetHamachiFlag(bool flag)
 {
 	hamachi = flag;
+}
+
+void NetworkConnector::BroadcastSender::Stop()
+{
+	if (thread_active)
+	{
+		thread_active = false;
+		if (main_thread->joinable())
+		{
+			main_thread->join();
+		}
+	}
+}
+
+void NetworkConnector::BroadcastSender::Start()
+{
+	if (!thread_active)
+	{
+		thread_active = true;
+		main_thread = std::make_unique<std::thread>(&BroadcastSender::Broadcasting, this);
+	}
+}
+
+NetworkConnector::BroadcastSender::~BroadcastSender()
+{
+	Stop();
 }

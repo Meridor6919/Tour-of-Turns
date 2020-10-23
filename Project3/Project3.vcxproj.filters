@@ -138,9 +138,6 @@
     <ClInclude Include="BroadcastSender.h">
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadOperatingClass.h">
-      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />

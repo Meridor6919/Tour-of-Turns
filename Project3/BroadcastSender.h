@@ -1,14 +1,19 @@
 #pragma once
-#include "ThreadOperatingClass.h"
+#include "NetworkConnectorGeneral.h"
 
 namespace NetworkConnector
 {
-	class BroadcastSender : public ThreadOperatingClass
+	class BroadcastSender
 	{
+		bool thread_active = false;
+		std::unique_ptr<std::thread> main_thread;
 		bool hamachi = false;
-		void ThreadFunctionality();
+		void Broadcasting();
 		
 	public:
 		void SetHamachiFlag(bool flag);
+		void Stop();
+		void Start();
+		~BroadcastSender();
 	};
 }

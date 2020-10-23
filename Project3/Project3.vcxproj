@@ -144,7 +144,6 @@
     <ClInclude Include="NetworkConnectorHost.h" />
     <ClInclude Include="NetworkRoleClient.h" />
     <ClInclude Include="NetworkRoleHost.h" />
-    <ClInclude Include="ThreadOperatingClass.h" />
     <ClInclude Include="VisibleTimer.h" />
     <ClInclude Include="WavTransformer.h" />
     <ClInclude Include="Infobox.h" />
