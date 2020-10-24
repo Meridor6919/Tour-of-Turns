@@ -19,6 +19,7 @@ namespace NetworkConnector
 		const std::string disconnect = "Disconnected from game";
 		const std::string connection = "Connection error";
 		const std::string initialization = "Initialization error";
+		const std::string address_missing = "Address missing";
 	}
 	namespace Constants
 	{
@@ -33,6 +34,7 @@ namespace NetworkConnector
 	{
 		const std::string connection = "Player probably finished hosting";
 		const std::string initialization = "Only one network instance allowed";
+		const std::string address_missing = "Strangly selected target vanished before any action was performed";
 	}
 	inline void Validate(bool error)
 	{
