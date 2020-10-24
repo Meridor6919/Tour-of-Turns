@@ -34,9 +34,7 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 
 	while (*running)
 	{
-		network_connector->GetDisconnectedClientsUnmappedID();
-		
-		const std::vector<std::string> clients_names = network_connector->GetClientsNames();
+		const std::vector<std::string> clients_names = network_connector->GetClientNames();
 		mutex.lock();
 		for (short i = 0; i < lobby_size; ++i)
 		{
@@ -96,7 +94,7 @@ void Host::SetLobbySize()
 void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
 	SinglePlayer::GetParticipants(name, tour, car, tire);
-	int human_players = static_cast<int>(network_connector->GetClientsNames().size());
+	int human_players = static_cast<int>(network_connector->GetClientNames().size());
 	if (human_players == 0)
 	{
 		main_window->SetMultiplayer(false);
@@ -117,9 +115,9 @@ bool Host::GameLobby()
 	const COORD tire_box_starting_pos = { 0, 38 + box_shift };
 
 	bool show_clients = true;
-	network_connector->broadcast.SetHamachiFlag(main_window->GetHamachiConnectionFlag());
-	network_connector->broadcast.Start();
-	network_connector->StartAcceptingClients(lobby_size);
+	network_connector->broadcast_sender.SetHamachiFlag(main_window->GetHamachiConnectionFlag());
+	network_connector->broadcast_sender.Start();
+	network_connector->client_connector.Start(lobby_size);
 
 	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, client_box_starting_pos, &show_clients);
 	const HANDLE handle = main_window->GetHandle();
@@ -175,29 +173,27 @@ bool Host::GameLobby()
 		}
 		case 2://ban players
 		{
-			std::vector<std::string> text = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
-			const std::vector<sockaddr_in> blacklist = network_connector->GetBlacklist();
-			for (size_t i = 0; i < blacklist.size(); ++i)
-			{
-				text.push_back(network_connector->GetIP(blacklist[i]));
-			}
+			const std::vector<sockaddr_in> active_connections = network_connector->GetClientAddresses();
+			std::vector<std::string> text = network_connector->GetClientNames();
+			text.insert(text.begin(), LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back]);
+
 			if (int target = Text::Choose::Horizontal(text, 0, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running))
 			{
-				network_connector->BanClient(blacklist[target-1]);
+				network_connector->client_connector.BanClient(active_connections[target-1]);
 			}
 			break;
 		}
 		case 3://blacklist
 		{
 			std::vector<std::string> unban_options = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
-			const std::vector<sockaddr_in> banned_addresses = network_connector->GetBlacklist();
+			const std::vector<sockaddr_in> banned_addresses = network_connector->client_connector.GetBlacklist();
 			for (size_t i = 0; i < banned_addresses.size(); ++i)
 			{
 				unban_options.push_back(network_connector->GetIP(banned_addresses[i]));
 			}
 			if (int target = Text::Choose::Horizontal(unban_options, 0, starting_local_pos, Text::TextAlign::center, true, *main_window))
 			{
-				network_connector->UnbanClient(banned_addresses[target - 1]);
+				network_connector->client_connector.UnbanClient(banned_addresses[target - 1]);
 			}
 			break;
 		}
@@ -288,8 +284,8 @@ bool Host::GameLobby()
 		timer->StartTimer(timer_settings);
 	}
 	SortLeaderboard();
-	network_connector->broadcast.Stop();
-	network_connector->StopAcceptingClients();
+	network_connector->broadcast_sender.Stop();
+	network_connector->client_connector.Stop();
 	show_clients = false;
 	show_clients_in_lobby.join();
 	return true;

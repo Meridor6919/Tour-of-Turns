@@ -1,72 +1,101 @@
 #pragma once
 #include "NetworkConnectorGeneral.h"
 #include "BroadcastSender.h"
-
+#define TEMPLATE_NetworkConnectorHost template<class T, void (T::* Method)(std::string, int)>
 //Singleton class that uses template to pass any class method to handle connection between host and client
-template<class T, void (T::* Method)(std::string, int)>
-class NetworkConnectorHost
+TEMPLATE_NetworkConnectorHost class NetworkConnectorHost
 {
-	struct ClientContainer
-	{
-		unsigned int id;
-		SOCKET socket;
-		sockaddr_in address;
-		bool handling_connection = true;
-		std::unique_ptr<std::thread> handling_thread;
-	};
-
+	struct ClientContainer;
+	class ClientConnector;
+	class ErrorHandler;
+	
 	T* main_object_ptr;
-	int next_client_id = 0;
 	std::vector<ClientContainer> clients;
-	std::vector<int> disconnected_clients;
-	std::vector<sockaddr_in> blacklist;
-	bool accepting = false;
-	bool error_handling = false;
-	std::unique_ptr<std::thread> broadcasting_thread;
-	std::unique_ptr<std::thread> accepting_thread;
-	std::unique_ptr<std::thread> error_handling_thread;
+	std::vector<sockaddr_in> disconnected_clients;
 	std::mutex network_mutex;
+	ErrorHandler error_handler;
 
-	void AcceptingClients(int max);
-	void ProcessingMessages(int unmapped_id);
-	void HandlingErrors() {};
-	int GetClientIndexFromUnmappedID(int unmapped_id, bool lock = true);
-	void RemoveClientConnection(int id, bool join_thread = true, bool lock = true);
+	int unsigned GetClientContainerIndexFromAddress(sockaddr_in address);
+	void ProcessingMessages(sockaddr_in address);
 
 public:
-	NetworkConnector::BroadcastSender broadcast;
+	NetworkConnector::BroadcastSender broadcast_sender;
+	ClientConnector client_connector;
 
 	NetworkConnectorHost(T* main_object_ptr);
-	void StartAcceptingClients(int max);
-	void StopAcceptingClients();
+	void RemoveClient(sockaddr_in address);
 	void CloseAllConnections();
-	void BanClient(int unmapped_id);
+	const std::vector<std::string> GetClientNames();
+	const std::vector<sockaddr_in> GetClientAddresses();
+
+	static std::string GetIP(const sockaddr_in sock_addr);
+};
+//-------------------------------------------------NESTED CLASS DECLARATIONS--------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+TEMPLATE_NetworkConnectorHost struct NetworkConnectorHost<T, Method>::ClientContainer
+{
+	SOCKET socket;
+	sockaddr_in address;
+	bool handling_connection = true;
+	std::unique_ptr<std::thread> handling_thread;
+};
+TEMPLATE_NetworkConnectorHost class NetworkConnectorHost<T, Method>::ClientConnector
+{
+	NetworkConnectorHost<T, Method>* enclosing_class_ptr;
+	std::vector<sockaddr_in> blacklist;
+	std::unique_ptr<std::thread> main_thread;
+	bool thread_active;
+	int max_clients;
+	void Accepting();
+
+public:
+	void Initialize(NetworkConnectorHost<T, Method>* enclosing_class_ptr);
+	void Start(int max_clients);
+	void Stop();
 	void BanClient(sockaddr_in address);
 	void UnbanClient(sockaddr_in address);
-	std::vector<int> GetDisconnectedClientsUnmappedID();
-	static std::string GetIP(const sockaddr_in sock_addr);
-	const std::vector<sockaddr_in> GetBlacklist();
-	const std::vector<std::string> GetClientsNames();
+	const std::vector<sockaddr_in>& GetBlacklist();
+};
+TEMPLATE_NetworkConnectorHost class NetworkConnectorHost<T, Method>::ErrorHandler
+{
+	std::unique_ptr<std::thread> main_thread;
+	bool thread_active;
+
+	void Handling();
+
+public:
+	void Start();
+	void Stop();
 };
 
-template<class T, void(T::* Method)(std::string, int)>
-inline NetworkConnectorHost<T, Method>::NetworkConnectorHost(T* main_object_ptr)
+//-----------------------------------------------------MAIN CLASS METHODS-----------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+TEMPLATE_NetworkConnectorHost inline NetworkConnectorHost<T, Method>::NetworkConnectorHost(T* main_object_ptr)
 {
-	if(!NetworkConnector::network_initialized)
+	if (!NetworkConnector::network_initialized)//CHECK IN DEBUG or compile time
 	{
 		WSAData wsa_data;
 		WSAStartup(MAKEWORD(2, 2), &wsa_data);
 		NetworkConnector::network_initialized = true;
 		this->main_object_ptr = main_object_ptr;
+		client_connector.Initialize(this);
 	}
 }
-
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::ProcessingMessages(int unmapped_id)
+TEMPLATE_NetworkConnectorHost inline unsigned int NetworkConnectorHost<T, Method>::GetClientContainerIndexFromAddress(sockaddr_in address)
+{
+	for (size_t i = 0; i < clients.size(); ++i)
+	{
+		if (clients[i].address.sin_addr.s_addr == address.sin_addr.s_addr)
+		{
+			return static_cast<unsigned int>(i);
+		}
+	}
+	return -1;
+}
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ProcessingMessages(sockaddr_in address)
 {
 	network_mutex.lock();
-	int client_index = GetClientIndexFromUnmappedID(unmapped_id, false);
+	int client_index = GetClientContainerIndexFromAddress(address);
 	bool* handling = &clients[client_index].handling_connection;
 	SOCKET client_socket = clients[client_index].socket;
 	network_mutex.unlock();
@@ -83,80 +112,69 @@ inline void NetworkConnectorHost<T, Method>::ProcessingMessages(int unmapped_id)
 		else
 		{
 			network_mutex.lock();
-			client_index = GetClientIndexFromUnmappedID(unmapped_id, false);
-			disconnected_clients.emplace_back(unmapped_id);
-			RemoveClientConnection(client_index, false, false);
+			disconnected_clients.emplace_back(address);
 			network_mutex.unlock();
 		}
-
 	}
 }
-
-template<class T, void(T::* Method)(std::string, int)>
-inline int NetworkConnectorHost<T, Method>::GetClientIndexFromUnmappedID(int unmapped_id, bool lock)
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::RemoveClient(sockaddr_in address)
 {
-	if (lock)
+	network_mutex.lock();
+	unsigned int target = GetClientContainerIndexFromAddress(address);
+	clients[target].handling_connection = false;
+	if (clients[target].handling_thread->joinable())
 	{
-		network_mutex.lock();
+		clients[target].handling_thread->join();
 	}
-	size_t upper_bound = clients.size();
-	size_t lower_bound = 0;
-	size_t index = (lower_bound + upper_bound) / 2;
-	while (true)
+	closesocket(clients[target].socket);
+	clients.erase(clients.begin() + target);
+	network_mutex.unlock();
+}
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::CloseAllConnections()
+{
+	broadcast_sender.Stop();
+	client_connector.Stop();
+	for (size_t i = 0; i < clients.size(); ++i)
 	{
-		if (clients[index].id == unmapped_id)
-		{
-			if (lock)
-			{
-				network_mutex.unlock();
-			}
-			return index;
-		}
-		else if (clients[index].id < unmapped_id)
-		{
-			lower_bound = index;
-		}
-		else
-		{
-			upper_bound = index;
-		}
-		//Checking if there is any client with matching unmapped_id.
-		if ((lower_bound + upper_bound) / 2 != index)
-		{
-			index = (lower_bound + upper_bound) / 2;
-		}
-		else
-		{
-			if (lock)
-			{
-				network_mutex.unlock();
-			}
-			return -1;
-		}
+		RemoveClient(clients[i].address);
 	}
+	clients.clear();
+	disconnected_clients.clear();
+	WSACleanup();
+}
+TEMPLATE_NetworkConnectorHost inline const std::vector<std::string> NetworkConnectorHost<T, Method>::GetClientNames()
+{
+	network_mutex.lock();
+	std::vector<std::string> ret = {};
+	for (size_t i = 0; i < clients.size(); ++i)
+	{
+		ret.push_back(GetIP(clients[i].address));
+	}
+	network_mutex.unlock();
+	return ret;
+}
+TEMPLATE_NetworkConnectorHost inline const std::vector<sockaddr_in> NetworkConnectorHost<T, Method>::GetClientAddresses()
+{
+	network_mutex.lock();
+	std::vector<sockaddr_in> ret = {};
+	for (size_t i = 0; i < clients.size(); ++i)
+	{
+		ret.push_back(clients[i].address);
+	}
+	network_mutex.unlock();
+	return ret;
+}
+TEMPLATE_NetworkConnectorHost inline std::string NetworkConnectorHost<T, Method>::GetIP(const sockaddr_in sock_addr)
+{
+	char helper[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &sock_addr.sin_addr, helper, INET_ADDRSTRLEN);
+
+	return static_cast<std::string>(helper);
 }
 
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::RemoveClientConnection(int id, bool join_thread, bool lock)
-{
-	clients[id].handling_connection = false;
-	if (clients[id].handling_thread->joinable() && join_thread)
-	{
-		clients[id].handling_thread->join();
-	}
-	closesocket(clients[id].socket);
-	if (lock)
-	{
-		network_mutex.lock();
-	}
-	clients.erase(clients.begin() + id);
-	if (lock)
-	{
-		network_mutex.unlock();
-	}
-}
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::AcceptingClients(int max)
+//-------------------------------------------------------CLIENT CONNECTOR-----------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ClientConnector::Accepting()
 {
 	const char* timeout = "100";
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -165,37 +183,26 @@ inline void NetworkConnectorHost<T, Method>::AcceptingClients(int max)
 	sock_addr.sin_port = htons(NetworkConnector::Constants::port_number);
 	sock_addr.sin_addr.s_addr = INADDR_ANY;
 	int addr_size = sizeof(sockaddr_in);
-	accepting = true;
 
-	if (sock < 0)
-	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
-		WSACleanup();
-		exit(0);
-	}
-	if (bind(sock, reinterpret_cast<sockaddr*>(&sock_addr), sizeof(sockaddr)) < 0)
-	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
-		WSACleanup();
-		exit(0);
-	}
-	listen(sock, max);
+	NetworkConnector::Validate(sock < 0);
+	NetworkConnector::Validate(bind(sock, reinterpret_cast<sockaddr*>(&sock_addr), sizeof(sockaddr)) < 0);
+	listen(sock, max_clients);
 
-	while (accepting)
+	while (thread_active)
 	{
 		//Creating temporary socket to check if accepted connection is valid
 		SOCKET temp = accept(sock, reinterpret_cast<sockaddr*>(&sock_addr), &addr_size);
-		if (temp != INVALID_SOCKET && accepting)
+		if (temp != INVALID_SOCKET && thread_active)
 		{
 			bool playable = true;
-			network_mutex.lock();
-			if (static_cast<int>(clients.size()) >= max)
+			enclosing_class_ptr->network_mutex.lock();
+			if (static_cast<int>(enclosing_class_ptr->clients.size()) >= max_clients)
 			{
 				playable = false;
 			}
-			for (int i = 0; i < static_cast<int>(clients.size()); ++i)
+			for (int i = 0; i < static_cast<int>(enclosing_class_ptr->clients.size()); ++i)
 			{
-				if (sock_addr.sin_addr.s_addr == clients[i].address.sin_addr.s_addr)
+				if (sock_addr.sin_addr.s_addr == enclosing_class_ptr->clients[i].address.sin_addr.s_addr)
 				{
 					playable = false;
 					break;
@@ -212,40 +219,41 @@ inline void NetworkConnectorHost<T, Method>::AcceptingClients(int max)
 			if (playable)
 			{
 				ClientContainer new_client;
-				new_client.id = next_client_id++;
 				new_client.address = sock_addr;
 				new_client.socket = temp;
-				new_client.handling_thread = std::make_unique<std::thread>(&NetworkConnectorHost::ProcessingMessages, this, new_client.id);
+				new_client.handling_thread = std::make_unique<std::thread>(&NetworkConnectorHost::ProcessingMessages, enclosing_class_ptr, sock_addr);
 
-				clients.push_back(std::move(new_client));
+				enclosing_class_ptr->clients.push_back(std::move(new_client));
 				accept(temp, reinterpret_cast<sockaddr*>(&sock_addr), &addr_size);
 			}
 			else
 			{
 				closesocket(temp);
 			}
-			network_mutex.unlock();
+			enclosing_class_ptr->network_mutex.unlock();
 		}
 	}
 	closesocket(sock);
 }
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::StartAcceptingClients(int max)
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ClientConnector::Initialize(NetworkConnectorHost<T, Method>* enclosing_class_ptr)
 {
-	if (!accepting)
-	{
-		accepting = true;
-		accepting_thread = std::make_unique<std::thread>(&NetworkConnectorHost::AcceptingClients, this, max);
-	}
+	this->enclosing_class_ptr = enclosing_class_ptr;
 }
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::StopAcceptingClients()
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ClientConnector::Start(int max_clients)
 {
-	if (accepting)
+	if (!thread_active)//CHECK IN DEBUG or compile time
 	{
-		accepting = false;
+		thread_active = true;
+		this->max_clients = max_clients;
+		main_thread = std::make_unique<std::thread>(&NetworkConnectorHost::ClientConnector::Accepting, this);
+	}
+	
+}
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ClientConnector::Stop()
+{
+	if (thread_active)//CHECK IN DEBUG or compile time
+	{
+		thread_active = false;
 
 		//connecting to myself to un-block accept listener
 		SOCKET temp_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -257,100 +265,66 @@ inline void NetworkConnectorHost<T, Method>::StopAcceptingClients()
 		connect(temp_socket, reinterpret_cast<sockaddr*>(&temp_addr), sizeof(temp_addr));
 		closesocket(temp_socket);
 
-		accepting_thread->join();
-	}
-}
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::CloseAllConnections()
-{
-	broadcast.Stop();
-	StopAcceptingClients();
-	for (size_t i = 0; i < clients.size(); ++i)
-	{
-		RemoveClientConnection(i);
-	}
-	clients.clear();
-	disconnected_clients.clear();
-	blacklist.clear();
-	WSACleanup();
-
-}
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::BanClient(int unmapped_id)
-{
-	network_mutex.lock();
-	int index = GetClientIndexFromUnmappedID(unmapped_id, false);
-	blacklist.push_back(clients[index].address);
-	RemoveClientConnection(index, true, false);
-	network_mutex.unlock();
-}
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::BanClient(sockaddr_in address)
-{
-	network_mutex.lock();
-	for (size_t i = 0; i < clients.size(); ++i)
-	{
-		if (clients[i].address.sin_addr.s_addr == address.sin_addr.s_addr)
+		if (main_thread->joinable())
 		{
-			blacklist.push_back(address);
-			RemoveClientConnection(i, true, false);
-			break;
+			main_thread->join();
 		}
 	}
-	network_mutex.unlock();
 }
-
-template<class T, void(T::* Method)(std::string, int)>
-inline void NetworkConnectorHost<T, Method>::UnbanClient(sockaddr_in address)
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ClientConnector::BanClient(sockaddr_in address)
 {
-	network_mutex.lock();
-	for (size_t i = 0; i < blacklist.size(); ++i)
+	enclosing_class_ptr->network_mutex.lock();
+	blacklist.push_back(address);
+	enclosing_class_ptr->network_mutex.unlock();
+	enclosing_class_ptr->RemoveClient(address);
+}
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ClientConnector::UnbanClient(sockaddr_in address)
+{
+	enclosing_class_ptr->network_mutex.lock();
+	for (size_t i = 0; i < enclosing_class_ptr->clients.size(); ++i)
 	{
 		if (blacklist[i].sin_addr.s_addr == address.sin_addr.s_addr)
 		{
 			blacklist.erase(blacklist.begin() + i);
-			break;
+			enclosing_class_ptr->network_mutex.unlock();
+			return;
 		}
 	}
-	network_mutex.unlock();
+	//CHECK IN DEBUG or compile time
+	DebugBreak();
 }
-
-template<class T, void(T::* Method)(std::string, int)>
-inline std::vector<int> NetworkConnectorHost<T, Method>::GetDisconnectedClientsUnmappedID()
-{
-	network_mutex.lock();
-	std::vector<int> ret = disconnected_clients;
-	disconnected_clients.clear();
-	network_mutex.unlock();
-	return ret;
-}
-
-template<class T, void(T::* Method)(std::string, int)>
-inline std::string NetworkConnectorHost<T, Method>::GetIP(const sockaddr_in sock_addr)
-{
-	char helper[INET_ADDRSTRLEN];
-	inet_ntop(AF_INET, &sock_addr.sin_addr, helper, INET_ADDRSTRLEN);
-
-	return static_cast<std::string>(helper);
-}
-template<class T, void(T::* Method)(std::string, int)>
-inline const std::vector<sockaddr_in> NetworkConnectorHost<T, Method>::GetBlacklist()
+TEMPLATE_NetworkConnectorHost inline const std::vector<sockaddr_in>& NetworkConnectorHost<T, Method>::ClientConnector::GetBlacklist()
 {
 	return blacklist;
 }
 
-template<class T, void(T::* Method)(std::string, int)>
-inline const std::vector<std::string> NetworkConnectorHost<T, Method>::GetClientsNames()
+//-------------------------------------------------------ERROR HANDLING-------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ErrorHandler::Handling()
 {
-	network_mutex.lock();
-	std::vector<std::string> ret = {};
-	for (size_t i = 0; i < clients.size(); ++i)
+	while (thread_active)
 	{
-		ret.push_back(GetIP(clients[i].address));
+		//TODO
+		//implement this
 	}
-	network_mutex.unlock();
-	return ret;
 }
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ErrorHandler::Start()
+{
+	if (thread_active)//CHECK IN DEBUG or compile time
+	{
+		thread_active = false;
+		if (main_thread->joinable())
+		{
+			main_thread->join();
+		}
+	}
+}
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ErrorHandler::Stop()
+{
+	if (!thread_active)//CHECK IN DEBUG or compile time
+	{
+		thread_active = true;
+		main_thread = std::make_unique<std::thread>(&ErrorHandler::Handling, this);
+	}
+}
+
