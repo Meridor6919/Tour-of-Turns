@@ -12,6 +12,7 @@ TEMPLATE_NetworkConnectorHost class NetworkConnectorHost
 	T* main_object_ptr;
 	std::vector<ClientContainer> clients;
 	std::vector<sockaddr_in> disconnected_clients;
+	std::vector<sockaddr_in> disconnected_clients_error_handling;
 	std::mutex network_mutex;
 	ErrorHandler error_handler;
 
@@ -60,10 +61,12 @@ TEMPLATE_NetworkConnectorHost class NetworkConnectorHost<T, Method>::ErrorHandle
 {
 	std::thread main_thread;
 	bool thread_active;
+	NetworkConnectorHost<T, Method>* network_connector_host_ptr;
 
 	void Handling();
 
 public:
+	void Initialize(NetworkConnectorHost<T, Method>* network_connector_host_ptr);
 	void Start();
 	void Stop();
 };
@@ -79,6 +82,7 @@ TEMPLATE_NetworkConnectorHost inline NetworkConnectorHost<T, Method>::NetworkCon
 		NetworkConnector::network_initialized = true;
 		this->main_object_ptr = main_object_ptr;
 		client_connector.Initialize(this);
+		error_handler.Initialize(this);
 	}
 }
 TEMPLATE_NetworkConnectorHost inline unsigned int NetworkConnectorHost<T, Method>::GetClientContainerIndexFromAddress(sockaddr_in address)
@@ -117,6 +121,7 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Proce
 		{
 			network_mutex.lock();
 			disconnected_clients.emplace_back(address);
+			disconnected_clients_error_handling.emplace_back(address);
 			network_mutex.unlock();
 		}
 	}
@@ -151,6 +156,7 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Close
 	}
 	clients.clear();
 	disconnected_clients.clear();
+	disconnected_clients_error_handling.clear();
 	WSACleanup();
 }
 TEMPLATE_NetworkConnectorHost inline const std::vector<std::string> NetworkConnectorHost<T, Method>::GetClientNames()
@@ -310,9 +316,24 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Error
 {
 	while (thread_active)
 	{
-		//TODO
-		//implement this
+		network_connector_host_ptr->network_mutex.lock();
+		for (size_t i = 0; i < network_connector_host_ptr->disconnected_clients_error_handling.size(); ++i)
+		{
+			const unsigned int index = network_connector_host_ptr->GetClientContainerIndexFromAddress(network_connector_host_ptr->disconnected_clients_error_handling[i]);
+			shutdown(network_connector_host_ptr->clients[index].socket, SD_BOTH);
+			network_connector_host_ptr->clients[index].handling_connection = false;
+			network_connector_host_ptr->clients[index].handling_thread.join();
+			network_connector_host_ptr->clients.erase(network_connector_host_ptr->clients.begin() + index);
+		}
+		network_connector_host_ptr->disconnected_clients_error_handling.clear();
+		network_connector_host_ptr->network_mutex.unlock();
+		std::chrono::milliseconds ms(NetworkConnector::Constants::ms_delay);
+		std::this_thread::sleep_for(ms);
 	}
+}
+TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ErrorHandler::Initialize(NetworkConnectorHost<T, Method>* network_connector_host_ptr)
+{
+	this->network_connector_host_ptr = network_connector_host_ptr;
 }
 TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ErrorHandler::Start()
 {
