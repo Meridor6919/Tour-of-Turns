@@ -19,7 +19,7 @@ void NetworkConnector::BroadcastSender::Broadcasting()
 		for (int i = 0; i < 255; ++i)
 		{
 			InetPton(AF_INET, ("192.168." + std::to_string(i) + ".255").c_str(), &sock_addr.sin_addr.s_addr);
-			if (!(sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr*)&sock_addr, sizeof(sock_addr)) < 0))
+			if (!(sendto(broadcast_socket, host_name, sizeof(host_name), 0, reinterpret_cast<sockaddr*>(&sock_addr), sizeof(sock_addr)) < 0))
 			{
 				result = true;
 			}
@@ -27,7 +27,7 @@ void NetworkConnector::BroadcastSender::Broadcasting()
 		if (hamachi)
 		{
 			InetPton(AF_INET, "25.255.255.255", &sock_addr.sin_addr.s_addr);
-			if (!(sendto(broadcast_socket, host_name, sizeof(host_name), 0, (sockaddr*)&sock_addr, sizeof(sock_addr)) < 0))
+			if (!(sendto(broadcast_socket, host_name, sizeof(host_name), 0, reinterpret_cast<sockaddr*>(&sock_addr), sizeof(sock_addr)) < 0))
 			{
 				result = true;
 			}
@@ -38,30 +38,21 @@ void NetworkConnector::BroadcastSender::Broadcasting()
 	}
 	closesocket(broadcast_socket);
 }
-void NetworkConnector::BroadcastSender::SetHamachiFlag(bool flag)
-{
-	hamachi = flag;
-}
 
 void NetworkConnector::BroadcastSender::Stop()
 {
-	if (thread_active)
+	thread_active = false;
+	if (main_thread.joinable())
 	{
-		thread_active = false;
-		if (main_thread->joinable())
-		{
-			main_thread->join();
-		}
+		main_thread.join();
 	}
 }
 
-void NetworkConnector::BroadcastSender::Start()
+void NetworkConnector::BroadcastSender::Start(bool hamachi)
 {
-	if (!thread_active)
-	{
-		thread_active = true;
-		main_thread = std::make_unique<std::thread>(&BroadcastSender::Broadcasting, this);
-	}
+	this->hamachi = hamachi;
+	thread_active = true;
+	main_thread = std::thread(&BroadcastSender::Broadcasting, this);
 }
 
 NetworkConnector::BroadcastSender::~BroadcastSender()

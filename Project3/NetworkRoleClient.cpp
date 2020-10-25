@@ -19,7 +19,7 @@ bool Client::StartNetwork()
 	bool return_value = false;
 	client_connector = std::make_unique<NetworkConnectorClient>();
 
-	client_connector->StartLookingForHosts(main_window->GetHamachiConnectionFlag());
+	client_connector->broadcast_receiver.Start(main_window->GetHamachiConnectionFlag());
 	
 	while (true)
 	{
@@ -28,7 +28,7 @@ bool Client::StartNetwork()
 		{
 			std::vector<std::string>active_games = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
 			{
-				auto temp_vector = client_connector->GetHostsBroadcasting();
+				auto temp_vector = client_connector->broadcast_receiver.GetHostVector();
 				active_games.insert(active_games.begin() + 1, temp_vector.begin(), temp_vector.end());
 			}
 			const COORD submenu_position = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::active_games].size()) / 2 + 1,
@@ -57,7 +57,7 @@ bool Client::StartNetwork()
 		}
 		else if(option == Multiplayer::refresh)
 		{
-			client_connector->ResetHostsBroadcastingVector();
+			client_connector->broadcast_receiver.ResetHostVector();
 			HighlightSelectedGame(selected_game, true);
 			selected_game = "";
 		}
@@ -67,7 +67,7 @@ bool Client::StartNetwork()
 		}
 	}
 	HighlightSelectedGame(selected_game, true);
-	client_connector->StopLookingForHosts();
+	client_connector->broadcast_receiver.Stop();
 	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby].size()); ++i)
 	{
 		const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][i].size());

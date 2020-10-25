@@ -115,8 +115,7 @@ bool Host::GameLobby()
 	const COORD tire_box_starting_pos = { 0, 38 + box_shift };
 
 	bool show_clients = true;
-	network_connector->broadcast_sender.SetHamachiFlag(main_window->GetHamachiConnectionFlag());
-	network_connector->broadcast_sender.Start();
+	network_connector->broadcast_sender.Start(main_window->GetHamachiConnectionFlag());
 	network_connector->client_connector.Start(lobby_size);
 
 	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, client_box_starting_pos, &show_clients);

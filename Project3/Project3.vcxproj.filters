@@ -91,6 +91,9 @@
     <ClCompile Include="BroadcastSender.cpp">
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClCompile>
+    <ClCompile Include="BroadcastReceiver.cpp">
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -136,6 +139,9 @@
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClInclude>
     <ClInclude Include="BroadcastSender.h">
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
+    </ClInclude>
+    <ClInclude Include="BroadcastReceiver.h">
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClInclude>
   </ItemGroup>
