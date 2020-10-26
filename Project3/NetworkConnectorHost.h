@@ -75,15 +75,10 @@ public:
 //----------------------------------------------------------------------------------------------------------------------
 TEMPLATE_NetworkConnectorHost inline NetworkConnectorHost<T, Method>::NetworkConnectorHost(T* main_object_ptr)
 {
-	if (!NetworkConnector::network_initialized)
-	{
-		WSAData wsa_data;
-		WSAStartup(MAKEWORD(2, 2), &wsa_data);
-		NetworkConnector::network_initialized = true;
-		this->main_object_ptr = main_object_ptr;
-		client_connector.Initialize(this);
-		error_handler.Initialize(this);
-	}
+	NetworkConnector::Initialize();
+	this->main_object_ptr = main_object_ptr;
+	client_connector.Initialize(this);
+	error_handler.Initialize(this);
 }
 TEMPLATE_NetworkConnectorHost inline unsigned int NetworkConnectorHost<T, Method>::GetClientContainerIndexFromAddress(sockaddr_in address)
 {
@@ -110,11 +105,9 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Proce
 
 	while (*handling)
 	{
-		char buffer[NetworkConnector::Constants::buffer_size];
-
-		if (recv(client_socket, buffer, NetworkConnector::Constants::buffer_size, 0) > 0)
+		std::string msg;
+		if (NetworkConnector::Recv(client_socket, &msg))
 		{
-			std::string msg = buffer;
 			std::invoke(Method, main_object_ptr, msg, 0);
 		}
 		else

@@ -17,7 +17,7 @@ void NetworkConnector::BroadcastReceiver::Receiving()
 	while (thread_active)
 	{
 		int recv_result = recvfrom(intercept_brodcast_socket, host_name_buffer, 50, 0, reinterpret_cast<sockaddr*>(&addr), &addr_size);
-		in_addr temp_addr;
+		in_addr temp_addr = {};
 		hostent* hostent = gethostbyname(host_name_buffer);
 		if (hostent != nullptr && recv_result != -1)
 		{

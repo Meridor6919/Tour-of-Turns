@@ -1,27 +1,18 @@
 #include "NetworkConnectorClient.h"
 
-bool NetworkConnectorClient::Recv(SOCKET socket, char* buffer, int len, const int flags)
-{
-	if ((recv(socket, buffer, len, flags) < 0) <= 0)
-	{
-		MessageBox(0, NetworkConnector::ErrorMsg::connection.c_str(), NetworkConnector::ErrorTitle::disconnect.c_str(), 0);
-		return false;
-	}
-	return true;
-}
 
 std::string NetworkConnectorClient::GetIPFromHostID(std::string host_id)
 {
-	for (int i = host_id.size() - 1; i >= 0; --i)
+	for (size_t i = host_id.size(); i > 0; --i)
 	{
-		if (host_id[i] == ' ')
+		if (host_id[i - 1] == ' ')
 		{
-			return std::string(host_id.begin() + i + 1, host_id.end());
+			return std::string(host_id.begin() + i, host_id.end());
 		}
 	}
-	return std::string();
+	MessageBox(0, NetworkConnector::ErrorMsg::ip_extraction.c_str(), NetworkConnector::ErrorTitle::ip_extraction.c_str(), 0);
+	abort();
 }
-
 bool NetworkConnectorClient::Connect(const std::string host_id)
 {
 	const std::string ip = GetIPFromHostID(host_id);
@@ -43,53 +34,32 @@ bool NetworkConnectorClient::Connect(const std::string host_id)
 	}
 	return true;
 }
-
-
 NetworkConnectorClient::NetworkConnectorClient()
 {
-	if (!NetworkConnector::network_initialized)
-	{
-		WSAData wsa_data;
-		WSAStartup(MAKEWORD(2, 2), &wsa_data);
-		NetworkConnector::network_initialized = true;
-	}
+	NetworkConnector::Initialize();
 }
-
-void NetworkConnectorClient::SendRequest(const std::string request)
-{
-	char buffer[NetworkConnector::Constants::buffer_size];
-	size_t request_size = request.size();
-	if (request_size > NetworkConnector::Constants::buffer_size && host == INVALID_SOCKET)
-	{
-		abort();
-	}
-	for (size_t i = 0; i < request_size; ++i)
-	{
-		buffer[i] = request[i];
-	}
-	send(host, buffer, NetworkConnector::Constants::buffer_size, 0);
-}
-
 bool NetworkConnectorClient::GetConnectionFlag()
 {
 	return connected;
 }
-
+void NetworkConnectorClient::SendRequest(std::string request)
+{
+	if (!NetworkConnector::SendRequest(host, request))
+	{
+		closesocket(host);
+		connected = false;
+	}
+}
 std::string NetworkConnectorClient::GetResponse()
 {
-	char buffer[NetworkConnector::Constants::buffer_size];
-	if (host == INVALID_SOCKET)
+	std::string response;
+	if (!NetworkConnector::Recv(host, &response))
 	{
-		abort();
+		closesocket(host);
+		connected = false;
 	}
-	if (!Recv(host, buffer, NetworkConnector::Constants::buffer_size, 0))
-	{
-		//TODO disconnect
-	}
-	
-	return std::string(buffer);
+	return response;
 }
-
 void NetworkConnectorClient::CloseAllConnections()
 {
 	broadcast_receiver.Stop();
