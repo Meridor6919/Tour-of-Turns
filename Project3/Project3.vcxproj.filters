@@ -49,9 +49,6 @@
     <ClCompile Include="Participant.cpp">
       <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="ToT.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
-    </ClCompile>
     <ClCompile Include="InfoBox.cpp">
       <Filter>Files\GeneralLibraries\SourceFiles</Filter>
     </ClCompile>
@@ -60,9 +57,6 @@
     </ClCompile>
     <ClCompile Include="NetworkRoleSinglePlayer.cpp">
       <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="ToT_Window.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClCompile>
     <ClCompile Include="ToT_Window.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
@@ -92,6 +86,9 @@
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClCompile>
     <ClCompile Include="BroadcastReceiver.cpp">
+      <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkConnectorGeneral.cpp">
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClCompile>
   </ItemGroup>
@@ -144,6 +141,8 @@
     <ClInclude Include="BroadcastReceiver.h">
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClInclude>
+    <ClInclude Include="ToT.h" />
+    <ClInclude Include="ToT_Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />
