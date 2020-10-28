@@ -35,6 +35,7 @@ protected:
 public:
 	//Attributes
 	std::shared_ptr<InfoBox> infobox;
+	Text::WindowInfo window_info;
 
 	//General methods
 	ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);

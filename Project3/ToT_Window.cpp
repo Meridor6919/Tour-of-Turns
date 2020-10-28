@@ -32,6 +32,10 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	playable = playable & ValidateGameFiles();
 	wav_transformer = new WavTransformer(FolderName::main + '\\' + FileName::music);
 	LoadAtributes();
+
+	window_info.handle = GetHandle();
+	window_info.main_color = color1;
+	window_info.secondary_color = color2;
 }
 std::string ToT_Window::UpdateRankingFavorites(std::string text, std::string phrase, int added_value)
 {

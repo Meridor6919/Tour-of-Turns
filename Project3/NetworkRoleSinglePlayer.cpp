@@ -122,7 +122,7 @@ std::string SinglePlayer::StringSelection(const std::string current_name, const 
 	show_name_func();
 	do
 	{
-		button = Text::Button(&timer_running, 13, 20);
+		button = Text::Button(&timer_running, std::chrono::milliseconds(20));
 		if (name_size < max_name_size && ((button >= 48 && button <= 57) || (button >= 65 && button <= 90 && GetKeyState(VK_SHIFT) != 1 && GetKeyState(VK_SHIFT) != 0) || (button >= 97 && button <= 122)))
 		{
 			name += button;
@@ -530,7 +530,9 @@ bool SinglePlayer::GameLobby()
 
 	while (true)
 	{
-		main_menu_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::game_menu_options], main_menu_position, starting_point, spacing, Text::TextAlign::center, false, *main_window, &mutex, &timer_running);
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::game_menu_options], main_menu_position, starting_point, Text::TextAlign::center, spacing, false };
+		Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+		main_menu_position = Text::Choose::Veritcal(text_info, main_window->window_info, multithreading_data);
 		if (!timer_running)
 		{
 			break;
@@ -552,7 +554,9 @@ bool SinglePlayer::GameLobby()
 				{
 					text.push_back(std::to_string(i));
 				}
-				ais = Text::Choose::Horizontal(text, ais, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				Text::TextInfo text_info = { text, ais, starting_local_pos, Text::TextAlign::left, 0, true };
+				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				ais = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				ShowRankingParameters(tours[tours_pos] + ExtName::ranking, true);
 				main_window->SetAIs(ais);
 				ShowRankingParameters(tours[tours_pos] + ExtName::ranking);
@@ -565,14 +569,18 @@ bool SinglePlayer::GameLobby()
 				{
 					timer_values.push_back((i < 60 ? "0" : "")+std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 				}
-				timer_settings = Text::Choose::Horizontal(timer_values, timer_settings, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				Text::TextInfo text_info = { timer_values, timer_settings, starting_local_pos, Text::TextAlign::left, 0, true };
+				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				timer_settings = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				main_window->SetTimerSettings(timer_settings);
 				break;
 			}
 			case 3://choosing tour
 			{
 				int i = tours_pos;
-				tours_pos = Text::Choose::Horizontal(tours, tours_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				Text::TextInfo text_info = { tours, tours_pos, starting_local_pos, Text::TextAlign::left, 0, true };
+				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				tours_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				if (i != tours_pos)
 				{
 					ShowCarParameters(cars[cars_pos] + ExtName::car, true);
@@ -589,7 +597,9 @@ bool SinglePlayer::GameLobby()
 			case 4://choosing car
 			{
 				int i = cars_pos;
-				cars_pos = Text::Choose::Horizontal(cars, cars_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				Text::TextInfo text_info = { cars, cars_pos, starting_local_pos, Text::TextAlign::left, 0, true };
+				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				cars_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				if (i != cars_pos)
 				{
 					ShowCarParameters(cars[i] + ExtName::car, true);
@@ -600,7 +610,9 @@ bool SinglePlayer::GameLobby()
 			case 5://choosing tires
 			{
 				int i = tires_pos;
-				tires_pos = Text::Choose::Horizontal(tires, tires_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+				Text::TextInfo text_info = { tires, tires_pos, starting_local_pos, Text::TextAlign::left, 0, true };
+				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				tires_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				if (i != tires_pos)
 				{
 					ShowTiresParameters(tires[i] + ExtName::tire, true);
@@ -755,7 +767,9 @@ int SinglePlayer::PerformAttack()
 		}
 		if (static_cast<int>(rival_id.size()) != 1)
 		{
-			short i = Text::Choose::Veritcal(rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, 2, Text::TextAlign::center, true, *main_window, &mutex, &timer_running);
+			Text::TextInfo text_info = { rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, Text::TextAlign::center, 2, true };
+			Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			short i = Text::Choose::Veritcal(text_info, main_window->window_info, multithreading_data);
 			return rival_id[i];
 		}
 	}
@@ -1067,7 +1081,9 @@ std::pair<int, int> SinglePlayer::PerformAction()
 		int value;
 		while (true)
 		{
-			take_action_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::race_actions], take_action_position, { 1,39 }, 2, Text::TextAlign::left, false, *main_window, &mutex, &timer_running);
+			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::race_actions], take_action_position, { 1,39 }, Text::TextAlign::left, 2, false };
+			Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			take_action_position = Text::Choose::Veritcal(text_info, main_window->window_info, multithreading_data);
 			if (!timer_running)
 			{
 				if (participants[0].current_speed == 0)

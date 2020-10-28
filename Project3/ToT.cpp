@@ -157,7 +157,8 @@ void ToT::MainMenu()
 	main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
 	while (true)
 	{
-		switch (main_menu_position = Text::Choose::Veritcal(LanguagePack::text[LanguagePack::main_menu_options], main_menu_position, { game_window_center + 1, 25 }, 3, Text::TextAlign::center, true, *main_window))
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu_options], main_menu_position, { game_window_center + 1, 25 }, Text::TextAlign::center, 3, true};
+		switch (main_menu_position = Text::Choose::Veritcal(text_info, main_window->window_info))
 		{
 		case 0:
 		case 1:

@@ -1,10 +1,10 @@
 #include "TextLib.h"
 
-char Text::Button(bool *loop, char default_value, int delay)
+char Text::Button(const bool *loop, std::chrono::milliseconds delay)
 {
 	if (loop == nullptr)
 	{
-		return default_value;
+		return _getch();
 	}
 	while (*loop)
 	{
@@ -12,332 +12,153 @@ char Text::Button(bool *loop, char default_value, int delay)
 		{
 			return _getch();
 		}
-		Sleep(delay);
+		std::this_thread::sleep_for(delay);
 	}
-	return default_value;
+	return 13;
 }
-int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window & main_window, std::mutex * mutex, bool * loop, char defalut_value, int delay)
+int Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
-	if (!static_cast<short>(text.size()))
-	{
-		return -1;
-	}
-	const HANDLE handle = main_window.GetHandle();
-	const int color1 = main_window.color1;
-	const int color2 = main_window.color2;
 	char button;
+	size_t index = text_info.starting_index;
 	do
 	{
-		const float line_size = static_cast<float>(text[starting_position].size());
-		//Showing text with current index
-		if (mutex != nullptr)
+		const short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[index].size()));
+		if (multithreading_data.mutex != nullptr)
 		{
-			mutex->lock();
+			multithreading_data.mutex->lock();
 		}
-		SetConsoleTextAttribute(handle, color1);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
+		SetConsoleTextAttribute(window_info.handle, window_info.main_color);
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y });
 		std::cout << "< ";
-		SetConsoleTextAttribute(handle, color2);
-		std::cout << text[starting_position];
-		SetConsoleTextAttribute(handle, color1);
+		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
+		std::cout << text_info.text[index];
+		SetConsoleTextAttribute(window_info.handle, window_info.main_color);
 		std::cout << " >";
-		if (mutex != nullptr)
+		if (multithreading_data.mutex != nullptr)
 		{
-			mutex->unlock();
+			multithreading_data.mutex->unlock();
 		}
-		button = Text::Button(loop, defalut_value, delay);
-		if (mutex != nullptr)
+		button = Button(multithreading_data.loop, multithreading_data.delay);
+		if (multithreading_data.mutex != nullptr)
 		{
-			mutex->lock();
+			multithreading_data.mutex->lock();
 		}
-		//Clearing text from the screen
-		if (button != 13 || clear_after)
+		if (button != 13 || text_info.clear_after)
 		{
-			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
-			Text::Spaces(static_cast<int>(line_size) + 4);
+			SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y });
+			Text::Spaces(static_cast<int>(text_info.text[index].size() + 4));
 		}
-		if (mutex != nullptr)
+		if (multithreading_data.mutex != nullptr)
 		{
-			mutex->unlock();
+			multithreading_data.mutex->unlock();
 		}
-		//Changing index when left or right arrow button is pressed
-		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 75 && starting_position > 0)
+		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 75 && index > 0)
 		{
-			starting_position -= 1;
+			--index;
 		}
-		else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 77 && starting_position < static_cast<int>(text.size()) - 1)
+		else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 77 && index < text_info.text.size() - 1)
 		{
-			starting_position += 1;
+			++index;
 		}
 
 	} while (button != 13);
 
-	return starting_position;
+	return index;
 }
-int Text::Choose::Horizontal(const std::vector<std::string> text, int starting_position, const COORD starting_point, const TextAlign text_align, const bool clear_after, Window &main_window)
+int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
-	if (!static_cast<short>(text.size()))
-	{
-		return -1;
-	}
-	const HANDLE handle = main_window.GetHandle();
-	const int color1 = main_window.color1;
-	const int color2 = main_window.color2;
 	char button;
+	
+	size_t index = text_info.starting_index;
+	VerticalShowGUI(text_info, window_info, multithreading_data);
 	do
 	{
-		const float line_size = static_cast<float>(text[starting_position].size());
-		//Showing text with current index
-		SetConsoleTextAttribute(handle, color1);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
-		std::cout << "< ";
-		SetConsoleTextAttribute(handle, color2);
-		std::cout << text[starting_position];
-		SetConsoleTextAttribute(handle, color1);
-		std::cout << " >";
-		button = _getch();
-		//Clearing text from the screen
-		if (button != 13 || clear_after)
+		const short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[index].size()));
+		if (multithreading_data.mutex != nullptr)
 		{
-			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), starting_point.Y });
-			Text::Spaces(static_cast<int>(line_size) + 4);
+			multithreading_data.mutex->lock();
 		}
-		//Changing index when left or right arrow button is pressed
-		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 75 && starting_position > 0)
+		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + index * text_info.spacing });
+		std::cout << text_info.text[index];
+		if (multithreading_data.mutex != nullptr)
 		{
-			starting_position -= 1;
+			multithreading_data.mutex->unlock();
 		}
-		else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 77 && starting_position < static_cast<int>(text.size()) - 1)
+		button = Button(multithreading_data.loop, multithreading_data.delay);
+		if (multithreading_data.mutex != nullptr)
 		{
-			starting_position += 1;
+			multithreading_data.mutex->lock();
 		}
-
-	} while (button != 13);
-
-	return starting_position;
-}
-int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_position, const COORD starting_point, const short spacing, const TextAlign text_align, const bool clear_after, Window & main_window, std::mutex * mutex, bool * loop, char default_value, int delay)
-{
-	const HANDLE handle = main_window.GetHandle();
-	const int color1 = main_window.color1;
-	const int color2 = main_window.color2;
-	const int text_size = static_cast<int>(text.size());
-	const float text_align_float = static_cast<float>(text_align);
-	char button;
-
-	//Showing text on the screen
-	if (mutex != nullptr)
-	{
-		mutex->lock();
-	}
-	SetConsoleTextAttribute(handle, color1);
-	for (short i = 0; i < text_size; ++i)
-	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
-		std::cout << text[i];
-	}
-	if (mutex != nullptr)
-	{
-		mutex->unlock();
-	}
-	do
-	{
-		//Changing active text's color
-		if (mutex != nullptr)
+		SetConsoleTextAttribute(window_info.handle, window_info.main_color);
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + index * text_info.spacing });
+		std::cout << text_info.text[index];
+		if (multithreading_data.mutex != nullptr)
 		{
-			mutex->lock();
+			multithreading_data.mutex->unlock();
 		}
-		SetConsoleTextAttribute(handle, color2);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
-		std::cout << text[starting_position];
-		if (mutex != nullptr)
-		{
-			mutex->unlock();
-		}
-		button = Button(loop, default_value, delay);
-		if (mutex != nullptr)
-		{
-			mutex->lock();
-		}
-		//Changing color of active text back to normal
-		//I assume that user will press the correct button and position will change
-		SetConsoleTextAttribute(handle, color1);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
-		std::cout << text[starting_position];
-		if (mutex != nullptr)
-		{
-			mutex->unlock();
-		}
-		//Changing the index when up or down arrow button is pressed
 		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 80)
 		{
-			starting_position += 1;
-			if (starting_position == text_size)
-				starting_position = 0;
+			index += 1;
+			if (index == text_info.text.size())
+				index = 0;
 		}
 		else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 72)
 		{
-			starting_position -= 1;
-			if (starting_position < 0)
-				starting_position = text_size - 1;
+			index -= 1;
+			if (index < 0)
+				index = text_info.text.size() - 1;
 		}
 
 	} while (button != 13);
-
-	//Clearing the text if flag is active
-	if (mutex != nullptr)
+	if (text_info.clear_after)
 	{
-		mutex->lock();
-	}
-	if (clear_after)
-	{
-		for (short i = 0; i < text_size; ++i)
-		{
-			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
-			Text::Spaces(static_cast<int>(text[i].size()));
-		}
+		VerticalClearGUI(text_info, window_info, multithreading_data);
 	}
 	else
 	{
-		SetConsoleTextAttribute(handle, color2);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
-		std::cout << text[starting_position];
+		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
+		short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[index].size()));
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + index * text_info.spacing });
+		std::cout << text_info.text[index];
 	}
-	if (mutex != nullptr)
-	{
-		mutex->unlock();
-	}
-	return starting_position;
+	return index;
 }
-int Text::Choose::Veritcal(const std::vector<std::string> text, short starting_position, const COORD starting_point, const short spacing, const TextAlign text_align, const bool clear_after, Window &main_window)
+void Text::Choose::VerticalShowGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
-	const HANDLE handle = main_window.GetHandle();
-	const int color1 = main_window.color1;
-	const int color2 = main_window.color2;
-	const int text_size = static_cast<int>(text.size());
-	const float text_align_float = static_cast<float>(text_align);
-	char button;
-
-	//Showing text on the screen
-	SetConsoleTextAttribute(handle, color1);
-	for (short i = 0; i < text_size; ++i)
+	if (multithreading_data.mutex != nullptr)
 	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
-		std::cout << text[i];
+		multithreading_data.mutex->lock();
 	}
-	do
+	SetConsoleTextAttribute(window_info.handle, window_info.main_color);
+	for (short i = 0; i < static_cast<short>(text_info.text.size()); ++i)
 	{
-		//Changing active text's color
-		SetConsoleTextAttribute(handle, color2);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
-		std::cout << text[starting_position];
-		button = _getch();
-		//Changing color of active text back to normal
-		//I assume that user will press the correct button and position will change
-		SetConsoleTextAttribute(handle, color1);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
-		std::cout << text[starting_position];
-		//Changing the index when up or down arrow button is pressed
-		if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 80)
-		{
-			starting_position += 1;
-			if (starting_position == text_size)
-				starting_position = 0;
-		}
-		else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 72)
-		{
-			starting_position -= 1;
-			if (starting_position < 0)
-				starting_position = text_size - 1;
-		}
-
-	} while (button != 13);
-
-	//Clearing the text if flag is active
-	if (clear_after)
-	{
-		for (short i = 0; i < text_size; ++i)
-		{
-			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[i].size())), starting_point.Y + i * spacing });
-			Text::Spaces(static_cast<int>(text[i].size()));
-		}
+		short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[i].size()));
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + i * text_info.spacing });
+		std::cout << text_info.text[i];
 	}
-	else
+	if (multithreading_data.mutex != nullptr)
 	{
-		SetConsoleTextAttribute(handle, color2);
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(text_align_float / 2.0f * static_cast<float>(text[starting_position].size())), starting_point.Y + starting_position * spacing });
-		std::cout << text[starting_position];
+		multithreading_data.mutex->unlock();
 	}
-	return starting_position;
 }
-int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_allowed, Window & main_window, std::mutex * mutex, bool * loop, char default_value, int delay)
+void Text::Choose::VerticalClearGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
-	char button;
-	int number = 0;
-	short pos = 0;
-	while (true)
+	if (multithreading_data.mutex != nullptr)
 	{
-		SetConsoleCursorPosition(main_window.GetHandle(), { starting_point.X + pos, starting_point.Y });
-		button = Button(loop, default_value, delay);
-		if (mutex != nullptr)
-		{
-			mutex->lock();
-		}
-		//Adding if user pressed key between 0 and 9 
-		if (button >= '0' && button <= '9')
-		{
-			if (button == '0' && pos == 0)
-			{
-				if (mutex != nullptr)
-				{
-					mutex->unlock();
-				}
-				continue;
-			}
-			else if (number * 10 + button - 48 > max)
-			{
-				if (mutex != nullptr)
-				{
-					mutex->unlock();
-				}
-				continue;
-			}
-			std::cout << button;
-			number = number * 10 + button - 48;
-			++pos;
-		}
-		//erasing last number if user pressed backspace
-		if (button == '\b' && pos != 0)
-		{
-			std::cout << "\b \b";
-			number /= 10;
-			--pos;
-		}
-		if (mutex != nullptr)
-		{
-			mutex->unlock();
-		}
-		if (button == 13)
-		{
-			if (pos == 0 && !zero_allowed)
-			{
-				continue;
-			}
-			break;
-		}
+		multithreading_data.mutex->lock();
 	}
-	//Clearing text from the screen
-	if (mutex != nullptr)
+	SetConsoleTextAttribute(window_info.handle, window_info.main_color);
+	for (short i = 0; i < static_cast<short>(text_info.text.size()); ++i)
 	{
-		mutex->lock();
+		short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[i].size()));
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + i * text_info.spacing });
+		Spaces(static_cast<int>(text_info.text[i].size()));
 	}
-	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
-	Text::Spaces(pos);
-	if (mutex != nullptr)
+	if (multithreading_data.mutex != nullptr)
 	{
-		mutex->unlock();
+		multithreading_data.mutex->unlock();
 	}
-	return number;
 }
 int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_allowed, Window &main_window)
 {
