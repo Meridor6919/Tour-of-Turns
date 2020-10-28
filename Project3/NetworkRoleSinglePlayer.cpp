@@ -20,7 +20,7 @@ int SinglePlayer::NumericalSelection(const COORD coords)
 	std::cout << ": ";
 	while (true)
 	{
-		button = Text::Button(&timer_running, 13, 20);
+		button = Text::Button(&timer_running, std::chrono::milliseconds(20));
 		mutex.lock();
 		SetConsoleTextAttribute(window, main_window->color1);
 		SetConsoleCursorPosition(window, { coords.X + 2 + decimal_position, coords.Y });
@@ -82,7 +82,7 @@ int SinglePlayer::BinarySelection(const COORD coords)
 		SetConsoleTextAttribute(window, main_window->color1);
 		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::action_confirm];
 		mutex.unlock();
-		button = Text::Button(&timer_running, 13, 20);
+		button = Text::Button(&timer_running, std::chrono::milliseconds(20));
 
 		mutex.lock();
 		SetConsoleCursorPosition(window, coords);

@@ -224,7 +224,9 @@ bool Host::GameLobby()
 		case 5://choosing tour
 		{
 			int i = tours_pos;
-			tours_pos = Text::Choose::Horizontal(tours, tours_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+			Text::TextInfo text_info = { tours, tours_pos, starting_local_pos, Text::TextAlign::left, 0, true };
+			Text::MultithreadingData multithreading_data = { &mutex, &timer_running };
+			tours_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 			if (i != tours_pos)
 			{
 				ShowCarParameters(cars[cars_pos] + ExtName::car, true, car_box_starting_pos);
@@ -241,7 +243,9 @@ bool Host::GameLobby()
 		case 6://choosing car
 		{
 			int i = cars_pos;
-			cars_pos = Text::Choose::Horizontal(cars, cars_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+			Text::TextInfo text_info = { cars, cars_pos, starting_local_pos, Text::TextAlign::left, 0, true };
+			Text::MultithreadingData multithreading_data = { &mutex, &timer_running };
+			cars_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 			if (i != cars_pos)
 			{
 				ShowCarParameters(cars[i] + ExtName::car, true, car_box_starting_pos);
@@ -252,7 +256,9 @@ bool Host::GameLobby()
 		case 7://choosing tires
 		{
 			int i = tires_pos;
-			tires_pos = Text::Choose::Horizontal(tires, tires_pos, starting_local_pos, Text::TextAlign::left, true, *main_window, &mutex, &timer_running);
+			Text::TextInfo text_info = { tires, tires_pos, starting_local_pos, Text::TextAlign::left, 0, true };
+			Text::MultithreadingData multithreading_data = { &mutex, &timer_running };
+			tires_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 			if (i != tires_pos)
 			{
 				ShowTiresParameters(tires[i] + ExtName::tire, true, tire_box_starting_pos);

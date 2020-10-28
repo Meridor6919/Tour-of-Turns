@@ -79,7 +79,7 @@ int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_i
 			multithreading_data.mutex->lock();
 		}
 		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
-		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + index * text_info.spacing });
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + static_cast<short>(index) * text_info.spacing });
 		std::cout << text_info.text[index];
 		if (multithreading_data.mutex != nullptr)
 		{
@@ -91,7 +91,7 @@ int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_i
 			multithreading_data.mutex->lock();
 		}
 		SetConsoleTextAttribute(window_info.handle, window_info.main_color);
-		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + index * text_info.spacing });
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + static_cast<short>(index) * text_info.spacing });
 		std::cout << text_info.text[index];
 		if (multithreading_data.mutex != nullptr)
 		{
@@ -101,13 +101,21 @@ int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_i
 		{
 			index += 1;
 			if (index == text_info.text.size())
+			{
 				index = 0;
+			}
 		}
 		else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 72)
 		{
-			index -= 1;
-			if (index < 0)
+			
+			if (index == 0)
+			{
 				index = text_info.text.size() - 1;
+			}
+			else
+			{
+				--index;
+			}
 		}
 
 	} while (button != 13);
@@ -119,7 +127,7 @@ int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_i
 	{
 		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
 		short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[index].size()));
-		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + index * text_info.spacing });
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + static_cast<short>(index) * text_info.spacing });
 		std::cout << text_info.text[index];
 	}
 	return index;
