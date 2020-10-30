@@ -209,9 +209,10 @@ void ToT::MainMenu()
 }
 void ToT::Credits()
 {
-	OrdinaryText(LanguagePack::text[LanguagePack::credits], Text::TextAlign::center, 3, { game_window_center,25 }, *main_window);
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::credits], 0, { game_window_center,25 }, Text::TextAlign::center, 3, 0 };
+	OrdinaryText(text_info, main_window->window_info);
 	_getch();
-	OrdinaryText(LanguagePack::text[LanguagePack::credits], Text::TextAlign::center, 3, { game_window_center,25 }, *main_window, true);
+	ClearOrdinaryText(text_info, main_window->window_info);
 }
 void ToT::Options()
 {
@@ -413,22 +414,23 @@ void ToT::Info()
 	const short spacing = 3;
 	const COORD text_pos = { game_window_center, 28 };
 	const COORD title_pos = { game_window_center - 2, text_pos.Y - 3 };
+	const Text::TextInfo ordinary_text_info = { LanguagePack::text[LanguagePack::game_information_introduction + info_pos], 0, text_pos, text_align_content, spacing, 0 };
 	while (true)
 	{
-		OrdinaryText(LanguagePack::text[LanguagePack::game_information_introduction + info_pos], text_align_content, spacing, text_pos, *main_window);
+		OrdinaryText(ordinary_text_info, main_window->window_info);
 		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::game_information_options], info_pos, title_pos, text_align_title, 0, false };
 		int temp_pos = Text::Choose::Horizontal(text_info, main_window->window_info);
-		OrdinaryText(LanguagePack::text[LanguagePack::game_information_introduction + info_pos], text_align_content, spacing, text_pos, *main_window, true);
+		ClearOrdinaryText(ordinary_text_info, main_window->window_info);
 		if (temp_pos == info_pos)
 		{
 			const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::game_information_options][info_pos].size());
-			SetConsoleCursorPosition(handle, {title_pos.X-text_size/2*text_align_title, title_pos.Y });
+			SetConsoleCursorPosition(handle, {title_pos.X-static_cast<short>(static_cast<float>(text_size)*GetTextAlignScalar(text_align_title)), title_pos.Y });
 			Text::Spaces(text_size + 4);
 			break;
 		}
 		info_pos = temp_pos;
 	}
-	OrdinaryText(LanguagePack::text[LanguagePack::game_information_introduction], text_align_content, 3, text_pos, *main_window, true);
+	ClearOrdinaryText(ordinary_text_info, main_window->window_info);
 }
 void ToT::Game(const bool multiplayer)
 {

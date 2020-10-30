@@ -64,7 +64,7 @@ int SinglePlayer::NumericalSelection(const COORD coords)
 	}
 	mutex.lock();
 	SetConsoleCursorPosition(window, coords);
-	Text::Spaces(decimal_position + 2);
+	std::cout << Text::Spaces(decimal_position + 2);
 	mutex.unlock();
 	ShowChances(0, true);
 	return value;
@@ -86,7 +86,7 @@ int SinglePlayer::BinarySelection(const COORD coords)
 
 		mutex.lock();
 		SetConsoleCursorPosition(window, coords);
-		Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::action_confirm].size()));
+		std::cout << Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::action_confirm].size()));
 		mutex.unlock();
 		ShowChances(0, true);
 		if (button == 'y' || button == 'Y')
@@ -143,7 +143,7 @@ std::string SinglePlayer::StringSelection(const std::string current_name, const 
 	while (button != 13);
 	mutex.lock();
 	SetConsoleCursorPosition(window, coords);
-	Text::Spaces(name_size + 5);
+	std::cout << Text::Spaces(name_size + 5);
 	mutex.unlock();
 	if (name_size == 0)
 	{
@@ -259,17 +259,17 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 		if (title != "")
 		{
 			SetConsoleCursorPosition(handle, { base_position.X, base_position.Y });
-			Text::Spaces(border_size);
+			std::cout << Text::Spaces(border_size);
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		Text::Spaces(border_size);
+		std::cout << Text::Spaces(border_size);
 		for (short i = 0; i < static_cast<short>(text.size()); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
-			Text::Spaces(static_cast<short>(text[i].first.size()) + static_cast<short>(text[i].second.size()) + 2);
+			std::cout << Text::Spaces(static_cast<short>(text[i].first.size()) + static_cast<short>(text[i].second.size()) + 2);
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
-		Text::Spaces(border_size);
+		std::cout << Text::Spaces(border_size);
 	}
 	else
 	{
@@ -307,7 +307,7 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 		SetConsoleCursorPosition(main_window->GetHandle(), { x_pos, y_pos });
 		if (clear)
 		{
-			Text::Spaces(static_cast<int>(text[j].size()));
+			std::cout << Text::Spaces(static_cast<int>(text[j].size()));
 		}
 		else
 		{
@@ -635,7 +635,7 @@ bool SinglePlayer::GameLobby()
 	{
 		mutex.lock();
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_menu_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
-		Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
+		std::cout << Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
 		mutex.unlock();
 	}
 	main_window->SaveAtributes();
@@ -1101,7 +1101,7 @@ std::pair<int, int> SinglePlayer::PerformAction()
 				main_window->Pause(1500);
 				mutex.lock();
 				SetConsoleCursorPosition(window, { static_cast<short>(LanguagePack::text[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
-				Text::Spaces(static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::unable_to_move].size()));
+				std::cout << Text::Spaces(static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::unable_to_move].size()));
 				mutex.unlock();
 				continue;
 			}

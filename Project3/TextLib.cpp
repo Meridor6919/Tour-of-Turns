@@ -16,13 +16,17 @@ char Text::Button(const bool *loop, std::chrono::milliseconds delay)
 	}
 	return 13;
 }
+float Text::GetTextAlignScalar(TextAlign text_align)
+{
+	return static_cast<float>(text_align) / 2.0f;;
+}
 int Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	char button;
 	size_t index = text_info.starting_index;
 	do
 	{
-		const short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[index].size()));
+		const short text_align_shift = static_cast<short>(GetTextAlignScalar(text_info.text_align) * static_cast<float>(text_info.text[index].size()));
 		if (multithreading_data.mutex != nullptr)
 		{
 			multithreading_data.mutex->lock();
@@ -46,7 +50,7 @@ int Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window
 		if (button != 13 || text_info.clear_after)
 		{
 			SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y });
-			Text::Spaces(static_cast<int>(text_info.text[index].size() + 4));
+			std::cout << Text::Spaces(static_cast<int>(text_info.text[index].size() + 4));
 		}
 		if (multithreading_data.mutex != nullptr)
 		{
@@ -63,7 +67,7 @@ int Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window
 
 	} while (button != 13);
 
-	return index;
+	return static_cast<int>(index);
 }
 int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
@@ -73,7 +77,7 @@ int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_i
 	VerticalShowGUI(text_info, window_info, multithreading_data);
 	do
 	{
-		const short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[index].size()));
+		const short text_align_shift = static_cast<short>(GetTextAlignScalar(text_info.text_align) * static_cast<float>(text_info.text[index].size()));
 		if (multithreading_data.mutex != nullptr)
 		{
 			multithreading_data.mutex->lock();
@@ -126,11 +130,11 @@ int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_i
 	else
 	{
 		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
-		short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[index].size()));
+		short text_align_shift = static_cast<short>(GetTextAlignScalar(text_info.text_align) * static_cast<float>(text_info.text[index].size()));
 		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + static_cast<short>(index) * text_info.spacing });
 		std::cout << text_info.text[index];
 	}
-	return index;
+	return static_cast<int>(index);
 }
 void Text::Choose::VerticalShowGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
@@ -141,7 +145,7 @@ void Text::Choose::VerticalShowGUI(const TextInfo& text_info, const WindowInfo& 
 	SetConsoleTextAttribute(window_info.handle, window_info.main_color);
 	for (short i = 0; i < static_cast<short>(text_info.text.size()); ++i)
 	{
-		short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[i].size()));
+		short text_align_shift = static_cast<short>(GetTextAlignScalar(text_info.text_align) * static_cast<float>(text_info.text[i].size()));
 		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + i * text_info.spacing });
 		std::cout << text_info.text[i];
 	}
@@ -159,9 +163,9 @@ void Text::Choose::VerticalClearGUI(const TextInfo& text_info, const WindowInfo&
 	SetConsoleTextAttribute(window_info.handle, window_info.main_color);
 	for (short i = 0; i < static_cast<short>(text_info.text.size()); ++i)
 	{
-		short text_align_shift = static_cast<short>(static_cast<float>(text_info.text_align) / 2.0f * static_cast<float>(text_info.text[i].size()));
+		short text_align_shift = static_cast<short>(GetTextAlignScalar(text_info.text_align) * static_cast<float>(text_info.text[i].size()));
 		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y + i * text_info.spacing });
-		Spaces(static_cast<int>(text_info.text[i].size()));
+		std::cout << Spaces(static_cast<int>(text_info.text[i].size()));
 	}
 	if (multithreading_data.mutex != nullptr)
 	{
@@ -210,77 +214,55 @@ int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_a
 	}
 	//Clearing text from the screen
 	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
-	Text::Spaces(pos);
+	std::cout << Text::Spaces(pos);
 	return number;
 }
-void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const COORD position, Window & main_window, std::mutex *mutex, const bool clearing)
+void Text::OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
-	HANDLE handle = main_window.GetHandle();
-	const int text_size = static_cast<int>(text.size());
-
-	//Changing all chars in all members of the text array to ' ' if flag is active
-	if (clearing)
+	const int text_size = static_cast<int>(text_info.text.size());
+	if (multithreading_data.mutex != nullptr)
 	{
-		for (int i = 0; i < text_size; ++i)
-		{
-			for (int j = 0; j < static_cast<int>(text[i].size()); ++j)
-			{
-				text[i][j] = ' ';
-			}
-		}
-	}
-	if (text_size % 2)
-	{
-		text.push_back("");
-	}
-	//Showing the text
-	if (mutex != nullptr)
-	{
-		mutex->lock();
+		multithreading_data.mutex->lock();
 	}
 	for (short i = 0; i < text_size; i += 2)
 	{
-		const short line_size = static_cast<short>(text[i].size()) + static_cast<short>(text[i + 1].size());
-		SetConsoleCursorPosition(handle, { position.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), position.Y + i / 2 * spacing });
-		SetConsoleTextAttribute(handle, main_window.color2);
-		std::cout << text[i];
-		SetConsoleTextAttribute(handle, main_window.color1);
-		std::cout << text[i + 1];
+		const short line_size = static_cast<short>(text_info.text[i].size()) + static_cast<short>(text_info.text[i + 1].size());
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - static_cast<short>(GetTextAlignScalar(text_info.text_align) * line_size),
+			text_info.point_of_reference.Y + i / 2 * text_info.spacing });
+		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
+		std::cout << text_info.text[i];
+		SetConsoleTextAttribute(window_info.handle, window_info.main_color);
+		if (i + 1 < text_size)
+		{
+			std::cout << text_info.text[i + 1];
+		}
 	}
-	if (mutex != nullptr)
+	if (multithreading_data.mutex != nullptr)
 	{
-		mutex->unlock();
+		multithreading_data.mutex->unlock();
 	}
 }
-void Text::OrdinaryText(std::vector<std::string> text, const TextAlign text_align, const short spacing, const COORD position, Window & main_window, const bool clearing)
+void Text::ClearOrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
-	HANDLE handle = main_window.GetHandle();
-	const int text_size = static_cast<int>(text.size());
-
-	//Changing all chars in all members of the text array to ' ' if flag is active
-	if (clearing)
+	const int text_size = static_cast<int>(text_info.text.size());
+	if (multithreading_data.mutex != nullptr)
 	{
-		for (int i = 0; i < text_size; ++i)
-		{
-			for (int j = 0; j < static_cast<int>(text[i].size()); ++j)
-			{
-				text[i][j] = ' ';
-			}
-		}
+		multithreading_data.mutex->lock();
 	}
-	if (text_size % 2)
-	{
-		text.push_back("");
-	}
-	//Showing the text
 	for (short i = 0; i < text_size; i += 2)
 	{
-		const short line_size = static_cast<short>(text[i].size()) + static_cast<short>(text[i + 1].size());
-		SetConsoleCursorPosition(handle, { position.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * line_size), position.Y + i / 2 * spacing });
-		SetConsoleTextAttribute(handle, main_window.color2);
-		std::cout << text[i];
-		SetConsoleTextAttribute(handle, main_window.color1);
-		std::cout << text[i + 1];
+		const short line_size = static_cast<short>(text_info.text[i].size()) + static_cast<short>(text_info.text[i + 1].size());
+		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - static_cast<short>(GetTextAlignScalar(text_info.text_align) * line_size),
+			text_info.point_of_reference.Y + i / 2 * text_info.spacing });
+		std::cout << Spaces(static_cast<int>(text_info.text[i].size()));
+		if (i + 1 < text_size)
+		{
+			std::cout << Spaces(static_cast<int>(text_info.text[i + 1].size()));
+		}
+	}
+	if (multithreading_data.mutex != nullptr)
+	{
+		multithreading_data.mutex->unlock();
 	}
 }
 void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, std::mutex *mutex, const bool clearing)
@@ -365,22 +347,12 @@ void Text::TableText(std::vector<std::string> text, const int painted_rows, cons
 		}
 	}
 }
-void Text::Spaces(const int i, std::mutex *mutex)
+std::string Text::Spaces(const int i)
 {
-	if (mutex != nullptr)
-	{
-		mutex->lock();
-	}
-	Text::Spaces(i);
-	if (mutex != nullptr)
-	{
-		mutex->unlock();
-	}
-}
-void Text::Spaces(const int i)
-{
+	std::string ret = "";
 	for (int j = 0; j < i; ++j)
 	{
-		std::cout << ' ';
+		ret += ' ';
 	}
+	return ret;
 }

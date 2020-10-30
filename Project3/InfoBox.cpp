@@ -39,7 +39,7 @@ void InfoBox::Clear()
 	for (short i = 0; i < vector_size - 1; ++i)
 	{
 		SetConsoleCursorPosition(handle, { starting_point.X, starting_point.Y + i  * spacing });
-		Text::Spaces(static_cast<short>(infobox[i].size()));
+		std::cout<<Text::Spaces(static_cast<short>(infobox[i].size()));
 	}
 	//Deleting outdated elements
 	if (size_of_visible_infobox < static_cast<int>(infobox.size()))

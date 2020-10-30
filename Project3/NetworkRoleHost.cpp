@@ -67,11 +67,11 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 		}
 	}
 	SetConsoleCursorPosition(handle, { starting_position.X + border_size / 2 - title_size / 2, starting_position.Y });
-	Text::Spaces(title_size);
+	std::cout << Text::Spaces(title_size);
 	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 1 });
-	Text::Spaces(border_size);
+	std::cout << Text::Spaces(border_size);
 	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(lobby_size) * 2 });
-	Text::Spaces(border_size);
+	std::cout << Text::Spaces(border_size);
 	mutex.unlock();
 }
 void Host::SetLobbySize()
@@ -90,7 +90,7 @@ void Host::SetLobbySize()
 	Text::MultithreadingData  multithreading_data= { &mutex, &timer_running };
 	lobby_size = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data) + 1;
 	SetConsoleCursorPosition(main_window->GetHandle(), starting_point);
-	Text::Spaces(static_cast<short>(text.size()));
+	std::cout << Text::Spaces(static_cast<short>(text.size()));
 }
 void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
 {
@@ -284,7 +284,7 @@ bool Host::GameLobby()
 	{
 		mutex.lock();
 		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::multiplayer_menu_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
-		Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options][i].size()));
+		std::cout << Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options][i].size()));
 		mutex.unlock();
 	}
 	main_window->SaveAtributes();
