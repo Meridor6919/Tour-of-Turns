@@ -160,7 +160,6 @@ void Text::Choose::VerticalClearGUI(const TextInfo& text_info, const WindowInfo&
 	{
 		multithreading_data.mutex->lock();
 	}
-	SetConsoleTextAttribute(window_info.handle, window_info.main_color);
 	for (short i = 0; i < static_cast<short>(text_info.text.size()); ++i)
 	{
 		short text_align_shift = static_cast<short>(GetTextAlignScalar(text_info.text_align) * static_cast<float>(text_info.text[i].size()));

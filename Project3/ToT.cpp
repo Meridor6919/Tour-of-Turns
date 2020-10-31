@@ -125,14 +125,14 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	{
 		const int border_size = static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size());
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		Text::Spaces(border_size);
+		std::cout<<Text::Spaces(border_size);
 		for (short i = 0; i < static_cast<short>(GameConstants::validate_ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
-			Text::Spaces(static_cast<short>(LanguagePack::text[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2);
+			std::cout << Text::Spaces(static_cast<short>(LanguagePack::text[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2);
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(GameConstants::validate_ranking_details) + 2) });
-		Text::Spaces(border_size);
+		std::cout << Text::Spaces(border_size);
 	}
 	else
 	{
@@ -220,10 +220,10 @@ void ToT::Options()
 	const COORD starting_point = { game_window_center+1, 25 };
 	const short spacing = 3;
 	bool loop = true;
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::tot_general_options], main_menu_position, starting_point, Text::TextAlign::center, spacing, false };
 
 	while (loop)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::tot_general_options], main_menu_position, starting_point, Text::TextAlign::center, spacing, false };
 		main_menu_position = Text::Choose::Veritcal(text_info, main_window->window_info);
 		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::tot_general_options][main_menu_position].size()) / 2 + 3;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
@@ -316,11 +316,7 @@ void ToT::Options()
 			}
 		}
 	}
-	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::tot_general_options].size()); ++i)
-	{
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::tot_general_options][i].size())), starting_point.Y + i * spacing });
-		Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::tot_general_options][i].size()));
-	}
+	Text::Choose::VerticalClearGUI(text_info, main_window->window_info);
 	main_window->SaveAtributes();
 }
 void ToT::Ranking()
@@ -338,10 +334,10 @@ void ToT::Ranking()
 	int classification_type = 0;
 
 	ShowRankingDetails(FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_search_menu], main_menu_position, starting_point, Text::TextAlign::center, spacing, false };
 	while (loop)
 	{
 		const std::string starting_map_path = FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking;
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_search_menu], main_menu_position, starting_point, Text::TextAlign::center, spacing, false };
 		main_menu_position = Text::Choose::Veritcal(text_info, main_window->window_info);
 		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::ranking_search_menu][main_menu_position].size()) / 2 + 3;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
@@ -400,11 +396,7 @@ void ToT::Ranking()
 				break;
 			}
 		}
-		for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::ranking_search_menu].size()); ++i)
-		{
-			SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::ranking_search_menu][i].size())), starting_point.Y + i * spacing });
-			Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::ranking_search_menu][i].size()));
-		}
+		Text::Choose::VerticalClearGUI(text_info, main_window->window_info);
 	}
 }
 void ToT::Info()
@@ -425,7 +417,7 @@ void ToT::Info()
 		{
 			const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::game_information_options][info_pos].size());
 			SetConsoleCursorPosition(handle, {title_pos.X-static_cast<short>(static_cast<float>(text_size)*GetTextAlignScalar(text_align_title)), title_pos.Y });
-			Text::Spaces(text_size + 4);
+			std::cout << Text::Spaces(text_size + 4);
 			break;
 		}
 		info_pos = temp_pos;
