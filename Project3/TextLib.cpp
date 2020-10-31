@@ -265,86 +265,45 @@ void Text::ClearOrdinaryText(const TextInfo& text_info, const WindowInfo& window
 		multithreading_data.mutex->unlock();
 	}
 }
-void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, std::mutex *mutex, const bool clearing)
+void Text::TableText(const TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
-	HANDLE handle = main_window.GetHandle();
-	std::vector<std::string>::iterator it = text.begin();
-	const int text_size = static_cast<int>(text.size());
-	if (mutex != nullptr)
+	const int text_size = static_cast<int>(table_text_info.text.size());
+	int column_number = 0;
+	if (multithreading_data.mutex != nullptr)
 	{
-		mutex->lock();
+		multithreading_data.mutex->lock();
 	}
-	for (int i = 0; i*texts_per_row < text_size; ++i)
+	for (short i = 0; i < text_size; ++i)
 	{
-		//Setting right color
-		if (i < painted_rows)
+		int current_column = i % table_text_info.number_of_columns;
+		if (!current_column)
 		{
-			SetConsoleTextAttribute(handle, main_window.color2);
+			if (column_number < table_text_info.painted_rows)
+			{
+				SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
+			}
+			else
+			{
+				SetConsoleTextAttribute(window_info.handle, window_info.main_color);
+			}
+			++column_number;
+		}
+		short general_spacing_value = table_text_info.vertical_spacing * current_column + table_text_info.vertical_spacing / 2;
+		COORD position = { table_text_info.point_of_reference.X + general_spacing_value - static_cast<short>(GetTextAlignScalar(table_text_info.text_align) * static_cast<float>(table_text_info.text[i].size())),
+								table_text_info.point_of_reference.Y + i * table_text_info.horizontal_spacing };
+		SetConsoleCursorPosition(window_info.handle, position);
+		if (table_text_info.clear)
+		{
+			std::cout << Spaces(static_cast<int>(table_text_info.text[i].size()));
 		}
 		else
 		{
-			SetConsoleTextAttribute(handle, main_window.color1);
-		}
-		//Changing all chars in all members of the text array to ' ' if flag is active
-		if (clearing)
-		{
-			for (int j = 0; j < text_size; j++)
-			{
-				for (int k = 0; k < static_cast<int>(text[j].size()); ++k)
-				{
-					text[j][k] = ' ';
-				}
-			}
-		}
-		//Showing the text
-		for (int j = 0; j < texts_per_row && i*texts_per_row + j < text_size; ++j)
-		{
-			SetConsoleCursorPosition(handle, { starting_point.X + vertical_spacing * static_cast<short>(j) + vertical_spacing / 2 - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(it->size())),
-				starting_point.Y + static_cast<short>(i * spacing) });
-			std::cout << *it;
-			++it;
+			std::cout << table_text_info.text[i];
 		}
 	}
-	if (mutex != nullptr)
+	if (multithreading_data.mutex != nullptr)
 	{
-		mutex->unlock();
-	}
-}
-void Text::TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, const bool clearing)
-{
-	HANDLE handle = main_window.GetHandle();
-	std::vector<std::string>::iterator it = text.begin();
-	const int text_size = static_cast<int>(text.size());
-	for (int i = 0; i*texts_per_row < text_size; ++i)
-	{
-		//Setting right color
-		if (i < painted_rows)
-		{
-			SetConsoleTextAttribute(handle, main_window.color2);
-		}
-		else
-		{
-			SetConsoleTextAttribute(handle, main_window.color1);
-		}
-		//Changing all chars in all members of the text array to ' ' if flag is active
-		if (clearing)
-		{
-			for (int j = 0; j < text_size; j++)
-			{
-				for (int k = 0; k < static_cast<int>(text[j].size()); ++k)
-				{
-					text[j][k] = ' ';
-				}
-			}
-		}
-		//Showing the text
-		for (int j = 0; j < texts_per_row && i*texts_per_row + j < text_size; ++j)
-		{
-			SetConsoleCursorPosition(handle, { starting_point.X + vertical_spacing * static_cast<short>(j) + vertical_spacing / 2 - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(it->size())),
-				starting_point.Y + static_cast<short>(i * spacing) });
-			std::cout << *it;
-			++it;
-		}
+		multithreading_data.mutex->unlock();
 	}
 }
 std::string Text::Spaces(const int i)

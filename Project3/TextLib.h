@@ -33,8 +33,19 @@ namespace Text
 		size_t starting_index;
 		COORD point_of_reference;
 		TextAlign text_align;
-		const short spacing;
+		short spacing;
 		bool clear_after;
+	};
+	struct TableTextInfo
+	{
+		const std::vector<std::string>& text;
+		COORD point_of_reference;
+		TextAlign text_align;
+		int number_of_columns;
+		int painted_rows;
+		short vertical_spacing;
+		short horizontal_spacing;
+		bool clear;
 	};
 
 	char Button(const bool* loop, std::chrono::milliseconds delay);
@@ -49,7 +60,6 @@ namespace Text
 	}
 	void OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 	void ClearOrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
-	void TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, std::mutex *mutex, const bool clearing = false);
-	void TableText(std::vector<std::string> text, const int painted_rows, const int texts_per_row, const short spacing, const short vertical_spacing, const COORD starting_point, Window &main_window, const bool clearing = false);
+	void TableText(const TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 	std::string Spaces(const int i);
 }
