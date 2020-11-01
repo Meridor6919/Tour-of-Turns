@@ -171,50 +171,53 @@ void Text::Choose::VerticalClearGUI(const TextInfo& text_info, const WindowInfo&
 		multithreading_data.mutex->unlock();
 	}
 }
-int Text::Choose::Numeric(const int max, COORD starting_point, const bool zero_allowed, Window &main_window)
+void Text::Choose::Numeric(int* number_return_value, const int max, COORD starting_point, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
-	char button;
-	int number = 0;
 	short pos = 0;
-	while (true)
+	char button;
+	if (multithreading_data.mutex != nullptr)
 	{
-		SetConsoleCursorPosition(main_window.GetHandle(), { starting_point.X + pos, starting_point.Y });
-		button = _getch();
-		//Adding if user pressed key between 0 and 9 
+		multithreading_data.mutex->lock();
+	}
+	do
+	{
+		if (multithreading_data.mutex != nullptr)
+		{
+			multithreading_data.mutex->unlock();
+		}
+		button = Button(multithreading_data.loop, multithreading_data.delay);
+		if (multithreading_data.mutex != nullptr)
+		{
+			multithreading_data.mutex->lock();
+		}
+		SetConsoleCursorPosition(window_info.handle, { starting_point.X + pos, starting_point.Y });
 		if (button >= '0' && button <= '9')
 		{
 			if (button == '0' && pos == 0)
 			{
 				continue;
 			}
-			else if (number * 10 + button - 48 > max)
+			else if ((*number_return_value) * 10 + button - 48 > max)
 			{
 				continue;
 			}
 			std::cout << button;
-			number = number * 10 + button - 48;
+			(*number_return_value) = (*number_return_value) * 10 + button - 48;
 			++pos;
 		}
-		//erasing last number if user pressed backspace
 		if (button == '\b' && pos != 0)
 		{
 			std::cout << "\b \b";
-			number /= 10;
+			(*number_return_value) /= 10;
 			--pos;
 		}
-		if (button == 13)
-		{
-			if (pos == 0 && !zero_allowed)
-			{
-				continue;
-			}
-			break;
-		}
-	}
-	//Clearing text from the screen
-	SetConsoleCursorPosition(main_window.GetHandle(), starting_point);
+	} while (button != 13);
+	SetConsoleCursorPosition(window_info.handle, starting_point);
 	std::cout << Text::Spaces(pos);
-	return number;
+	if (multithreading_data.mutex != nullptr)
+	{
+		multithreading_data.mutex->unlock();
+	}
 }
 void Text::OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
@@ -225,7 +228,11 @@ void Text::OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info
 	}
 	for (short i = 0; i < text_size; i += 2)
 	{
-		const short line_size = static_cast<short>(text_info.text[i].size()) + static_cast<short>(text_info.text[i + 1].size());
+		short line_size = static_cast<short>(text_info.text[i].size());
+		if (i + 1 < text_size)
+		{
+			line_size += static_cast<short>(text_info.text[i + 1].size());
+		}
 		SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - static_cast<short>(GetTextAlignScalar(text_info.text_align) * line_size),
 			text_info.point_of_reference.Y + i / 2 * text_info.spacing });
 		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
