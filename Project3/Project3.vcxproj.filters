@@ -141,8 +141,12 @@
     <ClInclude Include="BroadcastReceiver.h">
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClInclude>
-    <ClInclude Include="ToT.h" />
-    <ClInclude Include="ToT_Window.h" />
+    <ClInclude Include="ToT_Window.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="ToT.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />

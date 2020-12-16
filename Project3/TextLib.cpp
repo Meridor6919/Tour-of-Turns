@@ -50,7 +50,7 @@ int Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window
 		if (button != 13 || text_info.clear_after)
 		{
 			SetConsoleCursorPosition(window_info.handle, { text_info.point_of_reference.X - text_align_shift, text_info.point_of_reference.Y });
-			std::cout << Text::Spaces(static_cast<int>(text_info.text[index].size() + 4));
+			std::cout << Spaces(static_cast<int>(text_info.text[index].size() + 4));
 		}
 		if (multithreading_data.mutex != nullptr)
 		{
@@ -213,7 +213,7 @@ void Text::Choose::Numeric(int* number_return_value, const int max, COORD starti
 		}
 	} while (button != 13);
 	SetConsoleCursorPosition(window_info.handle, starting_point);
-	std::cout << Text::Spaces(pos);
+	std::cout << Spaces(pos);
 	if (multithreading_data.mutex != nullptr)
 	{
 		multithreading_data.mutex->unlock();
@@ -312,12 +312,13 @@ void Text::TableText(const TableTextInfo& table_text_info, const WindowInfo& win
 		multithreading_data.mutex->unlock();
 	}
 }
-std::string Text::Spaces(const int i)
+std::string Text::GetMonoCharacterString(const int size, const char character)
 {
 	std::string ret = "";
-	for (int j = 0; j < i; ++j)
-	{
-		ret += ' ';
-	}
+	ret.resize(size, character);
 	return ret;
+}
+std::string Text::Spaces(const int size)
+{
+	return GetMonoCharacterString(size, ' ');
 }

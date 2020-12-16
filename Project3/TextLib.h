@@ -60,5 +60,7 @@ namespace Text
 	void OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 	void ClearOrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 	void TableText(const TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
-	std::string Spaces(const int i);
+	std::string GetMonoCharacterString(const int size, const char character);
+	std::string Spaces(const int size);
+	
 }

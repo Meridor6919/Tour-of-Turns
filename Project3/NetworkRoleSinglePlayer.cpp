@@ -498,7 +498,7 @@ void SinglePlayer::GetCurrentAttributes()
 		}
 	}
 	mutex.lock();
-	main_window->infobox->Show();
+	main_window->infobox->Draw();
 	mutex.unlock();
 }
 std::string SinglePlayer::GetTour()
@@ -1203,6 +1203,8 @@ void SinglePlayer::Interface()
 	
 	mutex.lock();
 	SetConsoleTextAttribute(window, main_window->color2);
+	main_window->infobox->DrawBox();
+	/*
 	for (int i = 0; i < static_cast<int>(boxes.size()); ++i)
 	{
 		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X + static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size())/2 - static_cast<short>(std::get<0>(boxes[i]).size())/2, std::get<1>(boxes[i]).Y});
@@ -1212,6 +1214,7 @@ void SinglePlayer::Interface()
 		SetConsoleCursorPosition(window, { std::get<1>(boxes[i]).X, std::get<1>(boxes[i]).Y + std::get<2>(boxes[i]) + 2 });
 		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
 	}
+	*/
 	mutex.unlock();
 	ShowChances(0, true);
 }
@@ -1278,6 +1281,6 @@ void SinglePlayer::Finish()
 	{
 		_getch();
 	}
-	main_window->infobox->infobox.clear();
+	main_window->infobox->Reset();
 	mutex.unlock();
 }
