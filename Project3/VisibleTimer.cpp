@@ -1,56 +1,62 @@
 #include "VisibleTimer.h"
 
-VisibleTimer::VisibleTimer(COORD coords, HANDLE handle, bool *timer_running, int color, std::mutex *mutex)
+VisibleTimer::VisibleTimer(COORD position, const Text::WindowInfo *window_info, const Text::MultithreadingData *multithreading_data)
 {
-	this->position_of_timer = coords;
-	this->window_handle = handle;
-	this->timer_running = timer_running;
-	this->mutex = mutex;
-	this->color = color;
-	*timer_running = false;
-	thread = std::make_unique<std::thread>(&VisibleTimer::ShowTime, this);
-
+	this->multithreading_data = multithreading_data;
+	this->window_info = window_info;
+	this->position_of_timer = position;
 }
-void VisibleTimer::ShowTime()
+void VisibleTimer::ShowRemainingTime()
 {
-	while (iterate)
+	while(active_thread)
 	{
 		if (*timer_running)
 		{
-			auto time_elapsed = std::chrono::system_clock::now() - time;
-			int miliseconds_elapsed = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(time_elapsed).count());
-			int seconds_required = (seconds - miliseconds_elapsed / 1000) % 60;
-			int minutes_required = (seconds - miliseconds_elapsed / 1000) / 60;
-			mutex->lock();
-			SetConsoleCursorPosition(window_handle, position_of_timer);
-			SetConsoleTextAttribute(window_handle, color);
-			std::cout << (minutes_required < 10 ? "0" : "") << minutes_required << ':' << (seconds_required < 10 ? "0" : "") << seconds_required;
-			mutex->unlock();
-			if (miliseconds_elapsed > seconds * 1000)
+			//Calculate time
+			auto time_remaining = time_goal - std::chrono::system_clock::now();
+			int time_left = static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(time_remaining).count());
+			int seconds_left = time_left % 60;
+			int minutes_left = time_left / 60;
+
+			//Draw Timer
+			multithreading_data->mutex->lock();
+			SetConsoleCursorPosition(window_info->handle, position_of_timer);
+			SetConsoleTextAttribute(window_info->handle, window_info->main_color);
+			std::cout << (minutes_left < 10 ? "0" : "") << minutes_left << ':' << (seconds_left < 10 ? "0" : "") << seconds_left;
+			multithreading_data->mutex->unlock();
+
+			//if timer shows 00:00
+			if (time_left <= 0)
 			{
 				*timer_running = false;
 			}
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+		std::this_thread::sleep_for(multithreading_data->delay);
 	}
 }
-void VisibleTimer::StartTimer(int timer_settings)
+void VisibleTimer::SetTimer(const std::chrono::seconds& time, bool* timer_running)
 {
 	*timer_running = true;
-	this->seconds = timer_settings * 10;
-	time = std::chrono::system_clock::now();
+	this->timer_running = timer_running;
+	this->time_goal = std::chrono::system_clock::now() + time;
 }
 void VisibleTimer::StopTimer()
 {
-	if (thread->joinable())
+	if (thread.joinable())
 	{
-		iterate = false;
-		thread->join();
+		active_thread = false;
+		thread.join();
 	}
-	mutex->lock();
-	SetConsoleCursorPosition(window_handle, position_of_timer);
+	multithreading_data->mutex->lock();
+	SetConsoleCursorPosition(window_info->handle, position_of_timer);
 	std::cout << "     ";
-	mutex->unlock();
+	multithreading_data->mutex->unlock();
+}
+void VisibleTimer::StartShowingTimer()
+{
+	StopTimer();
+	active_thread = true;
+	thread = std::thread(&VisibleTimer::ShowRemainingTime, this);
 }
 VisibleTimer::~VisibleTimer()
 {

@@ -1,6 +1,6 @@
 #include "Infobox.h"
 
-InfoBox::InfoBox(const InfoBoxDesc& info_box_desc, const Text::WindowInfo& window_info, const Text::MultithreadingData& multithreading_data)
+InfoBox::InfoBox(const InfoBoxDesc& info_box_desc, const Text::WindowInfo& window_info, const Text::MultithreadingData *multithreading_data)
 {
 	this->info_box_desc = info_box_desc;
 	this->window_info = window_info;
@@ -69,9 +69,9 @@ void InfoBox::Draw()
 	int main_color = window_info.main_color;
 	int secondary_color = window_info.secondary_color;
 
-	if (multithreading_data.mutex != nullptr)
+	if (multithreading_data != nullptr)
 	{
-		multithreading_data.mutex->lock();
+		multithreading_data->mutex->lock();
 	}
 	for (unsigned short index = container_size; index > 0 && index + max_records_to_display > container_size;)
 	{
@@ -80,9 +80,9 @@ void InfoBox::Draw()
 		main_color = 8;
 		secondary_color = 8;
 	}
-	if (multithreading_data.mutex != nullptr)
+	if (multithreading_data != nullptr)
 	{
-		multithreading_data.mutex->unlock();
+		multithreading_data->mutex->unlock();
 	}
 }
 void InfoBox::DrawBox(bool clear_instead)
@@ -93,9 +93,9 @@ void InfoBox::DrawBox(bool clear_instead)
 		static_cast<short>(info_box_desc.box_size.top)
 	};
 
-	if (multithreading_data.mutex != nullptr)
+	if (multithreading_data != nullptr)
 	{
-		multithreading_data.mutex->lock();
+		multithreading_data->mutex->lock();
 	}
 	//Top border
 	SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
@@ -105,9 +105,9 @@ void InfoBox::DrawBox(bool clear_instead)
 	local_position.Y += box_height;
 	SetConsoleCursorPosition(window_info.handle, local_position);
 	std::cout << border;
-	if (multithreading_data.mutex != nullptr)
+	if (multithreading_data != nullptr)
 	{
-		multithreading_data.mutex->unlock();
+		multithreading_data->mutex->unlock();
 	}
 }
 void InfoBox::Clear()
@@ -115,18 +115,18 @@ void InfoBox::Clear()
 	const std::string empty_text = Text::GetMonoCharacterString(box_width, ' ');
 	const short x_pos = static_cast<short>(info_box_desc.box_size.left);
 
-	if (multithreading_data.mutex != nullptr)
+	if (multithreading_data != nullptr)
 	{
-		multithreading_data.mutex->lock();
+		multithreading_data->mutex->lock();
 	}
 	for (short i = static_cast<short>(info_box_desc.box_size.top); i < static_cast<short>(info_box_desc.box_size.bottom); ++i)
 	{
 		SetConsoleCursorPosition(window_info.handle, { x_pos, i });
 		std::cout << empty_text;
 	}
-	if (multithreading_data.mutex != nullptr)
+	if (multithreading_data != nullptr)
 	{
-		multithreading_data.mutex->unlock();
+		multithreading_data->mutex->unlock();
 	}
 }
 void InfoBox::Reset()

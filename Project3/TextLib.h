@@ -17,7 +17,7 @@ namespace Text
 	struct MultithreadingData
 	{
 		std::mutex *mutex = nullptr;
-		bool* loop = nullptr;
+		bool* skip_blocking_functions = nullptr;
 		std::chrono::milliseconds delay;
 	};
 	struct WindowInfo

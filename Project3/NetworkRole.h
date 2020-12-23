@@ -25,6 +25,8 @@ protected:
 	std::unique_ptr<VisibleTimer> timer;
 	int ai_init = 0;
 	bool initiazlized = false;
+	Text::MultithreadingData timer_multithreading_data;
+	bool timer_working = true;
 
 	//Selection methods
 	int NumericalSelection(const COORD coords);

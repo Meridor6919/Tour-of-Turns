@@ -22,7 +22,7 @@ class InfoBox
 
 	InfoBoxDesc info_box_desc;
 	Text::WindowInfo window_info;
-	Text::MultithreadingData multithreading_data;
+	const Text::MultithreadingData *multithreading_data;
 	std::vector<std::pair<std::string, std::string>> data;
 
 	void SetCursorPosition(short index);
@@ -31,7 +31,7 @@ class InfoBox
 
 public:
 
-	InfoBox(const InfoBoxDesc& info_box_desc, const Text::WindowInfo& window_info, const Text::MultithreadingData& multithreading_data = {});
+	InfoBox(const InfoBoxDesc& info_box_desc, const Text::WindowInfo& window_info, const Text::MultithreadingData *multithreading_data = nullptr);
 	void Push(const std::string secondary_color_text, const std::string main_color_text);
 	void Draw();
 	void DrawBox(bool clear_instead = false);

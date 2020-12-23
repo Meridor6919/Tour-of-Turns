@@ -42,7 +42,7 @@ int Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window
 		{
 			multithreading_data.mutex->unlock();
 		}
-		button = Button(multithreading_data.loop, multithreading_data.delay);
+		button = Button(multithreading_data.skip_blocking_functions, multithreading_data.delay);
 		if (multithreading_data.mutex != nullptr)
 		{
 			multithreading_data.mutex->lock();
@@ -89,7 +89,7 @@ int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_i
 		{
 			multithreading_data.mutex->unlock();
 		}
-		button = Button(multithreading_data.loop, multithreading_data.delay);
+		button = Button(multithreading_data.skip_blocking_functions, multithreading_data.delay);
 		if (multithreading_data.mutex != nullptr)
 		{
 			multithreading_data.mutex->lock();
@@ -185,7 +185,7 @@ void Text::Choose::Numeric(int* number_return_value, const int max, COORD starti
 		{
 			multithreading_data.mutex->unlock();
 		}
-		button = Button(multithreading_data.loop, multithreading_data.delay);
+		button = Button(multithreading_data.skip_blocking_functions, multithreading_data.delay);
 		if (multithreading_data.mutex != nullptr)
 		{
 			multithreading_data.mutex->lock();

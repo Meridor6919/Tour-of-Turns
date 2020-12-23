@@ -298,9 +298,13 @@ bool Host::GameLobby()
 	}
 	if (timer_settings)
 	{
-		COORD coord = { 0,0 };
-		timer = std::make_unique<VisibleTimer>(coord, main_window->GetHandle(), &timer_running, main_window->color1, &mutex);
-		timer->StartTimer(timer_settings);
+		COORD coord = { 1,1 };
+		timer_multithreading_data = { &mutex, &timer_working, std::chrono::milliseconds(50) };
+		timer = std::make_unique<VisibleTimer>(coord, &main_window->window_info, &timer_multithreading_data);
+		auto seconds_per_turn = std::chrono::seconds(main_window->GetTimerSettings() * 10);
+		timer_working = true;
+		timer->SetTimer(seconds_per_turn, &timer_running);
+		timer->StartShowingTimer();
 	}
 	SortLeaderboard();
 	network_connector->broadcast_sender.Stop();
