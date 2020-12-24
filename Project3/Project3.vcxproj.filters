@@ -91,6 +91,9 @@
     <ClCompile Include="NetworkConnectorGeneral.cpp">
       <Filter>Files\GeneralLibraries\NetworkConnector</Filter>
     </ClCompile>
+    <ClCompile Include="WavTransformer.cpp">
+      <Filter>Files\GeneralLibraries\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

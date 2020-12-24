@@ -26,9 +26,9 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 		MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
 		exit(0);
 	}
-	enable_ranking = enable_ranking & ValidateRanking();
-	playable = playable & ValidateGameFiles();
-	wav_transformer = new WavTransformer(FolderName::main + '\\' + FileName::music);
+	enable_ranking = enable_ranking * ValidateRanking();
+	playable = playable * ValidateGameFiles();
+	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
 	LoadAtributes();
 
 	window_info.handle = GetHandle();
@@ -157,11 +157,7 @@ void ToT_Window::LoadAtributes()
 	{
 		timer_settings = 0;
 	}
-	wav_transformer->ChangeVolume(music_volume);
-	if (music_volume)
-	{
-		wav_transformer->Start(SND_ASYNC | SND_LOOP);
-	}
+	wav_transformer.StartPlaying(music_volume);
 }
 bool ToT_Window::ValidateGameFiles()
 {

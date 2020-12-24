@@ -92,13 +92,6 @@ void Window::SetCursor(const bool visible)
 void Window::SetMusic(float volume)
 {
 	this->music_volume = volume;
-	if (volume)
-	{
-		wav_transformer->ChangeVolume(volume);
-		wav_transformer->Start(SND_ASYNC | SND_LOOP);
-	}
-	else
-	{
-		wav_transformer->Stop();
-	}
+	wav_transformer.SetFlags(SND_ASYNC | SND_LOOP);
+	wav_transformer.StartPlaying(volume);
 }

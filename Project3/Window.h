@@ -15,7 +15,7 @@ protected:
 	HWND window_hwnd;
 	COORD window_size;
 	int font_size;
-	WavTransformer *wav_transformer;
+	WavTransformer wav_transformer;
 public:
 	int color1;
 	int color2;
