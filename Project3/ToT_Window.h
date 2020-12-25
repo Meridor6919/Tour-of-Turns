@@ -1,10 +1,13 @@
 #pragma once
 #include <iostream>
 #include <fstream>
-#include "Window.h"
-#include "TextLib.h"
+
+#include ".\MeridorConsoleLib\Window.h"
+#include ".\MeridorConsoleLib\TextLib.h"
+#include ".\MeridorConsoleLib\Infobox.h"
 #include "Constants.h"
-#include "Infobox.h"
+
+using namespace MeridorConsoleLib;
 
 class ToT_Window : public Window
 {
@@ -35,12 +38,12 @@ protected:
 public:
 	//Attributes
 	std::shared_ptr<InfoBox> infobox;
-	Text::WindowInfo window_info;
+	MeridorConsoleLib::WindowInfo window_info;
 
 	//General methods
 	ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
 	void RemoveExtension(std::vector<std::string> &vector, std::string extension);
-	void Title(const COORD starting_point, const Text::TextAlign text_align);
+	void Title(const COORD starting_point, const MeridorConsoleLib::TextAlign text_align);
 	std::string GetClassifiedDetail(std::string text, int classification_type);
 
 	//Get methods

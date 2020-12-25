@@ -125,14 +125,14 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	{
 		const int border_size = static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size());
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		std::cout<<Text::Spaces(border_size);
+		std::cout<<Spaces(border_size);
 		for (short i = 0; i < static_cast<short>(GameConstants::validate_ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
-			std::cout << Text::Spaces(static_cast<short>(LanguagePack::text[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2);
+			std::cout << Spaces(static_cast<short>(LanguagePack::text[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2);
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(GameConstants::validate_ranking_details) + 2) });
-		std::cout << Text::Spaces(border_size);
+		std::cout << Spaces(border_size);
 	}
 	else
 	{
@@ -154,10 +154,10 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 }
 void ToT::MainMenu()
 {
-	main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+	main_window->Title({ game_window_center, 0 }, TextAlign::center);
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu_options], main_menu_position, { game_window_center + 1, 25 }, Text::TextAlign::center, 3, true};
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu_options], main_menu_position, { game_window_center + 1, 25 }, TextAlign::center, 3, true};
 		switch (main_menu_position = Text::Choose::Veritcal(text_info, main_window->window_info))
 		{
 		case 0:
@@ -209,7 +209,7 @@ void ToT::MainMenu()
 }
 void ToT::Credits()
 {
-	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::credits], 0, { game_window_center,25 }, Text::TextAlign::center, 3, 0 };
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::credits], 0, { game_window_center,25 }, TextAlign::center, 3, 0 };
 	OrdinaryText(text_info, main_window->window_info);
 	_getch();
 	ClearOrdinaryText(text_info, main_window->window_info);
@@ -220,7 +220,7 @@ void ToT::Options()
 	const COORD starting_point = { game_window_center+1, 25 };
 	const short spacing = 3;
 	bool loop = true;
-	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::tot_general_options], main_menu_position, starting_point, Text::TextAlign::center, spacing, false };
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::tot_general_options], main_menu_position, starting_point, TextAlign::center, spacing, false };
 
 	while (loop)
 	{
@@ -235,7 +235,7 @@ void ToT::Options()
 				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = main_window->color1;
 				local_text.erase(local_text.begin() + (main_window->color2 - 2));
-				Text::TextInfo text_info = { local_text, main_window->color1 - 2 - (main_window->color1 > main_window->color2), local_starting_point, Text::TextAlign::left, 0, true};
+				Text::TextInfo text_info = { local_text, main_window->color1 - 2 - (main_window->color1 > main_window->color2), local_starting_point, TextAlign::left, 0, true};
 				main_window->color1 = Text::Choose::Horizontal(text_info, main_window->window_info) + 2;
 				if (main_window->color1 >= main_window->color2)
 				{
@@ -243,7 +243,7 @@ void ToT::Options()
 				}
 				if (starting_color != main_window->color1)
 				{
-					main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+					main_window->Title({ game_window_center, 0 }, TextAlign::center);
 				}
 				break;
 			}
@@ -252,7 +252,7 @@ void ToT::Options()
 				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = main_window->color2;
 				local_text.erase(local_text.begin() + (main_window->color1 - 2));
-				Text::TextInfo text_info = { local_text, main_window->color2 - 2 - (main_window->color2 > main_window->color1), local_starting_point, Text::TextAlign::left, 0, true };
+				Text::TextInfo text_info = { local_text, main_window->color2 - 2 - (main_window->color2 > main_window->color1), local_starting_point, TextAlign::left, 0, true };
 				main_window->color2 = Text::Choose::Horizontal(text_info, main_window->window_info) + 2;
 				if (main_window->color2 >= main_window->color1)
 				{
@@ -260,7 +260,7 @@ void ToT::Options()
 				}
 				if (starting_color != main_window->color2)
 				{
-					main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+					main_window->Title({ game_window_center, 0 }, TextAlign::center);
 				}
 				break;
 			}
@@ -272,7 +272,7 @@ void ToT::Options()
 					text.push_back(std::to_string(i));
 				}
 				const float starting_volume = main_window->GetMusicVolume();
-				Text::TextInfo text_info = { text, static_cast<int>(main_window->GetMusicVolume() * 10), local_starting_point, Text::TextAlign::left, 0, true };
+				Text::TextInfo text_info = { text, static_cast<int>(main_window->GetMusicVolume() * 10), local_starting_point, TextAlign::left, 0, true };
 				const float current_volume = static_cast<float>(Text::Choose::Horizontal(text_info, main_window->window_info)) / 10.0f;
 				if(starting_volume != current_volume)
 				{
@@ -293,19 +293,19 @@ void ToT::Options()
 					}
 				}
 				main_window->RemoveExtension(language, ExtName::language);
-				Text::TextInfo text_info = { language, starting_pos, local_starting_point, Text::TextAlign::left, 0, true };
+				Text::TextInfo text_info = { language, starting_pos, local_starting_point, TextAlign::left, 0, true };
 				int current_pos = Text::Choose::Horizontal(text_info, main_window->window_info);
 				if (current_pos != starting_pos)
 				{
 					main_window->SetLanguage(language[current_pos] + ExtName::language);
 					system("cls");
-					main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+					main_window->Title({ game_window_center, 0 }, TextAlign::center);
 				}
 				break;
 			}
 			case 4://set hamachi flag
 			{
-				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, Text::TextAlign::left, 0, true };
+				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, TextAlign::left, 0, true };
 				main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(text_info, main_window->window_info)));
 				break;
 			}
@@ -334,7 +334,7 @@ void ToT::Ranking()
 	int classification_type = 0;
 
 	ShowRankingDetails(FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
-	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_search_menu], main_menu_position, starting_point, Text::TextAlign::center, spacing, false };
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_search_menu], main_menu_position, starting_point, TextAlign::center, spacing, false };
 	while (loop)
 	{
 		const std::string starting_map_path = FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking;
@@ -347,7 +347,7 @@ void ToT::Ranking()
 			case 0://Map
 			{
 				const int temp = map_pos;
-				Text::TextInfo text_info = { maps, map_pos, local_starting_point, Text::TextAlign::left, 0, true };
+				Text::TextInfo text_info = { maps, map_pos, local_starting_point, TextAlign::left, 0, true };
 				map_pos = Text::Choose::Horizontal(text_info, main_window->window_info);
 				if (map_pos != temp)
 				{
@@ -360,7 +360,7 @@ void ToT::Ranking()
 			case 1://Player
 			{
 				const int temp = racer_pos;
-				Text::TextInfo text_info = { GetRankingNames(FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, Text::TextAlign::left, 0, true };
+				Text::TextInfo text_info = { GetRankingNames(FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, TextAlign::left, 0, true };
 				racer_pos = Text::Choose::Horizontal(text_info, main_window->window_info);
 				if(temp != racer_pos)
 				{
@@ -372,7 +372,7 @@ void ToT::Ranking()
 			case 2://Classification type
 			{
 				const int temp = classification_type;
-				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_classification_types], classification_type, local_starting_point, Text::TextAlign::left, 0, true };
+				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_classification_types], classification_type, local_starting_point, TextAlign::left, 0, true };
 				classification_type = Text::Choose::Horizontal(text_info, main_window->window_info);
 				if (temp != classification_type)
 				{
@@ -401,8 +401,8 @@ void ToT::Ranking()
 }
 void ToT::Info()
 {
-	const Text::TextAlign text_align_title = Text::TextAlign::center;
-	const Text::TextAlign text_align_content = Text::TextAlign::center;
+	const TextAlign text_align_title = TextAlign::center;
+	const TextAlign text_align_content = TextAlign::center;
 	const short spacing = 3;
 	const COORD text_pos = { game_window_center, 28 };
 	const COORD title_pos = { game_window_center - 2, text_pos.Y - 3 };
@@ -417,7 +417,7 @@ void ToT::Info()
 		{
 			const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::game_information_options][info_pos].size());
 			SetConsoleCursorPosition(handle, {title_pos.X-static_cast<short>(static_cast<float>(text_size)*GetTextAlignScalar(text_align_title)), title_pos.Y });
-			std::cout << Text::Spaces(text_size + 4);
+			std::cout << Spaces(text_size + 4);
 			break;
 		}
 		info_pos = temp_pos;
@@ -432,7 +432,7 @@ void ToT::Game(const bool multiplayer)
 	{	
 		do
 		{
-			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_before_game_lobby], 0, { game_window_center, 25 }, Text::TextAlign::center, 3, false };
+			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_before_game_lobby], 0, { game_window_center, 25 }, TextAlign::center, 3, false };
 			switch (Text::Choose::Veritcal(text_info, main_window->window_info))
 			{
 				case 0:
@@ -483,8 +483,8 @@ void ToT::Game(const bool multiplayer)
 		}
 		network_role->Finish();
 		system("cls");
-		main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+		main_window->Title({ game_window_center, 0 }, TextAlign::center);
 	}
 	system("cls");
-	main_window->Title({ game_window_center, 0 }, Text::TextAlign::center);
+	main_window->Title({ game_window_center, 0 }, TextAlign::center);
 }

@@ -1,6 +1,6 @@
 #include "TextLib.h"
 
-char Text::Button(const bool *loop, std::chrono::milliseconds delay)
+char MeridorConsoleLib::Text::Button(const bool *loop, std::chrono::milliseconds delay)
 {
 	if (loop == nullptr)
 	{
@@ -16,11 +16,7 @@ char Text::Button(const bool *loop, std::chrono::milliseconds delay)
 	}
 	return 13;
 }
-float Text::GetTextAlignScalar(TextAlign text_align)
-{
-	return static_cast<float>(text_align) / 2.0f;;
-}
-int Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+int MeridorConsoleLib::Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	char button;
 	size_t index = text_info.starting_index;
@@ -69,7 +65,7 @@ int Text::Choose::Horizontal(const TextInfo& text_info, const WindowInfo& window
 
 	return static_cast<int>(index);
 }
-int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+int MeridorConsoleLib::Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	char button;
 	
@@ -136,7 +132,7 @@ int Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_i
 	}
 	return static_cast<int>(index);
 }
-void Text::Choose::VerticalShowGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+void MeridorConsoleLib::Text::Choose::VerticalShowGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	if (multithreading_data.mutex != nullptr)
 	{
@@ -154,7 +150,7 @@ void Text::Choose::VerticalShowGUI(const TextInfo& text_info, const WindowInfo& 
 		multithreading_data.mutex->unlock();
 	}
 }
-void Text::Choose::VerticalClearGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+void MeridorConsoleLib::Text::Choose::VerticalClearGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	if (multithreading_data.mutex != nullptr)
 	{
@@ -171,7 +167,7 @@ void Text::Choose::VerticalClearGUI(const TextInfo& text_info, const WindowInfo&
 		multithreading_data.mutex->unlock();
 	}
 }
-void Text::Choose::Numeric(int* number_return_value, const int max, COORD starting_point, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+void MeridorConsoleLib::Text::Choose::Numeric(int* number_return_value, const int max, COORD starting_point, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	short pos = 0;
 	char button;
@@ -219,7 +215,7 @@ void Text::Choose::Numeric(int* number_return_value, const int max, COORD starti
 		multithreading_data.mutex->unlock();
 	}
 }
-void Text::OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+void MeridorConsoleLib::Text::OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	const int text_size = static_cast<int>(text_info.text.size());
 	if (multithreading_data.mutex != nullptr)
@@ -248,7 +244,7 @@ void Text::OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info
 		multithreading_data.mutex->unlock();
 	}
 }
-void Text::ClearOrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+void MeridorConsoleLib::Text::ClearOrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	const int text_size = static_cast<int>(text_info.text.size());
 	if (multithreading_data.mutex != nullptr)
@@ -271,7 +267,7 @@ void Text::ClearOrdinaryText(const TextInfo& text_info, const WindowInfo& window
 		multithreading_data.mutex->unlock();
 	}
 }
-void Text::TableText(const TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+void MeridorConsoleLib::Text::TableText(const TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	const int text_size = static_cast<int>(table_text_info.text.size());
 	int column_number = 0;
@@ -311,14 +307,4 @@ void Text::TableText(const TableTextInfo& table_text_info, const WindowInfo& win
 	{
 		multithreading_data.mutex->unlock();
 	}
-}
-std::string Text::GetMonoCharacterString(const int size, const char character)
-{
-	std::string ret = "";
-	ret.resize(size, character);
-	return ret;
-}
-std::string Text::Spaces(const int size)
-{
-	return GetMonoCharacterString(size, ' ');
 }

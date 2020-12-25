@@ -1,6 +1,7 @@
 #pragma once
-#include "NetworkRole.h"
 #include <map>
+
+#include "NetworkRole.h"
 
 class Host : public SinglePlayer {
 

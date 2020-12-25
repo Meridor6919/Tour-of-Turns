@@ -1,7 +1,7 @@
 #include "Window.h"
 
 
-Window::Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns)
+MeridorConsoleLib::Window::Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns)
 {
 	//Saving crucial data
 	this->color1 = color1;
@@ -35,7 +35,7 @@ Window::Window(const std::string title, const int color1, const int color2, cons
 	//Cursor visibility	set to false by default							
 	SetCursor(false);
 }
-std::vector<std::string> Window::ReadFile(const std::string path)
+std::vector<std::string> MeridorConsoleLib::Window::ReadFile(const std::string path)
 {
 	std::vector<std::string> data;
 	std::fstream fvar;
@@ -48,7 +48,7 @@ std::vector<std::string> Window::ReadFile(const std::string path)
 	fvar.close();
 	return data;
 }
-void Window::Pause(const int miliseconds)
+void MeridorConsoleLib::Window::Pause(const int miliseconds)
 {
 	DWORD consolesettings;
 	HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
@@ -58,38 +58,38 @@ void Window::Pause(const int miliseconds)
 	FlushConsoleInputBuffer(input_handle);
 	SetConsoleMode(input_handle, consolesettings);
 }
-int Window::GetWidth()
+int MeridorConsoleLib::Window::GetWidth()
 {
 	return window_size.X;
 }
-int Window::GetHeight()
+int MeridorConsoleLib::Window::GetHeight()
 {
 	return window_size.Y;
 }
-int Window::GetFontSize()
+int MeridorConsoleLib::Window::GetFontSize()
 {
 	return font_size;
 }
-HANDLE Window::GetHandle()
+HANDLE MeridorConsoleLib::Window::GetHandle()
 {
 	return window_handle;
 }
-HWND Window::GetHWND()
+HWND MeridorConsoleLib::Window::GetHWND()
 {
 	return window_hwnd;
 }
-float Window::GetMusicVolume()
+float MeridorConsoleLib::Window::GetMusicVolume()
 {
 	return music_volume;
 }
-void Window::SetCursor(const bool visible)
+void MeridorConsoleLib::Window::SetCursor(const bool visible)
 {
 	CONSOLE_CURSOR_INFO console_cursor;
 	GetConsoleCursorInfo(window_handle, &console_cursor);
 	console_cursor.bVisible = visible;
 	SetConsoleCursorInfo(window_handle, &console_cursor);
 }
-void Window::SetMusic(float volume)
+void MeridorConsoleLib::Window::SetMusic(float volume)
 {
 	this->music_volume = volume;
 	wav_transformer.SetFlags(SND_ASYNC | SND_LOOP);

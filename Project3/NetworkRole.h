@@ -1,15 +1,18 @@
 #pragma once
-#include "NetworkConnectorClient.h"
-#include "NetworkConnectorHost.h"
-#include "ToT_Window.h"
 #include <fstream>
 #include <set>
 #include <vector>
 #include <exception>
-#include "Participant.h"
 #include <mutex>
-#include "VisibleTimer.h"
-#include "AIConnector.h"
+
+#include ".\MeridorNetworkLib\NetworkConnectorClient.h"
+#include ".\MeridorNetworkLib\NetworkConnectorHost.h"
+#include ".\MeridorConsoleLib\VisibleTimer.h"
+#include ".\MeridorMiscModules\PipeConnector.h"
+#include "ToT_Window.h"
+#include "Participant.h"
+
+using namespace MeridorConsoleLib;
 
 class SinglePlayer 
 {
@@ -18,14 +21,14 @@ protected:
 	std::string tour;
 	short take_action_position = 0;
 	std::vector<Participant> participants;
-	std::unique_ptr<AIConnector> ai_connector;
+	std::unique_ptr<PipeConnector> ai_connector;
 	std::mutex mutex;
 	bool attack_phase = false;
 	bool timer_running = true;
 	std::unique_ptr<VisibleTimer> timer;
 	int ai_init = 0;
 	bool initiazlized = false;
-	Text::MultithreadingData timer_multithreading_data;
+	MeridorConsoleLib::MultithreadingData timer_multithreading_data;
 	bool timer_working = true;
 
 	//Selection methods

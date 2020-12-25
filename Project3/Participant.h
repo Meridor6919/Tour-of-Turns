@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+
 #include "Constants.h"
 
 class ToT_Window;

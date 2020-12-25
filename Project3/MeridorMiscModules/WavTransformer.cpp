@@ -10,7 +10,6 @@ void WavTransformer::LoadBytes(const std::string& path)
 	}
 	file.close();
 }
-
 unsigned long WavTransformer::GetDataStartingIndex()
 {
 	unsigned long  index = 0;
@@ -24,7 +23,6 @@ unsigned long WavTransformer::GetDataStartingIndex()
 	}
 	return 0;
 }
-
 bool WavTransformer::Init(std::string path)
 {
 	std::ifstream file(path.c_str(), std::ios::binary | std::ios::ate);
@@ -43,9 +41,9 @@ void WavTransformer::SetFlags(DWORD flags)
 {
 	this->flags = flags;
 }
-void WavTransformer::StartPlaying(float value)
+void WavTransformer::StartPlaying(float volume)
 {
-	if (!value)
+	if (!volume)
 	{
 		StopPlaying();
 	}
@@ -54,15 +52,15 @@ void WavTransformer::StartPlaying(float value)
 		//Data is stored in 2-byte long intervals and because of that short type is used
 		//Multiplying those values by numbers from range 0.0 - 1.0 reduces volume by according percentage
 		//There is built in inaccuracy, because of floating point multiplication with short type
-		value /= volume;
+		volume /= current_volume;
 		unsigned long index = GetDataStartingIndex();
 		short* widened_byte_ptr = reinterpret_cast<short*>(&bytes[index]);
 		for (; index < file_size; index += 2)
 		{
-			*widened_byte_ptr = static_cast<short>((*widened_byte_ptr) * value);
+			*widened_byte_ptr = static_cast<short>((*widened_byte_ptr) * volume);
 			++widened_byte_ptr;
 		}
-		volume *= value;
+		current_volume *= volume;
 		PlaySound(reinterpret_cast<LPCSTR>(bytes), 0, SND_MEMORY | flags);
 	}
 }

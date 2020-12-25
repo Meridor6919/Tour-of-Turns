@@ -1,12 +1,12 @@
 #include "VisibleTimer.h"
 
-VisibleTimer::VisibleTimer(COORD position, const Text::WindowInfo *window_info, const Text::MultithreadingData *multithreading_data)
+MeridorConsoleLib::VisibleTimer::VisibleTimer(COORD position, const WindowInfo *window_info, const MultithreadingData *multithreading_data)
 {
 	this->multithreading_data = multithreading_data;
 	this->window_info = window_info;
 	this->position_of_timer = position;
 }
-void VisibleTimer::ShowRemainingTime()
+void MeridorConsoleLib::VisibleTimer::ShowRemainingTime()
 {
 	while(active_thread)
 	{
@@ -34,13 +34,13 @@ void VisibleTimer::ShowRemainingTime()
 		std::this_thread::sleep_for(multithreading_data->delay);
 	}
 }
-void VisibleTimer::SetTimer(const std::chrono::seconds& time, bool* timer_running)
+void MeridorConsoleLib::VisibleTimer::SetTimer(const std::chrono::seconds& time, bool* timer_running)
 {
 	*timer_running = true;
 	this->timer_running = timer_running;
 	this->time_goal = std::chrono::system_clock::now() + time;
 }
-void VisibleTimer::StopTimer()
+void MeridorConsoleLib::VisibleTimer::StopTimer()
 {
 	if (thread.joinable())
 	{
@@ -52,13 +52,13 @@ void VisibleTimer::StopTimer()
 	std::cout << "     ";
 	multithreading_data->mutex->unlock();
 }
-void VisibleTimer::StartShowingTimer()
+void MeridorConsoleLib::VisibleTimer::StartShowingTimer()
 {
 	StopTimer();
 	active_thread = true;
 	thread = std::thread(&VisibleTimer::ShowRemainingTime, this);
 }
-VisibleTimer::~VisibleTimer()
+MeridorConsoleLib::VisibleTimer::~VisibleTimer()
 {
 	StopTimer();
 }

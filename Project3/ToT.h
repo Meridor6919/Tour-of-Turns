@@ -1,10 +1,13 @@
 #pragma once
 #include <fstream>
+
 #include "NetworkRole.h"
 #include "NetworkRoleHost.h"
 #include "NetworkRoleClient.h"
 #include "ToT_Window.h"
 #include "Constants.h"
+
+using namespace MeridorConsoleLib;
 
 class ToT {
 	std::shared_ptr<ToT_Window> main_window;

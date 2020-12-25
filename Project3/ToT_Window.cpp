@@ -300,7 +300,7 @@ void ToT_Window::RemoveExtension(std::vector<std::string>& vector, std::string e
 		vector[i] = vector[i].substr(0, static_cast<short>(vector[i].size()) - extension_size);
 	}
 }
-void ToT_Window::Title(const COORD starting_point, const Text::TextAlign text_align)
+void ToT_Window::Title(const COORD starting_point, const TextAlign text_align)
 {
 	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::text[LanguagePack::title_main][0].size()), starting_point.Y };
 	const short decoration_distance = 5;

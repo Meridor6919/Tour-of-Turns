@@ -1,6 +1,6 @@
 #include "Infobox.h"
 
-InfoBox::InfoBox(const InfoBoxDesc& info_box_desc, const Text::WindowInfo& window_info, const Text::MultithreadingData *multithreading_data)
+MeridorConsoleLib::InfoBox::InfoBox(const InfoBoxDesc& info_box_desc, const WindowInfo& window_info, const MultithreadingData *multithreading_data)
 {
 	this->info_box_desc = info_box_desc;
 	this->window_info = window_info;
@@ -9,15 +9,15 @@ InfoBox::InfoBox(const InfoBoxDesc& info_box_desc, const Text::WindowInfo& windo
 	box_width = static_cast<unsigned short>(info_box_desc.box_size.right - info_box_desc.box_size.left);
 	box_height = static_cast<unsigned short>(info_box_desc.box_size.bottom - info_box_desc.box_size.top);
 }
-void InfoBox::SetCursorPosition(short index)
+void MeridorConsoleLib::InfoBox::SetCursorPosition(short index)
 {
 	COORD local_position;
 
-	local_position.X = static_cast<short>(info_box_desc.box_size.left + static_cast<short>(static_cast<float>(box_width) * Text::GetTextAlignScalar(info_box_desc.text_align)));
+	local_position.X = static_cast<short>(info_box_desc.box_size.left + static_cast<short>(static_cast<float>(box_width) * GetTextAlignScalar(info_box_desc.text_align)));
 	local_position.Y = static_cast<short>(info_box_desc.box_size.top + upper_border_height + index * info_box_desc.vertical_spacing);
 	SetConsoleCursorPosition(window_info.handle, local_position);
 }
-std::string InfoBox::RegulateStringSize(const std::string& text, short max_size, bool fill_to_max_size)
+std::string MeridorConsoleLib::InfoBox::RegulateStringSize(const std::string& text, short max_size, bool fill_to_max_size)
 {
 	std::string ret_value = text;
 	if (ret_value.size() > max_size)
@@ -37,7 +37,7 @@ std::string InfoBox::RegulateStringSize(const std::string& text, short max_size,
 	}
 	return ret_value;
 }
-void InfoBox::ShowLineOfText(unsigned short index, int primary_color, int secondary_color)
+void MeridorConsoleLib::InfoBox::ShowLineOfText(unsigned short index, int primary_color, int secondary_color)
 {
 	const unsigned short data_size = static_cast<unsigned short>(data.size());
 	unsigned short first_part = static_cast<unsigned short>(data[index].first.size());
@@ -53,7 +53,7 @@ void InfoBox::ShowLineOfText(unsigned short index, int primary_color, int second
 	std::cout << ordinary_text;
 
 }
-void InfoBox::Push(const std::string secondary_color_text, const std::string main_color_text)
+void MeridorConsoleLib::InfoBox::Push(const std::string secondary_color_text, const std::string main_color_text)
 {
 	if (data.size() == info_box_desc.history_size)
 	{
@@ -61,7 +61,7 @@ void InfoBox::Push(const std::string secondary_color_text, const std::string mai
 	}
 	data.push_back(std::make_pair(secondary_color_text, main_color_text));
 }
-void InfoBox::Draw()
+void MeridorConsoleLib::InfoBox::Draw()
 {
 	const unsigned short container_size = static_cast<unsigned short>(data.size());
 
@@ -85,11 +85,11 @@ void InfoBox::Draw()
 		multithreading_data->mutex->unlock();
 	}
 }
-void InfoBox::DrawBox(bool clear_instead)
+void MeridorConsoleLib::InfoBox::DrawBox(bool clear_instead)
 {
-	const std::string border = Text::GetMonoCharacterString(box_width, clear_instead ? ' ' : '_');
+	const std::string border = GetMonoCharacterString(box_width, clear_instead ? ' ' : '_');
 	COORD local_position = {
-		static_cast<short>(info_box_desc.box_size.left) + static_cast<short>(static_cast<float>(box_width) * Text::GetTextAlignScalar(info_box_desc.text_align)),
+		static_cast<short>(info_box_desc.box_size.left) + static_cast<short>(static_cast<float>(box_width) * GetTextAlignScalar(info_box_desc.text_align)),
 		static_cast<short>(info_box_desc.box_size.top)
 	};
 
@@ -110,9 +110,9 @@ void InfoBox::DrawBox(bool clear_instead)
 		multithreading_data->mutex->unlock();
 	}
 }
-void InfoBox::Clear()
+void MeridorConsoleLib::InfoBox::Clear()
 {
-	const std::string empty_text = Text::GetMonoCharacterString(box_width, ' ');
+	const std::string empty_text = GetMonoCharacterString(box_width, ' ');
 	const short x_pos = static_cast<short>(info_box_desc.box_size.left);
 
 	if (multithreading_data != nullptr)
@@ -129,7 +129,7 @@ void InfoBox::Clear()
 		multithreading_data->mutex->unlock();
 	}
 }
-void InfoBox::Reset()
+void MeridorConsoleLib::InfoBox::Reset()
 {
 	data.clear();
 }

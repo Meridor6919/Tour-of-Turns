@@ -8,17 +8,17 @@
 class WavTransformer
 {
 	unsigned long file_size = 0;
-	byte *bytes;
-	float volume = 1.0f;
+	byte* bytes;
+	float current_volume = 1.0f;
 	DWORD flags = NULL;
 
-	void LoadBytes(const std::string &path);
+	void LoadBytes(const std::string& path);
 	unsigned long GetDataStartingIndex();
 
 public:
 	bool Init(std::string path);
 	void SetFlags(DWORD flags);
-	void StartPlaying(float value);
+	void StartPlaying(float volume);
 	void StopPlaying();
 	~WavTransformer();
 };

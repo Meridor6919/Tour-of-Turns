@@ -5,7 +5,7 @@
 #include <string>
 #include <thread>
 
-class AIConnector
+class PipeConnector
 {
 	int buffer_size;
 	const std::string exit_command = "exit";
@@ -25,14 +25,14 @@ public:
 
 	template <class T>
 	bool HandleConnection(void(T::*MsgHandling)(std::string), T* object);
-	AIConnector(std::string connector_path, int buffer_size);
+	PipeConnector(std::string connector_path, int buffer_size);
 	bool Write(std::string msg_send);
 	bool Read(std::string &msg_received);
-	~AIConnector();
+	~PipeConnector();
 };
 
 template <class T>
-bool AIConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* object)
+bool PipeConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* object)
 {
 	SECURITY_ATTRIBUTES security_atributes = { 0 };
 	security_atributes.bInheritHandle = 1;
@@ -59,11 +59,11 @@ bool AIConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* object
 		return false;
 	}
 	handling_connection = true;
-	connection_thread = std::make_unique<std::thread>(&AIConnector::RecvFunction<T>, this, MsgHandling, object);
+	connection_thread = std::make_unique<std::thread>(&PipeConnector::RecvFunction<T>, this, MsgHandling, object);
 	return true;
 }
 template <class T>
-void  AIConnector::RecvFunction(void(T::*MsgHandling)(std::string), T* object)
+void  PipeConnector::RecvFunction(void(T::*MsgHandling)(std::string), T* object)
 {
 	while (handling_connection)
 	{

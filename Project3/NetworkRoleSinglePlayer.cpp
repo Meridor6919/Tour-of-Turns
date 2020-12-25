@@ -64,7 +64,7 @@ int SinglePlayer::NumericalSelection(const COORD coords)
 	}
 	mutex.lock();
 	SetConsoleCursorPosition(window, coords);
-	std::cout << Text::Spaces(decimal_position + 2);
+	std::cout << Spaces(decimal_position + 2);
 	mutex.unlock();
 	ShowChances(0, true);
 	return value;
@@ -86,7 +86,7 @@ int SinglePlayer::BinarySelection(const COORD coords)
 
 		mutex.lock();
 		SetConsoleCursorPosition(window, coords);
-		std::cout << Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::action_confirm].size()));
+		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::action_confirm].size()));
 		mutex.unlock();
 		ShowChances(0, true);
 		if (button == 'y' || button == 'Y')
@@ -143,7 +143,7 @@ std::string SinglePlayer::StringSelection(const std::string current_name, const 
 	while (button != 13);
 	mutex.lock();
 	SetConsoleCursorPosition(window, coords);
-	std::cout << Text::Spaces(name_size + 5);
+	std::cout << Spaces(name_size + 5);
 	mutex.unlock();
 	if (name_size == 0)
 	{
@@ -259,17 +259,17 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 		if (title != "")
 		{
 			SetConsoleCursorPosition(handle, { base_position.X, base_position.Y });
-			std::cout << Text::Spaces(border_size);
+			std::cout << Spaces(border_size);
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		std::cout << Text::Spaces(border_size);
+		std::cout << Spaces(border_size);
 		for (short i = 0; i < static_cast<short>(text.size()); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
-			std::cout << Text::Spaces(static_cast<short>(text[i].first.size()) + static_cast<short>(text[i].second.size()) + 2);
+			std::cout << Spaces(static_cast<short>(text[i].first.size()) + static_cast<short>(text[i].second.size()) + 2);
 		}
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
-		std::cout << Text::Spaces(border_size);
+		std::cout << Spaces(border_size);
 	}
 	else
 	{
@@ -302,12 +302,12 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 	SetConsoleTextAttribute(main_window->GetHandle(), color);
 	for (int j = 0; j < static_cast<int>(text.size()); ++j)
 	{
-		const short x_pos = static_cast<short>(main_window->GetWidth() - (16 * static_cast<int>(text.size())) + 16 * j) - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(text[j].size()));
+		const short x_pos = static_cast<short>(main_window->GetWidth() - (16 * static_cast<int>(text.size())) + 16 * j) - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(text[j].size()));
 		const short y_pos = 16 + pos * 2;
 		SetConsoleCursorPosition(main_window->GetHandle(), { x_pos, y_pos });
 		if (clear)
 		{
-			std::cout << Text::Spaces(static_cast<int>(text[j].size()));
+			std::cout << Spaces(static_cast<int>(text[j].size()));
 		}
 		else
 		{
@@ -449,7 +449,7 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 	}
 	if (number_of_ais)
 	{
-		ai_connector = std::make_unique<AIConnector>(FolderName::main + '\\' + FileName::ai, 255);
+		ai_connector = std::make_unique<PipeConnector>(FolderName::main + '\\' + FileName::ai, 255);
 		if (!ai_connector->HandleConnection(&SinglePlayer::HandleAIConnection, this))
 		{
 			MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
@@ -528,8 +528,8 @@ bool SinglePlayer::GameLobby()
 
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::game_menu_options], main_menu_position, starting_point, Text::TextAlign::center, spacing, false };
-		Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::game_menu_options], main_menu_position, starting_point, TextAlign::center, spacing, false };
+		MultithreadingData  multithreading_data = { &mutex, &timer_running };
 		main_menu_position = Text::Choose::Veritcal(text_info, main_window->window_info, multithreading_data);
 		if (!timer_running)
 		{
@@ -552,8 +552,8 @@ bool SinglePlayer::GameLobby()
 				{
 					text.push_back(std::to_string(i));
 				}
-				Text::TextInfo text_info = { text, ais, starting_local_pos, Text::TextAlign::left, 0, true };
-				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				Text::TextInfo text_info = { text, ais, starting_local_pos, TextAlign::left, 0, true };
+				MultithreadingData  multithreading_data = { &mutex, &timer_running };
 				ais = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				ShowRankingParameters(tours[tours_pos] + ExtName::ranking, true);
 				main_window->SetAIs(ais);
@@ -567,8 +567,8 @@ bool SinglePlayer::GameLobby()
 				{
 					timer_values.push_back((i < 60 ? "0" : "")+std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 				}
-				Text::TextInfo text_info = { timer_values, timer_settings, starting_local_pos, Text::TextAlign::left, 0, true };
-				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				Text::TextInfo text_info = { timer_values, timer_settings, starting_local_pos, TextAlign::left, 0, true };
+				MultithreadingData  multithreading_data = { &mutex, &timer_running };
 				timer_settings = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				main_window->SetTimerSettings(timer_settings);
 				break;
@@ -576,8 +576,8 @@ bool SinglePlayer::GameLobby()
 			case 3://choosing tour
 			{
 				int i = tours_pos;
-				Text::TextInfo text_info = { tours, tours_pos, starting_local_pos, Text::TextAlign::left, 0, true };
-				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				Text::TextInfo text_info = { tours, tours_pos, starting_local_pos, TextAlign::left, 0, true };
+				MultithreadingData  multithreading_data = { &mutex, &timer_running };
 				tours_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				if (i != tours_pos)
 				{
@@ -595,8 +595,8 @@ bool SinglePlayer::GameLobby()
 			case 4://choosing car
 			{
 				int i = cars_pos;
-				Text::TextInfo text_info = { cars, cars_pos, starting_local_pos, Text::TextAlign::left, 0, true };
-				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				Text::TextInfo text_info = { cars, cars_pos, starting_local_pos, TextAlign::left, 0, true };
+				MultithreadingData  multithreading_data = { &mutex, &timer_running };
 				cars_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				if (i != cars_pos)
 				{
@@ -608,8 +608,8 @@ bool SinglePlayer::GameLobby()
 			case 5://choosing tires
 			{
 				int i = tires_pos;
-				Text::TextInfo text_info = { tires, tires_pos, starting_local_pos, Text::TextAlign::left, 0, true };
-				Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+				Text::TextInfo text_info = { tires, tires_pos, starting_local_pos, TextAlign::left, 0, true };
+				MultithreadingData  multithreading_data = { &mutex, &timer_running };
 				tires_pos = Text::Choose::Horizontal(text_info, main_window->window_info, multithreading_data);
 				if (i != tires_pos)
 				{
@@ -632,8 +632,8 @@ bool SinglePlayer::GameLobby()
 	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options].size()); ++i)
 	{
 		mutex.lock();
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(Text::TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_menu_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
-		std::cout << Text::Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_menu_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
+		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
 		mutex.unlock();
 	}
 	main_window->SaveAtributes();
@@ -769,8 +769,8 @@ int SinglePlayer::PerformAttack()
 		}
 		if (static_cast<int>(rival_id.size()) != 1)
 		{
-			Text::TextInfo text_info = { rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, Text::TextAlign::center, 2, true };
-			Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			Text::TextInfo text_info = { rival_name, 0, { static_cast<short>(main_window->GetWidth() - 28), static_cast<short>(main_window->GetHeight() - 17) }, TextAlign::center, 2, true };
+			MultithreadingData  multithreading_data = { &mutex, &timer_running };
 			short i = Text::Choose::Veritcal(text_info, main_window->window_info, multithreading_data);
 			return rival_id[i];
 		}
@@ -1083,8 +1083,8 @@ std::pair<int, int> SinglePlayer::PerformAction()
 		int value;
 		while (true)
 		{
-			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::race_actions], take_action_position, { 1,39 }, Text::TextAlign::left, 2, false };
-			Text::MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::race_actions], take_action_position, { 1,39 }, TextAlign::left, 2, false };
+			MultithreadingData  multithreading_data = { &mutex, &timer_running };
 			take_action_position = Text::Choose::Veritcal(text_info, main_window->window_info, multithreading_data);
 			if (!timer_running)
 			{
@@ -1103,7 +1103,7 @@ std::pair<int, int> SinglePlayer::PerformAction()
 				main_window->Pause(1500);
 				mutex.lock();
 				SetConsoleCursorPosition(window, { static_cast<short>(LanguagePack::text[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
-				std::cout << Text::Spaces(static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::unable_to_move].size()));
+				std::cout << Spaces(static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::unable_to_move].size()));
 				mutex.unlock();
 				continue;
 			}

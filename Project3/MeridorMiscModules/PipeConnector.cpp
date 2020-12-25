@@ -1,11 +1,11 @@
-#include "AIConnector.h"
+#include "PipeConnector.h"
 
-AIConnector::AIConnector(std::string connector_path, int buffer_size)
+PipeConnector::PipeConnector(std::string connector_path, int buffer_size)
 {
 	this->connector_path = connector_path;
 	this->buffer_size = buffer_size;
 }
-bool AIConnector::Write(std::string msg)
+bool PipeConnector::Write(std::string msg)
 {
 	unsigned long bytes_written;
 	char *buffer = new char[buffer_size];
@@ -18,7 +18,7 @@ bool AIConnector::Write(std::string msg)
 	delete[] buffer;
 	return result;
 }
-bool AIConnector::Read(std::string &msg_received)
+bool PipeConnector::Read(std::string &msg_received)
 {
 	unsigned long bytes_read;
 	char *buffer = new char[buffer_size];
@@ -41,7 +41,7 @@ bool AIConnector::Read(std::string &msg_received)
 	delete[] buffer;
 	return result;
 }
-AIConnector::~AIConnector()
+PipeConnector::~PipeConnector()
 {
 	Write(exit_command);
 	handling_connection = false;
