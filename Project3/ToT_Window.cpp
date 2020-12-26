@@ -1,6 +1,6 @@
 #include "ToT_Window.h"
 
-ToT_Window::ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns) : Window(title, color1, color2, chars_in_rows, chars_in_columns)
+ToT_Window::ToT_Window(const WindowInfoEx& window_info) : Window(window_info)
 {
 	playable = true;
 	enable_ranking = true;
@@ -31,12 +31,8 @@ ToT_Window::ToT_Window(const std::string title, const int color1, const int colo
 	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
 	LoadAtributes();
 
-	window_info.handle = GetHandle();
-	window_info.main_color = color1;
-	window_info.secondary_color = color2;
-
-	const COORD infobox_position = { 0,static_cast<short>(GetHeight() - 12) };
-	InfoBoxDesc infobox_info = { 10, {1, static_cast<short>(GetHeight() - 18), 85, static_cast<short>(GetHeight()-2)}, 2 };
+	const COORD infobox_position = { 0,static_cast<short>(GetCharactersPerColumn() - 12) };
+	InfoBoxDesc infobox_info = { 10, {1, static_cast<short>(GetCharactersPerColumn() - 18), 85, static_cast<short>(GetCharactersPerColumn()-2)}, 2 };
 	this->infobox = std::make_shared<InfoBox>(infobox_info, window_info);
 }
 std::string ToT_Window::UpdateRankingFavorites(std::string text, std::string phrase, int added_value)
@@ -91,8 +87,8 @@ void ToT_Window::LoadAtributes()
 	ais = 0;
 
 	fvar.open(FolderName::main + '\\' + FileName::config, std::ios::in);
-	fvar >> color1;
-	fvar >> color2;
+	fvar >> window_info.main_color;
+	fvar >> window_info.secondary_color;
 	fvar >> music_volume;
 	fvar >> hamachi_enabled;
 	fvar >> ais;
@@ -137,13 +133,13 @@ void ToT_Window::LoadAtributes()
 			exit(0);
 		}
 	}
-	if (color1 < 0 || color1 > 15)
+	if (window_info.main_color < 0 || window_info.main_color > 15)
 	{
-		color1 = 15;
+		window_info.main_color = 15;
 	}
-	if (color2 < 0 || color2 > 15)
+	if (window_info.secondary_color < 0 || window_info.secondary_color > 15)
 	{
-		color2 = 10;
+		window_info.secondary_color = 10;
 	}
 	if (ais < 0 || ais > 7)
 	{
@@ -285,9 +281,9 @@ bool ToT_Window::SaveFileNames(std::string src_path, std::string dst_path, const
 	if (system(dst_path.c_str()))
 	{
 		//Clearing error message that shows in a console window by default when files not found
-		SetConsoleCursorPosition(window_handle, { 0,0 });
+		SetConsoleCursorPosition(window_info.handle, { 0,0 });
 		std::cout << "                       ";
-		SetConsoleCursorPosition(window_handle, { 0,0 });
+		SetConsoleCursorPosition(window_info.handle, { 0,0 });
 		return false;
 	}
 	return true;
@@ -309,18 +305,18 @@ void ToT_Window::Title(const COORD starting_point, const TextAlign text_align)
 	const short main_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main].size());
 	const short additional_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional].size());
 	//Main text
-	SetConsoleTextAttribute(window_handle, color2);
+	SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
 	for (short i = 0; i < main_title_size; ++i)
 	{
-		SetConsoleCursorPosition(window_handle, { orientation_point.X, orientation_point.Y + i });
+		SetConsoleCursorPosition(window_info.handle, { orientation_point.X, orientation_point.Y + i });
 		std::cout << LanguagePack::text[LanguagePack::title_main][i];
 	}
-	SetConsoleTextAttribute(window_handle, color1);
+	SetConsoleTextAttribute(window_info.handle, window_info.main_color);
 	for (short i = 0; i < additional_title_size; ++i)
 	{
 		const short main_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
 		const short additional_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional][i].size());
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + main_line_size / 2 - additional_line_size / 2, orientation_point.Y + i + main_title_size / 3 });
+		SetConsoleCursorPosition(window_info.handle, { orientation_point.X + main_line_size / 2 - additional_line_size / 2, orientation_point.Y + i + main_title_size / 3 });
 		std::cout << LanguagePack::text[LanguagePack::title_additional][i];
 	}
 	//Decoration
@@ -328,15 +324,15 @@ void ToT_Window::Title(const COORD starting_point, const TextAlign text_align)
 	{
 		const short decoration_size = static_cast<short>(decoration_distance + main_decoration.size());
 		const short line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
-		SetConsoleTextAttribute(window_handle, color2);
-		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size - i % 2, orientation_point.Y + i });
+		SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
+		SetConsoleCursorPosition(window_info.handle, { orientation_point.X - decoration_size - i % 2, orientation_point.Y + i });
 		std::cout << main_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - 1 - i % 2, orientation_point.Y + i });
+		SetConsoleCursorPosition(window_info.handle, { orientation_point.X + line_size + decoration_distance - 1 - i % 2, orientation_point.Y + i });
 		std::cout << main_decoration;
-		SetConsoleTextAttribute(window_handle, color1);
-		SetConsoleCursorPosition(window_handle, { orientation_point.X - decoration_size + 1 - i % 2, orientation_point.Y + i });
+		SetConsoleTextAttribute(window_info.handle, window_info.main_color);
+		SetConsoleCursorPosition(window_info.handle, { orientation_point.X - decoration_size + 1 - i % 2, orientation_point.Y + i });
 		std::cout << additional_decoration;
-		SetConsoleCursorPosition(window_handle, { orientation_point.X + line_size + decoration_distance - i % 2, orientation_point.Y + i });
+		SetConsoleCursorPosition(window_info.handle, { orientation_point.X + line_size + decoration_distance - i % 2, orientation_point.Y + i });
 		std::cout << additional_decoration;
 	}
 }
@@ -603,8 +599,8 @@ void ToT_Window::SaveAtributes()
 	}
 	std::ofstream fvar;
 	fvar.open(FolderName::main + '\\' + FileName::config);
-	fvar << color1 << '\n';
-	fvar << color2 << '\n';
+	fvar << window_info.main_color << '\n';
+	fvar << window_info.secondary_color << '\n';
 	fvar << music_volume << '\n';
 	fvar << hamachi_enabled << '\n';
 	fvar << ais << '\n';

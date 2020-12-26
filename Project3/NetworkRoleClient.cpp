@@ -13,7 +13,7 @@ Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
 bool Client::StartNetwork()
 {
 	HANDLE handle = main_window->GetHandle();
-	COORD starting_point = { (short)main_window->GetWidth() / 2, 25 };
+	COORD starting_point = { (short)main_window->GetCharactersPerRow() / 2, 25 };
 	constexpr short spacing = 2;
 	std::string selected_game = "";
 	bool return_value = false;
@@ -24,7 +24,7 @@ bool Client::StartNetwork()
 	while (true)
 	{
 		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_lobby], 0, starting_point, TextAlign::center, spacing, false};
-		int option = Text::Choose::Veritcal(text_info, main_window->window_info);
+		int option = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
 		if(option == Multiplayer::active_games)
 		{
 			std::vector<std::string>active_games = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
@@ -35,7 +35,7 @@ bool Client::StartNetwork()
 			const COORD submenu_position = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::active_games].size()) / 2 + 1,
 												starting_point.Y };
 			Text::TextInfo text_info = { active_games, 0, submenu_position, TextAlign::left, 0, true};
-			if (int target = Text::Choose::Horizontal(text_info, main_window->window_info))
+			if (int target = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()))
 			{
 				selected_game = active_games[target];
 				HighlightSelectedGame(selected_game, false);
@@ -92,7 +92,7 @@ void Client::HighlightSelectedGame(std::string game, bool clear)
 		}
 	}
 	SetConsoleCursorPosition(handle, { 0,0 });
-	SetConsoleTextAttribute(handle, main_window->color1);
+	SetConsoleTextAttribute(handle, *main_window->main_color);
 	std::cout << game;
 }
 void Client::ValidateAttack(int target, int participant)

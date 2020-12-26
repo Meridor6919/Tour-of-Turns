@@ -22,7 +22,6 @@ namespace MeridorConsoleLib
 
 		void ShowRemainingTime();
 
-
 	public:
 		VisibleTimer(COORD position, const MeridorConsoleLib::WindowInfo* window_info, const MeridorConsoleLib::MultithreadingData* multithreading_data);
 		void SetTimer(const std::chrono::seconds& time, bool* timer_running);

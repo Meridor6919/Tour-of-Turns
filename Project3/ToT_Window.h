@@ -38,10 +38,9 @@ protected:
 public:
 	//Attributes
 	std::shared_ptr<InfoBox> infobox;
-	MeridorConsoleLib::WindowInfo window_info;
 
 	//General methods
-	ToT_Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns);
+	ToT_Window(const WindowInfoEx& window_info);
 	void RemoveExtension(std::vector<std::string> &vector, std::string extension);
 	void Title(const COORD starting_point, const MeridorConsoleLib::TextAlign text_align);
 	std::string GetClassifiedDetail(std::string text, int classification_type);

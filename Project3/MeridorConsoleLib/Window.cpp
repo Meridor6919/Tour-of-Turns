@@ -1,39 +1,53 @@
 #include "Window.h"
 
 
-MeridorConsoleLib::Window::Window(const std::string title, const int color1, const int color2, const short chars_in_rows, const short chars_in_columns)
+void MeridorConsoleLib::Window::AdjustFontSize()
 {
-	//Saving crucial data
-	this->color1 = color1;
-	this->color2 = color2;
-	this->window_size = { chars_in_rows, chars_in_columns };
-	this->window_handle = GetStdHandle(STD_OUTPUT_HANDLE);
-	this->window_hwnd = GetConsoleWindow();
-	SetConsoleTitle(title.c_str());
-	srand(static_cast<int>(time(0)));
-
-	//Automatically detecting appropriate font size
 	CONSOLE_FONT_INFOEX ConsoleFontInfoEx = { 0 };
 	ConsoleFontInfoEx.cbSize = sizeof(ConsoleFontInfoEx);
 	ConsoleFontInfoEx.dwFontSize.Y = 64;
 	wcscpy_s(ConsoleFontInfoEx.FaceName, L"Lucida Console");
-	SetCurrentConsoleFontEx(window_handle, NULL, &ConsoleFontInfoEx);
+	SetCurrentConsoleFontEx(window_info.handle, NULL, &ConsoleFontInfoEx);
 
-	for(COORD c = GetLargestConsoleWindowSize(window_handle); (c.X < chars_in_rows || c.Y < chars_in_columns) && ConsoleFontInfoEx.dwFontSize.Y > 0; c = GetLargestConsoleWindowSize(window_handle))
+	for (COORD c = GetLargestConsoleWindowSize(window_info.handle); 
+		(c.X < window_info.characters_capacity.X || c.Y < window_info.characters_capacity.Y) && ConsoleFontInfoEx.dwFontSize.Y > 0;
+		c = GetLargestConsoleWindowSize(window_info.handle))
 	{
 		--ConsoleFontInfoEx.dwFontSize.Y;
-		SetCurrentConsoleFontEx(window_handle, NULL, &ConsoleFontInfoEx);
+		SetCurrentConsoleFontEx(window_info.handle, NULL, &ConsoleFontInfoEx);
 	}
 	font_size = ConsoleFontInfoEx.dwFontSize.Y;
-	
-	//Setting window size
-	window_size = GetLargestConsoleWindowSize(window_handle);
-	SetConsoleScreenBufferSize(window_handle, { window_size.X - 1,window_size.Y - 1 });
-	SetWindowLongA(window_hwnd, GWL_STYLE, GetWindowLong(window_hwnd, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX & ~WS_CAPTION);
-	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
-	
-	//Cursor visibility	set to false by default							
+}
+
+void MeridorConsoleLib::Window::SetWindowSize()
+{
+	LONG flags;
+	if (window_info.window_option == WindowOption::fullscreen)
+	{
+		flags = WS_POPUPWINDOW & ~WS_CAPTION & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX;
+	}
+	else
+	{
+		flags = WS_CAPTION | WS_POPUPWINDOW | WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX & ~WS_HSCROLL & ~WS_VSCROLL;
+	}
+	window_info.characters_capacity = GetLargestConsoleWindowSize(window_info.handle);
+	SetConsoleScreenBufferSize(window_info.handle, { window_info.characters_capacity.X - 1,window_info.characters_capacity.Y - 1 });
+	SetWindowLongA(window_info.hwnd, GWL_STYLE, flags);
+	ShowWindow(GetConsoleWindow(), SW_SHOWMAXIMIZED);
+}
+
+MeridorConsoleLib::Window::Window(const WindowInfoEx& window_info_ex)
+{
+	this->window_info = window_info_ex;
+	main_color = &window_info.main_color;
+	secondary_color = &window_info.secondary_color;
+
+	SetConsoleTitle(window_info_ex.title.c_str());
+	SetWindowSize();					
 	SetCursor(false);
+
+	//change this rng
+	srand(static_cast<int>(time(0)));
 }
 std::vector<std::string> MeridorConsoleLib::Window::ReadFile(const std::string path)
 {
@@ -58,13 +72,13 @@ void MeridorConsoleLib::Window::Pause(const int miliseconds)
 	FlushConsoleInputBuffer(input_handle);
 	SetConsoleMode(input_handle, consolesettings);
 }
-int MeridorConsoleLib::Window::GetWidth()
+int MeridorConsoleLib::Window::GetCharactersPerRow()
 {
-	return window_size.X;
+	return window_info.characters_capacity.X;
 }
-int MeridorConsoleLib::Window::GetHeight()
+int MeridorConsoleLib::Window::GetCharactersPerColumn()
 {
-	return window_size.Y;
+	return window_info.characters_capacity.Y;
 }
 int MeridorConsoleLib::Window::GetFontSize()
 {
@@ -72,22 +86,30 @@ int MeridorConsoleLib::Window::GetFontSize()
 }
 HANDLE MeridorConsoleLib::Window::GetHandle()
 {
-	return window_handle;
+	return window_info.handle;
 }
 HWND MeridorConsoleLib::Window::GetHWND()
 {
-	return window_hwnd;
+	return window_info.hwnd;
 }
 float MeridorConsoleLib::Window::GetMusicVolume()
 {
 	return music_volume;
 }
+const MeridorConsoleLib::WindowInfo* MeridorConsoleLib::Window::GetWindowInfo()
+{
+	return &window_info;
+}
+const MeridorConsoleLib::WindowInfoEx* MeridorConsoleLib::Window::GetWindowInfoEx()
+{
+	return &window_info;
+}
 void MeridorConsoleLib::Window::SetCursor(const bool visible)
 {
 	CONSOLE_CURSOR_INFO console_cursor;
-	GetConsoleCursorInfo(window_handle, &console_cursor);
+	GetConsoleCursorInfo(window_info.handle, &console_cursor);
 	console_cursor.bVisible = visible;
-	SetConsoleCursorInfo(window_handle, &console_cursor);
+	SetConsoleCursorInfo(window_info.handle, &console_cursor);
 }
 void MeridorConsoleLib::Window::SetMusic(float volume)
 {
