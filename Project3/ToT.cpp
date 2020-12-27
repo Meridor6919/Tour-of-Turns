@@ -3,13 +3,13 @@
 ToT::ToT()
 {
 	WindowInfoEx window_info = {};
-	window_info.characters_capacity = { 200, 70 };
+	window_info.characters_capacity = { 240, 70 };
 	window_info.handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	window_info.hwnd = GetConsoleWindow();
 	window_info.main_color = 15;
 	window_info.secondary_color = 10;
 	window_info.title = "Tour of Turns";
-	window_info.window_option = WindowOption::fullscreen;
+	window_info.window_option = WindowOption::windowed_fullscreen;
 	this->main_window = std::make_shared<ToT_Window>(window_info);
 
 	handle = main_window->GetHandle();

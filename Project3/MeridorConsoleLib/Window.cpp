@@ -8,10 +8,10 @@ void MeridorConsoleLib::Window::AdjustFontSize()
 	ConsoleFontInfoEx.dwFontSize.Y = 64;
 	wcscpy_s(ConsoleFontInfoEx.FaceName, L"Lucida Console");
 	SetCurrentConsoleFontEx(window_info.handle, NULL, &ConsoleFontInfoEx);
-
-	for (COORD c = GetLargestConsoleWindowSize(window_info.handle); 
+	
+	for (COORD c = GetLargestConsoleWindow();
 		(c.X < window_info.characters_capacity.X || c.Y < window_info.characters_capacity.Y) && ConsoleFontInfoEx.dwFontSize.Y > 0;
-		c = GetLargestConsoleWindowSize(window_info.handle))
+		c = GetLargestConsoleWindow())
 	{
 		--ConsoleFontInfoEx.dwFontSize.Y;
 		SetCurrentConsoleFontEx(window_info.handle, NULL, &ConsoleFontInfoEx);
@@ -24,16 +24,37 @@ void MeridorConsoleLib::Window::SetWindowSize()
 	LONG flags;
 	if (window_info.window_option == WindowOption::fullscreen)
 	{
-		flags = WS_POPUPWINDOW & ~WS_CAPTION & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX;
+		flags = WS_POPUPWINDOW & ~WS_CAPTION & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX & ~WS_HSCROLL & ~WS_VSCROLL;
 	}
 	else
 	{
 		flags = WS_CAPTION | WS_POPUPWINDOW | WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX & ~WS_HSCROLL & ~WS_VSCROLL;
 	}
-	window_info.characters_capacity = GetLargestConsoleWindowSize(window_info.handle);
-	SetConsoleScreenBufferSize(window_info.handle, { window_info.characters_capacity.X - 1,window_info.characters_capacity.Y - 1 });
+	window_info.characters_capacity = GetLargestConsoleWindow();
+	SetConsoleScreenBufferSize(window_info.handle, { window_info.characters_capacity.X - 1, window_info.characters_capacity.Y - 1 });
 	SetWindowLongA(window_info.hwnd, GWL_STYLE, flags);
 	ShowWindow(GetConsoleWindow(), SW_SHOWMAXIMIZED);
+}
+
+COORD MeridorConsoleLib::Window::GetLargestConsoleWindow()
+{
+	CONSOLE_FONT_INFO font_info;
+	GetCurrentConsoleFont(window_info.handle, false, &font_info);
+	
+	short caption_size = GetSystemMetrics(SM_CYCAPTION) * (window_info.window_option != WindowOption::fullscreen);
+	short x = GetSystemMetrics(SM_CXSCREEN) / font_info.dwFontSize.X;
+	short y = (GetSystemMetrics(SM_CYSCREEN) - caption_size) / font_info.dwFontSize.Y;
+
+	return { x, y };
+}
+
+void MeridorConsoleLib::Window::SetConsoleEditMode(bool enable)
+{
+	DWORD prev_mode;
+	DWORD quick_edit_flag = enable ? ENABLE_QUICK_EDIT_MODE : ~ENABLE_QUICK_EDIT_MODE;
+	HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
+	GetConsoleMode(input_handle, &prev_mode);
+	SetConsoleMode(input_handle, prev_mode & quick_edit_flag | ENABLE_EXTENDED_FLAGS);
 }
 
 MeridorConsoleLib::Window::Window(const WindowInfoEx& window_info_ex)
@@ -43,8 +64,10 @@ MeridorConsoleLib::Window::Window(const WindowInfoEx& window_info_ex)
 	secondary_color = &window_info.secondary_color;
 
 	SetConsoleTitle(window_info_ex.title.c_str());
+	AdjustFontSize();
 	SetWindowSize();					
 	SetCursor(false);
+	SetConsoleEditMode(false);
 
 	//change this rng
 	srand(static_cast<int>(time(0)));

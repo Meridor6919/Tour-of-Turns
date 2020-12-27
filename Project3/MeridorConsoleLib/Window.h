@@ -22,6 +22,7 @@ namespace MeridorConsoleLib
 
 		void AdjustFontSize();
 		void SetWindowSize();
+		COORD GetLargestConsoleWindow();
 
 	public:
 
@@ -42,7 +43,11 @@ namespace MeridorConsoleLib
 		HWND GetHWND();
 		float GetMusicVolume();
 		
+		//There is a bug where edit-mode causes SetWindowPosition to crash console window - don't use with windowed fullscreen
+		void SetConsoleEditMode(bool enable);
 		void SetCursor(const bool visible);
 		void SetMusic(float volume);
+
+		friend class WindowImmobilizer;
 	};
 }
