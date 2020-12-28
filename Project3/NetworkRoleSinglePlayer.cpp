@@ -1100,7 +1100,7 @@ std::pair<int, int> SinglePlayer::PerformAction()
 				SetConsoleCursorPosition(window, { static_cast<short>(LanguagePack::text[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
 				std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::unable_to_move];
 				mutex.unlock();
-				main_window->Pause(1500);
+				main_window->BlockingSleep(1500);
 				mutex.lock();
 				SetConsoleCursorPosition(window, { static_cast<short>(LanguagePack::text[LanguagePack::race_actions][take_action_position].size()) + 1, 39 + 2 * take_action_position });
 				std::cout << Spaces(static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::unable_to_move].size()));

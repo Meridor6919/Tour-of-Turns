@@ -9,7 +9,8 @@ ToT::ToT()
 	window_info.main_color = 15;
 	window_info.secondary_color = 10;
 	window_info.title = "Tour of Turns";
-	window_info.window_option = WindowOption::windowed_fullscreen;
+	window_info.window_mode = WindowMode::windowed_fullscreen;
+	window_info.visible_cursor = false;
 	this->main_window = std::make_shared<ToT_Window>(window_info);
 
 	handle = main_window->GetHandle();
@@ -291,7 +292,7 @@ void ToT::Options()
 			}
 			case 3://language
 			{
-				std::vector<std::string> language = main_window->ReadFile(FolderName::language+'\\'+FileName::language);
+				std::vector<std::string> language = ReadFile(FolderName::language+'\\'+FileName::language);
 				int starting_pos = 0;
 				for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
 				{
@@ -335,7 +336,7 @@ void ToT::Ranking()
 	const short spacing = 3;
 	bool loop = true;
 
-	std::vector<std::string> maps = main_window->ReadFile(FolderName::tour + '\\' + FileName::ranking);
+	std::vector<std::string> maps = ReadFile(FolderName::tour + '\\' + FileName::ranking);
 	int map_pos = 0;
 	main_window->RemoveExtension(maps, ExtName::ranking);
 

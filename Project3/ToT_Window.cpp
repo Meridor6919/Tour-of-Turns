@@ -115,7 +115,7 @@ void ToT_Window::LoadAtributes()
 	{
 		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 		
-		std::vector<std::string> languages = this->ReadFile(FolderName::language + '\\' + FileName::language);
+		std::vector<std::string> languages = ReadFile(FolderName::language + '\\' + FileName::language);
 		bool no_valid_lang_packs = true;
 		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
 		{
@@ -446,6 +446,10 @@ bool ToT_Window::GetMultiplayer()
 {
 	return multiplayer;
 }
+float ToT_Window::GetMusicVolume()
+{
+	return music_volume;
+}
 void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {
 	hamachi_enabled = flag;
@@ -469,7 +473,7 @@ void ToT_Window::SetLanguage(std::string lang)
 	{
 		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
 
-		std::vector<std::string> languages = this->ReadFile(FolderName::language + '\\' + FileName::language);
+		std::vector<std::string> languages = ReadFile(FolderName::language + '\\' + FileName::language);
 		bool no_valid_lang_packs = true;
 		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
 		{
@@ -608,4 +612,11 @@ void ToT_Window::SaveAtributes()
 	fvar << lang + '\n';
 	fvar << timer_settings << '\n';
 	fvar.close();
+}
+
+void ToT_Window::SetMusic(float volume)
+{
+	this->music_volume = volume;
+	wav_transformer.SetFlags(SND_ASYNC | SND_LOOP);
+	wav_transformer.StartPlaying(volume);
 }

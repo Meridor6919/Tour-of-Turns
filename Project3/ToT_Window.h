@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 
+#include ".\MeridorMiscModules\WavTransformer.h"
 #include ".\MeridorConsoleLib\Window.h"
 #include ".\MeridorConsoleLib\TextLib.h"
 #include ".\MeridorConsoleLib\Infobox.h"
@@ -19,6 +20,9 @@ protected:
 	bool multiplayer = false;
 	int timer_settings = 0;
 	int ais = 0;
+	float music_volume;
+
+	WavTransformer wav_transformer;
 
 	//Viability 
 	bool playable;
@@ -60,6 +64,8 @@ public:
 	bool RankingFound();
 	bool IsPlayable();
 	bool GetMultiplayer();
+	float GetMusicVolume();
+	
 
 	//Set methods
 	void SetHamachiConnectionFlag(const bool flag);
@@ -70,4 +76,6 @@ public:
 	void SetMultiplayer(bool multiplayer);
 	void SaveRanking(std::string tour, std::string name, int place, int score, bool crash, int attacks, int drifts, int durability_burning, std::string car, std::string tires);
 	void SaveAtributes();
+	void SetMusic(float volume);
+	
 };
