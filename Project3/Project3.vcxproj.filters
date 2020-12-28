@@ -112,6 +112,9 @@
     <ClCompile Include="MeridorMiscModules\PipeConnector.cpp">
       <Filter>Files\MeridorMiscModules\Source</Filter>
     </ClCompile>
+    <ClCompile Include="MeridorConsoleLib\WindowImmobilizer.cpp">
+      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
@@ -173,6 +176,9 @@
     </ClInclude>
     <ClInclude Include="MeridorMiscModules\PipeConnector.h">
       <Filter>Files\MeridorMiscModules\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorConsoleLib\WindowImmobilizer.h">
+      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,7 @@
 
 #include "..\MeridorMiscModules\WavTransformer.h"
 #include "DataStructures.h"
+#include "WindowImmobilizer.h"
 
 #pragma warning(disable : 4996)
 
@@ -23,6 +24,8 @@ namespace MeridorConsoleLib
 		void AdjustFontSize();
 		void SetWindowSize();
 		COORD GetLargestConsoleWindow();
+
+		WindowImmobilizer window_immobilizer;
 
 	public:
 

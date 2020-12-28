@@ -137,6 +137,7 @@
     <ClCompile Include="MeridorConsoleLib\VisibleTimer.cpp" />
     <ClCompile Include="MeridorMiscModules\WavTransformer.cpp" />
     <ClCompile Include="MeridorConsoleLib\Window.cpp" />
+    <ClCompile Include="MeridorConsoleLib\WindowImmobilizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeridorMiscModules\PipeConnector.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="ToT.h" />
     <ClInclude Include="ToT_Window.h" />
     <ClInclude Include="MeridorConsoleLib\Window.h" />
+    <ClInclude Include="MeridorConsoleLib\WindowImmobilizer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />

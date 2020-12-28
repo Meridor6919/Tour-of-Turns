@@ -62,6 +62,7 @@ MeridorConsoleLib::Window::Window(const WindowInfoEx& window_info_ex)
 	this->window_info = window_info_ex;
 	main_color = &window_info.main_color;
 	secondary_color = &window_info.secondary_color;
+	window_immobilizer.Init(this);
 
 	SetConsoleTitle(window_info_ex.title.c_str());
 	AdjustFontSize();
@@ -69,6 +70,10 @@ MeridorConsoleLib::Window::Window(const WindowInfoEx& window_info_ex)
 	SetCursor(false);
 	SetConsoleEditMode(false);
 
+	if (window_info.window_option == WindowOption::windowed_fullscreen)
+	{
+		window_immobilizer.Start();
+	}
 	//change this rng
 	srand(static_cast<int>(time(0)));
 }
