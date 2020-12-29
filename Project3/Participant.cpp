@@ -8,8 +8,8 @@ Participant::Participant(ToT_Window *main_window)
 void Participant::Init(std::string tour_path)
 {
 	bool valid = false;
-	std::vector<std::string> car_names = main_window->GetCarNames(tour_path);
-	std::vector<std::string> tire_names = main_window->GetTireNames();
+	std::vector<std::string> car_names = GetCarNames(tour_path);
+	std::vector<std::string> tire_names = GetTireNames();
 
 	for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
 	{
@@ -36,8 +36,8 @@ void Participant::Init(std::string tour_path)
 	{
 		tire_path = tire_names[0];
 	}
-	this->car_modifiers = main_window->GetCarParameters(car_path);
-	this->tire_modifiers = main_window->GetTireParameters(tire_path);
+	this->car_modifiers = GetCarParameters(car_path);
+	this->tire_modifiers = GetTireParameters(tire_path);
 	this->current_durability = static_cast<float>(car_modifiers[CarAttributes::durability]);
 }
 void Participant::Test(const std::string field, const bool show)

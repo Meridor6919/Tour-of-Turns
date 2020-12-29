@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
 
-#include "Constants.h"
+#include "GameConstants.h"
+#include "LanguagePack.h"
 
 class ToT_Window;
 

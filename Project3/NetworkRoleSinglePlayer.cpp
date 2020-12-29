@@ -153,7 +153,7 @@ std::string SinglePlayer::StringSelection(const std::string current_name, const 
 }
 void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clear, const COORD starting_pos)
 {
-	const std::vector<int> car_params = main_window->GetCarParameters(car_path);
+	const std::vector<int> car_params = GetCarParameters(car_path);
 	std::vector < std::pair<std::string, std::string>> text;
 
 	for (short i = 0; i < static_cast<short>(car_params.size()); ++i)
@@ -164,7 +164,7 @@ void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clea
 }
 void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear, const COORD starting_pos)
 {
-	const std::vector<std::string> tire_params = main_window->GetTireParameters(tire_path);
+	const std::vector<std::string> tire_params = GetTireParameters(tire_path);
 	std::vector < std::pair<std::string, std::string>> text;
 
 	for (short i = 0; i < static_cast<short>(tire_params.size()); ++i)
@@ -176,7 +176,7 @@ void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear, 
 void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 {
 	ShowRankingParameters(tour_path.substr(0, static_cast<int>(tour_path.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking, clear);
-	const std::vector<std::string> tour_params = main_window->GetTourParameters(tour_path, 0, INT_MAX);
+	const std::vector<std::string> tour_params = GetTourParameters(tour_path, 0, INT_MAX);
 	int segment_quantity[6] = { 0,0,0,0,0,0 };
 	int turns = 0;
 
@@ -209,25 +209,25 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 	fvar.open(FolderName::tour + '\\' + ranking_path);
 	for (int i = 0; std::getline(fvar, temp); ++i)
 	{
-		if (i%GameConstants::validate_ranking_details == 0)
+		if (i% Validation::ranking_details == 0)
 		{
 			local_name = temp;
 		}
-		else if (i%GameConstants::validate_ranking_details == 1)
+		else if (i% Validation::ranking_details == 1)
 		{
-			local_games_in_total = atoi(main_window->GetClassifiedDetail(temp, classification).c_str());
+			local_games_in_total = atoi(GetSeparatedValue(temp, classification).c_str());
 		}
-		else if (i%GameConstants::validate_ranking_details == 2)
+		else if (i% Validation::ranking_details == 2)
 		{
-			local_won_games = atoi(main_window->GetClassifiedDetail(temp, classification).c_str());
+			local_won_games = atoi(GetSeparatedValue(temp, classification).c_str());
 		}
-		else if (i%GameConstants::validate_ranking_details == 3)
+		else if (i% Validation::ranking_details == 3)
 		{
-			local_place = atoi(main_window->GetClassifiedDetail(temp, classification).c_str());
+			local_place = atoi(GetSeparatedValue(temp, classification).c_str());
 		}
-		else if (i%GameConstants::validate_ranking_details == 6)
+		else if (i% Validation::ranking_details == 6)
 		{
-			int number_of_finished_games = local_games_in_total - atoi(main_window->GetClassifiedDetail(temp, classification).c_str());
+			int number_of_finished_games = local_games_in_total - atoi(GetSeparatedValue(temp, classification).c_str());
 			if (!number_of_finished_games)
 			{
 				continue;
@@ -511,12 +511,12 @@ bool SinglePlayer::GameLobby()
 	short main_menu_position = 0;
 	std::string name = main_window->GetName();
 	int timer_settings = main_window->GetTimerSettings();
-	std::vector<std::string> tours = main_window->GetTourNames();
-	std::vector<std::string> tires = main_window->GetTireNames();
-	std::vector<std::string> cars = main_window->GetCarNames(tours[0]);
-	main_window->RemoveExtension(tours, ExtName::tour);
-	main_window->RemoveExtension(tires, ExtName::tire);
-	main_window->RemoveExtension(cars, ExtName::car);
+	std::vector<std::string> tours = GetTourNames();
+	std::vector<std::string> tires = GetTireNames();
+	std::vector<std::string> cars = GetCarNames(tours[0]);
+	RemoveExtension(tours, ExtName::tour);
+	RemoveExtension(tires, ExtName::tire);
+	RemoveExtension(cars, ExtName::car);
 	int ais = main_window->GetAIs();
 	int tires_pos = 0;
 	int cars_pos = 0;
@@ -582,8 +582,8 @@ bool SinglePlayer::GameLobby()
 				if (i != tours_pos)
 				{
 					ShowCarParameters(cars[cars_pos] + ExtName::car, true);
-					cars = main_window->GetCarNames(tours[tours_pos] + ExtName::tour);
-					main_window->RemoveExtension(cars, ExtName::car);
+					cars = GetCarNames(tours[tours_pos] + ExtName::tour);
+					RemoveExtension(cars, ExtName::car);
 					cars_pos = 0;
 					ShowCarParameters(cars[cars_pos] + ExtName::car);
 					ShowTourParameters(tours[i] + ExtName::tour, true);
@@ -620,7 +620,15 @@ bool SinglePlayer::GameLobby()
 			}
 			case 7://Back
 			{
-				main_window->SaveAtributes();
+				WindowConfig temp = { main_window->GetName(),
+				*main_window->main_color,
+				*main_window->secondary_color,
+				main_window->GetMusicVolume(),
+				main_window->GetHamachiConnectionFlag(),
+				main_window->GetAIs(),
+				main_window->GetLanguage(),
+				main_window->GetTimerSettings() };
+				SaveWindowConfig(temp);
 				return false;
 			}
 		}
@@ -636,7 +644,15 @@ bool SinglePlayer::GameLobby()
 		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
 		mutex.unlock();
 	}
-	main_window->SaveAtributes();
+	WindowConfig temp = { main_window->GetName(),
+	*main_window->main_color,
+	*main_window->secondary_color,
+	main_window->GetMusicVolume(),
+	main_window->GetHamachiConnectionFlag(),
+	main_window->GetAIs(),
+	main_window->GetLanguage(),
+	main_window->GetTimerSettings() };
+	SaveWindowConfig(temp);
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
@@ -833,7 +849,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		}
 		case ConnectionCodes::GetCarNames:
 		{
-			const std::vector<std::string> car_names = main_window->GetCarNames(tour);
+			const std::vector<std::string> car_names = GetCarNames(tour);
 			const int car_names_size = static_cast<int>(car_names.size());
 			mutex.lock();
 			if (ai_connector)
@@ -849,7 +865,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		}
 		case ConnectionCodes::GetTireNames:
 		{
-			const std::vector<std::string> tire_names = main_window->GetTireNames();
+			const std::vector<std::string> tire_names = GetTireNames();
 			const int tire_names_size = static_cast<int>(tire_names.size());
 			mutex.lock();
 			if (ai_connector)
@@ -866,7 +882,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		case ConnectionCodes::GetCarParams:
 		{
 			bool valid = false;
-			const std::vector<std::string> car_names = main_window->GetCarNames(tour);
+			const std::vector<std::string> car_names = GetCarNames(tour);
 			for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
 			{
 				if (msg == car_names[i])
@@ -880,7 +896,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
 				exit(0);
 			}
-			const std::vector<int> car_param = main_window->GetCarParameters(msg);
+			const std::vector<int> car_param = GetCarParameters(msg);
 			mutex.lock();
 			if (ai_connector)
 			{
@@ -895,7 +911,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		case ConnectionCodes::GetTireParams:
 		{
 			bool valid = false;
-			const std::vector<std::string> tire_names = main_window->GetTireNames();
+			const std::vector<std::string> tire_names = GetTireNames();
 			for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
 			{
 				if (msg == tire_names[i])
@@ -909,7 +925,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), 0);
 				exit(0);
 			}
-			const std::vector<std::string> tires_param = main_window->GetTireParameters(msg);
+			const std::vector<std::string> tires_param = GetTireParameters(msg);
 			mutex.lock();
 			if (ai_connector)
 			{
@@ -938,7 +954,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		}
 		case ConnectionCodes::GetTour:
 		{
-			const std::vector<std::string> tour_param = main_window->GetTourParameters(tour, 0, INT_MAX);
+			const std::vector<std::string> tour_param = GetTourParameters(tour, 0, INT_MAX);
 			const int tour_size = static_cast<int>(tour_param.size());
 			mutex.lock();
 			if (ai_connector)
@@ -975,7 +991,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		case ConnectionCodes::SetCar:
 		{
 			bool valid = false;
-			const std::vector<std::string> car_names = main_window->GetCarNames(tour);
+			const std::vector<std::string> car_names = GetCarNames(tour);
 			const std::string selected_car = msg.substr(1, msg.size() - 1);
 			const int ai_id = msg[0] - 48;
 			//car validation
@@ -1004,7 +1020,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		case ConnectionCodes::SetTires:
 		{
 			bool valid = false;
-			const std::vector<std::string> tire_names = main_window->GetTireNames();
+			const std::vector<std::string> tire_names = GetTireNames();
 			const std::string selected_tires = msg.substr(1, msg.size() - 1);
 			const int ai_id = msg[0] - 48;
 			//car validation
@@ -1222,7 +1238,7 @@ void SinglePlayer::Interface()
 }
 bool SinglePlayer::VisionBox(const int turn)
 {
-	const std::vector<std::string> visible_tour = main_window->GetTourParameters(GetTour(), turn, participants[0].car_modifiers[CarAttributes::visibility]);
+	const std::vector<std::string> visible_tour = GetTourParameters(GetTour(), turn, participants[0].car_modifiers[CarAttributes::visibility]);
 	int ret = true;
 	const HANDLE window = main_window->GetHandle();
 	std::string helper;
@@ -1264,7 +1280,21 @@ void SinglePlayer::Finish()
 {
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		main_window->SaveRanking(tour, participants[i].name, participants[i].place, static_cast<int>(participants[i].score), !participants[i].IsAlive(), participants[i].sum_of_performed_attacks, participants[i].sum_of_performed_drifts, static_cast<int>(participants[i].sum_of_durability_burned), participants[i].car_path, participants[i].tire_path);
+		RankingInfo ranking_info = { 
+			tour,
+			participants[i].name,
+			participants[i].place,
+			static_cast<int>(participants[i].score),
+			!participants[i].IsAlive(),
+			participants[i].sum_of_performed_attacks,
+			participants[i].sum_of_performed_drifts,
+			static_cast<int>(participants[i].sum_of_durability_burned),
+			participants[i].car_path,
+			participants[i].tire_path,
+			main_window->GetAIs(),
+			main_window->GetMultiplayer() 
+		};
+		SaveRanking(ranking_info);
 	}
 	if (main_window->GetTimerSettings())
 	{

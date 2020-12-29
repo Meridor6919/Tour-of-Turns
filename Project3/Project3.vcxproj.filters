@@ -70,9 +70,6 @@
     <ClCompile Include="ToT.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="Lang.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
-    </ClCompile>
     <ClCompile Include="NetworkRoleHost.cpp">
       <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
     </ClCompile>
@@ -115,6 +112,12 @@
     <ClCompile Include="MeridorConsoleLib\WindowImmobilizer.cpp">
       <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="FileManagementFunctions.cpp">
+      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="ValidationFunctions.cpp">
+      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
@@ -122,9 +125,6 @@
     </ClInclude>
     <ClInclude Include="NetworkRole.h">
       <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="NetworkRoleClient.h">
       <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
@@ -179,6 +179,30 @@
     </ClInclude>
     <ClInclude Include="MeridorConsoleLib\WindowImmobilizer.h">
       <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManagementFunctions.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidationFunctions.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStructures.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguagePack.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManagementConstants.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidationConstants.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorConstants.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="GameConstants.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

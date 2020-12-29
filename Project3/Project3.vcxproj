@@ -118,11 +118,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileManagementFunctions.cpp" />
     <ClCompile Include="MeridorMiscModules\PipeConnector.cpp" />
     <ClCompile Include="MeridorNetworkLib\BroadcastReceiver.cpp" />
     <ClCompile Include="MeridorNetworkLib\BroadcastSender.cpp" />
     <ClCompile Include="MeridorConsoleLib\GeneralFunctions.cpp" />
-    <ClCompile Include="Lang.cpp" />
     <ClCompile Include="MeridorConsoleLib\InfoBox.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeridorNetworkLib\NetworkConnectorClient.cpp" />
@@ -138,12 +138,18 @@
     <ClCompile Include="MeridorMiscModules\WavTransformer.cpp" />
     <ClCompile Include="MeridorConsoleLib\Window.cpp" />
     <ClCompile Include="MeridorConsoleLib\WindowImmobilizer.cpp" />
+    <ClCompile Include="ValidationFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataStructures.h" />
+    <ClInclude Include="ErrorConstants.h" />
+    <ClInclude Include="FileManagementConstants.h" />
+    <ClInclude Include="FileManagementFunctions.h" />
+    <ClInclude Include="LanguagePack.h" />
     <ClInclude Include="MeridorMiscModules\PipeConnector.h" />
     <ClInclude Include="MeridorNetworkLib\BroadcastReceiver.h" />
     <ClInclude Include="MeridorNetworkLib\BroadcastSender.h" />
-    <ClInclude Include="Constants.h" />
+    <ClInclude Include="GameConstants.h" />
     <ClInclude Include="MeridorConsoleLib\DataStructures.h" />
     <ClInclude Include="MeridorConsoleLib\GeneralFunctions.h" />
     <ClInclude Include="MeridorNetworkLib\NetworkConnectorGeneral.h" />
@@ -161,6 +167,8 @@
     <ClInclude Include="ToT_Window.h" />
     <ClInclude Include="MeridorConsoleLib\Window.h" />
     <ClInclude Include="MeridorConsoleLib\WindowImmobilizer.h" />
+    <ClInclude Include="ValidationConstants.h" />
+    <ClInclude Include="ValidationFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />

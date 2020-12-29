@@ -16,115 +16,6 @@ ToT::ToT()
 	handle = main_window->GetHandle();
 	game_window_center = static_cast<short>(main_window->GetCharactersPerRow()) / 2;
 }
-std::vector<std::string> ToT::GetRankingNames(std::string tour)
-{
-	std::ifstream fvar;
-	std::string temp;
-	std::vector<std::string> ret = {};
-	fvar.open(tour.c_str());
-	for (int i = 0; std::getline(fvar, temp); ++i)
-	{
-		if (!(i %  GameConstants::validate_ranking_details))
-		{
-			ret.push_back(temp);
-		}
-	}
-	fvar.close();
-	return ret;
-}
-std::vector<std::string> ToT::GetRankingDetails(std::string tour, int racer_pos, int classification_type)
-{
-	std::string line;
-	std::vector<std::string> ret = {};
-	for (int i = 0; i < GameConstants::validate_ranking_details; ++i)
-	{
-		ret.push_back(" ");
-	}
-	std::ifstream fvar;
-	fvar.open(tour.c_str());
-	for (int i = 0; i < GameConstants::validate_ranking_details * racer_pos && std::getline(fvar, line); ++i);
-	for (int i = 0; i < GameConstants::validate_ranking_details && std::getline(fvar, line); ++i)
-	{
-		if (i == 0)
-		{
-			ret[i] = line;
-		}
-		else if (i < 6)
-		{
-			ret[i] = main_window->GetClassifiedDetail(line, classification_type);
-		}
-		else if (i < 10)
-		{
-			ret[i+2] = main_window->GetClassifiedDetail(line, classification_type);
-		}
-		else
-		{
-			ret[i-4] = main_window->GetClassifiedDetail(line, classification_type);
-		}
-	}
-	int finished_games = atoi(ret[1].c_str()) - atoi(ret[8].c_str());
-	if (!finished_games)
-	{
-		for (int i = 2; i < 6 + 3*(ret[1] == "0"); ++i)
-		{
-			ret[i] = "";
-		}
-		for (int i = 9; i < GameConstants::validate_ranking_details; ++i)
-		{
-			ret[i] = "";
-		}
-	}
-	else
-	{
-		double f = atof(ret[2].c_str()) / atof(ret[1].c_str()) * 100.0f;
-		ret[2] = std::to_string(f).substr(0, static_cast<int>(std::to_string(f).size()) - 4) + '%';
-
-		for (int i = 0; i < 5; ++i)
-		{
-			int x = i + 3 + (i > 1) * 4;
-			ret[i + 3 + (i > 1) * 4] = std::to_string(static_cast<int>(round(atof(ret[i + 3 + (i > 1) * 4].c_str()) / static_cast<float>(finished_games))));
-		}
-	}
-	ret[6] = GetRankingFavourite(ret[6]);
-	ret[7] = GetRankingFavourite(ret[7]);
-	fvar.close();
-	return ret;
-}
-std::string ToT::GetRankingFavourite(std::string text)
-{
-	std::string current_phrase = "";
-	std::string current_value = "";
-	std::string ret = "";
-	int highest_value = 0;
-	bool phrase_value_flag = true;
-
-	for (int i = 0; i < static_cast<int>(text.size()); ++i)
-	{
-		if (text[i] == ':')
-		{
-			phrase_value_flag = !phrase_value_flag;
-			if (phrase_value_flag)
-			{
-				if (atoi(current_value.c_str()) > highest_value)
-				{
-					ret = current_phrase;
-					highest_value = atoi(current_value.c_str());
-					current_phrase = "";
-					current_value = "";
-				}
-			}
-		}
-		else if (phrase_value_flag)
-		{
-			current_phrase += text[i];
-		}
-		else
-		{
-			current_value += text[i];
-		}
-	}
-	return ret;
-}
 void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing)
 {
 	const int spacing = 2;
@@ -136,12 +27,12 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		const int border_size = static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size());
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
 		std::cout<<Spaces(border_size);
-		for (short i = 0; i < static_cast<short>(GameConstants::validate_ranking_details); ++i)
+		for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
 			std::cout << Spaces(static_cast<short>(LanguagePack::text[LanguagePack::ranking_details][i].size()) + static_cast<short>(details[i].size()) + 2);
 		}
-		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(GameConstants::validate_ranking_details) + 2) });
+		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(Validation::ranking_details) + 2) });
 		std::cout << Spaces(border_size);
 	}
 	else
@@ -149,7 +40,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
 		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
-		for (short i = 0; i < static_cast<short>(GameConstants::validate_ranking_details); ++i)
+		for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
 			SetConsoleTextAttribute(handle, *main_window->main_color);
@@ -158,7 +49,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 			std::cout << details[i];
 		}
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
-		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(GameConstants::validate_ranking_details) + 2) });
+		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(Validation::ranking_details) + 2) });
 		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
 	}
 }
@@ -302,7 +193,7 @@ void ToT::Options()
 						break;
 					}
 				}
-				main_window->RemoveExtension(language, ExtName::language);
+				RemoveExtension(language, ExtName::language);
 				Text::TextInfo text_info = { language, starting_pos, local_starting_point, TextAlign::left, 0, true };
 				int current_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
 				if (current_pos != starting_pos)
@@ -327,7 +218,15 @@ void ToT::Options()
 		}
 	}
 	Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
-	main_window->SaveAtributes();
+	WindowConfig temp = { main_window->GetName(),
+	*main_window->main_color,
+	*main_window->secondary_color,
+	main_window->GetMusicVolume(),
+	main_window->GetHamachiConnectionFlag(),
+	main_window->GetAIs(),
+	main_window->GetLanguage(),
+	main_window->GetTimerSettings() };
+	SaveWindowConfig(temp);
 }
 void ToT::Ranking()
 {
@@ -338,7 +237,7 @@ void ToT::Ranking()
 
 	std::vector<std::string> maps = ReadFile(FolderName::tour + '\\' + FileName::ranking);
 	int map_pos = 0;
-	main_window->RemoveExtension(maps, ExtName::ranking);
+	RemoveExtension(maps, ExtName::ranking);
 
 	int racer_pos = 0;
 	int classification_type = 0;
