@@ -2,7 +2,7 @@
 #include "NetworkRole.h"
 
 class Client : public SinglePlayer {
-
+	bool multiplayer_flag = true;
 	std::unique_ptr<NetworkConnectorClient> client_connector;
 
 	bool StartNetwork();

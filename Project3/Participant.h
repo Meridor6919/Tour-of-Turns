@@ -3,13 +3,14 @@
 
 #include "GameConstants.h"
 #include "LanguagePack.h"
+#include ".\MeridorConsoleLib\Infobox.h"
 
 class ToT_Window;
 
 class Participant 
 {
 private:
-	ToT_Window *main_window;
+	MeridorConsoleLib::InfoBox *infobox;
 	void CalculateParameters();
 
 public:
@@ -34,7 +35,7 @@ public:
 	int sum_of_performed_attacks = 0;
 	float sum_of_durability_burned = 0.0f;
 
-	Participant(ToT_Window *main_window);
+	Participant(MeridorConsoleLib::InfoBox* infobox);
 	void Init(std::string tour_path);
 	void Test(const std::string field, const bool show);
 	float EvaluateChance(std::string field, const float speed, const bool drift);

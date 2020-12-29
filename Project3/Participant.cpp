@@ -1,9 +1,9 @@
 #include "Participant.h"
 #include "ToT_Window.h"
 
-Participant::Participant(ToT_Window *main_window)
+Participant::Participant(InfoBox *infobox)
 {
-	this->main_window = main_window;
+	this->infobox = infobox;
 }
 void Participant::Init(std::string tour_path)
 {
@@ -67,7 +67,7 @@ void Participant::Test(const std::string field, const bool show)
 	current_speed *= dmg;
 	if (dmg < 1.0f && show)
 	{
-		main_window->infobox->Push(name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::speed],
+		infobox->Push(name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + std::to_string(static_cast<int>(current_speed - dmg * current_speed)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::speed],
 			LanguagePack::text[LanguagePack::other_strings][OtherStrings::in_result_of_attacks]);
 	}
 
@@ -99,14 +99,14 @@ void Participant::Test(const std::string field, const bool show)
 		{
 			if (show)
 			{
-				main_window->infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][0], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::highest_roll] + std::to_string(max));
+				infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][0], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::highest_roll] + std::to_string(max));
 			}
 		}
 		else
 		{
 			if (show)
 			{
-				main_window->infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][1], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lowest_roll] + std::to_string(min));
+				infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][1], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lowest_roll] + std::to_string(min));
 			}
 			if (formula > static_cast<float>(min + 50))
 			{
@@ -145,7 +145,7 @@ void Participant::Test(const std::string field, const bool show)
 			}
 			if (show)
 			{
-				main_window->infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][bad_case], name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::text[LanguagePack::race_general_informations][3]);
+				infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][bad_case], name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::text[LanguagePack::race_general_informations][3]);
 			}
 			current_durability -= durablity_lost;
 			if (current_durability <= 0.f)
@@ -270,7 +270,7 @@ bool Participant::IsAlive()
 void Participant::KillParticipant()
 {
 	current_durability = 0;
-	main_window->infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::infobox_RIP_title] + name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::infobox_RIP_msg], "");
+	infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::infobox_RIP_title] + name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::infobox_RIP_msg], "");
 }
 float Participant::CalculateBurning(float value)
 {

@@ -1,11 +1,9 @@
 #pragma once
 #include ".\MeridorConsoleLib\DataStructures.h"
 
-struct WindowConfig
+struct ToTConfig
 {
 	std::string name;
-	int main_color;
-	int secondary_color;
 	float music_volume;
 	bool hamachi_flag;
 	int ais;
@@ -25,5 +23,5 @@ struct RankingInfo
 	std::string car;
 	std::string tires;
 	int ais;
-	bool multiplayer;
+	bool multiplayer_flag;
 };

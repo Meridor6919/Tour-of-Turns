@@ -3,7 +3,12 @@
 SinglePlayer::SinglePlayer(ToT_Window &main_window)
 {
 	this->main_window = &main_window;
-	participants.push_back(Participant(this->main_window));
+
+	const COORD infobox_position = { 0,static_cast<short>(this->main_window->GetCharactersPerColumn() - 12) };
+	InfoBoxDesc infobox_info = { 10, {1, static_cast<short>(this->main_window->GetCharactersPerColumn() - 18), 85, static_cast<short>(this->main_window->GetCharactersPerColumn() - 2)}, 2 };
+	this->infobox = std::make_shared<InfoBox>(infobox_info, *this->main_window->GetWindowInfo());
+
+	participants.push_back(Participant(infobox.get()));
 	initiazlized = true;
 }
 bool SinglePlayer::isInit()
@@ -445,7 +450,7 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 
 	for (int i = 0; i < number_of_ais; ++i)
 	{
-		participants.push_back(Participant(main_window));
+		participants.push_back(Participant(infobox.get()));
 	}
 	if (number_of_ais)
 	{
@@ -496,7 +501,7 @@ void SinglePlayer::GetCurrentAttributes()
 		}
 	}
 	mutex.lock();
-	main_window->infobox->Draw();
+	infobox->Draw();
 	mutex.unlock();
 }
 std::string SinglePlayer::GetTour()
@@ -620,15 +625,13 @@ bool SinglePlayer::GameLobby()
 			}
 			case 7://Back
 			{
-				WindowConfig temp = { main_window->GetName(),
-				*main_window->main_color,
-				*main_window->secondary_color,
+				ToTConfig temp = { main_window->GetName(),
 				main_window->GetMusicVolume(),
 				main_window->GetHamachiConnectionFlag(),
 				main_window->GetAIs(),
 				main_window->GetLanguage(),
 				main_window->GetTimerSettings() };
-				SaveWindowConfig(temp);
+				SaveWindowConfig(temp, *main_window->main_color, *main_window->secondary_color);
 				return false;
 			}
 		}
@@ -644,15 +647,13 @@ bool SinglePlayer::GameLobby()
 		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
 		mutex.unlock();
 	}
-	WindowConfig temp = { main_window->GetName(),
-	*main_window->main_color,
-	*main_window->secondary_color,
+	ToTConfig temp = { main_window->GetName(),
 	main_window->GetMusicVolume(),
 	main_window->GetHamachiConnectionFlag(),
 	main_window->GetAIs(),
 	main_window->GetLanguage(),
 	main_window->GetTimerSettings() };
-	SaveWindowConfig(temp);
+	SaveWindowConfig(temp, *main_window->main_color, *main_window->secondary_color);
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
@@ -1221,7 +1222,7 @@ void SinglePlayer::Interface()
 	
 	mutex.lock();
 	SetConsoleTextAttribute(window, *main_window->secondary_color);
-	main_window->infobox->DrawBox();
+	infobox->DrawBox();
 	/*
 	for (int i = 0; i < static_cast<int>(boxes.size()); ++i)
 	{
@@ -1292,7 +1293,7 @@ void SinglePlayer::Finish()
 			participants[i].car_path,
 			participants[i].tire_path,
 			main_window->GetAIs(),
-			main_window->GetMultiplayer() 
+			multiplayer_flag 
 		};
 		SaveRanking(ranking_info);
 	}
@@ -1305,14 +1306,14 @@ void SinglePlayer::Finish()
 	ai_connector.reset();
 	take_action_position = 0;
 	participants.clear();
-	participants.push_back(Participant(this->main_window));
+	participants.push_back(Participant(infobox.get()));
 	ai_init = 0;
-	main_window->infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::race_finished],"");
+	infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::race_finished],"");
 	char c = _getch();
 	if (c < 0)
 	{
 		_getch();
 	}
-	main_window->infobox->Reset();
+	infobox->Reset();
 	mutex.unlock();
 }

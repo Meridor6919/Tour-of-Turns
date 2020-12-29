@@ -105,6 +105,7 @@ bool Validation::ValidateRanking()
 {
 	std::vector<std::string> ranking_files = MeridorConsoleLib::ReadFile(FolderName::tour + '\\' + FileName::ranking);
 	std::ifstream fvar;
+
 	for (short i = 0; i < static_cast<short>(ranking_files.size()); ++i)
 	{
 		fvar.open(FolderName::tour + '\\' + ranking_files[i]);

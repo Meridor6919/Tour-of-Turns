@@ -29,17 +29,17 @@ std::vector<std::string> FileManagement::GetRankingNames(std::string tour)
 	fvar.close();
 	return ret;
 }
-WindowConfig FileManagement::LoadWindowConfig()
+ToTConfig FileManagement::LoadWindowConfig(int *main_color, int *secondary_color)
 {
 	std::fstream fvar;
-	WindowConfig ret = {};
+	ToTConfig ret = {};
 	ret.hamachi_flag = true;
 	ret.music_volume = 1.0f;
 	ret.ais = 0;
 
 	fvar.open(FolderName::main + '\\' + FileName::config, std::ios::in);
-	fvar >> ret.main_color;
-	fvar >> ret.secondary_color;
+	fvar >> (*main_color);
+	fvar >> (*secondary_color);
 	fvar >> ret.music_volume;
 	fvar >> ret.hamachi_flag;
 	fvar >> ret.ais;
@@ -85,13 +85,13 @@ WindowConfig FileManagement::LoadWindowConfig()
 			exit(0);
 		}
 	}
-	if (ret.main_color < 0 || ret.main_color > 15)
+	if ((*main_color) < 0 || (*main_color) > 15)
 	{
-		ret.main_color = 15;
+		(*main_color) = 15;
 	}
-	if (ret.secondary_color < 0 || ret.secondary_color > 15)
+	if ((*secondary_color) < 0 || (*secondary_color) > 15)
 	{
-		ret.secondary_color = 10;
+		(*secondary_color) = 10;
 	}
 	if (ret.ais < 0 || ret.ais > 7)
 	{
@@ -235,7 +235,7 @@ std::vector<std::string> FileManagement::GetRankingDetails(std::string tour, int
 
 void FileManagement::SaveRanking(RankingInfo ranking_info)
 {
-	const bool classification[Validation::ranking_classification] = { true, ranking_info.ais == 7, ranking_info.multiplayer };
+	const bool classification[Validation::ranking_classification] = { true, ranking_info.ais == 7, ranking_info.multiplayer_flag };
 	const std::string ranking_path = FolderName::tour + '\\' + ranking_info.tour.substr(0, static_cast<int>(ranking_info.tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
 	std::vector<std::string> ranking_data = { "" };
 	int racer_index = -1;
@@ -342,7 +342,7 @@ bool FileManagement::SaveFileNames(std::string src_path, std::string dst_path, c
 	}
 	return true;
 }
-void FileManagement::SaveWindowConfig(WindowConfig window_config)
+void FileManagement::SaveWindowConfig(ToTConfig window_config, int main_color, int secondary_color)
 {
 	for (int i = 0; i < static_cast<int>(window_config.name.size()); ++i)
 	{
@@ -353,8 +353,8 @@ void FileManagement::SaveWindowConfig(WindowConfig window_config)
 	}
 	std::ofstream fvar;
 	fvar.open(FolderName::main + '\\' + FileName::config);
-	fvar << window_config.main_color << '\n';
-	fvar << window_config.secondary_color << '\n';
+	fvar << main_color << '\n';
+	fvar << secondary_color << '\n';
 	fvar << window_config.music_volume << '\n';
 	fvar << window_config.hamachi_flag << '\n';
 	fvar << window_config.ais << '\n';

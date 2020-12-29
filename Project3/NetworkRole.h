@@ -17,6 +17,9 @@ using namespace MeridorConsoleLib;
 class SinglePlayer 
 {
 protected:
+	//Attributes
+	std::shared_ptr<InfoBox> infobox;
+	bool multiplayer_flag = false;
 	std::string current_field = "0";
 	std::string tour;
 	short take_action_position = 0;

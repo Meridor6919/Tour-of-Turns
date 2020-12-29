@@ -13,8 +13,50 @@ ToT::ToT()
 	window_info.visible_cursor = false;
 	this->main_window = std::make_shared<ToT_Window>(window_info);
 
+	CheckLangPackValid();
+	CheckPlayablity();
+	CheckRankingValid();
+
 	handle = main_window->GetHandle();
 	game_window_center = static_cast<short>(main_window->GetCharactersPerRow()) / 2;
+}
+void ToT::CheckPlayablity()
+{
+	const std::string error_msg = " " + ErrorMsg::missing_file;
+	const char* errot_title = ErrorTitle::missing_file.c_str();
+
+	playable = true;
+
+	if (!SaveFileNames(FolderName::tire, FolderName::tire + '\\' + FileName::tire, ExtName::tire, main_window->GetHandle()))
+	{
+		MessageBox(0, (ExtName::tire + error_msg).c_str(), errot_title, 0);
+		playable = false;
+	}
+	if (!SaveFileNames(FolderName::tour, FolderName::tour + '\\' + FileName::tour, ExtName::tour, main_window->GetHandle()))
+	{
+		MessageBox(0, (ExtName::tour + error_msg).c_str(), errot_title, 0);
+		playable = false;
+	}
+	playable *= ValidateGameFiles();
+}
+void ToT::CheckRankingValid()
+{
+	ranking_enabled = true;
+
+	if (!SaveFileNames(FolderName::tour, FolderName::tour + '\\' + FileName::ranking, ExtName::ranking, main_window->GetHandle()))
+	{
+		ranking_enabled = false;
+	}
+
+	ranking_enabled *= ValidateRanking();
+}
+void ToT::CheckLangPackValid()
+{
+	if (!SaveFileNames(FolderName::language, FolderName::language + '\\' + FileName::language, ExtName::language, main_window->GetHandle()))
+	{
+		MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
+		exit(0);
+	}
 }
 void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing)
 {
@@ -53,9 +95,53 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
 	}
 }
+void ToT::Title()
+{
+	const COORD starting_point = { game_window_center, 1 };
+	constexpr TextAlign text_align = TextAlign::center;
+	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::text[LanguagePack::title_main][0].size()), starting_point.Y };
+	const short decoration_distance = 5;
+	const std::string main_decoration = "{ }";
+	const std::string additional_decoration = "*";
+	const short main_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main].size());
+	const short additional_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional].size());
+	const HANDLE handle = main_window->GetHandle();
+	
+	//Main text
+	SetConsoleTextAttribute(handle, *main_window->secondary_color);
+	for (short i = 0; i < main_title_size; ++i)
+	{
+		SetConsoleCursorPosition(handle, { orientation_point.X, orientation_point.Y + i });
+		std::cout << LanguagePack::text[LanguagePack::title_main][i];
+	}
+	SetConsoleTextAttribute(handle, *main_window->main_color);
+	for (short i = 0; i < additional_title_size; ++i)
+	{
+		const short main_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
+		const short additional_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional][i].size());
+		SetConsoleCursorPosition(handle, { orientation_point.X + main_line_size / 2 - additional_line_size / 2, orientation_point.Y + i + main_title_size / 3 });
+		std::cout << LanguagePack::text[LanguagePack::title_additional][i];
+	}
+	//Decoration
+	for (short i = 0; i < main_title_size; ++i)
+	{
+		const short decoration_size = static_cast<short>(decoration_distance + main_decoration.size());
+		const short line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
+		SetConsoleTextAttribute(handle, *main_window->secondary_color);
+		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_size - i % 2, orientation_point.Y + i });
+		std::cout << main_decoration;
+		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + decoration_distance - 1 - i % 2, orientation_point.Y + i });
+		std::cout << main_decoration;
+		SetConsoleTextAttribute(handle, *main_window->main_color);
+		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_size + 1 - i % 2, orientation_point.Y + i });
+		std::cout << additional_decoration;
+		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + decoration_distance - i % 2, orientation_point.Y + i });
+		std::cout << additional_decoration;
+	}
+}
 void ToT::MainMenu()
 {
-	main_window->Title({ game_window_center, 0 }, TextAlign::center);
+	Title();
 	while (true)
 	{
 		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu_options], main_menu_position, { game_window_center + 1, 25 }, TextAlign::center, 3, true};
@@ -64,7 +150,7 @@ void ToT::MainMenu()
 		case 0:
 		case 1:
 		{
-			if (main_window->IsPlayable())
+			if (playable)
 			{
 				Game(main_menu_position);
 			}
@@ -81,7 +167,7 @@ void ToT::MainMenu()
 		}
 		case 3:
 		{
-			if (main_window->RankingFound())
+			if (ranking_enabled)
 			{
 				Ranking();
 			}
@@ -144,7 +230,7 @@ void ToT::Options()
 				}
 				if (starting_color != *main_window->main_color)
 				{
-					main_window->Title({ game_window_center, 0 }, TextAlign::center);
+					Title();
 				}
 				break;
 			}
@@ -161,7 +247,7 @@ void ToT::Options()
 				}
 				if (starting_color != *main_window->secondary_color)
 				{
-					main_window->Title({ game_window_center, 0 }, TextAlign::center);
+					Title();
 				}
 				break;
 			}
@@ -200,7 +286,7 @@ void ToT::Options()
 				{
 					main_window->SetLanguage(language[current_pos] + ExtName::language);
 					system("cls");
-					main_window->Title({ game_window_center, 0 }, TextAlign::center);
+					Title();
 				}
 				break;
 			}
@@ -218,15 +304,13 @@ void ToT::Options()
 		}
 	}
 	Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
-	WindowConfig temp = { main_window->GetName(),
-	*main_window->main_color,
-	*main_window->secondary_color,
+	ToTConfig temp = { main_window->GetName(),
 	main_window->GetMusicVolume(),
 	main_window->GetHamachiConnectionFlag(),
 	main_window->GetAIs(),
 	main_window->GetLanguage(),
 	main_window->GetTimerSettings() };
-	SaveWindowConfig(temp);
+	SaveWindowConfig(temp, *main_window->main_color, *main_window->secondary_color );
 }
 void ToT::Ranking()
 {
@@ -335,7 +419,6 @@ void ToT::Info()
 }
 void ToT::Game(const bool multiplayer)
 {
-	main_window->SetMultiplayer(multiplayer);
 	std::unique_ptr<SinglePlayer> network_role;
 	if (multiplayer)
 	{	
@@ -392,8 +475,8 @@ void ToT::Game(const bool multiplayer)
 		}
 		network_role->Finish();
 		system("cls");
-		main_window->Title({ game_window_center, 0 }, TextAlign::center);
+		Title();
 	}
 	system("cls");
-	main_window->Title({ game_window_center, 0 }, TextAlign::center);
+	Title();
 }

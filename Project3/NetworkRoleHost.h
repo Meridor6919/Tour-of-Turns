@@ -4,7 +4,7 @@
 #include "NetworkRole.h"
 
 class Host : public SinglePlayer {
-
+	bool multiplayer_flag = true;
 	int lobby_size;
 	int player_init = 0;
 
