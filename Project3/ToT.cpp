@@ -273,7 +273,6 @@ void ToT::Options()
 				int starting_pos = 0;
 				for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
 				{
-					main_window->GetLanguage();
 					if (language[starting_pos] == main_window->GetLanguage())
 					{
 						break;
@@ -304,13 +303,7 @@ void ToT::Options()
 		}
 	}
 	Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
-	ToTConfig temp = { main_window->GetName(),
-	main_window->GetMusicVolume(),
-	main_window->GetHamachiConnectionFlag(),
-	main_window->GetAIs(),
-	main_window->GetLanguage(),
-	main_window->GetTimerSettings() };
-	SaveWindowConfig(temp, *main_window->main_color, *main_window->secondary_color );
+	SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color );
 }
 void ToT::Ranking()
 {

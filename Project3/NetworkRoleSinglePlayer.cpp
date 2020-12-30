@@ -625,13 +625,7 @@ bool SinglePlayer::GameLobby()
 			}
 			case 7://Back
 			{
-				ToTConfig temp = { main_window->GetName(),
-				main_window->GetMusicVolume(),
-				main_window->GetHamachiConnectionFlag(),
-				main_window->GetAIs(),
-				main_window->GetLanguage(),
-				main_window->GetTimerSettings() };
-				SaveWindowConfig(temp, *main_window->main_color, *main_window->secondary_color);
+				SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color);
 				return false;
 			}
 		}
@@ -647,13 +641,7 @@ bool SinglePlayer::GameLobby()
 		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
 		mutex.unlock();
 	}
-	ToTConfig temp = { main_window->GetName(),
-	main_window->GetMusicVolume(),
-	main_window->GetHamachiConnectionFlag(),
-	main_window->GetAIs(),
-	main_window->GetLanguage(),
-	main_window->GetTimerSettings() };
-	SaveWindowConfig(temp, *main_window->main_color, *main_window->secondary_color);
+	SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color);
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);

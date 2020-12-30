@@ -1,13 +1,7 @@
 #pragma once
-#include <iostream>
-#include <fstream>
-
 #include ".\MeridorMiscModules\WavTransformer.h"
 #include ".\MeridorConsoleLib\Window.h"
 #include ".\MeridorConsoleLib\TextLib.h"
-#include ".\MeridorConsoleLib\Infobox.h"
-#include "GameConstants.h"
-#include "ValidationConstants.h"
 #include "FileManagementFunctions.h"
 #include "ValidationFunctions.h"
 #include "LanguagePack.h"
@@ -19,13 +13,14 @@ using namespace Validation;
 class ToT_Window : public Window
 {
 protected:
-	ToTConfig window_config;
+	ToTConfig tot_config;
 	WavTransformer wav_transformer;
 
 public:
 	ToT_Window(const WindowInfoEx& window_info);
 
 	//Get methods
+	const ToTConfig& GetToTConfig();
 	bool GetHamachiConnectionFlag();
 	int GetAIs();
 	std::string GetName();

@@ -268,13 +268,7 @@ bool Host::GameLobby()
 		}
 		case 9://Back
 		{
-			ToTConfig temp = { main_window->GetName(),
-			main_window->GetMusicVolume(),
-			main_window->GetHamachiConnectionFlag(),
-			main_window->GetAIs(),
-			main_window->GetLanguage(),
-			main_window->GetTimerSettings() };
-			SaveWindowConfig(temp, *main_window->main_color, *main_window->secondary_color);
+			SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color);
 			show_clients = false;
 			show_clients_in_lobby.join();
 			network_connector->CloseAllConnections();
@@ -293,13 +287,7 @@ bool Host::GameLobby()
 		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options][i].size()));
 		mutex.unlock();
 	}
-	ToTConfig temp = { main_window->GetName(),
-	main_window->GetMusicVolume(),
-	main_window->GetHamachiConnectionFlag(),
-	main_window->GetAIs(),
-	main_window->GetLanguage(),
-	main_window->GetTimerSettings() };
-	SaveWindowConfig(temp, *main_window->main_color, *main_window->secondary_color);
+	SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color);
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true, tire_box_starting_pos);
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true, car_box_starting_pos);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
