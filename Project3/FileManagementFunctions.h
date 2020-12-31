@@ -21,7 +21,7 @@ namespace FileManagement
 	std::vector<std::string> GetTireParameters(std::string path);
 	std::vector<std::string> GetRankingDetails(std::string tour, int racer_pos, int classification_type);
 
-	void SaveRanking(RankingInfo ranking_info);
+	void SaveRanking(RankingDetails ranking_info);
 	bool SaveFileNames(std::string src_path, std::string dst_path, const std::string ext, HANDLE handle);
 	void SaveWindowConfig(ToTConfig window_config, int main_color, int secondary_color);
 

@@ -99,14 +99,14 @@ void Participant::Test(const std::string field, const bool show)
 		{
 			if (show)
 			{
-				infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][0], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::highest_roll] + std::to_string(max));
+				infobox->Push(name + LanguagePack::text[LanguagePack::accident_effects][0], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::highest_roll] + std::to_string(max));
 			}
 		}
 		else
 		{
 			if (show)
 			{
-				infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][1], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lowest_roll] + std::to_string(min));
+				infobox->Push(name + LanguagePack::text[LanguagePack::accident_effects][1], LanguagePack::text[LanguagePack::other_strings][OtherStrings::required] + std::to_string(static_cast<int>(formula)) + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lowest_roll] + std::to_string(min));
 			}
 			if (formula > static_cast<float>(min + 50))
 			{
@@ -145,7 +145,7 @@ void Participant::Test(const std::string field, const bool show)
 			}
 			if (show)
 			{
-				infobox->Push(name + LanguagePack::text[LanguagePack::race_accident_effects][bad_case], name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::text[LanguagePack::race_general_informations][3]);
+				infobox->Push(name + LanguagePack::text[LanguagePack::accident_effects][bad_case], name + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lost] + (durablity_lost > 0 ? std::to_string(static_cast<int>(durablity_lost)) : "") + LanguagePack::text[LanguagePack::race_player_informations][3]);
 			}
 			current_durability -= durablity_lost;
 			if (current_durability <= 0.f)

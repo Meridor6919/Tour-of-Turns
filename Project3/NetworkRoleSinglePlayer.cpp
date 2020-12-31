@@ -165,7 +165,7 @@ void SinglePlayer::ShowCarParameters(const std::string car_path, const bool clea
 	{
 		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::car_attributes][i], std::to_string(car_params[i])));
 	}
-	ShowLobbyInformation(LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::player_information_title], text, starting_pos, 1, 2, clear);
+	ShowLobbyInformation(LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::player_information_title], text, starting_pos, 1, 2, clear);
 }
 void SinglePlayer::ShowTiresParameters(const std::string tire_path, bool clear, const COORD starting_pos)
 {
@@ -193,7 +193,7 @@ void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 			++turns;
 		}
 	}
-	std::vector<std::pair<std::string, std::string>> text = { {LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::length_of_tour], std::to_string(static_cast<int>(tour_params.size()))}, {LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::number_of_turns], std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(tour_params.size())*100.f)) + "%"} };
+	std::vector<std::pair<std::string, std::string>> text = { {LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::length_of_tour], std::to_string(static_cast<int>(tour_params.size()))}, {LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::number_of_turns], std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(tour_params.size())*100.f)) + "%"} };
 	for (short i = 0; i < 6; ++i)
 	{
 		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::terrain_types][i], std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(tour_params.size())*100.f)) + '%'));
@@ -248,11 +248,11 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 	}
 	fvar.close();
 
-	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::current_champion], best_name},
-		{LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::win_ratio],std::to_string(winrate).substr(0, static_cast<int>(std::to_string(winrate).size()) - 4) + '%'},
-		{LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::games_in_total], std::to_string(best_games_in_total)},
-		{LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::average_place], std::to_string(best_place)} };
-	ShowLobbyInformation(LanguagePack::text[LanguagePack::game_lobby_informations][GameLobbyInformations::tour_information_title], vector, { static_cast<short>(main_window->GetCharactersPerRow()) - static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()), 19 }, 1, 2, clear);
+	const std::vector<std::pair<std::string, std::string>> vector = { {LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::current_champion], best_name},
+		{LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::win_ratio],std::to_string(winrate).substr(0, static_cast<int>(std::to_string(winrate).size()) - 4) + '%'},
+		{LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::games_in_total], std::to_string(best_games_in_total)},
+		{LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::average_place], std::to_string(best_place)} };
+	ShowLobbyInformation(LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::tour_information_title], vector, { static_cast<short>(main_window->GetCharactersPerRow()) - static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()), 19 }, 1, 2, clear);
 }
 void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear)
 {
@@ -390,8 +390,8 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 
 	HANDLE window = main_window->GetHandle();
 	std::string helper;
-	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, LanguagePack::text[LanguagePack::race_chancebox_informations][0]},  {estimated_time, LanguagePack::text[LanguagePack::race_chancebox_informations][1]},
-														{burned_durability, LanguagePack::text[LanguagePack::race_chancebox_informations][2]}, {speed_estimation, LanguagePack::text[LanguagePack::race_chancebox_informations][3]} };
+	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, LanguagePack::text[LanguagePack::race_chancebox][0]},  {estimated_time, LanguagePack::text[LanguagePack::race_chancebox][1]},
+														{burned_durability, LanguagePack::text[LanguagePack::race_chancebox][2]}, {speed_estimation, LanguagePack::text[LanguagePack::race_chancebox][3]} };
 	mutex.lock();
 	if (!reset)
 	{
@@ -533,19 +533,19 @@ bool SinglePlayer::GameLobby()
 
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::game_menu_options], main_menu_position, starting_point, TextAlign::center, spacing, false };
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::game_options], main_menu_position, starting_point, TextAlign::center, spacing, false };
 		MultithreadingData  multithreading_data = { &mutex, &timer_running };
 		main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo(), multithreading_data);
 		if (!timer_running)
 		{
 			break;
 		}
-		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_menu_options][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
+		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
 		switch (main_menu_position)
 		{
 			case 0://choosing name
 			{
-				name = StringSelection(name, GameConstants::maximum_name_length, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_menu_options][0].size()), 25 });
+				name = StringSelection(name, GameConstants::maximum_name_length, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options][0].size()), 25 });
 				main_window->SetName(name);
 				break;
 			}
@@ -634,11 +634,11 @@ bool SinglePlayer::GameLobby()
 			break;
 		}
 	}
-	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options].size()); ++i)
+	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::game_options].size()); ++i)
 	{
 		mutex.lock();
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_menu_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
-		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options][i].size()));
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
+		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_options][i].size()));
 		mutex.unlock();
 	}
 	SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color);
@@ -1183,19 +1183,19 @@ void SinglePlayer::Interface()
 	mutex.lock();
 	SetConsoleTextAttribute(window, *main_window->main_color);
 	SetConsoleCursorPosition(window, { 0, 16 });
-	std::cout << LanguagePack::text[LanguagePack::race_general_informations][0];
+	std::cout << LanguagePack::text[LanguagePack::race_player_informations][0];
 	SetConsoleTextAttribute(window, *main_window->secondary_color);
 	std::cout << participants[0].name;
 	SetConsoleTextAttribute(window, *main_window->main_color);
 	SetConsoleCursorPosition(window, { 0, 18 });
-	std::cout << LanguagePack::text[LanguagePack::race_general_informations][1];
+	std::cout << LanguagePack::text[LanguagePack::race_player_informations][1];
 	SetConsoleTextAttribute(window, *main_window->secondary_color);
 	std::cout << speed << "     ";
 	SetConsoleTextAttribute(window, *main_window->main_color);
 	SetConsoleCursorPosition(window, { 0, 20 });
-	std::cout << LanguagePack::text[LanguagePack::race_general_informations][2];
+	std::cout << LanguagePack::text[LanguagePack::race_player_informations][2];
 	SetConsoleTextAttribute(window, *main_window->secondary_color);
-	std::cout << durability << LanguagePack::text[LanguagePack::race_general_informations][3];
+	std::cout << durability << LanguagePack::text[LanguagePack::race_player_informations][3];
 	SetConsoleTextAttribute(window, 8);
 	for (short i = 0; i < 5; ++i)
 	{
@@ -1204,9 +1204,9 @@ void SinglePlayer::Interface()
 	}
 	mutex.unlock();
 	const short x = static_cast<short>(main_window->GetCharactersPerRow() - static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()));
-	const std::vector<std::tuple<std::string, COORD, short>> boxes = { {LanguagePack::text[LanguagePack::race_names_of_boxes][0], {0, static_cast<short>(main_window->GetCharactersPerColumn() - 15)}, 12 },
-				{ LanguagePack::text[LanguagePack::race_names_of_boxes][1], { x, static_cast<short>(main_window->GetCharactersPerColumn() - 20) }, 17},
-				{ LanguagePack::text[LanguagePack::race_names_of_boxes][2],  { x, static_cast<short>(main_window->GetCharactersPerColumn() - 31) }, 7 } };
+	const std::vector<std::tuple<std::string, COORD, short>> boxes = { {LanguagePack::text[LanguagePack::race_box_names][0], {0, static_cast<short>(main_window->GetCharactersPerColumn() - 15)}, 12 },
+				{ LanguagePack::text[LanguagePack::race_box_names][1], { x, static_cast<short>(main_window->GetCharactersPerColumn() - 20) }, 17},
+				{ LanguagePack::text[LanguagePack::race_box_names][2],  { x, static_cast<short>(main_window->GetCharactersPerColumn() - 31) }, 7 } };
 	
 	mutex.lock();
 	SetConsoleTextAttribute(window, *main_window->secondary_color);
@@ -1260,7 +1260,7 @@ bool SinglePlayer::VisionBox(const int turn)
 		SetConsoleCursorPosition(window, { 1,24 + 2 *i });
 		std::cout << LanguagePack::text[LanguagePack::race_distances][i];
 		SetConsoleTextAttribute(window, *main_window->secondary_color);
-		std::cout << LanguagePack::text[LanguagePack::race_segments_descriptions][(visible_tour[i][0] - 48) * 2 + (static_cast<int>(visible_tour[i].size()) > 1 ? 0 : 1)] << helper.erase(0, 1) << "                                               ";
+		std::cout << LanguagePack::text[LanguagePack::tour_segments_descriptions][(visible_tour[i][0] - 48) * 2 + (static_cast<int>(visible_tour[i].size()) > 1 ? 0 : 1)] << helper.erase(0, 1) << "                                               ";
 	}
 	mutex.unlock();
 	return ret;
@@ -1269,7 +1269,7 @@ void SinglePlayer::Finish()
 {
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		RankingInfo ranking_info = { 
+		RankingDetails ranking_info = { 
 			tour,
 			participants[i].name,
 			participants[i].place,

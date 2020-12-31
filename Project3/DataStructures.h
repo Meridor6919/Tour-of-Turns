@@ -10,7 +10,7 @@ struct ToTConfig
 	std::string lang;
 	int timer_settings;
 };
-struct RankingInfo
+struct RankingDetails
 {
 	std::string tour;
 	std::string name;

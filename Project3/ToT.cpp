@@ -144,7 +144,7 @@ void ToT::MainMenu()
 	Title();
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu_options], main_menu_position, { game_window_center + 1, 25 }, TextAlign::center, 3, true};
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu], main_menu_position, { game_window_center + 1, 25 }, TextAlign::center, 3, true};
 		switch (main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo()))
 		{
 		case 0:
@@ -207,12 +207,12 @@ void ToT::Options()
 	const COORD starting_point = { game_window_center+1, 25 };
 	const short spacing = 3;
 	bool loop = true;
-	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::tot_general_options], main_menu_position, starting_point, TextAlign::center, spacing, false };
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::general_options], main_menu_position, starting_point, TextAlign::center, spacing, false };
 
 	while (loop)
 	{
 		main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
-		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::tot_general_options][main_menu_position].size()) / 2 + 3;
+		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::general_options][main_menu_position].size()) / 2 + 3;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
 		const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 		switch (main_menu_position)
@@ -320,12 +320,12 @@ void ToT::Ranking()
 	int classification_type = 0;
 
 	ShowRankingDetails(FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
-	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_search_menu], main_menu_position, starting_point, TextAlign::center, spacing, false };
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_menu], main_menu_position, starting_point, TextAlign::center, spacing, false };
 	while (loop)
 	{
 		const std::string starting_map_path = FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking;
 		main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
-		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::ranking_search_menu][main_menu_position].size()) / 2 + 3;
+		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::ranking_menu][main_menu_position].size()) / 2 + 3;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * spacing);
 		const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 		switch (main_menu_position)
@@ -392,16 +392,16 @@ void ToT::Info()
 	const short spacing = 3;
 	const COORD text_pos = { game_window_center, 28 };
 	const COORD title_pos = { game_window_center - 2, text_pos.Y - 3 };
-	const Text::TextInfo ordinary_text_info = { LanguagePack::text[LanguagePack::game_information_introduction + info_pos], 0, text_pos, text_align_content, spacing, 0 };
+	const Text::TextInfo ordinary_text_info = { LanguagePack::text[LanguagePack::gamepedia_introduction + info_pos], 0, text_pos, text_align_content, spacing, 0 };
 	while (true)
 	{
 		OrdinaryText(ordinary_text_info, *main_window->GetWindowInfo());
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::game_information_options], info_pos, title_pos, text_align_title, 0, false };
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::gamepedia_sections], info_pos, title_pos, text_align_title, 0, false };
 		int temp_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
 		ClearOrdinaryText(ordinary_text_info, *main_window->GetWindowInfo());
 		if (temp_pos == info_pos)
 		{
-			const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::game_information_options][info_pos].size());
+			const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::gamepedia_sections][info_pos].size());
 			SetConsoleCursorPosition(handle, {title_pos.X-static_cast<short>(static_cast<float>(text_size)*GetTextAlignScalar(text_align_title)), title_pos.Y });
 			std::cout << Spaces(text_size + 4);
 			break;
@@ -417,7 +417,7 @@ void ToT::Game(const bool multiplayer)
 	{	
 		do
 		{
-			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_before_game_lobby], 0, { game_window_center, 25 }, TextAlign::center, 3, false };
+			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_menu], 0, { game_window_center, 25 }, TextAlign::center, 3, false };
 			switch (Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo()))
 			{
 				case 0:

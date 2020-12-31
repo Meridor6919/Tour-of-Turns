@@ -31,7 +31,6 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(box_size) * 2 });
 	std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
 	mutex.unlock();
-
 	while (*running)
 	{
 		const std::vector<std::string> clients_names = network_connector->GetClientNames();
@@ -82,7 +81,7 @@ void Host::SetLobbySize()
 	{
 		horizontal_menu_text.push_back(std::to_string(i));
 	}
-	COORD starting_point = { static_cast<short>(main_window->GetCharactersPerRow() + LanguagePack::text[LanguagePack::multiplayer_before_game_lobby][0].size()) / 2 + 1, 25 };
+	COORD starting_point = { static_cast<short>(main_window->GetCharactersPerRow() + LanguagePack::text[LanguagePack::multiplayer_menu][0].size()) / 2 + 1, 25 };
 	SetConsoleCursorPosition(main_window->GetHandle(), starting_point);
 	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
 	std::cout << text;
@@ -143,19 +142,19 @@ bool Host::GameLobby()
 
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_menu_options], main_menu_position, starting_point, TextAlign::center, spacing, false };
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::game_options_multiplayer], main_menu_position, starting_point, TextAlign::center, spacing, false };
 		MultithreadingData  multithreading_data = { &mutex, &timer_running };
 		main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo(), multithreading_data);
 		if (!timer_running)
 		{
 			break;
 		}
-		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_menu_options][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
+		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options_multiplayer][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
 		switch (main_menu_position)
 		{
 		case 0://choosing name
 		{
-			name = StringSelection(name, GameConstants::maximum_name_length, { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_menu_options][0].size()), 25 });
+			name = StringSelection(name, GameConstants::maximum_name_length, { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options_multiplayer][0].size()), 25 });
 			main_window->SetName(name);
 			break;
 		}
@@ -179,7 +178,7 @@ bool Host::GameLobby()
 		{
 			const std::vector<sockaddr_in> active_connections = network_connector->GetClientAddresses();
 			std::vector<std::string> text = network_connector->GetClientNames();
-			text.insert(text.begin(), LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back]);
+			text.insert(text.begin(), LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::back]);
 
 			Text::TextInfo text_info = { text, 0, starting_local_pos, TextAlign::left, 0, true };
 			MultithreadingData  multithreading_data = { &mutex, &timer_running };
@@ -192,7 +191,7 @@ bool Host::GameLobby()
 		}
 		case 3://blacklist
 		{
-			std::vector<std::string> unban_options = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
+			std::vector<std::string> unban_options = { LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::back] };
 			const std::vector<sockaddr_in> banned_addresses = network_connector->client_connector.GetBlacklist();
 			for (size_t i = 0; i < banned_addresses.size(); ++i)
 			{
@@ -280,11 +279,11 @@ bool Host::GameLobby()
 			break;
 		}
 	}
-	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options].size()); ++i)
+	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::game_options_multiplayer].size()); ++i)
 	{
 		mutex.lock();
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::multiplayer_menu_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
-		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options][i].size()));
+		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_options_multiplayer][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
+		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_options_multiplayer][i].size()));
 		mutex.unlock();
 	}
 	SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color);

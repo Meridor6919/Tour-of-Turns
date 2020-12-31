@@ -23,16 +23,16 @@ bool Client::StartNetwork()
 	
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_lobby], 0, starting_point, TextAlign::center, spacing, false};
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_client_lobby], 0, starting_point, TextAlign::center, spacing, false};
 		int option = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
 		if(option == Multiplayer::active_games)
 		{
-			std::vector<std::string>active_games = { LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::back] };
+			std::vector<std::string>active_games = { LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::back] };
 			{
 				auto temp_vector = client_connector->broadcast_receiver.GetHostVector();
 				active_games.insert(active_games.begin() + 1, temp_vector.begin(), temp_vector.end());
 			}
-			const COORD submenu_position = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][Multiplayer::active_games].size()) / 2 + 1,
+			const COORD submenu_position = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::active_games].size()) / 2 + 1,
 												starting_point.Y };
 			Text::TextInfo text_info = { active_games, 0, submenu_position, TextAlign::left, 0, true};
 			if (int target = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()))
@@ -70,9 +70,9 @@ bool Client::StartNetwork()
 	}
 	HighlightSelectedGame(selected_game, true);
 	client_connector->broadcast_receiver.Stop();
-	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby].size()); ++i)
+	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby].size()); ++i)
 	{
-		const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_lobby][i].size());
+		const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby][i].size());
 		SetConsoleCursorPosition(handle, { starting_point.X - text_size/2, starting_point.Y + i * spacing });
 		for (int j = 0; j < text_size; ++j)
 		{

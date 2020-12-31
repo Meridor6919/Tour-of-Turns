@@ -233,7 +233,7 @@ std::vector<std::string> FileManagement::GetRankingDetails(std::string tour, int
 	return ret;
 }
 
-void FileManagement::SaveRanking(RankingInfo ranking_info)
+void FileManagement::SaveRanking(RankingDetails ranking_info)
 {
 	const bool classification[Validation::ranking_classification] = { true, ranking_info.ais == 7, ranking_info.multiplayer_flag };
 	const std::string ranking_path = FolderName::tour + '\\' + ranking_info.tour.substr(0, static_cast<int>(ranking_info.tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;

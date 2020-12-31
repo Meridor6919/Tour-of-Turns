@@ -135,27 +135,27 @@ bool Validation::ValidateLanguagePack()
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::main_menu_options].size()) != Validation::main_menu)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::main_menu].size()) != Validation::main_menu)
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::game_menu_options].size()) != Validation::game_menu)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::game_options].size()) != Validation::game_menu)
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu_options].size()) != Validation::multiplayer_menu)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::game_options_multiplayer].size()) != Validation::multiplayer_menu)
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_before_game_lobby].size()) != Validation::multiplayer_before_game_lobby)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu].size()) != Validation::multiplayer_before_game_lobby)
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::tot_general_options].size()) != Validation::tot_options)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::general_options].size()) != Validation::tot_options)
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::game_lobby_informations].size()) != GameLobbyInformations::last)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::tour_information].size()) != GameLobbyInformations::last)
 	{
 		return false;
 	}
@@ -167,11 +167,11 @@ bool Validation::ValidateLanguagePack()
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::race_chancebox_informations].size()) != Validation::chancebox)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::race_chancebox].size()) != Validation::chancebox)
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::race_general_informations].size()) != Validation::general_info)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::race_player_informations].size()) != Validation::general_info)
 	{
 		return false;
 	}
@@ -187,15 +187,15 @@ bool Validation::ValidateLanguagePack()
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::race_names_of_boxes].size()) != Validation::names_of_boxes)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::race_box_names].size()) != Validation::names_of_boxes)
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::race_segments_descriptions].size()) != TerrainTypes::last * 2)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::tour_segments_descriptions].size()) != TerrainTypes::last * 2)
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::race_accident_effects].size()) != Validation::accidents)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::accident_effects].size()) != Validation::accidents)
 	{
 		return false;
 	}
@@ -203,7 +203,7 @@ bool Validation::ValidateLanguagePack()
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::ranking_search_menu].size()) != Validation::ranking_menu)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::ranking_menu].size()) != Validation::ranking_menu)
 	{
 		return false;
 	}
@@ -223,7 +223,7 @@ bool Validation::ValidateLanguagePack()
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_lobby].size()) < Multiplayer::last)
+	if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_client_lobby].size()) < Multiplayer::last)
 	{
 		return false;
 	}
