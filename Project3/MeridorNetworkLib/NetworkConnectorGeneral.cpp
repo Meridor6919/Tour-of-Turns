@@ -16,7 +16,7 @@ void NetworkConnector::Validate(bool error)
 {
 	if (error)
 	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), MB_TOPMOST);
 		WSACleanup();
 		abort();
 	}
@@ -26,7 +26,7 @@ bool NetworkConnector::Recv(SOCKET socket, std::string* msg, int flags)
 	char buffer[Constants::buffer_size];
 	if (recv(socket, buffer, Constants::buffer_size, flags) < 0)
 	{
-		MessageBox(0, ErrorMsg::connection.c_str(), ErrorTitle::disconnect.c_str(), 0);
+		MessageBox(0, ErrorMsg::connection.c_str(), ErrorTitle::disconnect.c_str(), MB_TOPMOST);
 		return false;
 	}
 	(*msg) = buffer;
@@ -38,7 +38,7 @@ bool NetworkConnector::SendRequest(SOCKET socket, const std::string request, int
 	size_t request_size = request.size();
 	if (request_size > NetworkConnector::Constants::buffer_size)
 	{
-		MessageBox(0, ErrorMsg::msg_size.c_str(), ErrorTitle::msg_size.c_str(), 0);
+		MessageBox(0, ErrorMsg::msg_size.c_str(), ErrorTitle::msg_size.c_str(), MB_TOPMOST);
 		abort();
 	}
 	for (size_t i = 0; i < request_size; ++i)
@@ -47,7 +47,7 @@ bool NetworkConnector::SendRequest(SOCKET socket, const std::string request, int
 	}
 	if (send(socket, buffer, NetworkConnector::Constants::buffer_size, 0))
 	{
-		MessageBox(0, ErrorMsg::connection.c_str(), ErrorTitle::disconnect.c_str(), 0);
+		MessageBox(0, ErrorMsg::connection.c_str(), ErrorTitle::disconnect.c_str(), MB_TOPMOST);
 		return false;
 	}
 	return true;

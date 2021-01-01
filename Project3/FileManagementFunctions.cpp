@@ -64,7 +64,7 @@ ToTConfig FileManagement::LoadWindowConfig(int *main_color, int *secondary_color
 	LoadLanguagePack(FolderName::language + '\\' + ret.lang);
 	if (!Validation::ValidateLanguagePack())
 	{
-		MessageBox(0, (ret.lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		MessageBox(0, (ret.lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 
 		std::vector<std::string> languages = MeridorConsoleLib::ReadFile(FolderName::language + '\\' + FileName::language);
 		bool no_valid_lang_packs = true;
@@ -75,13 +75,13 @@ ToTConfig FileManagement::LoadWindowConfig(int *main_color, int *secondary_color
 			{
 				no_valid_lang_packs = false;
 				ret.lang = languages[i];
-				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language.c_str(), 0);
+				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language.c_str(), MB_TOPMOST);
 				break;
 			}
 		}
 		if (no_valid_lang_packs)
 		{
-			MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
+			MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), MB_TOPMOST);
 			exit(0);
 		}
 	}

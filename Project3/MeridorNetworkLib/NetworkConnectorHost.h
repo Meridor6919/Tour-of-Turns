@@ -125,7 +125,7 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Remov
 	unsigned int target = GetClientContainerIndexFromAddress(address);
 	if (target < 0)
 	{
-		MessageBox(0, NetworkConnector::ErrorMsg::address_missing.c_str(), NetworkConnector::ErrorTitle::address_missing.c_str(), 0);
+		MessageBox(0, NetworkConnector::ErrorMsg::address_missing.c_str(), NetworkConnector::ErrorTitle::address_missing.c_str(), MB_TOPMOST);
 	}
 	else
 	{
@@ -294,7 +294,7 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Clien
 			return;
 		}
 	}
-	MessageBox(0, NetworkConnector::ErrorMsg::address_missing.c_str(), NetworkConnector::ErrorTitle::address_missing.c_str(), 0);
+	MessageBox(0, NetworkConnector::ErrorMsg::address_missing.c_str(), NetworkConnector::ErrorTitle::address_missing.c_str(), MB_TOPMOST);
 	network_connector_host_ptr->network_mutex.unlock();
 
 }

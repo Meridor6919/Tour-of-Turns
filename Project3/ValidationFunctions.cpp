@@ -10,7 +10,7 @@ bool Validation::ValidateTourFiles()
 	const short number_of_tours = static_cast<short>(tours.size());
 	if (!number_of_tours)
 	{
-		MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+		MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 		return false;
 	}
 	for (short i = 0; i < number_of_tours; ++i)
@@ -18,7 +18,7 @@ bool Validation::ValidateTourFiles()
 		std::vector<std::string> params = FileManagement::GetTourParameters(tours[i], 0, INT_MAX);
 		if (static_cast<short>(params.size()) < 1)
 		{
-			MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 			return false;
 		}
 		for (short j = 0; j < static_cast<short>(params.size()); ++j)
@@ -26,17 +26,17 @@ bool Validation::ValidateTourFiles()
 			const short size_of_segment = static_cast<short>(params[j].size());
 			if (params[j][0] - 48 < 0 || params[j][0] - 48 >= TerrainTypes::last)//terrain type validation
 			{
-				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 				return false;
 			}
 			else if (size_of_segment > 11)//checking if safe speed isn't exceeding speed of light
 			{
-				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 				return false;
 			}
 			else if (size_of_segment != 1 && atoi(params[j].substr(1, size_of_segment - 1).c_str()) < 1)//checking if safe speed is at least 1
 			{
-				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 				return false;
 			}
 		}
@@ -53,14 +53,14 @@ bool Validation::ValidateCarFiles()
 		const std::vector<std::string> cars = FileManagement::GetCarNames(tours[i]);
 		if (!static_cast<bool>(cars.size()))//checking if there is at least one car that can be driven for any given tour
 		{
-			MessageBox(0, (tours[i] + " " + ErrorMsg::available_cars).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			MessageBox(0, (tours[i] + " " + ErrorMsg::available_cars).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 			return false;
 		}
 		for (short j = 0; j < static_cast<short>(cars.size()); ++j)
 		{
 			if (static_cast<short>(FileManagement::GetCarParameters(cars[j]).size()) != CarAttributes::last)//checking if car has all parameters set
 			{
-				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+				MessageBox(0, (FolderName::car + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 				return false;
 			}
 		}
@@ -78,7 +78,7 @@ bool Validation::ValidateTireFiles()
 		const std::vector<std::string> params = FileManagement::GetTireParameters(tires[i]);
 		if (static_cast<short>(params.size()) != TerrainTypes::last)//checking if tires have all parameters set
 		{
-			MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 			return false;
 		}
 		for (short j = 0; j < TerrainTypes::last; ++j)//getting tires attributes
@@ -95,7 +95,7 @@ bool Validation::ValidateTireFiles()
 		}
 		if (x * y == 0 || x > y)//checking if tires attributes make sense
 		{
-			MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			MessageBox(0, (FolderName::tire + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 			return false;
 		}
 	}
@@ -114,7 +114,7 @@ bool Validation::ValidateRanking()
 		for (; std::getline(fvar, line); ++iterations);
 		if (iterations % Validation::ranking_details != 0)
 		{
-			MessageBox(0, (+" " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), 0);
+			MessageBox(0, (+" " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 			return false;
 		}
 		fvar.close();

@@ -39,12 +39,12 @@ bool PipeConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* obje
 	
 	if (!CreatePipe(&output_pipe_read, &output_pipe_write, &security_atributes, 0))
 	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		return false;
 	}
 	if(!CreatePipe(&input_pipe_read, &input_pipe_write, &security_atributes, 0))
 	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		return false;
 	}
 
@@ -55,7 +55,7 @@ bool PipeConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* obje
 
 	if (!CreateProcessA(NULL, (LPSTR)connector_path.c_str(), NULL, NULL, TRUE, 0, NULL, NULL, &startup_info, &process_info))
 	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		return false;
 	}
 	handling_connection = true;

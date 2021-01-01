@@ -29,12 +29,12 @@ void ToT::CheckPlayablity()
 
 	if (!SaveFileNames(FolderName::tire, FolderName::tire + '\\' + FileName::tire, ExtName::tire, main_window->GetHandle()))
 	{
-		MessageBox(0, (ExtName::tire + error_msg).c_str(), errot_title, 0);
+		MessageBox(0, (ExtName::tire + error_msg).c_str(), errot_title, MB_TOPMOST);
 		playable = false;
 	}
 	if (!SaveFileNames(FolderName::tour, FolderName::tour + '\\' + FileName::tour, ExtName::tour, main_window->GetHandle()))
 	{
-		MessageBox(0, (ExtName::tour + error_msg).c_str(), errot_title, 0);
+		MessageBox(0, (ExtName::tour + error_msg).c_str(), errot_title, MB_TOPMOST);
 		playable = false;
 	}
 	playable *= ValidateGameFiles();
@@ -54,7 +54,7 @@ void ToT::CheckLangPackValid()
 {
 	if (!SaveFileNames(FolderName::language, FolderName::language + '\\' + FileName::language, ExtName::language, main_window->GetHandle()))
 	{
-		MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), 0);
+		MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), MB_TOPMOST);
 		exit(0);
 	}
 }
@@ -156,7 +156,7 @@ void ToT::MainMenu()
 			}
 			else
 			{
-				MessageBox(0, ErrorMsg::unplayable.c_str(), ErrorTitle::unplayable.c_str(), 0);
+				MessageBox(0, ErrorMsg::unplayable.c_str(), ErrorTitle::unplayable.c_str(), MB_TOPMOST);
 			}
 			break;
 		}
@@ -173,7 +173,7 @@ void ToT::MainMenu()
 			}
 			else
 			{
-				MessageBox(0, ErrorMsg::ranking_missing.c_str(), ErrorTitle::missing_file.c_str(), 0);
+				MessageBox(0, ErrorMsg::ranking_missing.c_str(), ErrorTitle::missing_file.c_str(), MB_TOPMOST);
 			}
 			break;
 		}

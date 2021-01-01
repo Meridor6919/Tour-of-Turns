@@ -13,7 +13,7 @@ bool PipeConnector::Write(std::string msg)
 	const bool result = WriteFile(input_pipe_write, buffer, static_cast<int>(msg.size()) + 1, &bytes_written, NULL);
 	if (!result)
 	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
+		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 	}
 	delete[] buffer;
 	return result;
@@ -35,7 +35,7 @@ bool PipeConnector::Read(std::string &msg_received)
 		}
 		else
 		{
-			MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", 0);
+			MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		}
 	}
 	delete[] buffer;

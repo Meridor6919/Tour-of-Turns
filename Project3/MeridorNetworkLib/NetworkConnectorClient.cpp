@@ -10,7 +10,7 @@ std::string NetworkConnectorClient::GetIPFromHostID(std::string host_id)
 			return std::string(host_id.begin() + i, host_id.end());
 		}
 	}
-	MessageBox(0, NetworkConnector::ErrorMsg::ip_extraction.c_str(), NetworkConnector::ErrorTitle::ip_extraction.c_str(), 0);
+	MessageBox(0, NetworkConnector::ErrorMsg::ip_extraction.c_str(), NetworkConnector::ErrorTitle::ip_extraction.c_str(), MB_TOPMOST);
 	abort();
 }
 bool NetworkConnectorClient::Connect(const std::string host_id)
@@ -24,12 +24,12 @@ bool NetworkConnectorClient::Connect(const std::string host_id)
 
 	if (host == INVALID_SOCKET)
 	{
-		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), 0);
+		MessageBox(0, std::to_string(WSAGetLastError()).c_str(), NetworkConnector::ErrorTitle::winsock.c_str(), MB_TOPMOST);
 		abort();
 	}
 	if (connect(host, reinterpret_cast<sockaddr*>(&address), sizeof(address)))
 	{
-		MessageBox(0, NetworkConnector::ErrorMsg::connection.c_str(), NetworkConnector::ErrorTitle::disconnect.c_str(), 0);
+		MessageBox(0, NetworkConnector::ErrorMsg::connection.c_str(), NetworkConnector::ErrorTitle::disconnect.c_str(), MB_TOPMOST);
 		return false;
 	}
 	return true;
