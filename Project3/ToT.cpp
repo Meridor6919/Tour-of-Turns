@@ -66,7 +66,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	std::vector<std::string> details = GetRankingDetails(tour, racer_pos, classification_type);
 	if (clearing)
 	{
-		const int border_size = static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size());
+		const int border_size = GameConstants::box_width;
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
 		std::cout<<Spaces(border_size);
 		for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
@@ -81,7 +81,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	{
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
+		std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
 		for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
@@ -92,7 +92,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		}
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(Validation::ranking_details) + 2) });
-		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
+		std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
 	}
 }
 void ToT::Title()
@@ -226,7 +226,7 @@ void ToT::Options()
 				(*main_window->main_color) = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 2;
 				if (*main_window->main_color >= *main_window->secondary_color)
 				{
-					(main_window->main_color) = (main_window->main_color) + 1;
+					(*main_window->main_color) = (*main_window->main_color) + 1;
 				}
 				if (starting_color != *main_window->main_color)
 				{

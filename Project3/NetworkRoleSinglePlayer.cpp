@@ -198,7 +198,7 @@ void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 	{
 		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::terrain_types][i], std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(tour_params.size())*100.f)) + '%'));
 	}
-	ShowLobbyInformation("", text, { static_cast<short>(main_window->GetCharactersPerRow()) - static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()), 30 }, 1, 2, clear);
+	ShowLobbyInformation("", text, { static_cast<short>(main_window->GetCharactersPerRow()) - static_cast<short>(GameConstants::box_width), 30 }, 1, 2, clear);
 }
 void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool clear)
 {
@@ -252,7 +252,7 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 		{LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::win_ratio],std::to_string(winrate).substr(0, static_cast<int>(std::to_string(winrate).size()) - 4) + '%'},
 		{LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::games_in_total], std::to_string(best_games_in_total)},
 		{LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::average_place], std::to_string(best_place)} };
-	ShowLobbyInformation(LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::tour_information_title], vector, { static_cast<short>(main_window->GetCharactersPerRow()) - static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()), 19 }, 1, 2, clear);
+	ShowLobbyInformation(LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::tour_information_title], vector, { static_cast<short>(main_window->GetCharactersPerRow()) - static_cast<short>(GameConstants::box_width), 19 }, 1, 2, clear);
 }
 void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear)
 {
@@ -260,7 +260,7 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 	mutex.lock();
 	if (clear)
 	{
-		const int border_size = static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size());
+		const int border_size = GameConstants::box_width;
 		if (title != "")
 		{
 			SetConsoleCursorPosition(handle, { base_position.X, base_position.Y });
@@ -281,12 +281,12 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 		if (title != "")
 		{
 			SetConsoleTextAttribute(handle, *main_window->secondary_color);
-			SetConsoleCursorPosition(handle, { base_position.X + static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()) / 2 - static_cast<short>(title.size()) / 2, base_position.Y });
+			SetConsoleCursorPosition(handle, { base_position.X + static_cast<short>(GameConstants::box_width) / 2 - static_cast<short>(title.size()) / 2, base_position.Y });
 			std::cout << title;
 		}
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
+		std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
 		for (short i = 0; i < static_cast<short>(text.size()); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
@@ -297,7 +297,7 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 		}
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
-		std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::border];
+		std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
 	}
 	mutex.unlock();
 }
@@ -347,7 +347,7 @@ void SinglePlayer::ShowLoading(std::string title, int & init, int condition, boo
 		int iteration = 0;
 		while (init != condition)
 		{
-			std::string loading_wheel = LanguagePack::text[LanguagePack::other_strings][OtherStrings::loading_wheel];;
+			std::string loading_wheel = GetMonoCharacterString(8, 'o');
 			iteration = (iteration + 1) % 8;
 			for (int i = 0; i < 4; ++i)
 			{
@@ -1203,7 +1203,7 @@ void SinglePlayer::Interface()
 		std::cout << possible_actions[i];
 	}
 	mutex.unlock();
-	const short x = static_cast<short>(main_window->GetCharactersPerRow() - static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::border].size()));
+	const short x = static_cast<short>(main_window->GetCharactersPerRow() - static_cast<short>(GameConstants::box_width));
 	const std::vector<std::tuple<std::string, COORD, short>> boxes = { {LanguagePack::text[LanguagePack::race_box_names][0], {0, static_cast<short>(main_window->GetCharactersPerColumn() - 15)}, 12 },
 				{ LanguagePack::text[LanguagePack::race_box_names][1], { x, static_cast<short>(main_window->GetCharactersPerColumn() - 20) }, 17},
 				{ LanguagePack::text[LanguagePack::race_box_names][2],  { x, static_cast<short>(main_window->GetCharactersPerColumn() - 31) }, 7 } };

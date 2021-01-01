@@ -61,4 +61,5 @@ namespace GameConstants
 	const int attack_backward_distance = 6;
 	const float drift_value = 2.0f;
 	const float friction_scalar = 0.9f;
+	const int box_width = 84;
 }

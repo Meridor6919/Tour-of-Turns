@@ -219,10 +219,6 @@ bool Validation::ValidateLanguagePack()
 	{
 		return false;
 	}
-	if (static_cast<int>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::loading_wheel].size()) != 8)
-	{
-		return false;
-	}
 	if (static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_client_lobby].size()) < Multiplayer::last)
 	{
 		return false;
