@@ -313,7 +313,7 @@ void FileManagement::SaveRanking(RankingDetails ranking_info)
 		temp = "";
 		for (int j = 0; j < Validation::ranking_classification; ++j)
 		{
-			temp += UpdateRankingFavorites(GetSeparatedValue(ranking_data[racer_index + 9 + i], j), i % 2 ? ranking_info.tires : ranking_info.car, 1) + "\t";
+			temp += UpdateRankingFavorites(GetSeparatedValue(ranking_data[racer_index + 9 + i], j), i % 2 ? ranking_info.tires : ranking_info.car) + "\t";
 		}
 		ranking_data[racer_index + 9 + i] = temp.substr(0, static_cast<int>(temp.size()) - 1);
 	}
@@ -378,7 +378,7 @@ std::string FileManagement::GetSeparatedValue(const std::string &text, int index
 	int count = 0;
 	for (int i = 0; i < static_cast<int>(text.size()); ++i)
 	{
-		if ((text[i] == '\t') || (i + 1 == static_cast<int>(text.size())))
+		if ((text[i] == separator) || (i + 1 == static_cast<int>(text.size())))
 		{
 			if (!index)
 			{
@@ -394,82 +394,77 @@ std::string FileManagement::GetSeparatedValue(const std::string &text, int index
 	}
 	return text.substr(start, count);
 }
-std::string FileManagement::GetRankingFavourite(std::string text)
+std::string FileManagement::SetSeparatedValue(const std::string& original_text, const std::string& text_to_place, int index, char separator)
 {
-	std::string current_phrase = "";
-	std::string current_value = "";
-	std::string ret = "";
-	int highest_value = 0;
-	bool phrase_value_flag = true;
-
-	for (int i = 0; i < static_cast<int>(text.size()); ++i)
+	int start = 0;
+	int count = 0;
+	std::string ret;
+	int original_text_size = static_cast<int>(original_text.size());
+	for (int i = 0; i < original_text_size; ++i)
 	{
-		if (text[i] == ':')
+		if ((original_text[i] == separator) || (i + 1 == original_text_size))
 		{
-			phrase_value_flag = !phrase_value_flag;
-			if (phrase_value_flag)
+			if (!index)
 			{
-				if (atoi(current_value.c_str()) > highest_value)
-				{
-					ret = current_phrase;
-					highest_value = atoi(current_value.c_str());
-					current_phrase = "";
-					current_value = "";
-				}
+				count = i - start + (i + 1 == static_cast<int>(original_text.size()));
+				return original_text.substr(0, start) + text_to_place + original_text.substr(start + count, original_text_size - start - count - 1);
+			}
+			else
+			{
+				--index;
+				start = i + 1;
 			}
 		}
-		else if (phrase_value_flag)
+	}
+	return original_text;
+}
+
+std::string FileManagement::GetRankingFavourite(const std::string& text)
+{
+	std::string ret = "";
+	int highest_value = 0;
+
+	for(int i = 0; true; ++i)
+	{
+		std::string instance = GetSeparatedValue(text, i, ';');
+		if (instance.size() > 0)
 		{
-			current_phrase += text[i];
+			int occurences = atoi(GetSeparatedValue(instance, 1, ':').c_str());
+			if (occurences >= highest_value)
+			{
+				highest_value = occurences;
+				ret = GetSeparatedValue(instance, 0, ':');
+			}
 		}
 		else
 		{
-			current_value += text[i];
+			break;
 		}
 	}
 	return ret;
 }
-std::string FileManagement::UpdateRankingFavorites(std::string text, std::string phrase, int added_value)
+std::string FileManagement::UpdateRankingFavorites(const std::string& text, const std::string& record_id)
 {
-	if (!added_value)
-	{
-		return "";
-	}
-	bool phrase_value_flag = true;
-	std::string current_phrase = "";
-	std::string value = "";
-	int phrase_index = -1;
+	std::string ret = "";
+	int highest_value = 0;
 
-	for (int i = 0; i < static_cast<int>(text.size()); ++i)
+	for (int i = 0; true; ++i)
 	{
-		if (text[i] == ':')
+		std::string instance = GetSeparatedValue(text, i, ';');
+		if (instance.size() > 0)
 		{
-			phrase_value_flag = !phrase_value_flag;
-			if (!phrase_value_flag)
+			std::string subtext = GetSeparatedValue(instance, 0, ':');
+			if (subtext == record_id)
 			{
-				if (current_phrase == phrase)
-				{
-					phrase_index = i;
-				}
+				int occurences = atoi(GetSeparatedValue(instance, 1, ':').c_str());
+				std::string first_part = SetSeparatedValue(instance, std::to_string(occurences + 1), 1, ':');
+				return SetSeparatedValue(text, first_part, i, ';');
 			}
-			else
-			{
-				if (phrase_index != -1)
-				{
-					return text.substr(0, phrase_index + 1) + std::to_string(atoi(value.c_str()) + added_value) + text.substr(i, static_cast<int>(text.size()) - i);
-				}
-				current_phrase = "";
-				value = "";
-			}
-		}
-		else if (phrase_value_flag)
-		{
-			current_phrase += text[i];
 		}
 		else
 		{
-			value += text[i];
+			break;
 		}
 	}
-	return text + phrase + ':' + std::to_string(added_value) + ':';
+	return text;
 }

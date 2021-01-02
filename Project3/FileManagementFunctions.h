@@ -27,9 +27,10 @@ namespace FileManagement
 
 	void RemoveExtension(std::vector<std::string>& vector, std::string extension);
 	std::string GetSeparatedValue(const std::string& text, int index, char separator = '\t');
+	std::string SetSeparatedValue(const std::string& original_text, const std::string& text_to_put, int index, char separator = '\t');
 
-	std::string GetRankingFavourite(std::string text);
-	std::string UpdateRankingFavorites(std::string text, std::string phrase, int added_value);
+	std::string GetRankingFavourite(const std::string& text);
+	std::string UpdateRankingFavorites(const std::string& text, const std::string& record_id);
 };
 
 
