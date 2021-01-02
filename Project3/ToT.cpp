@@ -199,7 +199,8 @@ void ToT::Credits()
 	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::credits], 0, { game_window_center,25 }, TextAlign::center, 3, 0 };
 	OrdinaryText(text_info, *main_window->GetWindowInfo());
 	_getch();
-	ClearOrdinaryText(text_info, *main_window->GetWindowInfo());
+	text_info.clear_after = true;
+	OrdinaryText(text_info, *main_window->GetWindowInfo());
 }
 void ToT::Options()
 {
@@ -348,7 +349,7 @@ void ToT::Ranking()
 				const int temp = racer_pos;
 				Text::TextInfo text_info = { GetRankingNames(FolderName::tour + '\\' + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, TextAlign::left, 0, true };
 				racer_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-				if(temp != racer_pos)
+				if(temp != racer_pos && racer_pos >= 0)
 				{
 					ShowRankingDetails(starting_map_path, temp, classification_type, true);
 					ShowRankingDetails(starting_map_path, racer_pos, classification_type);
@@ -392,13 +393,14 @@ void ToT::Info()
 	const short spacing = 3;
 	const COORD text_pos = { game_window_center, 28 };
 	const COORD title_pos = { game_window_center - 2, text_pos.Y - 3 };
-	const Text::TextInfo ordinary_text_info = { LanguagePack::text[LanguagePack::gamepedia_introduction + info_pos], 0, text_pos, text_align_content, spacing, 0 };
+	Text::TextInfo ordinary_text_info = { LanguagePack::text[LanguagePack::gamepedia_introduction + info_pos], 0, text_pos, text_align_content, spacing, 0 };
 	while (true)
 	{
 		OrdinaryText(ordinary_text_info, *main_window->GetWindowInfo());
 		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::gamepedia_sections], info_pos, title_pos, text_align_title, 0, false };
 		int temp_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-		ClearOrdinaryText(ordinary_text_info, *main_window->GetWindowInfo());
+		ordinary_text_info.clear_after = true;
+		OrdinaryText(ordinary_text_info, *main_window->GetWindowInfo());
 		if (temp_pos == info_pos)
 		{
 			const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::gamepedia_sections][info_pos].size());
@@ -408,7 +410,6 @@ void ToT::Info()
 		}
 		info_pos = temp_pos;
 	}
-	ClearOrdinaryText(ordinary_text_info, *main_window->GetWindowInfo());
 }
 void ToT::Game(const bool multiplayer)
 {
