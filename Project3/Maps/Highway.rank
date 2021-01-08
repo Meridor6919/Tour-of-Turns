@@ -1,87 +1,99 @@
 Meridor
+8	8	0
+
+
+
+
+8	8	0
+
+
+
+mikrus:3;delta:5	mikrus:3;delta:5	mikrus:3;delta:5
+A1:8	A1:8	A1:8
+Krug Dudeski
 2	2	0
-
-
-
-
-2	2	0
-
-
-
-mikrus:2:	mikrus:2:	mikrus:2:
-A1:2:	A1:2:	A1:2:
-Victor Shalimov
+0	0	0
+7	7	0
+144	144	0
+68	68	0
+0	0	0
+6	6	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Naohiro Matsumara
 1	1	0
 0	0	0
-2	2	0
+3	3	0
 68	68	0
 68	68	0
 0	0	0
 3	3	0
 0	0	0
 0	0	0
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Maciek Kowalczyk
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Matthew Henderson
+2	2	0
+2	2	0
+2	2	0
+131	131	0
+65	65	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Brendon Jani
+3	3	0
+0	0	0
+13	13	0
+212	212	0
+68	68	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:3	mikrus:3	mikrus:3
+A1:3	A1:3	A1:3
+John Schneider
 1	1	0
-
-
-
-
+0	0	0
+6	6	0
+74	74	0
+74	74	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Brian Kazimierczyk
 1	1	0
-
-
-
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Steven Ricer
-1	1	0
+0	0	0
+4	4	0
+68	68	0
+68	68	0
 0	0	0
 3	3	0
-69	69	0
-69	69	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Marlon Torres
+2	2	0
+0	0	0
+13	13	0
+154	154	0
+77	77	0
 0	0	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Quintin Herzog
-1	1	0
-1	1	0
-1	1	0
-68	68	0
-68	68	0
-0	0	0
-0	0	0
-0	0	0
-0	0	0
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Barbara Hudson
-1	1	0
-
-
-
-
-1	1	0
-
-
-
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Hans Ufner
-1	1	0
-
-
-
-
-1	1	0
-
-
-
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Leon Guerin
 1	1	0
 
@@ -92,9 +104,9 @@ Leon Guerin
 
 
 
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Mark Driver
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Akinori Koyama
 1	1	0
 
 
@@ -104,20 +116,164 @@ Mark Driver
 
 
 
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Lester King
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Patricia Bradley
 1	1	0
-1	1	0
-1	1	0
+0	0	0
+4	4	0
 68	68	0
 68	68	0
 0	0	0
+3	3	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Siegfried Krause
+1	1	0
+1	1	0
+1	1	0
+66	66	0
+66	66	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Andrew Anderson
+1	1	0
+
+
+
+
+1	1	0
+
+
+
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Angel Fitzgerald
+1	1	0
+0	0	0
+2	2	0
+67	67	0
+67	67	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Vladimir Zhdanovich
+1	1	0
+0	0	0
+2	2	0
+68	68	0
+68	68	0
+0	0	0
+3	3	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Armand Buchard
+1	1	0
+
+
+
+
+1	1	0
+
+
+
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Boris Chukarin
+2	2	0
+1	1	0
+4	4	0
+138	138	0
+68	68	0
+0	0	0
+6	6	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Helga Dick
+2	2	0
+0	0	0
+7	7	0
+140	140	0
+68	68	0
+0	0	0
+6	6	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Max McDonald
+2	2	0
+2	2	0
+2	2	0
+133	133	0
+65	65	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Sergei Kolotov
+1	1	0
+0	0	0
+6	6	0
+80	80	0
+80	80	0
+0	0	0
+1	1	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Jerrod Presley
+3	3	0
+1	1	0
+11	11	0
+210	210	0
+66	66	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:3	mikrus:3	mikrus:3
+A1:3	A1:3	A1:3
+Juan Campbell
+1	1	0
+0	0	0
+5	5	0
+74	74	0
+74	74	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Kenji Morita
+2	2	0
+
+
+
+
+2	2	0
+
+
+
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Leonid Ragulin
 1	1	0
 0	0	0
@@ -128,9 +284,45 @@ Leonid Ragulin
 3	3	0
 0	0	0
 0	0	0
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Jeff Miller
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Sui Cide
+2	2	0
+0	0	0
+7	7	0
+136	136	0
+68	68	0
+0	0	0
+6	6	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Quality Racer
+1	1	0
+0	0	0
+2	2	0
+68	68	0
+68	68	0
+0	0	0
+3	3	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Blu Apostrof
+2	2	0
+1	1	0
+6	6	0
+138	138	0
+68	68	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Nikita Maleev
 1	1	0
 0	0	0
 3	3	0
@@ -140,21 +332,33 @@ Jeff Miller
 3	3	0
 0	0	0
 0	0	0
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Austin Bryant
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Carl Crossett
 1	1	0
 0	0	0
 4	4	0
-70	70	0
-70	70	0
+68	68	0
+68	68	0
+0	0	0
+3	3	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Chad Sutton
+3	3	0
+0	0	0
+16	16	0
+223	223	0
+72	72	0
 0	0	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Kenji Morita
+mikrus:3	mikrus:3	mikrus:3
+A1:3	A1:3	A1:3
+Nikolai Yakubik
 1	1	0
 
 
@@ -164,17 +368,125 @@ Kenji Morita
 
 
 
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
-Mohammad Lundberg
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Gordon Goodman
+1	1	0
+0	0	0
+2	2	0
+67	67	0
+67	67	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Angelo Goodwin
+1	1	0
+0	0	0
+3	3	0
+68	68	0
+68	68	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Schultz Vogel
+1	1	0
+
+
+
+
+1	1	0
+
+
+
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Victor Shalimov
+1	1	0
+0	0	0
+4	4	0
+68	68	0
+68	68	0
+0	0	0
+3	3	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Yasuaki Tanikawa
+1	1	0
+
+
+
+
+1	1	0
+
+
+
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Oscar Homburger
+1	1	0
+0	0	0
+2	2	0
+68	68	0
+68	68	0
+0	0	0
+3	3	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Olga Gorokhova
+2	2	0
+0	0	0
+6	6	0
+144	144	0
+68	68	0
+0	0	0
+6	6	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Frank Sharpe
+1	1	0
+
+
+
+
+1	1	0
+
+
+
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Omer Seaton
 1	1	0
 0	0	0
 5	5	0
-72	72	0
-72	72	0
+70	70	0
+70	70	0
 0	0	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:1:	mikrus:1:	mikrus:1:
-A1:1:	A1:1:	A1:1:
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Leszek Murzyn
+1	1	0
+0	0	0
+7	7	0
+80	80	0
+80	80	0
+0	0	0
+1	1	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1

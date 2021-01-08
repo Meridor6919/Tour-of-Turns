@@ -376,13 +376,14 @@ std::string FileManagement::GetSeparatedValue(const std::string &text, int index
 {
 	int start = 0;
 	int count = 0;
-	for (int i = 0; i < static_cast<int>(text.size()); ++i)
+	int text_size = static_cast<int>(text.size());
+	for (int i = 0; i < text_size; ++i)
 	{
-		if ((text[i] == separator) || (i + 1 == static_cast<int>(text.size())))
+		if ((text[i] == separator) || (i + 1 == text_size))
 		{
 			if (!index)
 			{
-				count = i - start + (i + 1 == static_cast<int>(text.size()));
+				count = i - start + (i + 1 == text_size);
 				break;
 			}
 			else
@@ -406,8 +407,8 @@ std::string FileManagement::SetSeparatedValue(const std::string& original_text, 
 		{
 			if (!index)
 			{
-				count = i - start + (i + 1 == static_cast<int>(original_text.size()));
-				return original_text.substr(0, start) + text_to_place + original_text.substr(start + count, original_text_size - start - count - 1);
+				count = i - start + (i + 1 == original_text_size);
+				return original_text.substr(0, start) + text_to_place + original_text.substr(start + count, original_text_size - start - count);
 			}
 			else
 			{
@@ -447,7 +448,6 @@ std::string FileManagement::UpdateRankingFavorites(const std::string& text, cons
 {
 	std::string ret = "";
 	int highest_value = 0;
-
 	for (int i = 0; true; ++i)
 	{
 		std::string instance = GetSeparatedValue(text, i, ';');
@@ -463,7 +463,14 @@ std::string FileManagement::UpdateRankingFavorites(const std::string& text, cons
 		}
 		else
 		{
-			break;
+			if (i == 0)
+			{
+				return text + record_id + ":1";
+			}
+			else
+			{
+				return text + ';' + record_id + ":1";
+			}
 		}
 	}
 	return text;
