@@ -29,7 +29,7 @@ std::vector<std::string> FileManagement::GetRankingNames(std::string tour)
 	fvar.close();
 	return ret;
 }
-ToTConfig FileManagement::LoadWindowConfig(int *main_color, int *secondary_color)
+ToTConfig FileManagement::LoadGameConfig()
 {
 	std::fstream fvar;
 	ToTConfig ret = {};
@@ -37,15 +37,15 @@ ToTConfig FileManagement::LoadWindowConfig(int *main_color, int *secondary_color
 	ret.music_volume = 1.0f;
 	ret.ais = 0;
 
-	fvar.open(FolderName::main + '\\' + FileName::config, std::ios::in);
-	fvar >> (*main_color);
-	fvar >> (*secondary_color);
+	fvar.open(FolderName::main + '\\' + FileName::game_config, std::ios::in);
 	fvar >> ret.music_volume;
 	fvar >> ret.hamachi_flag;
 	fvar >> ret.ais;
 	fvar >> ret.name;
 	fvar >> ret.lang;
 	fvar >> ret.timer_settings;
+	
+
 	fvar.close();
 
 	bool name_valid = true;
@@ -85,14 +85,6 @@ ToTConfig FileManagement::LoadWindowConfig(int *main_color, int *secondary_color
 			exit(0);
 		}
 	}
-	if ((*main_color) < 0 || (*main_color) > 15)
-	{
-		(*main_color) = 15;
-	}
-	if ((*secondary_color) < 0 || (*secondary_color) > 15)
-	{
-		(*secondary_color) = 10;
-	}
 	if (ret.ais < 0 || ret.ais > 7)
 	{
 		ret.ais = 7;
@@ -106,6 +98,31 @@ ToTConfig FileManagement::LoadWindowConfig(int *main_color, int *secondary_color
 		ret.timer_settings = 0;
 	}
 	return ret;
+}
+MeridorConsoleLib::WindowInfoEx FileManagement::LoadWindowConfig()
+{
+	MeridorConsoleLib::WindowInfoEx ret = {};
+	std::ifstream fvar;
+
+	fvar.open(FolderName::main + '\\' + FileName::window_config, std::ios::in);
+
+	fvar >> ret.title;
+	fvar >> ret.characters_capacity.X;
+	fvar >> ret.characters_capacity.Y;
+	fvar >> ret.main_color;
+	fvar >> ret.secondary_color;
+	fvar >> ret.visible_cursor;
+	fvar >> reinterpret_cast<std::underlying_type<MeridorConsoleLib::WindowMode>::type&>(ret.window_mode);
+
+	if (ret.main_color < 0 || ret.main_color > 15)
+	{
+		ret.main_color = 15;
+	}
+	if (ret.secondary_color < 0 || ret.secondary_color > 15)
+	{
+		ret.secondary_color = 10;
+	}
+	return MeridorConsoleLib::WindowInfoEx();
 }
 void FileManagement::LoadLanguagePack(std::string path)
 {
@@ -342,25 +359,38 @@ bool FileManagement::SaveFileNames(std::string src_path, std::string dst_path, c
 	}
 	return true;
 }
-void FileManagement::SaveWindowConfig(ToTConfig window_config, int main_color, int secondary_color)
+void FileManagement::SaveGameConfig(const ToTConfig &window_config)
 {
-	for (int i = 0; i < static_cast<int>(window_config.name.size()); ++i)
+	std::string name = window_config.name;;
+	for (int i = 0; i < static_cast<int>(name.size()); ++i)
 	{
-		if (window_config.name[i] == ' ')
+		if (name[i] == ' ')
 		{
-			window_config.name[i] = '_';
+			name[i] = '_';
 		}
 	}
 	std::ofstream fvar;
-	fvar.open(FolderName::main + '\\' + FileName::config);
-	fvar << main_color << '\n';
-	fvar << secondary_color << '\n';
+	fvar.open(FolderName::main + '\\' + FileName::game_config);
 	fvar << window_config.music_volume << '\n';
 	fvar << window_config.hamachi_flag << '\n';
 	fvar << window_config.ais << '\n';
-	fvar << window_config.name + '\n';
+	fvar << name + '\n';
 	fvar << window_config.lang + '\n';
 	fvar << window_config.timer_settings << '\n';
+	fvar.close();
+}
+
+void FileManagement::SaveWindowConfig(const MeridorConsoleLib::WindowInfoEx& window_info_ex)
+{
+	std::ofstream fvar;
+	fvar.open(FolderName::main + '\\' + FileName::window_config);
+	fvar << window_info_ex.title << '\n';
+	fvar << window_info_ex.characters_capacity.X << '\n';
+	fvar << window_info_ex.characters_capacity.Y << '\n';
+	fvar << window_info_ex.main_color << '\n';
+	fvar << window_info_ex.secondary_color << '\n';
+	fvar << window_info_ex.visible_cursor << '\n';
+	fvar << static_cast<int>(window_info_ex.window_mode) << '\n';
 	fvar.close();
 }
 

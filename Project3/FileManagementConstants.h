@@ -14,7 +14,8 @@ namespace FileName
 	const std::string tire = "Tire.txt";
 	const std::string tour = "Tour.txt";
 	const std::string ranking = "Ranking.txt";
-	const std::string config = "config.txt";
+	const std::string game_config = "game_config.txt";
+	const std::string window_config = "window_config.txt";
 	const std::string music = "test.wav";
 	const std::string language = "lang.txt";
 	const std::string ai = "ToTAI.exe";

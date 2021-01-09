@@ -3,7 +3,7 @@
 ToT_Window::ToT_Window(const WindowInfoEx& window_info) : Window(window_info)
 {
 	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
-	tot_config = LoadWindowConfig(main_color, secondary_color);
+	tot_config = LoadGameConfig();
 	wav_transformer.StartPlaying(tot_config.music_volume);
 }
 const ToTConfig& ToT_Window::GetToTConfig()

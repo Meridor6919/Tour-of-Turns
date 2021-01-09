@@ -13,7 +13,8 @@ namespace FileManagement
 	std::vector<std::string> GetTireNames();
 	std::vector<std::string> GetCarNames(std::string tour);
 	std::vector<std::string> GetRankingNames(std::string tour);
-	ToTConfig LoadWindowConfig(int* main_color, int* secondary_color);
+	ToTConfig LoadGameConfig();
+	MeridorConsoleLib::WindowInfoEx LoadWindowConfig();
 	void LoadLanguagePack(std::string path);
 
 	std::vector<std::string> GetTourParameters(std::string tour, int position, int visibility);
@@ -23,7 +24,8 @@ namespace FileManagement
 
 	void SaveRanking(RankingDetails ranking_info);
 	bool SaveFileNames(std::string src_path, std::string dst_path, const std::string ext, HANDLE handle);
-	void SaveWindowConfig(ToTConfig window_config, int main_color, int secondary_color);
+	void SaveGameConfig(const ToTConfig &window_config);
+	void SaveWindowConfig(const MeridorConsoleLib::WindowInfoEx& window_info_ex);
 
 	void RemoveExtension(std::vector<std::string>& vector, std::string extension);
 	std::string GetSeparatedValue(const std::string& text, int index, char separator = '\t');

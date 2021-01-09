@@ -625,7 +625,7 @@ bool SinglePlayer::GameLobby()
 			}
 			case 7://Back
 			{
-				SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color);
+				SaveGameConfig(main_window->GetToTConfig());
 				return false;
 			}
 		}
@@ -641,7 +641,7 @@ bool SinglePlayer::GameLobby()
 		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_options][i].size()));
 		mutex.unlock();
 	}
-	SaveWindowConfig(main_window->GetToTConfig(), *main_window->main_color, *main_window->secondary_color);
+	SaveGameConfig(main_window->GetToTConfig());
 	ShowTiresParameters(tires[tires_pos] + ExtName::tire, true);
 	ShowCarParameters(cars[cars_pos] + ExtName::car, true);
 	ShowTourParameters(tours[tours_pos] + ExtName::tour, true);
