@@ -12,9 +12,10 @@ void ToT_Window::Init()
 	hamachi_flag = tot_window_config.hamachi_flag;
 
 	tot_game_config = LoadGameConfig();
-	wav_transformer.StartPlaying(music_volume);
-
 	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
+	
+	SetMusic(music_volume);
+
 	Window::Init(window_info);
 }
 const ToTGameConfig& ToT_Window::GetToTGameConfig()
