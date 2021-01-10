@@ -13,14 +13,18 @@ using namespace Validation;
 class ToT_Window : public Window
 {
 protected:
-	ToTConfig tot_config;
+
+	float music_volume;
+	bool hamachi_flag;
+	ToTGameConfig tot_game_config;
 	WavTransformer wav_transformer;
 
 public:
-	ToT_Window(const WindowInfoEx& window_info);
+	void Init();
 
 	//Get methods
-	const ToTConfig& GetToTConfig();
+	const ToTGameConfig& GetToTGameConfig();
+	ToTWindowConfig GetToTWindowConfig();
 	bool GetHamachiConnectionFlag();
 	int GetAIs();
 	std::string GetName();

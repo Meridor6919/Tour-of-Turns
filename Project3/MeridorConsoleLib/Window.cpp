@@ -48,25 +48,16 @@ COORD MeridorConsoleLib::Window::GetLargestConsoleWindow()
 	return { x, y };
 }
 
-void MeridorConsoleLib::Window::SetConsoleEditMode(bool enable)
-{
-	DWORD prev_mode;
-	DWORD quick_edit_flag = enable ? ENABLE_QUICK_EDIT_MODE : ~ENABLE_QUICK_EDIT_MODE;
-	HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
-	GetConsoleMode(input_handle, &prev_mode);
-	SetConsoleMode(input_handle, prev_mode & quick_edit_flag | ENABLE_EXTENDED_FLAGS);
-}
-
-MeridorConsoleLib::Window::Window(const WindowInfoEx& window_info_ex)
+void MeridorConsoleLib::Window::Init(const WindowInfoEx& window_info_ex)
 {
 	this->window_info = window_info_ex;
 	main_color = &window_info.main_color;
 	secondary_color = &window_info.secondary_color;
-	
+
 	window_immobilizer.Init(this);
 	SetConsoleTitle(window_info_ex.title.c_str());
 	AdjustFontSize();
-	SetWindowSize();					
+	SetWindowSize();
 	SetCursor(window_info.visible_cursor);
 	SetConsoleEditMode(false);
 
@@ -74,6 +65,15 @@ MeridorConsoleLib::Window::Window(const WindowInfoEx& window_info_ex)
 	{
 		window_immobilizer.Start();
 	}
+}
+
+void MeridorConsoleLib::Window::SetConsoleEditMode(bool enable)
+{
+	DWORD prev_mode;
+	DWORD quick_edit_flag = enable ? ENABLE_QUICK_EDIT_MODE : ~ENABLE_QUICK_EDIT_MODE;
+	HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
+	GetConsoleMode(input_handle, &prev_mode);
+	SetConsoleMode(input_handle, prev_mode & quick_edit_flag | ENABLE_EXTENDED_FLAGS);
 }
 void MeridorConsoleLib::Window::BlockingSleep(const int miliseconds)
 {

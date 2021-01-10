@@ -2,18 +2,8 @@
 
 ToT::ToT()
 {
-	WindowInfoEx window_info = LoadWindowConfig();
-	window_info.handle = GetStdHandle(STD_OUTPUT_HANDLE);
-	window_info.hwnd = GetConsoleWindow();
-
-	window_info.characters_capacity = { 240, 70 };
-	window_info.main_color = 15;
-	window_info.secondary_color = 10;
-	window_info.title = "Tour of Turns";
-	window_info.window_mode = WindowMode::windowed_fullscreen;
-	window_info.visible_cursor = false;
-
-	this->main_window = std::make_shared<ToT_Window>(window_info);
+	main_window = std::make_shared<ToT_Window>();
+	main_window->Init();
 
 	CheckLangPackValid();
 	CheckPlayablity();
@@ -306,7 +296,7 @@ void ToT::Options()
 		}
 	}
 	Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
-	SaveWindowConfig(*main_window->GetWindowInfoEx());
+	SaveWindowConfig(main_window->GetToTWindowConfig());
 }
 void ToT::Ranking()
 {

@@ -29,17 +29,13 @@ std::vector<std::string> FileManagement::GetRankingNames(std::string tour)
 	fvar.close();
 	return ret;
 }
-ToTConfig FileManagement::LoadGameConfig()
+ToTGameConfig FileManagement::LoadGameConfig()
 {
 	std::fstream fvar;
-	ToTConfig ret = {};
-	ret.hamachi_flag = true;
-	ret.music_volume = 1.0f;
+	ToTGameConfig ret = {};
 	ret.ais = 0;
 
 	fvar.open(FolderName::main + '\\' + FileName::game_config, std::ios::in);
-	fvar >> ret.music_volume;
-	fvar >> ret.hamachi_flag;
 	fvar >> ret.ais;
 	fvar >> ret.name;
 	fvar >> ret.lang;
@@ -99,30 +95,32 @@ ToTConfig FileManagement::LoadGameConfig()
 	}
 	return ret;
 }
-MeridorConsoleLib::WindowInfoEx FileManagement::LoadWindowConfig()
+ToTWindowConfig FileManagement::LoadWindowConfig()
 {
-	MeridorConsoleLib::WindowInfoEx ret = {};
+	ToTWindowConfig ret = {};
 	std::ifstream fvar;
 
 	fvar.open(FolderName::main + '\\' + FileName::window_config, std::ios::in);
 
-	fvar >> ret.title;
-	fvar >> ret.characters_capacity.X;
-	fvar >> ret.characters_capacity.Y;
-	fvar >> ret.main_color;
-	fvar >> ret.secondary_color;
-	fvar >> ret.visible_cursor;
-	fvar >> reinterpret_cast<std::underlying_type<MeridorConsoleLib::WindowMode>::type&>(ret.window_mode);
+	fvar >> ret.window_info.title;
+	fvar >> ret.window_info.characters_capacity.X;
+	fvar >> ret.window_info.characters_capacity.Y;
+	fvar >> ret.window_info.main_color;
+	fvar >> ret.window_info.secondary_color;
+	fvar >> ret.window_info.visible_cursor;
+	fvar >> reinterpret_cast<std::underlying_type<MeridorConsoleLib::WindowMode>::type&>(ret.window_info.window_mode);
+	fvar >> ret.music_volume;
+	fvar >> ret.hamachi_flag;
 
-	if (ret.main_color < 0 || ret.main_color > 15)
+	if (ret.window_info.main_color < 0 || ret.window_info.main_color > 15)
 	{
-		ret.main_color = 15;
+		ret.window_info.main_color = 15;
 	}
-	if (ret.secondary_color < 0 || ret.secondary_color > 15)
+	if (ret.window_info.secondary_color < 0 || ret.window_info.secondary_color > 15)
 	{
-		ret.secondary_color = 10;
+		ret.window_info.secondary_color = 10;
 	}
-	return MeridorConsoleLib::WindowInfoEx();
+	return ret;
 }
 void FileManagement::LoadLanguagePack(std::string path)
 {
@@ -359,9 +357,9 @@ bool FileManagement::SaveFileNames(std::string src_path, std::string dst_path, c
 	}
 	return true;
 }
-void FileManagement::SaveGameConfig(const ToTConfig &window_config)
+void FileManagement::SaveGameConfig(const ToTGameConfig &game_config)
 {
-	std::string name = window_config.name;;
+	std::string name = game_config.name;;
 	for (int i = 0; i < static_cast<int>(name.size()); ++i)
 	{
 		if (name[i] == ' ')
@@ -371,26 +369,33 @@ void FileManagement::SaveGameConfig(const ToTConfig &window_config)
 	}
 	std::ofstream fvar;
 	fvar.open(FolderName::main + '\\' + FileName::game_config);
-	fvar << window_config.music_volume << '\n';
-	fvar << window_config.hamachi_flag << '\n';
-	fvar << window_config.ais << '\n';
+	fvar << game_config.ais << '\n';
 	fvar << name + '\n';
-	fvar << window_config.lang + '\n';
-	fvar << window_config.timer_settings << '\n';
+	fvar << game_config.lang + '\n';
+	fvar << game_config.timer_settings << '\n';
 	fvar.close();
 }
-
-void FileManagement::SaveWindowConfig(const MeridorConsoleLib::WindowInfoEx& window_info_ex)
+void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 {
+	std::string title = window_config.window_info.title;;
+	for (int i = 0; i < static_cast<int>(title.size()); ++i)
+	{
+		if (title[i] == ' ')
+		{
+			title[i] = '_';
+		}
+	}
 	std::ofstream fvar;
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
-	fvar << window_info_ex.title << '\n';
-	fvar << window_info_ex.characters_capacity.X << '\n';
-	fvar << window_info_ex.characters_capacity.Y << '\n';
-	fvar << window_info_ex.main_color << '\n';
-	fvar << window_info_ex.secondary_color << '\n';
-	fvar << window_info_ex.visible_cursor << '\n';
-	fvar << static_cast<int>(window_info_ex.window_mode) << '\n';
+	fvar << title << '\n';
+	fvar << window_config.window_info.characters_capacity.X << '\n';
+	fvar << window_config.window_info.characters_capacity.Y << '\n';
+	fvar << window_config.window_info.main_color << '\n';
+	fvar << window_config.window_info.secondary_color << '\n';
+	fvar << window_config.window_info.visible_cursor << '\n';
+	fvar << static_cast<int>(window_config.window_info.window_mode) << '\n';
+	fvar << window_config.music_volume << '\n';
+	fvar << window_config.hamachi_flag << '\n';
 	fvar.close();
 }
 

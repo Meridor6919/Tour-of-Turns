@@ -16,12 +16,12 @@ namespace MeridorConsoleLib
 		void SetWindowSize();
 		COORD GetLargestConsoleWindow();
 
+		void Init(const WindowInfoEx& window_info_ex);
 	public:
 
 		int* main_color;
 		int* secondary_color;
 		
-		Window(const WindowInfoEx& window_info);
 		void BlockingSleep(const int miliseconds);
 
 		const WindowInfo* GetWindowInfo();

@@ -1,58 +1,73 @@
 #include "ToT_Window.h"
 
-ToT_Window::ToT_Window(const WindowInfoEx& window_info) : Window(window_info)
+
+void ToT_Window::Init()
 {
+	ToTWindowConfig tot_window_config = LoadWindowConfig();
+
+	window_info = tot_window_config.window_info;
+	window_info.handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	window_info.hwnd = GetConsoleWindow();
+	music_volume = tot_window_config.music_volume;
+	hamachi_flag = tot_window_config.hamachi_flag;
+
+	tot_game_config = LoadGameConfig();
+	wav_transformer.StartPlaying(music_volume);
+
 	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
-	tot_config = LoadGameConfig();
-	wav_transformer.StartPlaying(tot_config.music_volume);
+	Window::Init(window_info);
 }
-const ToTConfig& ToT_Window::GetToTConfig()
+const ToTGameConfig& ToT_Window::GetToTGameConfig()
 {
-	return tot_config;
+	return tot_game_config;
+}
+ToTWindowConfig ToT_Window::GetToTWindowConfig()
+{
+	return { music_volume, hamachi_flag, window_info };
 }
 bool ToT_Window::GetHamachiConnectionFlag()
 {
-	return tot_config.hamachi_flag;
+	return hamachi_flag;
 }
 int ToT_Window::GetAIs()
 {
-	return tot_config.ais;
+	return tot_game_config.ais;
 }
 std::string ToT_Window::GetName()
 {
-	return tot_config.name;
+	return tot_game_config.name;
 }
 int ToT_Window::GetTimerSettings()
 {
-	return tot_config.timer_settings;
+	return tot_game_config.timer_settings;
 }
 std::string ToT_Window::GetLanguage()
 {
-	return tot_config.lang;
+	return tot_game_config.lang;
 }
 float ToT_Window::GetMusicVolume()
 {
-	return tot_config.music_volume;
+	return music_volume;
 }
 void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {
-	tot_config.hamachi_flag = flag;
+	hamachi_flag = flag;
 }
 void ToT_Window::SetAIs(int number_of_ais)
 {
-	tot_config.ais = number_of_ais;
+	tot_game_config.ais = number_of_ais;
 }
 void ToT_Window::SetName(std::string name)
 {
-	tot_config.name = name;
+	tot_game_config.name = name;
 }
 void ToT_Window::SetTimerSettings(int timer_settings)
 {
-	tot_config.timer_settings = timer_settings;
+	tot_game_config.timer_settings = timer_settings;
 }
 void ToT_Window::SetLanguage(std::string lang)
 {
-	tot_config.lang = lang;
+	tot_game_config.lang = lang;
 	LoadLanguagePack(FolderName::language + '\\' + lang);
 	if (!ValidateLanguagePack())
 	{
@@ -66,7 +81,7 @@ void ToT_Window::SetLanguage(std::string lang)
 			if (ValidateLanguagePack())
 			{
 				no_valid_lang_packs = false;
-				tot_config.lang = languages[i];
+				tot_game_config.lang = languages[i];
 				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language.c_str(), MB_TOPMOST);
 				break;
 			}
@@ -80,7 +95,7 @@ void ToT_Window::SetLanguage(std::string lang)
 }
 void ToT_Window::SetMusic(float volume)
 {
-	tot_config.music_volume = volume;
+	music_volume = volume;
 	wav_transformer.SetFlags(SND_ASYNC | SND_LOOP);
 	wav_transformer.StartPlaying(volume);
 }

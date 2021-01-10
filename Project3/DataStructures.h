@@ -1,14 +1,18 @@
 #pragma once
 #include ".\MeridorConsoleLib\DataStructures.h"
 
-struct ToTConfig
+struct ToTGameConfig
 {
 	std::string name;
-	float music_volume;
-	bool hamachi_flag;
 	int ais;
 	std::string lang;
 	int timer_settings;
+};
+struct ToTWindowConfig
+{
+	float music_volume;
+	bool hamachi_flag;
+	MeridorConsoleLib::WindowInfoEx window_info;
 };
 struct RankingDetails
 {
