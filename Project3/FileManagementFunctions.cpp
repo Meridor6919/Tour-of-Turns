@@ -3,11 +3,11 @@
 
 std::vector<std::string> FileManagement::GetTourNames()
 {
-	return MeridorConsoleLib::ReadFile(FolderName::tour + '\\' + FileName::tour);
+	return MeridorConsoleLib::GetFilesInDirectory(FolderName::tour);
 }
 std::vector<std::string> FileManagement::GetTireNames()
 {
-	return MeridorConsoleLib::ReadFile(FolderName::tire + '\\' + FileName::tire);
+	return MeridorConsoleLib::GetFilesInDirectory(FolderName::tire);
 }
 std::vector<std::string> FileManagement::GetCarNames(const std::string tour)
 {
@@ -62,7 +62,7 @@ ToTGameConfig FileManagement::LoadGameConfig()
 	{
 		MessageBox(0, (ret.lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 
-		std::vector<std::string> languages = MeridorConsoleLib::ReadFile(FolderName::language + '\\' + FileName::language);
+		std::vector<std::string> languages = MeridorConsoleLib::GetFilesInDirectory(FolderName::language);
 		bool no_valid_lang_packs = true;
 		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
 		{
@@ -251,7 +251,7 @@ std::vector<std::string> FileManagement::GetRankingDetails(std::string tour, int
 void FileManagement::SaveRanking(RankingDetails ranking_info)
 {
 	const bool classification[Validation::ranking_classification] = { true, ranking_info.ais == 7, ranking_info.multiplayer_flag };
-	const std::string ranking_path = FolderName::tour + '\\' + ranking_info.tour.substr(0, static_cast<int>(ranking_info.tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
+	const std::string ranking_path = FolderName::ranking + '\\' + ranking_info.tour.substr(0, static_cast<int>(ranking_info.tour.size()) - static_cast<int>(ExtName::tour.size())) + ExtName::ranking;
 	std::vector<std::string> ranking_data = { "" };
 	int racer_index = -1;
 	std::fstream fvar;
@@ -343,19 +343,6 @@ void FileManagement::SaveRanking(RankingDetails ranking_info)
 		fvar << ranking_data[i];
 	}
 	fvar.close();
-}
-bool FileManagement::SaveFileNames(std::string src_path, std::string dst_path, const std::string ext, HANDLE handle)
-{
-	dst_path = "dir " + src_path + "\\*" + ext + " > " + dst_path + " /b";
-	if (system(dst_path.c_str()))
-	{
-		//Clearing error message that shows in a console window by default when files not found
-		SetConsoleCursorPosition(handle, { 0,0 });
-		MeridorConsoleLib::Spaces(25);
-		SetConsoleCursorPosition(handle, { 0,0 });
-		return false;
-	}
-	return true;
 }
 void FileManagement::SaveGameConfig(const ToTGameConfig &game_config)
 {

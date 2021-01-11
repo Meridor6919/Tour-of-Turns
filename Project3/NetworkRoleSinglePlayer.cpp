@@ -211,7 +211,7 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 	int local_won_games;
 	int local_games_in_total;
 	int classification = 0 + (main_window->GetAIs() == 7);
-	fvar.open(FolderName::tour + '\\' + ranking_path);
+	fvar.open(FolderName::ranking + '\\' + ranking_path);
 	for (int i = 0; std::getline(fvar, temp); ++i)
 	{
 		if (i% Validation::ranking_details == 0)

@@ -1,2 +1,0 @@
-Highway.rank
-Mountain.rank

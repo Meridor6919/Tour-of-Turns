@@ -1,2 +1,0 @@
-Highway.tour
-Mountain.tour

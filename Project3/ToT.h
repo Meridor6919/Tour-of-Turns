@@ -17,8 +17,8 @@ class ToT {
 	short info_pos = 0;
 	short main_menu_position = 0;
 
-	bool playable;
-	bool ranking_enabled;
+	bool playable = true;
+	bool ranking_enabled = true;
 
 	void ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing = false);
 	void Title();

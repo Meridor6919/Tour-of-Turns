@@ -23,7 +23,6 @@ namespace FileManagement
 	std::vector<std::string> GetRankingDetails(std::string tour, int racer_pos, int classification_type);
 
 	void SaveRanking(RankingDetails ranking_info);
-	bool SaveFileNames(std::string src_path, std::string dst_path, const std::string ext, HANDLE handle);
 	void SaveGameConfig(const ToTGameConfig &game_config);
 	void SaveWindowConfig(const ToTWindowConfig& window_config);
 

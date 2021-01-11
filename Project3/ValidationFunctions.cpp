@@ -103,12 +103,12 @@ bool Validation::ValidateTireFiles()
 }
 bool Validation::ValidateRanking()
 {
-	std::vector<std::string> ranking_files = MeridorConsoleLib::ReadFile(FolderName::tour + '\\' + FileName::ranking);
+	std::vector<std::string> ranking_files = MeridorConsoleLib::GetFilesInDirectory(FolderName::ranking);
 	std::ifstream fvar;
 
 	for (short i = 0; i < static_cast<short>(ranking_files.size()); ++i)
 	{
-		fvar.open(FolderName::tour + '\\' + ranking_files[i]);
+		fvar.open(FolderName::ranking + '\\' + ranking_files[i]);
 		std::string line;
 		int iterations = 0;
 		for (; std::getline(fvar, line); ++iterations);

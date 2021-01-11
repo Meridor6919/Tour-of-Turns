@@ -1,15 +1,15 @@
 Meridor
-8	8	0
+10	10	0
 
 
 
 
-8	8	0
+10	10	0
 
 
 
-mikrus:3;delta:5	mikrus:3;delta:5	mikrus:3;delta:5
-A1:8	A1:8	A1:8
+mikrus:5;delta:5	mikrus:5;delta:5	mikrus:5;delta:5
+A1:9;T1:1	A1:9;T1:1	A1:9;T1:1
 Krug Dudeski
 2	2	0
 0	0	0
@@ -23,17 +23,17 @@ Krug Dudeski
 mikrus:2	mikrus:2	mikrus:2
 A1:2	A1:2	A1:2
 Naohiro Matsumara
-1	1	0
+2	2	0
 0	0	0
-3	3	0
+6	6	0
+140	140	0
 68	68	0
-68	68	0
 0	0	0
-3	3	0
+6	6	0
 0	0	0
 0	0	0
-mikrus:1	mikrus:1	mikrus:1
-A1:1	A1:1	A1:1
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Matthew Henderson
 2	2	0
 2	2	0
@@ -95,17 +95,17 @@ Marlon Torres
 mikrus:2	mikrus:2	mikrus:2
 A1:2	A1:2	A1:2
 Leon Guerin
-1	1	0
+2	2	0
 
 
 
 
-1	1	0
+2	2	0
 
 
 
-mikrus:1	mikrus:1	mikrus:1
-A1:1	A1:1	A1:1
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Akinori Koyama
 1	1	0
 
@@ -131,29 +131,29 @@ Patricia Bradley
 mikrus:1	mikrus:1	mikrus:1
 A1:1	A1:1	A1:1
 Siegfried Krause
+2	2	0
 1	1	0
-1	1	0
-1	1	0
+4	4	0
+138	138	0
 66	66	0
-66	66	0
 0	0	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:1	mikrus:1	mikrus:1
-A1:1	A1:1	A1:1
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Andrew Anderson
-1	1	0
+2	2	0
 
 
 
 
-1	1	0
+2	2	0
 
 
 
-mikrus:1	mikrus:1	mikrus:1
-A1:1	A1:1	A1:1
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Angel Fitzgerald
 1	1	0
 0	0	0
@@ -299,17 +299,17 @@ Sui Cide
 mikrus:2	mikrus:2	mikrus:2
 A1:2	A1:2	A1:2
 Quality Racer
-1	1	0
-0	0	0
 2	2	0
+0	0	0
+7	7	0
+144	144	0
 68	68	0
-68	68	0
 0	0	0
-3	3	0
+6	6	0
 0	0	0
 0	0	0
-mikrus:1	mikrus:1	mikrus:1
-A1:1	A1:1	A1:1
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Blu Apostrof
 2	2	0
 1	1	0
@@ -383,17 +383,17 @@ Gordon Goodman
 mikrus:1	mikrus:1	mikrus:1
 A1:1	A1:1	A1:1
 Angelo Goodwin
+2	2	0
 1	1	0
-0	0	0
-3	3	0
-68	68	0
-68	68	0
-0	0	0
+4	4	0
+134	134	0
+66	66	0
 0	0	0
 0	0	0
 0	0	0
-mikrus:1	mikrus:1	mikrus:1
-A1:1	A1:1	A1:1
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Schultz Vogel
 1	1	0
 
@@ -419,29 +419,29 @@ Victor Shalimov
 mikrus:1	mikrus:1	mikrus:1
 A1:1	A1:1	A1:1
 Yasuaki Tanikawa
-1	1	0
-
-
-
-
-1	1	0
-
-
-
-mikrus:1	mikrus:1	mikrus:1
-A1:1	A1:1	A1:1
-Oscar Homburger
-1	1	0
-0	0	0
 2	2	0
+
+
+
+
+2	2	0
+
+
+
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Oscar Homburger
+2	2	0
+0	0	0
+6	6	0
+144	144	0
 68	68	0
-68	68	0
 0	0	0
-3	3	0
+5	5	0
 0	0	0
 0	0	0
-mikrus:1	mikrus:1	mikrus:1
-A1:1	A1:1	A1:1
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
 Olga Gorokhova
 2	2	0
 0	0	0
@@ -486,6 +486,66 @@ Leszek Murzyn
 80	80	0
 0	0	0
 1	1	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Anatoly Samusenko
+2	2	0
+0	0	0
+4	4	0
+140	140	0
+68	68	0
+0	0	0
+6	6	0
+0	0	0
+0	0	0
+mikrus:2	mikrus:2	mikrus:2
+A1:2	A1:2	A1:2
+Yataka Tanida
+1	1	0
+
+
+
+
+1	1	0
+
+
+
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Chester Young
+1	1	0
+1	1	0
+1	1	0
+71	71	0
+71	71	0
+0	0	0
+0	0	0
+0	0	0
+0	0	0
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Masaharu Shoji
+1	1	0
+
+
+
+
+1	1	0
+
+
+
+mikrus:1	mikrus:1	mikrus:1
+A1:1	A1:1	A1:1
+Pierre Dreyfus
+1	1	0
+0	0	0
+4	4	0
+76	76	0
+76	76	0
+0	0	0
+3	3	0
 0	0	0
 0	0	0
 mikrus:1	mikrus:1	mikrus:1

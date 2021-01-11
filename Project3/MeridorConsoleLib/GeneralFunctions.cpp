@@ -29,3 +29,19 @@ std::vector<std::string> MeridorConsoleLib::ReadFile(const std::string path)
 	fvar.close();
 	return data;
 }
+
+std::vector<std::string> MeridorConsoleLib::GetFilesInDirectory(const std::string path)
+{
+	std::vector<std::string> data = {};
+
+	for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(path))
+	{
+		if (!entry.is_directory())
+		{
+			std::string record = entry.path().string();
+			record = record.substr(path.size() + 1, record.size() - path.size() - 1);
+			data.emplace_back(record);
+		}
+	}
+	return data;
+}

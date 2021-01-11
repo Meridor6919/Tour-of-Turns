@@ -74,7 +74,7 @@ void ToT_Window::SetLanguage(std::string lang)
 	{
 		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 
-		std::vector<std::string> languages = ReadFile(FolderName::language + '\\' + FileName::language);
+		std::vector<std::string> languages = GetFilesInDirectory(FolderName::language);
 		bool no_valid_lang_packs = true;
 		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
 		{
