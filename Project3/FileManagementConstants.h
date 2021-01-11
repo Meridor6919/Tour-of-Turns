@@ -3,12 +3,12 @@
 
 namespace FolderName
 {
-	const std::string tour = "Maps";
-	const std::string car = "Cars";
-	const std::string tire = "Tires";
-	const std::string ranking = "Rankings";
 	const std::string main = "GameFiles";
-	const std::string language = "LangPack";
+	const std::string tour = main + "\\Maps";
+	const std::string car = main + "\\Cars";
+	const std::string tire = main + "\\Tires";
+	const std::string ranking = main + "\\Rankings";
+	const std::string language = main + "\\LangPack";
 }
 namespace FileName
 {

@@ -3,7 +3,7 @@
 
 std::vector<std::string> FileManagement::GetTourNames()
 {
-	return MeridorConsoleLib::GetFilesInDirectory(FolderName::tour);
+	return MeridorConsoleLib::GetFilesInDirectory(FolderName::main + '\\' + FolderName::tour);
 }
 std::vector<std::string> FileManagement::GetTireNames()
 {
@@ -11,7 +11,7 @@ std::vector<std::string> FileManagement::GetTireNames()
 }
 std::vector<std::string> FileManagement::GetCarNames(const std::string tour)
 {
-	return MeridorConsoleLib::ReadFile(FolderName::tour + '\\' + tour);
+	return MeridorConsoleLib::ReadFile(FolderName::main + '\\' + FolderName::tour + '\\' + tour);
 }
 std::vector<std::string> FileManagement::GetRankingNames(std::string tour)
 {
@@ -152,7 +152,7 @@ std::vector<std::string> FileManagement::GetTourParameters(std::string tour, int
 	std::fstream fvar;
 	std::string helper;
 
-	fvar.open((FolderName::tour + '\\' + tour).c_str());
+	fvar.open((FolderName::main + '\\' + FolderName::tour + '\\' + tour).c_str());
 	do
 	{
 		std::getline(fvar, helper);
