@@ -3,7 +3,7 @@
 
 std::vector<std::string> FileManagement::GetTourNames()
 {
-	return MeridorConsoleLib::GetFilesInDirectory(FolderName::main + '\\' + FolderName::tour);
+	return MeridorConsoleLib::GetFilesInDirectory(FolderName::tour);
 }
 std::vector<std::string> FileManagement::GetTireNames()
 {
@@ -11,7 +11,7 @@ std::vector<std::string> FileManagement::GetTireNames()
 }
 std::vector<std::string> FileManagement::GetCarNames(const std::string tour)
 {
-	return MeridorConsoleLib::ReadFile(FolderName::main + '\\' + FolderName::tour + '\\' + tour);
+	return MeridorConsoleLib::ReadFile(FolderName::tour + '\\' + tour);
 }
 std::vector<std::string> FileManagement::GetRankingNames(std::string tour)
 {
@@ -33,7 +33,6 @@ ToTGameConfig FileManagement::LoadGameConfig()
 {
 	std::fstream fvar;
 	ToTGameConfig ret = {};
-	ret.ais = 0;
 
 	fvar.open(FolderName::main + '\\' + FileName::game_config, std::ios::in);
 	fvar >> ret.ais;
@@ -41,67 +40,15 @@ ToTGameConfig FileManagement::LoadGameConfig()
 	fvar >> ret.lang;
 	fvar >> ret.timer_settings;
 	
-
 	fvar.close();
-
-	bool name_valid = true;
-	for (int i = 0; i < static_cast<int>(ret.name.size()); ++i)
-	{
-		if (ret.name[i] == '_')
-		{
-			ret.name[i] = ' ';
-		}
-		else if (!(ret.name[i] >= 'a' && ret.name[i] <= 'z' || ret.name[i] >= 'A' && ret.name[i] <= 'Z'))
-		{
-			name_valid = false;
-			break;
-		}
-	}
-	LoadLanguagePack(FolderName::language + '\\' + ret.lang);
-	if (!Validation::ValidateLanguagePack())
-	{
-		MessageBox(0, (ret.lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
-
-		std::vector<std::string> languages = MeridorConsoleLib::GetFilesInDirectory(FolderName::language);
-		bool no_valid_lang_packs = true;
-		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
-		{
-			LoadLanguagePack(FolderName::language + '\\' + languages[i]);
-			if (Validation::ValidateLanguagePack())
-			{
-				no_valid_lang_packs = false;
-				ret.lang = languages[i];
-				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language.c_str(), MB_TOPMOST);
-				break;
-			}
-		}
-		if (no_valid_lang_packs)
-		{
-			MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), MB_TOPMOST);
-			exit(0);
-		}
-	}
-	if (ret.ais < 0 || ret.ais > 7)
-	{
-		ret.ais = 7;
-	}
-	if (static_cast<int>(ret.name.size()) < 1 || static_cast<int>(ret.name.size()) > GameConstants::maximum_name_length || !name_valid)
-	{
-		ret.name = LanguagePack::text[LanguagePack::other_strings][OtherStrings::default_name];
-	}
-	if (ret.timer_settings < 0 || ret.timer_settings > GameConstants::maximum_timer)
-	{
-		ret.timer_settings = 0;
-	}
 	return ret;
 }
 ToTWindowConfig FileManagement::LoadWindowConfig()
 {
-	ToTWindowConfig ret = {};
 	std::ifstream fvar;
+	ToTWindowConfig ret = {};
 
 	fvar.open(FolderName::main + '\\' + FileName::window_config, std::ios::in);
-
 	fvar >> ret.window_info.title;
 	fvar >> ret.window_info.characters_capacity.X;
 	fvar >> ret.window_info.characters_capacity.Y;
@@ -112,14 +59,7 @@ ToTWindowConfig FileManagement::LoadWindowConfig()
 	fvar >> ret.music_volume;
 	fvar >> ret.hamachi_flag;
 
-	if (ret.window_info.main_color < 0 || ret.window_info.main_color > 15)
-	{
-		ret.window_info.main_color = 15;
-	}
-	if (ret.window_info.secondary_color < 0 || ret.window_info.secondary_color > 15)
-	{
-		ret.window_info.secondary_color = 10;
-	}
+	fvar.close();
 	return ret;
 }
 void FileManagement::LoadLanguagePack(std::string path)
@@ -152,7 +92,7 @@ std::vector<std::string> FileManagement::GetTourParameters(std::string tour, int
 	std::fstream fvar;
 	std::string helper;
 
-	fvar.open((FolderName::main + '\\' + FolderName::tour + '\\' + tour).c_str());
+	fvar.open((FolderName::tour + '\\' + tour).c_str());
 	do
 	{
 		std::getline(fvar, helper);

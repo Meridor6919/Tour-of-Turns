@@ -21,6 +21,7 @@ namespace MeridorConsoleLib
 	{
 		fullscreen,
 		windowed_fullscreen,
+		last
 	};
 	struct WindowInfo
 	{

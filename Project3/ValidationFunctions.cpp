@@ -1,5 +1,72 @@
 #include "ValidationFunctions.h"
 
+void Validation::ValidateToTGameConfig(ToTGameConfig &game_config)
+{
+	bool name_valid = true;
+	bool space = true;
+	for (int i = 0; i < static_cast<int>(game_config.name.size()); ++i)
+	{
+		if (game_config.name[i] == '_')
+		{
+			game_config.name[i] = ' ';
+			if (space)
+			{
+				name_valid = false;
+				break;
+			}
+		}
+		if (!(MeridorConsoleLib::Between('a', 'z', game_config.name[i]) || MeridorConsoleLib::Between('A', 'Z', game_config.name[i])))
+		{
+			name_valid = false;
+			space = false;
+			break;
+		}
+	}
+	if (!MeridorConsoleLib::Between(0, 7, game_config.ais))
+	{
+		game_config.ais = 7;
+	}
+	if (!MeridorConsoleLib::Between(1, Validation::maximum_name_length, static_cast<int>(game_config.name.size())) || !name_valid)
+	{
+		game_config.name = LanguagePack::text[LanguagePack::other_strings][OtherStrings::default_name];
+	}
+	if (!MeridorConsoleLib::Between(0, Validation::maximum_timer, game_config.timer_settings))
+	{
+		game_config.timer_settings = 0;
+	}
+}
+void Validation::ValidateToTWindowConfig(ToTWindowConfig& window_config)
+{
+	if (window_config.window_info.characters_capacity.Y < Validation::minimum_window_size.Y)
+	{
+		window_config.window_info.characters_capacity.Y = Validation::minimum_window_size.Y;
+	}
+	if (window_config.window_info.characters_capacity.X < Validation::minimum_window_size.X)
+	{
+		window_config.window_info.characters_capacity.X = Validation::minimum_window_size.X;
+	}
+	if (!MeridorConsoleLib::Between(2, 15, window_config.window_info.main_color))
+	{
+		window_config.window_info.main_color = Validation::default_main_color;
+	}
+	if (!MeridorConsoleLib::Between(2, 15, window_config.window_info.secondary_color))
+	{
+		window_config.window_info.secondary_color = Validation::default_secondary_color;
+	}
+	if (window_config.window_info.secondary_color == window_config.window_info.main_color)
+	{
+		window_config.window_info.main_color = Validation::default_main_color;
+		window_config.window_info.secondary_color = Validation::default_secondary_color;
+	}
+	if (window_config.window_info.window_mode > MeridorConsoleLib::WindowMode::last)
+	{
+		window_config.window_info.window_mode = MeridorConsoleLib::WindowMode::fullscreen;
+	}
+	if (!MeridorConsoleLib::Between(0.0f, 1.0f, window_config.music_volume))
+	{
+		window_config.music_volume = 0;
+	}
+}
 bool Validation::ValidateGameFiles()
 {
 	return ValidateCarFiles() * ValidateTireFiles() * ValidateTourFiles();
@@ -24,7 +91,7 @@ bool Validation::ValidateTourFiles()
 		for (short j = 0; j < static_cast<short>(params.size()); ++j)
 		{
 			const short size_of_segment = static_cast<short>(params[j].size());
-			if (params[j][0] - 48 < 0 || params[j][0] - 48 >= TerrainTypes::last)//terrain type validation
+			if (!MeridorConsoleLib::Between(0, TerrainTypes::last -1, params[j][0] - 48))//terrain type validation
 			{
 				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 				return false;
@@ -41,7 +108,6 @@ bool Validation::ValidateTourFiles()
 			}
 		}
 	}
-
 	return true;
 }
 bool Validation::ValidateCarFiles()

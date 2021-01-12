@@ -154,7 +154,7 @@ bool Host::GameLobby()
 		{
 		case 0://choosing name
 		{
-			name = StringSelection(name, GameConstants::maximum_name_length, { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options_multiplayer][0].size()), 25 });
+			name = StringSelection(name, Validation::maximum_name_length, { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options_multiplayer][0].size()), 25 });
 			main_window->SetName(name);
 			break;
 		}
@@ -209,7 +209,7 @@ bool Host::GameLobby()
 		case 4: //timer
 		{
 			std::vector<std::string> timer_values = { LanguagePack::text[LanguagePack::on_off][1] };
-			for (int i = 1; i <= GameConstants::maximum_timer; ++i)
+			for (int i = 1; i <= Validation::maximum_timer; ++i)
 			{
 				timer_values.push_back((i < 60 ? "0" : "") + std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 			}

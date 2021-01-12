@@ -4,6 +4,8 @@
 
 namespace Validation
 {
+	void ValidateToTGameConfig(ToTGameConfig& game_config);
+	void ValidateToTWindowConfig(ToTWindowConfig& window_config);
 	bool ValidateGameFiles();
 	bool ValidateTourFiles();
 	bool ValidateCarFiles();

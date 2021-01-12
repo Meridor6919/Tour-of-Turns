@@ -5,24 +5,11 @@ ToT::ToT()
 	main_window = std::make_shared<ToT_Window>();
 	main_window->Init();
 
-	CheckLangPackValid();
-	CheckPlayablity();
-	CheckRankingValid();
+	playable = ValidateGameFiles();
+	ranking_enabled = ValidateRanking();
 
 	handle = main_window->GetHandle();
 	game_window_center = static_cast<short>(main_window->GetCharactersPerRow()) / 2;
-}
-void ToT::CheckPlayablity()
-{
-	//TO DO
-}
-void ToT::CheckRankingValid()
-{
-	//TO DO
-}
-void ToT::CheckLangPackValid()
-{
-	//TO DO
 }
 void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing)
 {

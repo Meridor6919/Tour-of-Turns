@@ -545,7 +545,7 @@ bool SinglePlayer::GameLobby()
 		{
 			case 0://choosing name
 			{
-				name = StringSelection(name, GameConstants::maximum_name_length, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options][0].size()), 25 });
+				name = StringSelection(name, Validation::maximum_name_length, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options][0].size()), 25 });
 				main_window->SetName(name);
 				break;
 			}
@@ -568,7 +568,7 @@ bool SinglePlayer::GameLobby()
 			case 2: //timer
 			{
 				std::vector<std::string> timer_values = { LanguagePack::text[LanguagePack::on_off][1]};
-				for (int i = 1; i <= GameConstants::maximum_timer; ++i)
+				for (int i = 1; i <= Validation::maximum_timer; ++i)
 				{
 					timer_values.push_back((i < 60 ? "0" : "")+std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 				}
@@ -963,7 +963,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			const int ai_id = msg[0] - 48;
 			//name validation
 			const int selected_name_size = static_cast<int>(selected_name.size());
-			if (selected_name_size > GameConstants::maximum_name_length || selected_name_size <= 0)
+			if (selected_name_size > Validation::maximum_name_length || selected_name_size <= 0)
 			{
 				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
 				exit(0);

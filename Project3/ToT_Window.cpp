@@ -4,6 +4,7 @@
 void ToT_Window::Init()
 {
 	ToTWindowConfig tot_window_config = LoadWindowConfig();
+	ValidateToTWindowConfig(tot_window_config);
 
 	window_info = tot_window_config.window_info;
 	window_info.handle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -12,9 +13,12 @@ void ToT_Window::Init()
 	hamachi_flag = tot_window_config.hamachi_flag;
 
 	tot_game_config = LoadGameConfig();
+	ValidateToTGameConfig(tot_game_config);
+
 	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
 	
 	SetMusic(music_volume);
+	SetLanguage(tot_game_config.lang);
 
 	Window::Init(window_info);
 }
