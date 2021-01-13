@@ -61,7 +61,7 @@ void MeridorConsoleLib::Window::Init(const WindowInfoEx& window_info_ex)
 	SetCursor(window_info.visible_cursor);
 	SetConsoleEditMode(false);
 
-	if (window_info.window_mode == WindowMode::windowed_fullscreen)
+	if (window_info.window_mode == WindowMode::windowed)
 	{
 		window_immobilizer.Start();
 	}

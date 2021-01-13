@@ -20,7 +20,7 @@ namespace MeridorConsoleLib
 	enum class WindowMode
 	{
 		fullscreen,
-		windowed_fullscreen,
+		windowed,
 		last
 	};
 	struct WindowInfo

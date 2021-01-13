@@ -3,14 +3,15 @@
 
 void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
 {
-    RECT previous_winpos = { 0, 0, 0, 0 };
+    RECT base_winpos;
+	GetWindowRect(main_window->window_info.hwnd, &base_winpos);
 
     while (thread_active)
     {
         RECT current_winpos;
         GetWindowRect(main_window->window_info.hwnd, &current_winpos);
         
-        const bool not_starting_pos = current_winpos.top != 0 || current_winpos.left != 0;
+        const bool not_starting_pos = current_winpos.top != base_winpos.top || current_winpos.left != base_winpos.left;
         const bool not_minimized = !IsIconic(main_window->window_info.hwnd);
 		
         if (not_starting_pos && not_minimized)
@@ -21,10 +22,8 @@ void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
                 mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
                 main_window->SetWindowSize();
                 main_window->SetCursor(main_window->window_info.visible_cursor);
-                previous_winpos = { 0, 0, 0, 0 };
             }
         }
-        previous_winpos = current_winpos;
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 }
