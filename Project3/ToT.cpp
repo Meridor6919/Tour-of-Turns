@@ -175,9 +175,9 @@ void ToT::Options()
 			{
 				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = *main_window->main_color;
-				local_text.erase(local_text.begin() + (*main_window->secondary_color - 2));
-				Text::TextInfo text_info = { local_text, *main_window->main_color - 2 - (*main_window->main_color > *main_window->secondary_color), local_starting_point, TextAlign::left, 0, true};
-				(*main_window->main_color) = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 2;
+				local_text.erase(local_text.begin() + (*main_window->secondary_color - 1));
+				Text::TextInfo text_info = { local_text, *main_window->main_color - 1 - (*main_window->main_color > *main_window->secondary_color), local_starting_point, TextAlign::left, 0, true};
+				(*main_window->main_color) = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1;
 				if (*main_window->main_color >= *main_window->secondary_color)
 				{
 					(*main_window->main_color) = (*main_window->main_color) + 1;
@@ -192,9 +192,9 @@ void ToT::Options()
 			{
 				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = *main_window->secondary_color;
-				local_text.erase(local_text.begin() + (*main_window->main_color - 2));
-				Text::TextInfo text_info = { local_text, *main_window->secondary_color - 2 - (*main_window->secondary_color > *main_window->main_color), local_starting_point, TextAlign::left, 0, true };
-				(*main_window->secondary_color) = (Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 2);
+				local_text.erase(local_text.begin() + (*main_window->main_color - 1));
+				Text::TextInfo text_info = { local_text, *main_window->secondary_color - 1 - (*main_window->secondary_color > *main_window->main_color), local_starting_point, TextAlign::left, 0, true };
+				(*main_window->secondary_color) = (Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1);
 				if (*main_window->secondary_color >= *main_window->main_color)
 				{
 					(*main_window->secondary_color) = (*main_window->secondary_color) + 1;

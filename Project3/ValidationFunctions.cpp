@@ -49,8 +49,9 @@ void Validation::ValidateToTWindowConfig(ToTWindowConfig& window_config)
 	{
 		window_config.window_info.main_color = Validation::default_main_color;
 	}
-	if (!MeridorConsoleLib::Between(2, 15, window_config.window_info.secondary_color))
+	if (!MeridorConsoleLib::Between(FOREGROUND_BLUE, Validation::colors, window_config.window_info.secondary_color))
 	{
+		window_config.window_info.main_color = Validation::default_main_color;
 		window_config.window_info.secondary_color = Validation::default_secondary_color;
 	}
 	if (window_config.window_info.secondary_color == window_config.window_info.main_color)
