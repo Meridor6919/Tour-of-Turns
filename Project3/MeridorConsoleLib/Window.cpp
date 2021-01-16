@@ -105,6 +105,10 @@ HWND MeridorConsoleLib::Window::GetHWND()
 {
 	return window_info.hwnd;
 }
+MeridorConsoleLib::WindowMode MeridorConsoleLib::Window::GetWindowMode()
+{
+	return window_info.window_mode;
+}
 const MeridorConsoleLib::WindowInfo* MeridorConsoleLib::Window::GetWindowInfo()
 {
 	return &window_info;

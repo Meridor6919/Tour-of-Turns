@@ -6,7 +6,7 @@ namespace Validation
 	constexpr int game_menu = 8;
 	constexpr int multiplayer_menu = 10;
 	constexpr int multiplayer_before_game_lobby = 3;
-	constexpr int tot_options = 6;
+	constexpr int tot_options = 7;
 	constexpr int colors = 15;
 	constexpr int actions = 5;
 	constexpr int general_info = 4;

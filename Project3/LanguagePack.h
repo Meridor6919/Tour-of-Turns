@@ -40,6 +40,7 @@ namespace LanguagePack
 		terrain_types,
 		on_off,
 		multiplayer_client_lobby,
+		display_settings,
 		other_strings,
 		last
 	};

@@ -31,7 +31,8 @@ namespace MeridorConsoleLib
 		int GetFontSize();
 		HANDLE GetHandle();
 		HWND GetHWND();
-		
+		WindowMode GetWindowMode();
+
 		//There is a bug where edit-mode causes SetWindowPosition to crash console window - don't use with windowed fullscreen
 		void SetConsoleEditMode(bool enable);
 		void SetCursor(const bool visible);

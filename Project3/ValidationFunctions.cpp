@@ -270,6 +270,10 @@ bool Validation::ValidateLanguagePack()
 	{
 		return false;
 	}
+	if (static_cast<int>(LanguagePack::text[LanguagePack::display_settings].size()) != static_cast<int>(MeridorConsoleLib::WindowMode::last))
+	{
+		return false;
+	}
 	if (static_cast<int>(LanguagePack::text[LanguagePack::ranking_menu].size()) != Validation::ranking_menu)
 	{
 		return false;

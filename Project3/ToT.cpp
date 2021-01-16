@@ -249,7 +249,18 @@ void ToT::Options()
 				main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo())));
 				break;
 			}
-			case 5://clearing
+			case 5://display settings
+			{
+				int current_display_mode = static_cast<int>(main_window->GetWindowMode());
+				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::display_settings], current_display_mode, local_starting_point, TextAlign::left, 0, true };
+				int new_display_mode = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+				if (new_display_mode != current_display_mode)
+				{
+					main_window->SetWindowMode(static_cast<MeridorConsoleLib::WindowMode>(new_display_mode));
+				}
+				break;
+			}
+			case 6://clearing
 			{
 				loop = false;
 				break;

@@ -33,6 +33,7 @@ Secondary Color
 Music volume
 Language
 Hamachi connection
+Display setting
 Back
 &&&
 blue
@@ -308,6 +309,9 @@ Active Games
 Join
 Refresh
 Back
+&&&
+Fullscreen
+Windowed
 &&&
 Racer
  - Do you really want to do this ? (Y/N) 
