@@ -22,9 +22,9 @@ void Validation::ValidateToTGameConfig(ToTGameConfig &game_config)
 			break;
 		}
 	}
-	if (!MeridorConsoleLib::Between(0, 7, game_config.ais))
+	if (!MeridorConsoleLib::Between(0, GameConstants::max_ais, game_config.ais))
 	{
-		game_config.ais = 7;
+		game_config.ais = GameConstants::max_ais;
 	}
 	if (!MeridorConsoleLib::Between(1, Validation::maximum_name_length, static_cast<int>(game_config.name.size())) || !name_valid)
 	{
@@ -45,11 +45,11 @@ void Validation::ValidateToTWindowConfig(ToTWindowConfig& window_config)
 	{
 		window_config.window_info.characters_capacity.X = Validation::minimum_window_size.X;
 	}
-	if (!MeridorConsoleLib::Between(2, 15, window_config.window_info.main_color))
+	if (!MeridorConsoleLib::Between(Validation::first_color, Validation::last_color, window_config.window_info.main_color))
 	{
 		window_config.window_info.main_color = Validation::default_main_color;
 	}
-	if (!MeridorConsoleLib::Between(FOREGROUND_BLUE, Validation::colors, window_config.window_info.secondary_color))
+	if (!MeridorConsoleLib::Between(Validation::first_color, Validation::last_color, window_config.window_info.secondary_color))
 	{
 		window_config.window_info.main_color = Validation::default_main_color;
 		window_config.window_info.secondary_color = Validation::default_secondary_color;
@@ -91,18 +91,18 @@ bool Validation::ValidateTourFiles()
 		}
 		for (short j = 0; j < static_cast<short>(params.size()); ++j)
 		{
-			const short size_of_segment = static_cast<short>(params[j].size());
-			if (!MeridorConsoleLib::Between(0, TerrainTypes::last -1, params[j][0] - 48))//terrain type validation
+			const short segment_lenght = static_cast<short>(params[j].size());
+			if (!MeridorConsoleLib::Between(0, TerrainTypes::last -1, params[j][0] - '0'))//terrain type validation
 			{
 				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 				return false;
 			}
-			else if (size_of_segment > 11)//checking if safe speed isn't exceeding speed of light
+			else if (segment_lenght > 11)//checking if safe speed isn't exceeding speed of light
 			{
 				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 				return false;
 			}
-			else if (size_of_segment != 1 && atoi(params[j].substr(1, size_of_segment - 1).c_str()) < 1)//checking if safe speed is at least 1
+			else if (segment_lenght != 1 && atoi(params[j].substr(1, segment_lenght - 1).c_str()) < 1)//checking if safe speed is at least 1
 			{
 				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 				return false;

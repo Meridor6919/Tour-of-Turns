@@ -54,10 +54,11 @@ namespace TerrainTypes
 }
 namespace GameConstants
 {
-	const int minimum_drift_speed = 40;
-	const int attack_forward_distance = 4;
-	const int attack_backward_distance = 6;
-	const float drift_value = 2.0f;
-	const float friction_scalar = 0.9f;
-	const int box_width = 84;
+	constexpr int minimum_drift_speed = 40;
+	constexpr int attack_forward_distance = 4;
+	constexpr int attack_backward_distance = 6;
+	constexpr float drift_value = 2.0f;
+	constexpr float friction_scalar = 0.9f;
+	constexpr int box_width = 84;
+	constexpr int max_ais = 7;
 }
