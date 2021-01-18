@@ -357,9 +357,9 @@ void ToT::Info()
 	const short spacing = 3;
 	const COORD text_pos = { game_window_center, 28 };
 	const COORD title_pos = { game_window_center - 2, text_pos.Y - 3 };
-	Text::TextInfo ordinary_text_info = { LanguagePack::text[LanguagePack::gamepedia_introduction + info_pos], 0, text_pos, text_align_content, spacing, 0 };
 	while (true)
 	{
+		Text::TextInfo ordinary_text_info = { LanguagePack::text[LanguagePack::gamepedia_introduction + info_pos], 0, text_pos, text_align_content, spacing, 0 };
 		OrdinaryText(ordinary_text_info, *main_window->GetWindowInfo());
 		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::gamepedia_sections], info_pos, title_pos, text_align_title, 0, false };
 		int temp_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
