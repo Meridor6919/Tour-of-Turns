@@ -10,10 +10,58 @@ std::string MeridorConsoleLib::Spaces(const int size)
 {
 	return GetMonoCharacterString(size, ' ');
 }
-
 float MeridorConsoleLib::GetTextAlignScalar(TextAlign text_align)
 {
 	return static_cast<float>(text_align) / 2.0f;;
+}
+
+
+std::string MeridorConsoleLib::GetSeparatedValue(const std::string& text, int index, char separator)
+{
+	int start = 0;
+	int count = 0;
+	int text_size = static_cast<int>(text.size());
+	for (int i = 0; i < text_size; ++i)
+	{
+		if ((text[i] == separator) || (i + 1 == text_size))
+		{
+			if (!index)
+			{
+				count = i - start + (i + 1 == text_size);
+				break;
+			}
+			else
+			{
+				--index;
+				start = i + 1;
+			}
+		}
+	}
+	return text.substr(start, count);
+}
+std::string MeridorConsoleLib::SetSeparatedValue(const std::string& original_text, const std::string& text_to_place, int index, char separator)
+{
+	int start = 0;
+	int count = 0;
+	std::string ret;
+	int original_text_size = static_cast<int>(original_text.size());
+	for (int i = 0; i < original_text_size; ++i)
+	{
+		if ((original_text[i] == separator) || (i + 1 == original_text_size))
+		{
+			if (!index)
+			{
+				count = i - start + (i + 1 == original_text_size);
+				return original_text.substr(0, start) + text_to_place + original_text.substr(start + count, original_text_size - start - count);
+			}
+			else
+			{
+				--index;
+				start = i + 1;
+			}
+		}
+	}
+	return original_text;
 }
 
 std::vector<std::string> MeridorConsoleLib::ReadFile(const std::string path)
@@ -29,7 +77,6 @@ std::vector<std::string> MeridorConsoleLib::ReadFile(const std::string path)
 	fvar.close();
 	return data;
 }
-
 std::vector<std::string> MeridorConsoleLib::GetFilesInDirectory(const std::string path)
 {
 	std::vector<std::string> data = {};
@@ -44,4 +91,12 @@ std::vector<std::string> MeridorConsoleLib::GetFilesInDirectory(const std::strin
 		}
 	}
 	return data;
+}
+void MeridorConsoleLib::RemoveExtension(std::vector<std::string>& vector, std::string extension)
+{
+	const size_t extension_size = extension.size();
+	for (size_t i = 0; i < vector.size(); ++i)
+	{
+		vector[i] = vector[i].substr(0, vector[i].size() - extension_size);
+	}
 }

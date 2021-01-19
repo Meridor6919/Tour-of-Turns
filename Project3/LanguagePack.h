@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
+#include <array>
 #include <string>
 
 namespace LanguagePack
 {
-	inline std::vector<std::vector<std::string>> text = {};
 	enum
 	{
 		title_main,
@@ -44,6 +44,8 @@ namespace LanguagePack
 		other_strings,
 		last
 	};
+	inline constexpr const char* language_pack_separator = "&&&";
+	inline std::array<std::vector<std::string>, last> text = {};
 }
 namespace OtherStrings
 {

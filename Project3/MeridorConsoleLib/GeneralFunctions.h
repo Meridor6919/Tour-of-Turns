@@ -11,8 +11,13 @@ namespace MeridorConsoleLib
 	std::string GetMonoCharacterString(const int size, const char character);
 	std::string Spaces(const int size);
 	float GetTextAlignScalar(TextAlign text_align);
+	
+	std::string GetSeparatedValue(const std::string& text, int index, char separator = '\t');
+	std::string SetSeparatedValue(const std::string& original_text, const std::string& text_to_put, int index, char separator = '\t');
+
 	std::vector<std::string> ReadFile(const std::string path);
 	std::vector<std::string> GetFilesInDirectory(const std::string path);
+	void RemoveExtension(std::vector<std::string>& vector, std::string extension);
 
 	template<class T>
 	bool Between(T lower_bound, T higher_bound, T value)

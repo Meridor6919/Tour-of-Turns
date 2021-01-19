@@ -311,7 +311,7 @@ void ToT::Ranking()
 			case 1://Player
 			{
 				const int temp = racer_pos;
-				Text::TextInfo text_info = { GetRankingNames(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, TextAlign::left, 0, true };
+				Text::TextInfo text_info = { GetRankedRacersNames(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, TextAlign::left, 0, true };
 				racer_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
 				if(temp != racer_pos && racer_pos >= 0)
 				{

@@ -1,23 +1,26 @@
 #include "FileManagementFunctions.h"
 #include "ValidationFunctions.h"
 
+using namespace MeridorConsoleLib;
+
 std::vector<std::string> FileManagement::GetTourNames()
 {
-	return MeridorConsoleLib::GetFilesInDirectory(FolderName::tour);
+	return GetFilesInDirectory(FolderName::tour);
 }
 std::vector<std::string> FileManagement::GetTireNames()
 {
-	return MeridorConsoleLib::GetFilesInDirectory(FolderName::tire);
+	return GetFilesInDirectory(FolderName::tire);
 }
 std::vector<std::string> FileManagement::GetCarNames(const std::string tour)
 {
-	return MeridorConsoleLib::ReadFile(FolderName::tour + '\\' + tour);
+	return ReadFile(FolderName::tour + '\\' + tour);
 }
-std::vector<std::string> FileManagement::GetRankingNames(std::string tour)
+std::vector<std::string> FileManagement::GetRankedRacersNames(std::string tour)
 {
+	std::vector<std::string> ret = {};
 	std::ifstream fvar;
 	std::string temp;
-	std::vector<std::string> ret = {};
+
 	fvar.open(tour.c_str());
 	for (int i = 0; std::getline(fvar, temp); ++i)
 	{
@@ -27,165 +30,111 @@ std::vector<std::string> FileManagement::GetRankingNames(std::string tour)
 		}
 	}
 	fvar.close();
+
 	return ret;
 }
 ToTGameConfig FileManagement::LoadGameConfig()
 {
-	std::fstream fvar;
 	ToTGameConfig ret = {};
+	std::ifstream fvar;
 
-	fvar.open(FolderName::main + '\\' + FileName::game_config, std::ios::in);
+	fvar.open(FolderName::main + '\\' + FileName::game_config);
 	fvar >> ret.ais;
 	fvar >> ret.name;
 	fvar >> ret.lang;
 	fvar >> ret.timer_settings;
-	
 	fvar.close();
+
 	return ret;
 }
 ToTWindowConfig FileManagement::LoadWindowConfig()
 {
-	std::ifstream fvar;
 	ToTWindowConfig ret = {};
+	std::ifstream fvar;
 
-	fvar.open(FolderName::main + '\\' + FileName::window_config, std::ios::in);
+	fvar.open(FolderName::main + '\\' + FileName::window_config);
 	fvar >> ret.window_info.title;
 	fvar >> ret.window_info.characters_capacity.X;
 	fvar >> ret.window_info.characters_capacity.Y;
 	fvar >> ret.window_info.main_color;
 	fvar >> ret.window_info.secondary_color;
 	fvar >> ret.window_info.visible_cursor;
-	fvar >> reinterpret_cast<std::underlying_type<MeridorConsoleLib::WindowMode>::type&>(ret.window_info.window_mode);
+	fvar >> reinterpret_cast<std::underlying_type<WindowMode>::type&>(ret.window_info.window_mode);
 	fvar >> ret.music_volume;
 	fvar >> ret.hamachi_flag;
-
 	fvar.close();
+
 	return ret;
 }
 void FileManagement::LoadLanguagePack(std::string path)
 {
-	LanguagePack::text.clear();
-	LanguagePack::text.push_back({});
 	std::ifstream fvar;
-	std::string line;
+	std::string temp;
 	int position = 0;
+
+	LanguagePack::text[position].clear();
+	
 	fvar.open(path.c_str());
-	while (std::getline(fvar, line))
+	while (std::getline(fvar, temp))
 	{
-		if (line == "&&&")
+		if (temp == LanguagePack::language_pack_separator)
 		{
-			LanguagePack::text.push_back({});
 			++position;
+			LanguagePack::text[position].clear();
 		}
 		else
 		{
-			LanguagePack::text[position].push_back(line);
+			LanguagePack::text[position].push_back(temp);
 		}
 	}
 	fvar.close();
-	position++;
 }
 
 std::vector<std::string> FileManagement::GetTourParameters(std::string tour, int position, const int visibility)
 {
-	std::vector<std::string> ret;
-	std::fstream fvar;
-	std::string helper;
+	std::vector<std::string> ret = {};
+	std::ifstream fvar;
+	std::string temp;
 
 	fvar.open((FolderName::tour + '\\' + tour).c_str());
+	
+	//skip allowed car section
 	do
 	{
-		std::getline(fvar, helper);
-	} while (helper != "");
+		std::getline(fvar, temp);
+	} while (temp != "");
+
+	//skip segments before specified position
 	for (int i = 0; i < position; ++i)
 	{
-		std::getline(fvar, helper);
+		std::getline(fvar, temp);
 	}
+
+	//read and save important data
 	for (int i = 0; i < visibility; ++i)
 	{
-		if (!std::getline(fvar, helper))
+		if (!std::getline(fvar, temp))
 		{
 			break;
 		}
-		ret.push_back(std::move(helper));
+		ret.push_back(std::move(temp));
 	}
 	fvar.close();
 	return ret;
 }
 std::vector<int> FileManagement::GetCarParameters(const std::string path)
 {
-	const std::vector<std::string> data = MeridorConsoleLib::ReadFile(FolderName::car + '\\' + path);
+	const std::vector<std::string> data = ReadFile(FolderName::car + '\\' + path);
 	std::vector<int> car_parameters;
 	for (short i = 0; i < CarAttributes::last; ++i)
 	{
-		if (atoi(data[i].c_str()) < 1 || atoi(data[i].c_str()))
-		{
-			car_parameters.push_back(atoi(data[i].c_str()));
-		}
+		car_parameters.push_back(atoi(data[i].c_str()));
 	}
 	return car_parameters;
 }
 std::vector<std::string> FileManagement::GetTireParameters(const std::string path)
 {
-	return MeridorConsoleLib::ReadFile(FolderName::tire + '\\' + path);
-}
-std::vector<std::string> FileManagement::GetRankingDetails(std::string tour, int racer_pos, int classification_type)
-{
-	std::string line;
-	std::vector<std::string> ret = {};
-	for (int i = 0; i < Validation::ranking_details; ++i)
-	{
-		ret.push_back(" ");
-	}
-	std::ifstream fvar;
-	fvar.open(tour.c_str());
-	for (int i = 0; i < Validation::ranking_details * racer_pos && std::getline(fvar, line); ++i);
-	for (int i = 0; i < Validation::ranking_details && std::getline(fvar, line); ++i)
-	{
-		if (i == 0)
-		{
-			ret[i] = line;
-		}
-		else if (i < 6)
-		{
-			ret[i] = GetSeparatedValue(line, classification_type);
-		}
-		else if (i < 10)
-		{
-			ret[i + 2] = GetSeparatedValue(line, classification_type);
-		}
-		else
-		{
-			ret[i - 4] = GetSeparatedValue(line, classification_type);
-		}
-	}
-	int finished_games = atoi(ret[1].c_str()) - atoi(ret[8].c_str());
-	if (!finished_games)
-	{
-		for (int i = 2; i < 6 + 3 * (ret[1] == "0"); ++i)
-		{
-			ret[i] = "";
-		}
-		for (int i = 9; i < Validation::ranking_details; ++i)
-		{
-			ret[i] = "";
-		}
-	}
-	else
-	{
-		double f = atof(ret[2].c_str()) / atof(ret[1].c_str()) * 100.0f;
-		ret[2] = std::to_string(f).substr(0, static_cast<int>(std::to_string(f).size()) - 4) + '%';
-
-		for (int i = 0; i < 5; ++i)
-		{
-			int x = i + 3 + (i > 1) * 4;
-			ret[i + 3 + (i > 1) * 4] = std::to_string(static_cast<int>(round(atof(ret[i + 3 + (i > 1) * 4].c_str()) / static_cast<float>(finished_games))));
-		}
-	}
-	ret[6] = GetRankingFavourite(ret[6]);
-	ret[7] = GetRankingFavourite(ret[7]);
-	fvar.close();
-	return ret;
+	return ReadFile(FolderName::tire + '\\' + path);
 }
 
 void FileManagement::SaveRanking(RankingDetails ranking_info)
@@ -326,62 +275,64 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 	fvar.close();
 }
 
-void FileManagement::RemoveExtension(std::vector<std::string>& vector, std::string extension)
+std::vector<std::string> FileManagement::GetRankingDetails(std::string tour, int racer_pos, int classification_type)
 {
-	short extension_size = static_cast<short>(extension.size());
-	for (int i = 0; i < static_cast<int>(vector.size()); ++i)
+	std::string line;
+	std::vector<std::string> ret = {};
+	for (int i = 0; i < Validation::ranking_details; ++i)
 	{
-		vector[i] = vector[i].substr(0, static_cast<short>(vector[i].size()) - extension_size);
+		ret.push_back(" ");
 	}
-}
-std::string FileManagement::GetSeparatedValue(const std::string &text, int index, char separator)
-{
-	int start = 0;
-	int count = 0;
-	int text_size = static_cast<int>(text.size());
-	for (int i = 0; i < text_size; ++i)
+	std::ifstream fvar;
+	fvar.open(tour.c_str());
+	for (int i = 0; i < Validation::ranking_details * racer_pos && std::getline(fvar, line); ++i);
+	for (int i = 0; i < Validation::ranking_details && std::getline(fvar, line); ++i)
 	{
-		if ((text[i] == separator) || (i + 1 == text_size))
+		if (i == 0)
 		{
-			if (!index)
-			{
-				count = i - start + (i + 1 == text_size);
-				break;
-			}
-			else
-			{
-				--index;
-				start = i + 1;
-			}
+			ret[i] = line;
+		}
+		else if (i < 6)
+		{
+			ret[i] = GetSeparatedValue(line, classification_type);
+		}
+		else if (i < 10)
+		{
+			ret[i + 2] = GetSeparatedValue(line, classification_type);
+		}
+		else
+		{
+			ret[i - 4] = GetSeparatedValue(line, classification_type);
 		}
 	}
-	return text.substr(start, count);
-}
-std::string FileManagement::SetSeparatedValue(const std::string& original_text, const std::string& text_to_place, int index, char separator)
-{
-	int start = 0;
-	int count = 0;
-	std::string ret;
-	int original_text_size = static_cast<int>(original_text.size());
-	for (int i = 0; i < original_text_size; ++i)
+	int finished_games = atoi(ret[1].c_str()) - atoi(ret[8].c_str());
+	if (!finished_games)
 	{
-		if ((original_text[i] == separator) || (i + 1 == original_text_size))
+		for (int i = 2; i < 6 + 3 * (ret[1] == "0"); ++i)
 		{
-			if (!index)
-			{
-				count = i - start + (i + 1 == original_text_size);
-				return original_text.substr(0, start) + text_to_place + original_text.substr(start + count, original_text_size - start - count);
-			}
-			else
-			{
-				--index;
-				start = i + 1;
-			}
+			ret[i] = "";
+		}
+		for (int i = 9; i < Validation::ranking_details; ++i)
+		{
+			ret[i] = "";
 		}
 	}
-	return original_text;
-}
+	else
+	{
+		double f = atof(ret[2].c_str()) / atof(ret[1].c_str()) * 100.0f;
+		ret[2] = std::to_string(f).substr(0, static_cast<int>(std::to_string(f).size()) - 4) + '%';
 
+		for (int i = 0; i < 5; ++i)
+		{
+			int x = i + 3 + (i > 1) * 4;
+			ret[i + 3 + (i > 1) * 4] = std::to_string(static_cast<int>(round(atof(ret[i + 3 + (i > 1) * 4].c_str()) / static_cast<float>(finished_games))));
+		}
+	}
+	ret[6] = GetRankingFavourite(ret[6]);
+	ret[7] = GetRankingFavourite(ret[7]);
+	fvar.close();
+	return ret;
+}
 std::string FileManagement::GetRankingFavourite(const std::string& text)
 {
 	std::string ret = "";
