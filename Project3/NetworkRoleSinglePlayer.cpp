@@ -1283,7 +1283,7 @@ void SinglePlayer::Finish()
 			main_window->GetAIs(),
 			multiplayer_flag 
 		};
-		SaveRanking(ranking_info);
+		RankingManagement::SaveRanking(ranking_info);
 	}
 	if (main_window->GetTimerSettings())
 	{

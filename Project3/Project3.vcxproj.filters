@@ -118,6 +118,9 @@
     <ClCompile Include="ValidationFunctions.cpp">
       <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="RankingManagement.cpp">
+      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
@@ -202,6 +205,9 @@
       <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="GameConstants.h">
+      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="RankingManagement.h">
       <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>

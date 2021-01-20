@@ -3,6 +3,7 @@
 #include ".\MeridorConsoleLib\Window.h"
 #include ".\MeridorConsoleLib\TextLib.h"
 #include "FileManagementFunctions.h"
+#include "RankingManagement.h"
 #include "ValidationFunctions.h"
 #include "LanguagePack.h"
 

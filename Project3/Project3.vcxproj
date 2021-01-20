@@ -132,6 +132,7 @@
     <ClCompile Include="NetworkRoleSinglePlayer.cpp" />
     <ClCompile Include="Participant.cpp" />
     <ClCompile Include="MeridorConsoleLib\TextLib.cpp" />
+    <ClCompile Include="RankingManagement.cpp" />
     <ClCompile Include="ToT.cpp" />
     <ClCompile Include="ToT_Window.cpp" />
     <ClCompile Include="MeridorConsoleLib\VisibleTimer.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="NetworkRole.h" />
     <ClInclude Include="Participant.h" />
     <ClInclude Include="MeridorConsoleLib\TextLib.h" />
+    <ClInclude Include="RankingManagement.h" />
     <ClInclude Include="ToT.h" />
     <ClInclude Include="ToT_Window.h" />
     <ClInclude Include="MeridorConsoleLib\Window.h" />
