@@ -181,7 +181,7 @@ bool Validation::ValidateRanking()
 		for (; std::getline(fvar, line); ++iterations);
 		if (iterations % Validation::ranking_details != 0)
 		{
-			MessageBox(0, (+" " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
+			MessageBox(0, (FolderName::ranking + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 			return false;
 		}
 		fvar.close();

@@ -80,7 +80,7 @@ std::vector<std::string> FileManagement::GetTourParameters(std::string tour, int
 
 	fvar.open((FolderName::tour + '\\' + tour).c_str());
 	
-	//skip allowed car section
+	//skip "allowed cars" section
 	do
 	{
 		std::getline(fvar, temp);

@@ -3,6 +3,34 @@
 #include <vector>
 #include <fstream>
 
+namespace RankingInfo
+{
+	enum 
+	{
+		Name,
+		GamesPlayed,
+		GamesWon,
+		Place,
+		Score,
+		BestScore,
+		FavCar,
+		FavTire,
+		Crashes,
+		Attacks,
+		Drifts,
+		Burning,
+		last
+	};
+}
+namespace RankingClassification
+{
+	enum
+	{
+		all_games = 1,
+		ai8 = 2,
+		multiplayer = 4
+	};
+}
 namespace ConnectionCodes
 {
 	enum

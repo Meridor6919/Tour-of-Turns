@@ -17,11 +17,23 @@ namespace MeridorConsoleLib
 
 	std::vector<std::string> ReadFile(const std::string path);
 	std::vector<std::string> GetFilesInDirectory(const std::string path);
-	void RemoveExtension(std::vector<std::string>& vector, std::string extension);
+	void RemoveExtension(std::string& string, const std::string& extension);
+	void RemoveExtension(std::vector<std::string>& vector, const std::string& extension);
 
 	template<class T>
 	bool Between(T lower_bound, T higher_bound, T value)
 	{
 		return (value >= lower_bound && value <= higher_bound);
+	}
+	template<class T>
+	T Power(T number, int power)
+	{
+		T ret = 1;
+		while (power > 0)
+		{
+			ret *= number;
+			--power;
+		}
+		return ret;
 	}
 }

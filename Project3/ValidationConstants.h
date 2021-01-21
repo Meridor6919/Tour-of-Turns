@@ -16,7 +16,7 @@ namespace Validation
 	constexpr int accidents = 8;
 	constexpr int ranking_menu = 5;
 	constexpr int ranking_classification = 3;
-	constexpr int ranking_details = 12;
+	constexpr int ranking_details = RankingInfo::last;
 
 	constexpr int maximum_name_length = 20;
 	constexpr int maximum_timer = 60;
