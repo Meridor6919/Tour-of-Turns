@@ -136,6 +136,18 @@ std::vector<std::string> RankingManagement::GetRankingDetails(const RankingDetai
 	ret[RankingInfo::Place] = std::to_string(ranking_info.place);
 	return ret;
 }
+void RankingManagement::ValidateRankingDetails(std::vector<std::string>& ranking_details)
+{
+	size_t vector_size = ranking_details.size();
+	if (vector_size < Validation::ranking_details)
+	{
+		ranking_details.resize(Validation::ranking_details, "");
+	}
+	else if (vector_size % Validation::ranking_details != 0)
+	{
+		ranking_details.resize(vector_size + (vector_size % Validation::ranking_details), "");
+	}
+}
 int RankingManagement::GetRankedRacerPosition(const std::vector<std::string>& ranking_data, std::string name)
 {
 	for (int i = 0; i < static_cast<int>(ranking_data.size()); i += Validation::ranking_details)
@@ -238,7 +250,7 @@ void RankingManagement::SaveRanking(RankingDetails ranking_info)
 	}
 	std::vector<std::string> ranking_details = GetRankingDetails(ranking_info);
 	
-	int classification = RankingClassification::all_games + RankingClassification::multiplayer;
+	int classification = RankingClassification::all_games;
 	if (ranking_info.ais == GameConstants::max_ais)
 	{
 		classification += RankingClassification::ai8;
@@ -295,6 +307,7 @@ std::vector<std::string> RankingManagement::GetRankingDetails(std::string tour, 
 	}
 	fvar.close();
 
+	ValidateRankingDetails(ret);
 	AdjustRankingDetails(ret);
 	return ret;
 }

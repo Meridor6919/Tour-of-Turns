@@ -16,6 +16,7 @@ class RankingManagement
 	static void SaveRankingData(std::vector<std::string>& ranking_data, const char* path);
 	static void AdjustRankingDetails(std::vector<std::string>& ranking_details);
 	static std::vector<std::string> GetRankingDetails(const RankingDetails& ranking_info);
+	static void ValidateRankingDetails(std::vector<std::string>& ranking_details);
 
 	//returns -1 if racer is not ranked
 	static int GetRankedRacerPosition(const std::vector<std::string>& ranking_data, std::string name);

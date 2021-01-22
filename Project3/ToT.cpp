@@ -6,7 +6,7 @@ ToT::ToT()
 	main_window->Init();
 
 	playable = ValidateGameFiles();
-	ranking_enabled = ValidateRanking();
+	ValidateRanking();
 
 	handle = main_window->GetHandle();
 	game_window_center = static_cast<short>(main_window->GetCharactersPerRow()) / 2;
@@ -17,6 +17,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	const int paragraph_size = 2;
 	const COORD base_position = { 0, 19 };
 	std::vector<std::string> details = RankingManagement::GetRankingDetails(tour, racer_pos, classification_type);
+
 	if (clearing)
 	{
 		const int border_size = GameConstants::box_width;
@@ -120,14 +121,7 @@ void ToT::MainMenu()
 		}
 		case 3:
 		{
-			if (ranking_enabled)
-			{
-				Ranking();
-			}
-			else
-			{
-				MessageBox(0, ErrorMsg::ranking_missing.c_str(), ErrorTitle::missing_file.c_str(), MB_TOPMOST);
-			}
+			Ranking();
 			break;
 		}
 		case 4:

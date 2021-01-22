@@ -175,13 +175,15 @@ bool Validation::ValidateRanking()
 
 	for (short i = 0; i < static_cast<short>(ranking_files.size()); ++i)
 	{
-		fvar.open(FolderName::ranking + '\\' + ranking_files[i]);
+		std::string path = (FolderName::ranking + '\\' + ranking_files[i]).c_str();
+
+		fvar.open(path);
 		std::string line;
 		int iterations = 0;
 		for (; std::getline(fvar, line); ++iterations);
 		if (iterations % Validation::ranking_details != 0)
 		{
-			MessageBox(0, (FolderName::ranking + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
+			MessageBox(0, (path + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
 			return false;
 		}
 		fvar.close();
