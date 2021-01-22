@@ -70,7 +70,8 @@ void RankingManagement::UpdateRecord(std::vector<std::string>& ranking_data, con
 					case RankingInfo::FavCar:
 					case RankingInfo::FavTire:
 					{
-						ranking_data[racer_pos + i] = UpdateRankingFavorites(GetSeparatedValue(ranking_data[racer_pos + i], j), ranking_details[i]);
+						temp = UpdateRankingFavorites(GetSeparatedValue(ranking_data[racer_pos + i], j), ranking_details[i]);
+						ranking_data[racer_pos + i] = SetSeparatedValue(ranking_data[racer_pos + i], temp, j);
 						break;
 					}
 				}
@@ -259,7 +260,6 @@ void RankingManagement::SaveRanking(RankingDetails ranking_info)
 	{
 		classification += RankingClassification::multiplayer;
 	}
-
 
 	UpdateRecord(ranking_data, ranking_details, classification, record_index);
 	SaveRankingData(ranking_data, ranking_path.c_str());
