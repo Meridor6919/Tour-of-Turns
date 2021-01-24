@@ -1269,7 +1269,7 @@ void SinglePlayer::Finish()
 {
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		RankingDetails ranking_info = { 
+		RacerLeaderboardInfo ranking_info = { 
 			tour,
 			participants[i].name,
 			participants[i].place,
@@ -1283,7 +1283,7 @@ void SinglePlayer::Finish()
 			main_window->GetAIs(),
 			multiplayer_flag 
 		};
-		RankingManagement::SaveRanking(ranking_info);
+		RankingManagement::Save(ranking_info);
 	}
 	if (main_window->GetTimerSettings())
 	{

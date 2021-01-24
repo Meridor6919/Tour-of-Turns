@@ -14,7 +14,7 @@ struct ToTWindowConfig
 	bool hamachi_flag;
 	MeridorConsoleLib::WindowInfoEx window_info;
 };
-struct RankingDetails
+struct RacerLeaderboardInfo
 {
 	std::string tour;
 	std::string name;

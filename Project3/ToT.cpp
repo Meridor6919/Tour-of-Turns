@@ -16,7 +16,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	const int spacing = 2;
 	const int paragraph_size = 2;
 	const COORD base_position = { 0, 19 };
-	std::vector<std::string> details = RankingManagement::GetRankingDetails(tour, racer_pos, classification_type);
+	std::vector<std::string> details = RankingManagement::GetTextToDisplay(tour, racer_pos, classification_type);
 
 	if (clearing)
 	{

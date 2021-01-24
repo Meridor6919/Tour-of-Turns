@@ -2,7 +2,7 @@
 
 using namespace MeridorConsoleLib;
 
-std::vector<std::string> RankingManagement::LoadRankingData(const char* path)
+std::vector<std::string> RankingManagement::LoadRawData(const char* path)
 {
 	std::vector<std::string> ret = {};
 	std::ifstream fvar;
@@ -25,11 +25,11 @@ void RankingManagement::AddNewRecord(std::vector<std::string>& ranking_data, con
 		ranking_data.push_back("");
 	}
 }
-void RankingManagement::UpdateRecord(std::vector<std::string>& ranking_data, const std::vector<std::string>& ranking_details, int classification, int index)
+void RankingManagement::UpdateRecord(std::vector<std::string>& ranking_data, const std::vector<std::string>& record_data, int classification, int index)
 {
 	std::string temp;
 
-	int racer_pos = GetRankedRacerPosition(ranking_data, ranking_details[RankingInfo::Name]);
+	int racer_pos = GetRankedRacerPosition(ranking_data, record_data[RankingInfo::Name]);
 
 	for (int i = 0; i < Validation::ranking_details; ++i)
 	{
@@ -53,24 +53,24 @@ void RankingManagement::UpdateRecord(std::vector<std::string>& ranking_data, con
 					case RankingInfo::GamesWon:
 					{
 
-						temp = std::to_string(atoi(GetSeparatedValue(ranking_data[racer_pos + i].c_str(), j).c_str()) + atoi(ranking_details[i].c_str()));
+						temp = std::to_string(atoi(GetSeparatedValue(ranking_data[racer_pos + i].c_str(), j).c_str()) + atoi(record_data[i].c_str()));
 						ranking_data[racer_pos + i] = SetSeparatedValue(ranking_data[racer_pos + i], temp, j);
 						break;
 					}
 					case RankingInfo::BestScore:
 					{
 						int prev = atoi(GetSeparatedValue(ranking_data[racer_pos + i].c_str(), j).c_str());
-						int curr = atoi(ranking_details[i].c_str());
+						int curr = atoi(record_data[i].c_str());
 						if (prev < curr)
 						{
-							ranking_data[racer_pos + i] = SetSeparatedValue(ranking_data[racer_pos + i], ranking_details[i], j);
+							ranking_data[racer_pos + i] = SetSeparatedValue(ranking_data[racer_pos + i], record_data[i], j);
 						}
 						break;
 					}
 					case RankingInfo::FavCar:
 					case RankingInfo::FavTire:
 					{
-						temp = UpdateRankingFavorites(GetSeparatedValue(ranking_data[racer_pos + i], j), ranking_details[i]);
+						temp = UpdateFavorite(GetSeparatedValue(ranking_data[racer_pos + i], j), record_data[i]);
 						ranking_data[racer_pos + i] = SetSeparatedValue(ranking_data[racer_pos + i], temp, j);
 						break;
 					}
@@ -79,7 +79,7 @@ void RankingManagement::UpdateRecord(std::vector<std::string>& ranking_data, con
 		}
 	}
 }
-void RankingManagement::SaveRankingData(std::vector<std::string>& ranking_data, const char* path)
+void RankingManagement::SaveData(std::vector<std::string>& ranking_data, const char* path)
 {
 	std::ofstream fvar;
 	size_t ranking_size = ranking_data.size();
@@ -91,7 +91,7 @@ void RankingManagement::SaveRankingData(std::vector<std::string>& ranking_data, 
 	}
 	fvar.close();
 }
-void RankingManagement::AdjustRankingDetails(std::vector<std::string>& ranking_details)
+void RankingManagement::AdjustStringVector(std::vector<std::string>& record_data)
 {
 	/*
 	int finished_games = atoi(ret[1].c_str()) - atoi(ret[8].c_str());
@@ -119,34 +119,34 @@ void RankingManagement::AdjustRankingDetails(std::vector<std::string>& ranking_d
 	}
 	*/
 }
-std::vector<std::string> RankingManagement::GetRankingDetails(const RankingDetails& ranking_info)
+std::vector<std::string> RankingManagement::RankingInfoToStringVector(const RacerLeaderboardInfo& racer_leaderboard_info)
 {
 	std::vector<std::string> ret = {};
 	ret.resize(RankingInfo::last);
-	ret[RankingInfo::Attacks] = std::to_string(ranking_info.attacks);
-	ret[RankingInfo::BestScore] = std::to_string(ranking_info.score);
-	ret[RankingInfo::Score] = std::to_string(ranking_info.score);
-	ret[RankingInfo::Burning] = std::to_string(ranking_info.durability_burning);
-	ret[RankingInfo::Crashes] = std::to_string(ranking_info.crash);
-	ret[RankingInfo::Drifts] = std::to_string(ranking_info.drifts);
-	ret[RankingInfo::FavCar] = ranking_info.car;
-	ret[RankingInfo::FavTire] = ranking_info.tires;
+	ret[RankingInfo::Attacks] = std::to_string(racer_leaderboard_info.attacks);
+	ret[RankingInfo::BestScore] = std::to_string(racer_leaderboard_info.score);
+	ret[RankingInfo::Score] = std::to_string(racer_leaderboard_info.score);
+	ret[RankingInfo::Burning] = std::to_string(racer_leaderboard_info.durability_burning);
+	ret[RankingInfo::Crashes] = std::to_string(racer_leaderboard_info.crash);
+	ret[RankingInfo::Drifts] = std::to_string(racer_leaderboard_info.drifts);
+	ret[RankingInfo::FavCar] = racer_leaderboard_info.car;
+	ret[RankingInfo::FavTire] = racer_leaderboard_info.tires;
 	ret[RankingInfo::GamesPlayed] = "1";
-	ret[RankingInfo::GamesWon] = std::to_string(ranking_info.place == 1);
-	ret[RankingInfo::Name] = ranking_info.name;
-	ret[RankingInfo::Place] = std::to_string(ranking_info.place);
+	ret[RankingInfo::GamesWon] = std::to_string(racer_leaderboard_info.place == 1);
+	ret[RankingInfo::Name] = racer_leaderboard_info.name;
+	ret[RankingInfo::Place] = std::to_string(racer_leaderboard_info.place);
 	return ret;
 }
-void RankingManagement::ValidateRankingDetails(std::vector<std::string>& ranking_details)
+void RankingManagement::ValidateRankingDetails(std::vector<std::string>& record_data)
 {
-	size_t vector_size = ranking_details.size();
+	size_t vector_size = record_data.size();
 	if (vector_size < Validation::ranking_details)
 	{
-		ranking_details.resize(Validation::ranking_details, "");
+		record_data.resize(Validation::ranking_details, "");
 	}
 	else if (vector_size % Validation::ranking_details != 0)
 	{
-		ranking_details.resize(vector_size + (vector_size % Validation::ranking_details), "");
+		record_data.resize(vector_size + (vector_size % Validation::ranking_details), "");
 	}
 }
 int RankingManagement::GetRankedRacerPosition(const std::vector<std::string>& ranking_data, std::string name)
@@ -160,7 +160,7 @@ int RankingManagement::GetRankedRacerPosition(const std::vector<std::string>& ra
 	}
 	return -1;
 }
-std::string RankingManagement::GetRankingFavourite(const std::string& text)
+std::string RankingManagement::GetFavourite(const std::string& text)
 {
 	std::string ret = "";
 	int highest_value = 0;
@@ -184,7 +184,7 @@ std::string RankingManagement::GetRankingFavourite(const std::string& text)
 	}
 	return ret;
 }
-std::string RankingManagement::UpdateRankingFavorites(const std::string& text, const std::string& record_id)
+std::string RankingManagement::UpdateFavorite(const std::string& text, const std::string& record_id)
 {
 	std::string ret = "";
 	int highest_value = 0;
@@ -234,37 +234,37 @@ std::vector<std::string> RankingManagement::GetRankedRacersNames(std::string tou
 
 	return ret;
 }
-void RankingManagement::SaveRanking(RankingDetails ranking_info)
+void RankingManagement::Save(RacerLeaderboardInfo racer_leaderboard_info)
 {
-	RemoveExtension(ranking_info.tour, ExtName::tour);
-	RemoveExtension(ranking_info.car, ExtName::car);
-	RemoveExtension(ranking_info.tires, ExtName::tire);
+	RemoveExtension(racer_leaderboard_info.tour, ExtName::tour);
+	RemoveExtension(racer_leaderboard_info.car, ExtName::car);
+	RemoveExtension(racer_leaderboard_info.tires, ExtName::tire);
 
-	std::string ranking_path = FolderName::ranking + '\\' + ranking_info.tour + ExtName::ranking;
-	std::vector<std::string> ranking_data = RankingManagement::LoadRankingData(ranking_path.c_str());
-	int record_index = GetRankedRacerPosition(ranking_data, ranking_info.name);
+	std::string ranking_path = FolderName::ranking + '\\' + racer_leaderboard_info.tour + ExtName::ranking;
+	std::vector<std::string> ranking_data = RankingManagement::LoadRawData(ranking_path.c_str());
+	int record_index = GetRankedRacerPosition(ranking_data, racer_leaderboard_info.name);
 
 	if (record_index < 0)
 	{
 		record_index = static_cast<int>(ranking_data.size());
-		AddNewRecord(ranking_data, ranking_info.name);
+		AddNewRecord(ranking_data, racer_leaderboard_info.name);
 	}
-	std::vector<std::string> ranking_details = GetRankingDetails(ranking_info);
+	std::vector<std::string> record_data = RankingInfoToStringVector(racer_leaderboard_info);
 	
 	int classification = RankingClassification::all_games;
-	if (ranking_info.ais == GameConstants::max_ais)
+	if (racer_leaderboard_info.ais == GameConstants::max_ais)
 	{
 		classification += RankingClassification::ai8;
 	}
-	if (ranking_info.multiplayer_flag)
+	if (racer_leaderboard_info.multiplayer_flag)
 	{
 		classification += RankingClassification::multiplayer;
 	}
 
-	UpdateRecord(ranking_data, ranking_details, classification, record_index);
-	SaveRankingData(ranking_data, ranking_path.c_str());
+	UpdateRecord(ranking_data, record_data, classification, record_index);
+	SaveData(ranking_data, ranking_path.c_str());
 }
-std::vector<std::string> RankingManagement::GetRankingDetails(std::string tour, int racer_pos, int classification_type)
+std::vector<std::string> RankingManagement::GetTextToDisplay(std::string tour, int racer_pos, int classification_type)
 {
 	std::vector<std::string> ret = {};
 	std::ifstream fvar;
@@ -301,13 +301,13 @@ std::vector<std::string> RankingManagement::GetRankingDetails(std::string tour, 
 			case RankingInfo::FavCar:
 			case RankingInfo::FavTire:
 			{
-				ret.push_back(GetRankingFavourite(temp));
+				ret.push_back(GetFavourite(temp));
 			}
 		}
 	}
 	fvar.close();
 
 	ValidateRankingDetails(ret);
-	AdjustRankingDetails(ret);
+	AdjustStringVector(ret);
 	return ret;
 }
