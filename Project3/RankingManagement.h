@@ -12,7 +12,8 @@ class RankingManagement
 {
 	static std::vector<std::string> LoadRawData(const char* path);
 	static void AddNewRecord(std::vector<std::string>& ranking_data, const std::string& name);
-	static void UpdateRecord(std::vector<std::string>& ranking_data, const std::vector<std::string>& record_data, int classification, int index);
+	static void UpdateRecordFinished(std::vector<std::string>& ranking_data, const std::vector<std::string>& record_data, int classification, int index);
+	static void UpdateRecordCrashed(std::vector<std::string>& ranking_data, const std::string& name, int classification, int index);
 	static void SaveData(std::vector<std::string>& ranking_data, const char* path);
 	static void AdjustStringVector(std::vector<std::string>& record_data);
 	static std::vector<std::string> RankingInfoToStringVector(const RacerLeaderboardInfo& racer_leaderboard_info);

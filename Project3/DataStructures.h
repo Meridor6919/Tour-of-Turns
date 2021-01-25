@@ -19,11 +19,11 @@ struct RacerLeaderboardInfo
 	std::string tour;
 	std::string name;
 	int place;
-	int score;
+	double score;
 	bool crash;
 	int attacks; 
 	int drifts;
-	int durability_burning;
+	double durability_burning;
 	std::string car;
 	std::string tires;
 	int ais;
