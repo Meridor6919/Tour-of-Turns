@@ -1,6 +1,6 @@
 #include "ValidationFunctions.h"
 
-void Validation::ValidateToTGameConfig(ToTGameConfig &game_config)
+void Validation::SanitizeToTGameConfig(ToTGameConfig &game_config)
 {
 	bool name_valid = true;
 	bool space = true;
@@ -35,7 +35,7 @@ void Validation::ValidateToTGameConfig(ToTGameConfig &game_config)
 		game_config.timer_settings = 0;
 	}
 }
-void Validation::ValidateToTWindowConfig(ToTWindowConfig& window_config)
+void Validation::SanitizeToTWindowConfig(ToTWindowConfig& window_config)
 {
 	if (window_config.window_info.characters_capacity.Y < Validation::minimum_window_size.Y)
 	{

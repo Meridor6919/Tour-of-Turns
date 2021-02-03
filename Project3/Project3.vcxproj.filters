@@ -8,24 +8,6 @@
     <Filter Include="Files\ToTFiles">
       <UniqueIdentifier>{24138a25-90f4-4418-a685-bed6e65cb2d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\ToTFiles\PlayerClasses">
-      <UniqueIdentifier>{06947dfc-3123-4e94-a9c2-a0c8fc8fe8fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\ToTFiles\PlayerClasses\HeaderFiles">
-      <UniqueIdentifier>{df7ec13e-f09a-4ed7-ab7a-433852061617}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\ToTFiles\PlayerClasses\SourceFiles">
-      <UniqueIdentifier>{7effde4b-4157-4221-9724-9eb31aa51060}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\ToTFiles\GameLogic">
-      <UniqueIdentifier>{01a10d97-3976-42ff-b0dd-671788676263}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\ToTFiles\GameLogic\HeaderFiles">
-      <UniqueIdentifier>{13b14e40-f014-4ff9-be67-192a17894184}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\ToTFiles\GameLogic\SourceFiles">
-      <UniqueIdentifier>{99f0d8c6-c8fd-41d4-a712-de48e4a7f1d4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Files\MeridorNetworkLib">
       <UniqueIdentifier>{ee618611-a4c3-4fa5-932e-dd775b22477c}</UniqueIdentifier>
     </Filter>
@@ -53,28 +35,46 @@
     <Filter Include="Files\MeridorMiscModules\Source">
       <UniqueIdentifier>{ed261f60-22ec-4406-995d-7dc2e4e5cbab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Files\ToTFiles\ApplicationFiles">
+      <UniqueIdentifier>{01a10d97-3976-42ff-b0dd-671788676263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\ApplicationFiles\HeaderFiles">
+      <UniqueIdentifier>{13b14e40-f014-4ff9-be67-192a17894184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\ApplicationFiles\SourceFiles">
+      <UniqueIdentifier>{99f0d8c6-c8fd-41d4-a712-de48e4a7f1d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\MainGameFiles">
+      <UniqueIdentifier>{06947dfc-3123-4e94-a9c2-a0c8fc8fe8fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\MainGameFiles\HeaderFiles">
+      <UniqueIdentifier>{df7ec13e-f09a-4ed7-ab7a-433852061617}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\ToTFiles\MainGameFiles\SourceFiles">
+      <UniqueIdentifier>{7effde4b-4157-4221-9724-9eb31aa51060}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Participant.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\MainGameFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="NetworkRoleSinglePlayer.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\MainGameFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="ToT_Window.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="ToT.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="NetworkRoleHost.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\MainGameFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="NetworkRoleClient.cpp">
-      <Filter>Files\ToTFiles\PlayerClasses\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\MainGameFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="MeridorConsoleLib\GeneralFunctions.cpp">
       <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
@@ -113,33 +113,33 @@
       <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="FileManagementFunctions.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="ValidationFunctions.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="RankingManagement.cpp">
-      <Filter>Files\ToTFiles\GameLogic\SourceFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
-      <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\MainGameFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="NetworkRole.h">
-      <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\MainGameFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="NetworkRoleClient.h">
-      <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\MainGameFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="NetworkRoleHost.h">
-      <Filter>Files\ToTFiles\PlayerClasses\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\MainGameFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="ToT_Window.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="ToT.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="MeridorConsoleLib\DataStructures.h">
       <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
@@ -184,31 +184,31 @@
       <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="FileManagementFunctions.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="ValidationFunctions.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="DataStructures.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="LanguagePack.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="FileManagementConstants.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="ValidationConstants.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="ErrorConstants.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="GameConstants.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="RankingManagement.h">
-      <Filter>Files\ToTFiles\GameLogic\HeaderFiles</Filter>
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="GameConstants.h">
+      <Filter>Files\ToTFiles\MainGameFiles\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

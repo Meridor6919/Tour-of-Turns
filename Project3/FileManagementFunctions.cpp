@@ -108,6 +108,7 @@ std::vector<int> FileManagement::GetCarParameters(const std::string path)
 {
 	const std::vector<std::string> data = ReadFile(FolderName::car + '\\' + path);
 	std::vector<int> car_parameters;
+
 	for (short i = 0; i < CarAttributes::last; ++i)
 	{
 		car_parameters.push_back(atoi(data[i].c_str()));
@@ -121,7 +122,9 @@ std::vector<std::string> FileManagement::GetTireParameters(const std::string pat
 
 void FileManagement::SaveGameConfig(const ToTGameConfig &game_config)
 {
-	std::string name = game_config.name;;
+	std::string name = game_config.name;
+	std::ofstream fvar;
+
 	for (int i = 0; i < static_cast<int>(name.size()); ++i)
 	{
 		if (name[i] == ' ')
@@ -129,7 +132,6 @@ void FileManagement::SaveGameConfig(const ToTGameConfig &game_config)
 			name[i] = '_';
 		}
 	}
-	std::ofstream fvar;
 	fvar.open(FolderName::main + '\\' + FileName::game_config);
 	fvar << game_config.ais << '\n';
 	fvar << name + '\n';
@@ -139,8 +141,9 @@ void FileManagement::SaveGameConfig(const ToTGameConfig &game_config)
 }
 void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 {
-	Validation::accidents;
-	std::string title = window_config.window_info.title;;
+	std::string title = window_config.window_info.title;
+	std::ofstream fvar;
+
 	for (int i = 0; i < static_cast<int>(title.size()); ++i)
 	{
 		if (title[i] == ' ')
@@ -148,7 +151,6 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 			title[i] = '_';
 		}
 	}
-	std::ofstream fvar;
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
 	fvar << title << '\n';
 	fvar << window_config.window_info.characters_capacity.X << '\n';
