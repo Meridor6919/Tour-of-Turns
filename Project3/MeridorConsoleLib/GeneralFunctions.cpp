@@ -64,6 +64,24 @@ std::string MeridorConsoleLib::SetSeparatedValue(const std::string& original_tex
 	return original_text;
 }
 
+std::string MeridorConsoleLib::SetPrecision(const std::string& floating_point_number, unsigned int precision)
+{
+	size_t number_size = floating_point_number.size();
+	bool remove_decimal_point = !precision;
+	for (int i = 0; i < number_size; ++i)
+	{
+		if (floating_point_number[i] == '.')
+		{
+			if (number_size - 1 - i < precision)
+			{
+				precision = number_size - 1 - i;
+			}
+			return floating_point_number.substr(0, i + precision + 1 - remove_decimal_point);
+		}
+	}
+	return floating_point_number;
+}
+
 std::vector<std::string> MeridorConsoleLib::ReadFile(const std::string path)
 {
 	std::vector<std::string> data;

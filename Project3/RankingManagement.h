@@ -11,13 +11,13 @@
 class RankingManagement
 {
 	static std::vector<std::string> LoadRawData(const char* path);
-	static void AddNewRecord(std::vector<std::string>& ranking_data, const std::string& name);
+	static void AddEmptyRecord(std::vector<std::string>& ranking_data, const std::string& name);
 	static void UpdateRecordFinished(std::vector<std::string>& ranking_data, const std::vector<std::string>& record_data, int classification, int index);
-	static void UpdateRecordCrashed(std::vector<std::string>& ranking_data, const std::string& name, int classification, int index);
+	static void UpdateRecordCrashed(std::vector<std::string>& ranking_data, int classification, int index);
 	static void SaveData(std::vector<std::string>& ranking_data, const char* path);
 	static void AdjustStringVector(std::vector<std::string>& record_data);
 	static std::vector<std::string> RankingInfoToStringVector(const RacerLeaderboardInfo& racer_leaderboard_info);
-	static void ValidateRankingDetails(std::vector<std::string>& record_data);
+	static void SanitizeRankingDetails(std::vector<std::string>& record_data);
 
 	//returns -1 if racer is not ranked
 	static int GetRankedRacerPosition(const std::vector<std::string>& ranking_data, std::string name);
