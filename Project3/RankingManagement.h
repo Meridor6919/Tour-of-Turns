@@ -10,14 +10,18 @@
 
 class RankingManagement
 {
-	static std::vector<std::string> LoadRawData(const char* path);
-	static void AddEmptyRecord(std::vector<std::string>& ranking_data, const std::string& name);
-	static void UpdateRecordFinished(std::vector<std::string>& ranking_data, const std::vector<std::string>& record_data, int classification, int index);
+	static bool UpdateIntegerValue(const RacerLeaderboardInfo& racer_leaderboard_info, int index, int& value);
+	static bool UpdateDoubleValue(const RacerLeaderboardInfo& racer_leaderboard_info, int index, double& value);
+	static void UpdateRecordFinished(std::vector<std::string>& ranking_data, const RacerLeaderboardInfo& racer_leaderboard_info, int classification, int index);
 	static void UpdateRecordCrashed(std::vector<std::string>& ranking_data, int classification, int index);
-	static void SaveData(std::vector<std::string>& ranking_data, const char* path);
+
 	static void AdjustStringVector(std::vector<std::string>& record_data);
-	static std::vector<std::string> RankingInfoToStringVector(const RacerLeaderboardInfo& racer_leaderboard_info);
 	static void SanitizeRankingDetails(std::vector<std::string>& record_data);
+
+	static std::vector<std::string> LoadRawData(const char* path);
+	static void SaveData(std::vector<std::string>& ranking_data, const char* path);
+
+	static void AddEmptyRecord(std::vector<std::string>& ranking_data, const std::string& name);
 
 	//returns -1 if racer is not ranked
 	static int GetRankedRacerPosition(const std::vector<std::string>& ranking_data, std::string name);
