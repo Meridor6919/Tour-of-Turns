@@ -14,8 +14,8 @@ class ToT {
 	std::shared_ptr<ToT_Window> main_window;
 	HANDLE handle;
 	short game_window_center;
-	short info_pos = 0;
-	short main_menu_position = 0;
+	unsigned short info_pos = 0;
+	unsigned short main_menu_position = 0;
 
 	bool playable;
 

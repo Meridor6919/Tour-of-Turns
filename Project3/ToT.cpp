@@ -54,21 +54,20 @@ void ToT::Title()
 	const COORD starting_point = { game_window_center, 1 };
 	constexpr TextAlign text_align = TextAlign::center;
 	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::text[LanguagePack::title_main][0].size()), starting_point.Y };
-	const short decoration_distance = 5;
-	const std::string main_decoration = "{ }";
-	const std::string additional_decoration = "*";
+
+
 	const short main_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main].size());
 	const short additional_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional].size());
 	const HANDLE handle = main_window->GetHandle();
-	
+
 	//Main text
-	SetConsoleTextAttribute(handle, *main_window->secondary_color);
+	SetConsoleTextAttribute(handle, *main_window->main_color);
 	for (short i = 0; i < main_title_size; ++i)
 	{
 		SetConsoleCursorPosition(handle, { orientation_point.X, orientation_point.Y + i });
 		std::cout << LanguagePack::text[LanguagePack::title_main][i];
 	}
-	SetConsoleTextAttribute(handle, *main_window->main_color);
+	SetConsoleTextAttribute(handle, *main_window->secondary_color);
 	for (short i = 0; i < additional_title_size; ++i)
 	{
 		const short main_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
@@ -76,21 +75,49 @@ void ToT::Title()
 		SetConsoleCursorPosition(handle, { orientation_point.X + main_line_size / 2 - additional_line_size / 2, orientation_point.Y + i + main_title_size / 3 });
 		std::cout << LanguagePack::text[LanguagePack::title_additional][i];
 	}
-	//Decoration
+
+	//Decoration constants definition
+	const short main_decoration_left_size = GameConstants::title_decoration_main_left.size();
+	const short main_decoration_right_size = GameConstants::title_decoration_main_right.size();
+	const short decoration_left_size = static_cast<short>(GameConstants::title_decoration_distance + main_decoration_left_size);
+	const short decoration_right_size = static_cast<short>(GameConstants::title_decoration_distance + main_decoration_right_size);
+
+	short left_spacing = 0;
+	for (short j = 0; j < main_decoration_left_size; ++j)
+	{
+		if (GameConstants::title_decoration_main_left[j] == ' ')
+		{
+			left_spacing = j;
+			break;
+		}
+	}
+	short right_spacing = 0;
+	for (short j = 0; j < main_decoration_right_size; ++j)
+	{
+		if (GameConstants::title_decoration_main_right[j] == ' ')
+		{
+			right_spacing = j;
+			break;
+		}
+	}
+
+	//Decoration algorithm
 	for (short i = 0; i < main_title_size; ++i)
 	{
-		const short decoration_size = static_cast<short>(decoration_distance + main_decoration.size());
+		const short wobbling = (GameConstants::title_decoration ? i % 2 : 0);
 		const short line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
-		SetConsoleTextAttribute(handle, *main_window->secondary_color);
-		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_size - i % 2, orientation_point.Y + i });
-		std::cout << main_decoration;
-		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + decoration_distance - 1 - i % 2, orientation_point.Y + i });
-		std::cout << main_decoration;
+
 		SetConsoleTextAttribute(handle, *main_window->main_color);
-		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_size + 1 - i % 2, orientation_point.Y + i });
-		std::cout << additional_decoration;
-		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + decoration_distance - i % 2, orientation_point.Y + i });
-		std::cout << additional_decoration;
+		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling, orientation_point.Y + i });
+		std::cout << GameConstants::title_decoration_main_left;
+		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + GameConstants::title_decoration_distance - 1 - wobbling, orientation_point.Y + i });
+		std::cout << GameConstants::title_decoration_main_right;
+		
+		SetConsoleTextAttribute(handle, *main_window->secondary_color);
+		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling + left_spacing, orientation_point.Y + i });
+		std::cout << GameConstants::title_decoration_secondary;
+		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + GameConstants::title_decoration_distance - 1 - wobbling + right_spacing, orientation_point.Y + i });
+		std::cout << GameConstants::title_decoration_secondary;
 	}
 }
 void ToT::MainMenu()
@@ -151,7 +178,7 @@ void ToT::Credits()
 }
 void ToT::Options()
 {
-	int main_menu_position = 0;
+	unsigned int main_menu_position = 0;
 	const COORD starting_point = { game_window_center+1, 25 };
 	const short spacing = 3;
 	bool loop = true;
@@ -170,7 +197,8 @@ void ToT::Options()
 				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = *main_window->main_color;
 				local_text.erase(local_text.begin() + (*main_window->secondary_color - 1));
-				Text::TextInfo text_info = { local_text, *main_window->main_color - 1 - (*main_window->main_color > *main_window->secondary_color), local_starting_point, TextAlign::left, 0, true};
+				unsigned int pos = static_cast<unsigned int>(*main_window->main_color - 1 - (*main_window->main_color > *main_window->secondary_color));
+				Text::TextInfo text_info = { local_text, pos, local_starting_point, TextAlign::left, 0, true};
 				(*main_window->main_color) = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1;
 				if (*main_window->main_color >= *main_window->secondary_color)
 				{
@@ -187,7 +215,8 @@ void ToT::Options()
 				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = *main_window->secondary_color;
 				local_text.erase(local_text.begin() + (*main_window->main_color - 1));
-				Text::TextInfo text_info = { local_text, *main_window->secondary_color - 1 - (*main_window->secondary_color > *main_window->main_color), local_starting_point, TextAlign::left, 0, true };
+				unsigned int pos = static_cast<unsigned int>(*main_window->secondary_color - 1 - (*main_window->secondary_color > *main_window->main_color));
+				Text::TextInfo text_info = { local_text, pos, local_starting_point, TextAlign::left, 0, true };
 				(*main_window->secondary_color) = (Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1);
 				if (*main_window->secondary_color >= *main_window->main_color)
 				{
@@ -207,7 +236,7 @@ void ToT::Options()
 					text.push_back(std::to_string(i));
 				}
 				const float starting_volume = main_window->GetMusicVolume();
-				Text::TextInfo text_info = { text, static_cast<int>(main_window->GetMusicVolume() * 10), local_starting_point, TextAlign::left, 0, true };
+				Text::TextInfo text_info = { text, static_cast<size_t>(main_window->GetMusicVolume() * 10), local_starting_point, TextAlign::left, 0, true };
 				const float current_volume = static_cast<float>(Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo())) / 10.0f;
 				if(starting_volume != current_volume)
 				{
@@ -218,7 +247,7 @@ void ToT::Options()
 			case 3://language
 			{
 				std::vector<std::string> language = GetFilesInDirectory(FolderName::language);
-				int starting_pos = 0;
+				unsigned int starting_pos = 0;
 				for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
 				{
 					if (language[starting_pos] == main_window->GetLanguage())
@@ -245,7 +274,7 @@ void ToT::Options()
 			}
 			case 5://display settings
 			{
-				int current_display_mode = static_cast<int>(main_window->GetWindowMode());
+				unsigned int current_display_mode = static_cast<int>(main_window->GetWindowMode());
 				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::display_settings], current_display_mode, local_starting_point, TextAlign::left, 0, true };
 				int new_display_mode = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
 				if (new_display_mode != current_display_mode)
@@ -266,17 +295,17 @@ void ToT::Options()
 }
 void ToT::Ranking()
 {
-	int main_menu_position = 0;
+	unsigned int main_menu_position = 0;
 	const COORD starting_point = { game_window_center + 1, 25 };
 	const short spacing = 3;
 	bool loop = true;
 
 	std::vector<std::string> maps = GetFilesInDirectory(FolderName::ranking);
-	int map_pos = 0;
+	unsigned int map_pos = 0;
 	RemoveExtension(maps, ExtName::ranking);
 
-	int racer_pos = 0;
-	int classification_type = 0;
+	unsigned int racer_pos = 0;
+	unsigned int classification_type = 0;
 
 	ShowRankingDetails(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
 	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_menu], main_menu_position, starting_point, TextAlign::center, spacing, false };
