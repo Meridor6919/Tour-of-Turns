@@ -41,7 +41,6 @@ ToTWindowConfig FileManagement::LoadWindowConfig()
 	fvar >> ret.window_info.characters_capacity.Y;
 	fvar >> ret.window_info.main_color;
 	fvar >> ret.window_info.secondary_color;
-	fvar >> ret.window_info.visible_cursor;
 	fvar >> reinterpret_cast<std::underlying_type<WindowMode>::type&>(ret.window_info.window_mode);
 	fvar >> ret.music_volume;
 	fvar >> ret.hamachi_flag;
@@ -201,7 +200,6 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 	fvar << window_config.window_info.characters_capacity.Y << '\n';
 	fvar << window_config.window_info.main_color << '\n';
 	fvar << window_config.window_info.secondary_color << '\n';
-	fvar << window_config.window_info.visible_cursor << '\n';
 	fvar << static_cast<int>(window_config.window_info.window_mode) << '\n';
 	fvar << window_config.music_volume << '\n';
 	fvar << window_config.hamachi_flag << '\n';

@@ -24,8 +24,8 @@ namespace Validation
 
 	constexpr int first_color = FOREGROUND_BLUE;
 	constexpr int last_color = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
-	constexpr int default_main_color = FOREGROUND_INTENSITY | FOREGROUND_GREEN;
-	constexpr int default_secondary_color = last_color;
+	constexpr int default_main_color = last_color;
+	constexpr int default_secondary_color = FOREGROUND_INTENSITY | FOREGROUND_GREEN;
 	constexpr int colors = last_color - first_color + 1;
 
 	constexpr short maximum_title_decoration_size = 20;

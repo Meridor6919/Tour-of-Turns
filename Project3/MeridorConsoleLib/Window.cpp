@@ -136,4 +136,5 @@ void MeridorConsoleLib::Window::SetWindowMode(WindowMode window_mode)
 	}
 	window_info.window_mode = window_mode;
 	SetWindowSize();
+	SetCursor(window_info.visible_cursor);
 }

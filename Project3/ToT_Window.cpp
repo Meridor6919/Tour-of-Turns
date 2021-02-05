@@ -5,6 +5,7 @@ void ToT_Window::Init()
 {
 	ToTWindowConfig tot_window_config = LoadWindowConfig();
 	SanitizeToTWindowConfig(tot_window_config);
+	tot_window_config.window_info.visible_cursor = false;
 
 	window_info = tot_window_config.window_info;
 	window_info.handle = GetStdHandle(STD_OUTPUT_HANDLE);
