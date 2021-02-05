@@ -70,10 +70,16 @@ void MeridorConsoleLib::Window::Init(const WindowInfoEx& window_info_ex)
 void MeridorConsoleLib::Window::SetConsoleEditMode(bool enable)
 {
 	DWORD prev_mode;
-	DWORD quick_edit_flag = enable ? ENABLE_QUICK_EDIT_MODE : ~ENABLE_QUICK_EDIT_MODE;
 	HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
 	GetConsoleMode(input_handle, &prev_mode);
-	SetConsoleMode(input_handle, prev_mode & quick_edit_flag | ENABLE_EXTENDED_FLAGS);
+	if (enable)
+	{
+		SetConsoleMode(input_handle, prev_mode | ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
+	}
+	else
+	{
+		SetConsoleMode(input_handle, prev_mode & ~ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
+	}
 }
 void MeridorConsoleLib::Window::BlockingSleep(const int miliseconds)
 {
