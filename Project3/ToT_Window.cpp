@@ -15,6 +15,9 @@ void ToT_Window::Init()
 	tot_game_config = LoadGameConfig();
 	SanitizeToTGameConfig(tot_game_config);
 
+	title_theme = LoadTitleTheme(tot_window_config.title_theme);
+	SanitizeTitleTheme(title_theme);
+
 	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
 	
 	SetMusic(music_volume);
@@ -26,9 +29,13 @@ const ToTGameConfig& ToT_Window::GetToTGameConfig()
 {
 	return tot_game_config;
 }
+const TitleTheme& ToT_Window::GetTitleTheme()
+{
+	return title_theme;
+}
 ToTWindowConfig ToT_Window::GetToTWindowConfig()
 {
-	return { music_volume, hamachi_flag, window_info };
+	return { music_volume, hamachi_flag, title_theme.name, window_info };
 }
 bool ToT_Window::GetHamachiConnectionFlag()
 {

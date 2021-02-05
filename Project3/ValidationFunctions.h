@@ -6,6 +6,7 @@ namespace Validation
 {
 	void SanitizeToTGameConfig(ToTGameConfig& game_config);
 	void SanitizeToTWindowConfig(ToTWindowConfig& window_config);
+	void SanitizeTitleTheme(TitleTheme& title_theme);
 	bool ValidateGameFiles();
 	bool ValidateTourFiles();
 	bool ValidateCarFiles();

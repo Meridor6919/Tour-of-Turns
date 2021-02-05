@@ -68,6 +68,29 @@ void Validation::SanitizeToTWindowConfig(ToTWindowConfig& window_config)
 		window_config.music_volume = 0;
 	}
 }
+void Validation::SanitizeTitleTheme(TitleTheme& title_theme)
+{
+	if (title_theme.main_left.size() > Validation::maximum_title_decoration_size)
+	{
+		title_theme.main_left.resize(Validation::maximum_title_decoration_size);
+	}
+	if (title_theme.main_right.size() > Validation::maximum_title_decoration_size)
+	{
+		title_theme.main_right.resize(Validation::maximum_title_decoration_size);
+	}
+	if (title_theme.secondary_left.size() > Validation::maximum_title_decoration_size)
+	{
+		title_theme.secondary_left.resize(Validation::maximum_title_decoration_size);
+	}
+	if (title_theme.secondary_right.size() > Validation::maximum_title_decoration_size)
+	{
+		title_theme.secondary_right.resize(Validation::maximum_title_decoration_size);
+	}
+	if (!MeridorConsoleLib::Between(Validation::minimum_title_decoration_distance, Validation::maximum_title_decoration_distance, title_theme.decoration_distance))
+	{
+		title_theme.decoration_distance = Validation::minimum_title_decoration_distance;
+	}
+}
 bool Validation::ValidateGameFiles()
 {
 	return ValidateCarFiles() * ValidateTireFiles() * ValidateTourFiles();

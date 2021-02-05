@@ -11,7 +11,7 @@ std::vector<std::string> FileManagement::GetTireNames()
 {
 	return GetFilesInDirectory(FolderName::tire);
 }
-std::vector<std::string> FileManagement::GetCarNames(const std::string tour)
+std::vector<std::string> FileManagement::GetCarNames(const std::string &tour)
 {
 	return ReadFile(FolderName::tour + '\\' + tour);
 }
@@ -36,6 +36,7 @@ ToTWindowConfig FileManagement::LoadWindowConfig()
 
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
 	fvar >> ret.window_info.title;
+	fvar >> ret.title_theme;
 	fvar >> ret.window_info.characters_capacity.X;
 	fvar >> ret.window_info.characters_capacity.Y;
 	fvar >> ret.window_info.main_color;
@@ -46,6 +47,48 @@ ToTWindowConfig FileManagement::LoadWindowConfig()
 	fvar >> ret.hamachi_flag;
 	fvar.close();
 
+	return ret;
+}
+TitleTheme FileManagement::LoadTitleTheme(const std::string& theme_name)
+{
+	TitleTheme ret = {};
+	std::ifstream fvar;
+	std::string temp;
+
+	fvar.open(FolderName::main + '\\' + FileName::title_theme);
+
+	while (std::getline(fvar, temp))
+	{
+		if (GetSeparatedValue(temp, 0, '\t') == theme_name)
+		{
+			ret.name = theme_name;
+			ret.main_left = GetSeparatedValue(temp, 1, '\t');
+			ret.main_right = GetSeparatedValue(temp, 2, '\t');
+			ret.secondary_left = GetSeparatedValue(temp, 3, '\t');
+			ret.secondary_right = GetSeparatedValue(temp, 4, '\t');
+			ret.decoration_distance = atoi(GetSeparatedValue(temp, 5, '\t').c_str());
+			ret.decoration_wobble = atoi(GetSeparatedValue(temp, 6, '\t').c_str());
+
+			for (short j = 0; j < ret.main_left.size(); ++j)
+			{
+				if (ret.main_left[j] == ' ')
+				{
+					ret.secondary_pos_left = j;
+					break;
+				}
+			}
+			for (short j = 0; j < ret.main_right.size(); ++j)
+			{
+				if (ret.main_right[j] == ' ')
+				{
+					ret.secondary_pos_right = j;
+					break;
+				}
+			}
+
+			break;
+		}
+	}
 	return ret;
 }
 void FileManagement::LoadLanguagePack(std::string path)
@@ -153,6 +196,7 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 	}
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
 	fvar << title << '\n';
+	fvar << window_config.title_theme << '\n';
 	fvar << window_config.window_info.characters_capacity.X << '\n';
 	fvar << window_config.window_info.characters_capacity.Y << '\n';
 	fvar << window_config.window_info.main_color << '\n';

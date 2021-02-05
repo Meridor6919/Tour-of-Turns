@@ -54,7 +54,7 @@ void ToT::Title()
 	const COORD starting_point = { game_window_center, 1 };
 	constexpr TextAlign text_align = TextAlign::center;
 	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::text[LanguagePack::title_main][0].size()), starting_point.Y };
-
+	const TitleTheme &title_theme = main_window->GetTitleTheme();
 
 	const short main_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main].size());
 	const short additional_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional].size());
@@ -77,47 +77,27 @@ void ToT::Title()
 	}
 
 	//Decoration constants definition
-	const short main_decoration_left_size = GameConstants::title_decoration_main_left.size();
-	const short main_decoration_right_size = GameConstants::title_decoration_main_right.size();
-	const short decoration_left_size = static_cast<short>(GameConstants::title_decoration_distance + main_decoration_left_size);
-	const short decoration_right_size = static_cast<short>(GameConstants::title_decoration_distance + main_decoration_right_size);
-
-	short left_spacing = 0;
-	for (short j = 0; j < main_decoration_left_size; ++j)
-	{
-		if (GameConstants::title_decoration_main_left[j] == ' ')
-		{
-			left_spacing = j;
-			break;
-		}
-	}
-	short right_spacing = 0;
-	for (short j = 0; j < main_decoration_right_size; ++j)
-	{
-		if (GameConstants::title_decoration_main_right[j] == ' ')
-		{
-			right_spacing = j;
-			break;
-		}
-	}
+	const short main_decoration_left_size = title_theme.main_left.size();
+	const short main_decoration_right_size = title_theme.main_left.size();
+	const short secondary_decoration_left_size = title_theme.secondary_left.size();
+	const short decoration_left_size = title_theme.decoration_distance + max(title_theme.secondary_pos_left + secondary_decoration_left_size - 1, main_decoration_left_size);
 
 	//Decoration algorithm
 	for (short i = 0; i < main_title_size; ++i)
 	{
-		const short wobbling = (GameConstants::title_decoration ? i % 2 : 0);
+		const short wobbling = (title_theme.decoration_wobble ? i % 2 : 0);
 		const short line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
-
 		SetConsoleTextAttribute(handle, *main_window->main_color);
 		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling, orientation_point.Y + i });
-		std::cout << GameConstants::title_decoration_main_left;
-		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + GameConstants::title_decoration_distance - 1 - wobbling, orientation_point.Y + i });
-		std::cout << GameConstants::title_decoration_main_right;
+		std::cout << title_theme.main_left;
+		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + title_theme.decoration_distance + wobbling -1, orientation_point.Y + i });
+		std::cout << title_theme.main_right;
 		
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
-		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling + left_spacing, orientation_point.Y + i });
-		std::cout << GameConstants::title_decoration_secondary;
-		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + GameConstants::title_decoration_distance - 1 - wobbling + right_spacing, orientation_point.Y + i });
-		std::cout << GameConstants::title_decoration_secondary;
+		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling + title_theme.secondary_pos_left, orientation_point.Y + i });
+		std::cout << title_theme.secondary_left;
+		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + title_theme.decoration_distance + wobbling -1 + title_theme.secondary_pos_right, orientation_point.Y + i });
+		std::cout << title_theme.secondary_right;
 	}
 }
 void ToT::MainMenu()

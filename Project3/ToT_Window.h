@@ -18,6 +18,7 @@ protected:
 	float music_volume;
 	bool hamachi_flag;
 	ToTGameConfig tot_game_config;
+	TitleTheme title_theme;
 	WavTransformer wav_transformer;
 
 public:
@@ -25,6 +26,7 @@ public:
 
 	//Get methods
 	const ToTGameConfig& GetToTGameConfig();
+	const TitleTheme& GetTitleTheme();
 	ToTWindowConfig GetToTWindowConfig();
 	bool GetHamachiConnectionFlag();
 	int GetAIs();

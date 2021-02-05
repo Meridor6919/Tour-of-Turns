@@ -14,6 +14,7 @@ namespace FileName
 {
 	const std::string game_config = "game_config.txt";
 	const std::string window_config = "window_config.txt";
+	const std::string title_theme = "title_themes.txt";
 	const std::string music = "test.wav";
 	const std::string ai = "ToTAI.exe";
 }

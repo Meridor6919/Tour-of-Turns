@@ -89,10 +89,4 @@ namespace GameConstants
 	constexpr float friction_scalar = 0.9f;
 	constexpr int box_width = 84;
 	constexpr int max_ais = 7;
-
-	const std::string title_decoration_main_left = "|-_-   -_->";
-	const std::string title_decoration_main_right = "<-_-   -_-|";
-	const std::string title_decoration_secondary = "\\:/";
-	constexpr short title_decoration_distance = 5;
-	constexpr bool title_decoration = false;
 }
