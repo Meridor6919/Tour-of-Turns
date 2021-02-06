@@ -36,6 +36,7 @@ public:
 	float GetMusicVolume();
 	
 	//Set methods
+	void SetTitleTheme(std::string name);
 	void SetHamachiConnectionFlag(const bool flag);
 	void SetAIs(int number_of_ais);
 	void SetName(std::string name);

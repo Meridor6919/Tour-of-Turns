@@ -12,6 +12,7 @@ namespace FileManagement
 	std::vector<std::string> GetTourNames();
 	std::vector<std::string> GetTireNames();
 	std::vector<std::string> GetCarNames(const std::string &tour);
+	std::vector<std::string> GetTitleThemeNames();
 	ToTGameConfig LoadGameConfig();
 	ToTWindowConfig LoadWindowConfig();
 	TitleTheme LoadTitleTheme(const std::string& theme_name);

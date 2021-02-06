@@ -172,7 +172,29 @@ void ToT::Options()
 		const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 		switch (main_menu_position)
 		{
-			case 0://set primary color
+			case 0: //Title theme
+			{
+				std::vector<std::string> text = GetTitleThemeNames();
+				const std::string theme_name = main_window->GetTitleTheme().name;
+				int current_theme_pos = 0;
+				for (int i = 0; i < text.size(); ++i)
+				{
+					if (text[i] == theme_name)
+					{
+						current_theme_pos = i;
+						break;
+					}
+				}
+				Text::TextInfo text_info = { text, current_theme_pos, local_starting_point, TextAlign::left, 0, true };
+				int new_theme_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+				if (current_theme_pos != new_theme_pos)
+				{
+					main_window->SetTitleTheme(text[new_theme_pos]);
+				}
+				Title();
+				break;
+			}
+			case 1://set primary color
 			{
 				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = *main_window->main_color;
@@ -190,7 +212,7 @@ void ToT::Options()
 				}
 				break;
 			}
-			case 1://set secondary color
+			case 2://set secondary color
 			{
 				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
 				const int starting_color = *main_window->secondary_color;
@@ -208,7 +230,7 @@ void ToT::Options()
 				}
 				break;
 			}
-			case 2://set music
+			case 3://set music
 			{
 				std::vector<std::string> text = { LanguagePack::text[LanguagePack::on_off][1] };
 				for (int i = 1; i < 11; ++i)
@@ -224,7 +246,7 @@ void ToT::Options()
 				}
 				break;
 			}
-			case 3://language
+			case 4://language
 			{
 				std::vector<std::string> language = GetFilesInDirectory(FolderName::language);
 				unsigned int starting_pos = 0;
@@ -246,13 +268,13 @@ void ToT::Options()
 				}
 				break;
 			}
-			case 4://set hamachi flag
+			case 5://set hamachi flag
 			{
 				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, TextAlign::left, 0, true };
 				main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo())));
 				break;
 			}
-			case 5://display settings
+			case 6://display settings
 			{
 				unsigned int current_display_mode = static_cast<int>(main_window->GetWindowMode());
 				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::display_settings], current_display_mode, local_starting_point, TextAlign::left, 0, true };
@@ -263,7 +285,7 @@ void ToT::Options()
 				}
 				break;
 			}
-			case 6://clearing
+			case 7://clearing
 			{
 				loop = false;
 				break;

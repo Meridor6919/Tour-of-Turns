@@ -62,6 +62,11 @@ float ToT_Window::GetMusicVolume()
 {
 	return music_volume;
 }
+void ToT_Window::SetTitleTheme(std::string name)
+{
+	title_theme = LoadTitleTheme(name);
+	SanitizeTitleTheme(title_theme);
+}
 void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {
 	hamachi_flag = flag;

@@ -15,6 +15,20 @@ std::vector<std::string> FileManagement::GetCarNames(const std::string &tour)
 {
 	return ReadFile(FolderName::tour + '\\' + tour);
 }
+std::vector<std::string> FileManagement::GetTitleThemeNames()
+{
+	std::vector<std::string> ret = {};
+	std::ifstream fvar;
+	std::string temp;
+
+	fvar.open(FolderName::main + '\\' + FileName::title_theme);
+
+	while (std::getline(fvar, temp))
+	{
+		ret.push_back(GetSeparatedValue(temp, 0, '\t'));
+	}
+	return ret;
+}
 ToTGameConfig FileManagement::LoadGameConfig()
 {
 	ToTGameConfig ret = {};
