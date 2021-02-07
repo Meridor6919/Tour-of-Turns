@@ -49,60 +49,9 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
 	}
 }
-void ToT::Title()
-{
-	const COORD starting_point = { game_window_center, 1 };
-	constexpr TextAlign text_align = TextAlign::center;
-	const COORD orientation_point = { starting_point.X - static_cast<short>(static_cast<float>(text_align) / 2.0f * LanguagePack::text[LanguagePack::title_main][0].size()), starting_point.Y };
-	const TitleTheme &title_theme = main_window->GetTitleTheme();
-
-	const short main_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main].size());
-	const short additional_title_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional].size());
-	const HANDLE handle = main_window->GetHandle();
-
-	//Main text
-	SetConsoleTextAttribute(handle, *main_window->main_color);
-	for (short i = 0; i < main_title_size; ++i)
-	{
-		SetConsoleCursorPosition(handle, { orientation_point.X, orientation_point.Y + i });
-		std::cout << LanguagePack::text[LanguagePack::title_main][i];
-	}
-	SetConsoleTextAttribute(handle, *main_window->secondary_color);
-	for (short i = 0; i < additional_title_size; ++i)
-	{
-		const short main_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
-		const short additional_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_additional][i].size());
-		SetConsoleCursorPosition(handle, { orientation_point.X + main_line_size / 2 - additional_line_size / 2, orientation_point.Y + i + main_title_size / 3 });
-		std::cout << LanguagePack::text[LanguagePack::title_additional][i];
-	}
-
-	//Decoration constants definition
-	const short main_decoration_left_size = title_theme.main_left.size();
-	const short main_decoration_right_size = title_theme.main_left.size();
-	const short secondary_decoration_left_size = title_theme.secondary_left.size();
-	const short decoration_left_size = title_theme.decoration_distance + max(title_theme.secondary_pos_left + secondary_decoration_left_size - 1, main_decoration_left_size);
-
-	//Decoration algorithm
-	for (short i = 0; i < main_title_size; ++i)
-	{
-		const short wobbling = (title_theme.decoration_wobble ? i % 2 : 0);
-		const short line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
-		SetConsoleTextAttribute(handle, *main_window->main_color);
-		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling, orientation_point.Y + i });
-		std::cout << title_theme.main_left;
-		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + title_theme.decoration_distance + wobbling -1, orientation_point.Y + i });
-		std::cout << title_theme.main_right;
-		
-		SetConsoleTextAttribute(handle, *main_window->secondary_color);
-		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling + title_theme.secondary_pos_left, orientation_point.Y + i });
-		std::cout << title_theme.secondary_left;
-		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + title_theme.decoration_distance + wobbling -1 + title_theme.secondary_pos_right, orientation_point.Y + i });
-		std::cout << title_theme.secondary_right;
-	}
-}
 void ToT::MainMenu()
 {
-	Title();
+	main_window->DrawTitle();
 	while (true)
 	{
 		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu], main_menu_position, { game_window_center + 1, 25 }, TextAlign::center, 3, true};
@@ -175,7 +124,7 @@ void ToT::Options()
 			case 0: //Title theme
 			{
 				std::vector<std::string> text = GetTitleThemeNames();
-				const std::string theme_name = main_window->GetTitleTheme().name;
+				const std::string theme_name = main_window->GetTitleTheme();
 				int current_theme_pos = 0;
 				for (int i = 0; i < text.size(); ++i)
 				{
@@ -189,9 +138,10 @@ void ToT::Options()
 				int new_theme_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
 				if (current_theme_pos != new_theme_pos)
 				{
+					main_window->DrawTitle(true);
 					main_window->SetTitleTheme(text[new_theme_pos]);
+					main_window->DrawTitle();
 				}
-				Title();
 				break;
 			}
 			case 1://set primary color
@@ -208,7 +158,7 @@ void ToT::Options()
 				}
 				if (starting_color != *main_window->main_color)
 				{
-					Title();
+					main_window->DrawTitle();
 				}
 				break;
 			}
@@ -226,7 +176,7 @@ void ToT::Options()
 				}
 				if (starting_color != *main_window->secondary_color)
 				{
-					Title();
+					main_window->DrawTitle();
 				}
 				break;
 			}
@@ -264,7 +214,7 @@ void ToT::Options()
 				{
 					main_window->SetLanguage(language[current_pos] + ExtName::language);
 					system("cls");
-					Title();
+					main_window->DrawTitle();
 				}
 				break;
 			}
@@ -458,8 +408,8 @@ void ToT::Game(const bool multiplayer)
 		}
 		network_role->Finish();
 		system("cls");
-		Title();
+		main_window->DrawTitle();
 	}
 	system("cls");
-	Title();
+	main_window->DrawTitle();
 }

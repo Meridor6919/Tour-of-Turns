@@ -20,7 +20,6 @@ class ToT {
 	bool playable;
 
 	void ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing = false);
-	void Title();
 
 public:
 	ToT();

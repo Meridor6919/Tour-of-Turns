@@ -6,6 +6,7 @@
 #include "RankingManagement.h"
 #include "ValidationFunctions.h"
 #include "LanguagePack.h"
+#include "Title.h"
 
 using namespace MeridorConsoleLib;
 using namespace FileManagement;
@@ -18,15 +19,19 @@ protected:
 	float music_volume;
 	bool hamachi_flag;
 	ToTGameConfig tot_game_config;
-	TitleTheme title_theme;
+	Title title;
 	WavTransformer wav_transformer;
 
 public:
 	void Init();
 
+	//Title
+	void DrawTitle(bool clear = false);
+	std::string GetTitleTheme();
+	void SetTitleTheme(std::string name);
+
 	//Get methods
 	const ToTGameConfig& GetToTGameConfig();
-	const TitleTheme& GetTitleTheme();
 	ToTWindowConfig GetToTWindowConfig();
 	bool GetHamachiConnectionFlag();
 	int GetAIs();
@@ -36,7 +41,6 @@ public:
 	float GetMusicVolume();
 	
 	//Set methods
-	void SetTitleTheme(std::string name);
 	void SetHamachiConnectionFlag(const bool flag);
 	void SetAIs(int number_of_ais);
 	void SetName(std::string name);

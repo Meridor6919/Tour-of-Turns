@@ -16,8 +16,8 @@ void ToT_Window::Init()
 	tot_game_config = LoadGameConfig();
 	SanitizeToTGameConfig(tot_game_config);
 
-	title_theme = LoadTitleTheme(tot_window_config.title_theme);
-	SanitizeTitleTheme(title_theme);
+	title.Init(this);
+	title.SetTheme(tot_window_config.title_theme);
 
 	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
 	
@@ -26,17 +26,33 @@ void ToT_Window::Init()
 
 	Window::Init(window_info);
 }
+void ToT_Window::DrawTitle(bool clear)
+{
+	if (clear)
+	{
+		title.ShowDecoration(true);
+	}
+	else
+	{
+		title.ShowMainPart();
+		title.ShowDecoration(false);
+	}
+}
+std::string ToT_Window::GetTitleTheme()
+{
+	return title.GetTheme().name;
+}
+void ToT_Window::SetTitleTheme(std::string name)
+{
+	title.SetTheme(name);
+}
 const ToTGameConfig& ToT_Window::GetToTGameConfig()
 {
 	return tot_game_config;
 }
-const TitleTheme& ToT_Window::GetTitleTheme()
-{
-	return title_theme;
-}
 ToTWindowConfig ToT_Window::GetToTWindowConfig()
 {
-	return { music_volume, hamachi_flag, title_theme.name, window_info };
+	return { music_volume, hamachi_flag, GetTitleTheme(), window_info };
 }
 bool ToT_Window::GetHamachiConnectionFlag()
 {
@@ -61,11 +77,6 @@ std::string ToT_Window::GetLanguage()
 float ToT_Window::GetMusicVolume()
 {
 	return music_volume;
-}
-void ToT_Window::SetTitleTheme(std::string name)
-{
-	title_theme = LoadTitleTheme(name);
-	SanitizeTitleTheme(title_theme);
 }
 void ToT_Window::SetHamachiConnectionFlag(const bool flag)
 {

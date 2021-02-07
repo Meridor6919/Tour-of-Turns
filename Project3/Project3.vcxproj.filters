@@ -121,6 +121,9 @@
     <ClCompile Include="RankingManagement.cpp">
       <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
@@ -209,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="GameConstants.h">
       <Filter>Files\ToTFiles\MainGameFiles\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
