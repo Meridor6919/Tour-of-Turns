@@ -1,5 +1,5 @@
 Tour_of_Turns
-Default
+Ornament
 240
 81
 15
