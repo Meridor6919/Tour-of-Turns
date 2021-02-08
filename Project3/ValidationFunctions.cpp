@@ -22,9 +22,9 @@ void Validation::SanitizeToTGameConfig(ToTGameConfig &game_config)
 			break;
 		}
 	}
-	if (!MeridorConsoleLib::Between(0, GameConstants::max_ais, game_config.ais))
+	if (!MeridorConsoleLib::Between(0, GameConstants::max_ais, game_config.number_of_ais))
 	{
-		game_config.ais = GameConstants::max_ais;
+		game_config.number_of_ais = GameConstants::max_ais;
 	}
 	if (!MeridorConsoleLib::Between(1, Validation::maximum_name_length, static_cast<int>(game_config.name.size())) || !name_valid)
 	{

@@ -3,6 +3,10 @@
 
 using namespace MeridorConsoleLib;
 
+std::vector<std::string> FileManagement::GetAINames()
+{
+    return GetFilesInDirectory(FolderName::ai);
+}
 std::vector<std::string> FileManagement::GetTourNames()
 {
 	return GetFilesInDirectory(FolderName::tour);
@@ -35,7 +39,7 @@ ToTGameConfig FileManagement::LoadGameConfig()
 	std::ifstream fvar;
 
 	fvar.open(FolderName::main + '\\' + FileName::game_config);
-	fvar >> ret.ais;
+	fvar >> ret.number_of_ais;
 	fvar >> ret.name;
 	fvar >> ret.lang;
 	fvar >> ret.timer_settings;
@@ -51,6 +55,7 @@ ToTWindowConfig FileManagement::LoadWindowConfig()
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
 	fvar >> ret.window_info.title;
 	fvar >> ret.title_theme;
+	fvar >> ret.ai_module;
 	fvar >> ret.window_info.characters_capacity.X;
 	fvar >> ret.window_info.characters_capacity.Y;
 	fvar >> ret.window_info.main_color;
@@ -189,7 +194,7 @@ void FileManagement::SaveGameConfig(const ToTGameConfig &game_config)
 		}
 	}
 	fvar.open(FolderName::main + '\\' + FileName::game_config);
-	fvar << game_config.ais << '\n';
+	fvar << game_config.number_of_ais << '\n';
 	fvar << name + '\n';
 	fvar << game_config.lang + '\n';
 	fvar << game_config.timer_settings << '\n';
@@ -210,6 +215,7 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
 	fvar << title << '\n';
 	fvar << window_config.title_theme << '\n';
+	fvar << window_config.ai_module << '\n';
 	fvar << window_config.window_info.characters_capacity.X << '\n';
 	fvar << window_config.window_info.characters_capacity.Y << '\n';
 	fvar << window_config.window_info.main_color << '\n';

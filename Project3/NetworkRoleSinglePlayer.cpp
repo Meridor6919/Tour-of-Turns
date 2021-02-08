@@ -454,7 +454,7 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 	}
 	if (number_of_ais)
 	{
-		ai_connector = std::make_unique<PipeConnector>(FolderName::main + '\\' + FileName::ai, 255);
+		ai_connector = std::make_unique<PipeConnector>(FolderName::ai + '\\' + main_window->GetAIModule(), 255);
 		if (!ai_connector->HandleConnection(&SinglePlayer::HandleAIConnection, this))
 		{
 			MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);

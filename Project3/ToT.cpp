@@ -235,7 +235,25 @@ void ToT::Options()
 				}
 				break;
 			}
-			case 7://clearing
+			case 7://AI module
+			{
+				std::vector<std::string> ai_modules = GetAINames();
+				std::string current_module_name = main_window->GetAIModule();
+				int module_pos;
+				for (int i = 0; i < ai_modules.size(); ++i)
+				{
+					if (ai_modules[i] == current_module_name)
+					{
+						module_pos = i;
+					}
+					RemoveExtension(ai_modules[i], ExtName::ai);
+				}
+				Text::TextInfo text_info = { ai_modules, module_pos, local_starting_point, TextAlign::left, 0, true };
+				module_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+				main_window->SetAIModule(ai_modules[module_pos] + ExtName::ai);
+				break;
+			}
+			case 8://clearing
 			{
 				loop = false;
 				break;

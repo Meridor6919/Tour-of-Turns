@@ -9,6 +9,7 @@ namespace FolderName
 	const std::string tire = main + "\\Tires";
 	const std::string ranking = main + "\\Rankings";
 	const std::string language = main + "\\LangPack";
+	const std::string ai = main + "\\AI";
 }
 namespace FileName
 {
@@ -16,7 +17,7 @@ namespace FileName
 	const std::string window_config = "window_config.txt";
 	const std::string title_theme = "title_themes.txt";
 	const std::string music = "test.wav";
-	const std::string ai = "ToTAI.exe";
+	
 }
 namespace ExtName
 {
@@ -25,4 +26,5 @@ namespace ExtName
 	const std::string tire = ".tire";
 	const std::string ranking = ".rank";
 	const std::string language = ".lang";
+	const std::string ai = ".exe";
 }

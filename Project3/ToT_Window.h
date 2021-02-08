@@ -18,6 +18,7 @@ protected:
 
 	float music_volume;
 	bool hamachi_flag;
+	std::string ai_module;
 	ToTGameConfig tot_game_config;
 	Title title;
 	WavTransformer wav_transformer;
@@ -33,6 +34,7 @@ public:
 	//Get methods
 	const ToTGameConfig& GetToTGameConfig();
 	ToTWindowConfig GetToTWindowConfig();
+	std::string GetAIModule();
 	bool GetHamachiConnectionFlag();
 	int GetAIs();
 	std::string GetName();
@@ -41,6 +43,7 @@ public:
 	float GetMusicVolume();
 	
 	//Set methods
+	void SetAIModule(std::string ai_module);
 	void SetHamachiConnectionFlag(const bool flag);
 	void SetAIs(int number_of_ais);
 	void SetName(std::string name);

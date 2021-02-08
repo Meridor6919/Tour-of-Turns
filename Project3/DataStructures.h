@@ -4,12 +4,13 @@
 struct ToTGameConfig
 {
 	std::string name;
-	int ais;
+	int number_of_ais;
 	std::string lang;
 	int timer_settings;
 };
 struct ToTWindowConfig
 {
+	std::string ai_module;
 	float music_volume;
 	bool hamachi_flag;
 	std::string title_theme;
