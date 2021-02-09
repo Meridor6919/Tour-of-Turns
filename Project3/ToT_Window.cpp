@@ -109,7 +109,7 @@ void ToT_Window::SetLanguage(std::string lang)
 	LoadLanguagePack(FolderName::language + '\\' + lang);
 	if (!ValidateLanguagePack())
 	{
-		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file.c_str(), MB_TOPMOST);
+		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST);
 
 		std::vector<std::string> languages = GetFilesInDirectory(FolderName::language);
 		bool no_valid_lang_packs = true;
@@ -120,13 +120,13 @@ void ToT_Window::SetLanguage(std::string lang)
 			{
 				no_valid_lang_packs = false;
 				tot_game_config.lang = languages[i];
-				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language.c_str(), MB_TOPMOST);
+				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language, MB_TOPMOST);
 				break;
 			}
 		}
 		if (no_valid_lang_packs)
 		{
-			MessageBox(0, ErrorMsg::language_error.c_str(), ErrorTitle::language_error.c_str(), MB_TOPMOST);
+			MessageBox(0, ErrorMsg::language_error, ErrorTitle::language_error, MB_TOPMOST);
 			exit(0);
 		}
 	}

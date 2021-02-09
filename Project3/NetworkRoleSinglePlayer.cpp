@@ -457,7 +457,7 @@ void SinglePlayer::GetParticipants(const std::string name, const std::string tou
 		ai_connector = std::make_unique<PipeConnector>(FolderName::ai + '\\' + main_window->GetAIModule(), 255);
 		if (!ai_connector->HandleConnection(&SinglePlayer::HandleAIConnection, this))
 		{
-			MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 			return;
 		}
 	}
@@ -710,7 +710,7 @@ void SinglePlayer::ValidateAttack(int target, int participant)
 				mutex.lock();
 				participants[participant].KillParticipant();
 				mutex.unlock();
-				MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), MB_TOPMOST);
+				MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt, MB_TOPMOST);
 				return;
 			}
 		}
@@ -738,7 +738,7 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 			mutex.lock();
 			participants[participant].KillParticipant();
 			mutex.unlock();
-			MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt.c_str(), MB_TOPMOST);
+			MessageBox(0, (participants[participant].name + ErrorMsg::cheating_attempt).c_str(), ErrorTitle::cheating_attempt, MB_TOPMOST);
 			return;
 		}
 		if (action.first == 2 && participants[participant].current_speed >= GameConstants::minimum_drift_speed)
@@ -818,14 +818,14 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 		{
 			if (msg_length < 3)
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			const int ai_position_start = static_cast<int>(participants.size()) - main_window->GetAIs();
 			const int id = msg_received[2] - 48 + ai_position_start;
 			if (id < ai_position_start || id >= static_cast<int>(participants.size()))
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			mutex.lock();
@@ -882,7 +882,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			}
 			if (!valid)
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			const std::vector<int> car_param = GetCarParameters(msg);
@@ -911,7 +911,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			}
 			if (!valid)
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			const std::vector<std::string> tires_param = GetTireParameters(msg);
@@ -965,13 +965,13 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			const int selected_name_size = static_cast<int>(selected_name.size());
 			if (selected_name_size > Validation::maximum_name_length || selected_name_size <= 0)
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			//ai id validation
 			if (ai_id < 0 || ai_id > main_window->GetAIs())
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].name = selected_name;
@@ -994,13 +994,13 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			}
 			if (!valid)
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			//ai id validation
 			if(ai_id < 0 || ai_id > main_window->GetAIs())
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].car_path = selected_car;
@@ -1023,13 +1023,13 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			}
 			if (!valid)
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			//ai id validation
 			if (ai_id < 0 || ai_id > main_window->GetAIs())
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].tire_path = selected_tires;
@@ -1044,13 +1044,13 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			//ai id validation
 			if (ai_id < 0 || ai_id > main_window->GetAIs())
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			//action pre-validation
 			if(selected_action_id < 0 ||selected_action_id > 4 || !participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			ValidateAction({ selected_action_id, selected_action_value }, static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id);
@@ -1063,7 +1063,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			//ai id validation
 			if (ai_id < 0 || ai_id > main_window->GetAIs() || !attack_phase)
 			{
-				MessageBox(0, ErrorMsg::ai_connection.c_str(), ErrorTitle::ai_connection.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
 				exit(0);
 			}
 			if (!participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())

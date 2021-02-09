@@ -57,8 +57,8 @@ void ToT::MainMenu()
 		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu], main_menu_position, { game_window_center + 1, 25 }, TextAlign::center, 3, true};
 		switch (main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo()))
 		{
-		case 0:
-		case 1:
+		case 0://Singleplayer
+		case 1://Multiplayer
 		{
 			if (playable)
 			{
@@ -66,31 +66,36 @@ void ToT::MainMenu()
 			}
 			else
 			{
-				MessageBox(0, ErrorMsg::unplayable.c_str(), ErrorTitle::unplayable.c_str(), MB_TOPMOST);
+				MessageBox(0, ErrorMsg::unplayable, ErrorTitle::unplayable, MB_TOPMOST);
 			}
 			break;
 		}
-		case 2:
+		case 2://AI battles
+		{
+			MessageBoxA(0, ErrorMsg::comming_soon_tm, ErrorTitle::comming_soon_tm, MB_TOPMOST);
+			break;
+		}
+		case 3://Gamepedia
 		{
 			Info();
 			break;
 		}
-		case 3:
+		case 4://Ranking
 		{
 			Ranking();
 			break;
 		}
-		case 4:
+		case 5://Options
 		{
 			Options();
 			break;
 		}
-		case 5:
+		case 6://Credits
 		{
 			Credits();
 			break;
 		}
-		case 6:
+		case 7://Exit
 		{
 			return;
 		}

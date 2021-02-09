@@ -2,7 +2,7 @@
 
 namespace Validation
 {
-	constexpr int main_menu = 7;
+	constexpr int main_menu = 8;
 	constexpr int game_menu = 8;
 	constexpr int multiplayer_menu = 10;
 	constexpr int multiplayer_before_game_lobby = 3;
