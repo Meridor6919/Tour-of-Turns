@@ -21,6 +21,7 @@ namespace Validation
 	constexpr int maximum_name_length = 20;
 	constexpr int maximum_timer = 60;
 	constexpr COORD minimum_window_size = { 240, 77 };
+	constexpr int box_width = 84;
 
 	constexpr int first_color = FOREGROUND_BLUE;
 	constexpr int last_color = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;

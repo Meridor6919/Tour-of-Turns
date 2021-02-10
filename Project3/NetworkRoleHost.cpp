@@ -19,7 +19,7 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 	const HANDLE handle = main_window->GetHandle();
 	
 	mutex.lock();
-	const short border_size = static_cast<short>(GameConstants::box_width);
+	const short border_size = static_cast<short>(Validation::box_width);
 	const short title_size = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby].size());
 	const short box_size = (lobby_size < 4 ? 4 : lobby_size);
 
@@ -27,9 +27,9 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 	SetConsoleCursorPosition(handle, { starting_position.X + border_size/2 - title_size/2, starting_position.Y });
 	std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby];
 	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y+1 });
-	std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
+	std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(box_size) * 2 });
-	std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
+	std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	mutex.unlock();
 	while (*running)
 	{

@@ -82,11 +82,29 @@ namespace TerrainTypes
 }
 namespace GameConstants
 {
+	constexpr int max_ais = 7;
+	constexpr float meters_per_second = 1.0f / 3.6f;
+
 	constexpr int minimum_drift_speed = 40;
-	constexpr int attack_forward_distance = 4;
-	constexpr int attack_backward_distance = 6;
 	constexpr float drift_value = 2.0f;
 	constexpr float friction_scalar = 0.9f;
-	constexpr int box_width = 84;
-	constexpr int max_ais = 7;
+	constexpr float tire_effectivness_multiplier = 0.2f;
+
+	constexpr int attack_forward_distance = 4;
+	constexpr int attack_backward_distance = 6;
+
+	constexpr float maximum_speed_multiplier = 1.25f;
+	constexpr float burning_levels = 5.0f;
+	constexpr int base_burning_levels = 10;
+
+	constexpr int badly_crashed = 50;
+	constexpr int crashed = 40;
+	constexpr int dangerous_accident = 30;
+	constexpr int off_route = 20;
+	constexpr int dangerous_slip = 10;
+
+	//per attack point
+	constexpr float speed_reduction = 0.125f;
+	//per attack point
+	constexpr float chance_reduction = 5.0f;
 }

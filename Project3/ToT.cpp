@@ -20,7 +20,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 
 	if (clearing)
 	{
-		const int border_size = GameConstants::box_width;
+		const int border_size = Validation::box_width;
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
 		std::cout<<Spaces(border_size);
 		for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
@@ -35,7 +35,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 	{
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
-		std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
+		std::cout << GetMonoCharacterString(Validation::box_width, '_');
 		for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
 		{
 			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
@@ -46,7 +46,7 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		}
 		SetConsoleTextAttribute(handle, *main_window->secondary_color);
 		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(Validation::ranking_details) + 2) });
-		std::cout << GetMonoCharacterString(GameConstants::box_width, '_');
+		std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	}
 }
 void ToT::MainMenu()

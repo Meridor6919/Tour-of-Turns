@@ -40,8 +40,6 @@ void Title::ShowMainPart()
 		SetConsoleCursorPosition(handle, { orientation_point.X + main_line_size / 2 - additional_line_size / 2, orientation_point.Y + i + main_title_size / 3 });
 		std::cout << LanguagePack::text[LanguagePack::title_additional][i];
 	}
-
-	
 }
 
 void Title::ShowDecoration(bool clear)
