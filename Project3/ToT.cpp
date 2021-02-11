@@ -49,6 +49,116 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 		std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	}
 }
+void ToT::SetTheme(const COORD &local_starting_point)
+{
+	std::vector<std::string> text = GetTitleThemeNames();
+	const std::string theme_name = main_window->GetTitleTheme();
+	int current_theme_pos = 0;
+	for (int i = 0; i < text.size(); ++i)
+	{
+		if (text[i] == theme_name)
+		{
+			current_theme_pos = i;
+			break;
+		}
+	}
+	Text::TextInfo text_info = { text, current_theme_pos, local_starting_point, TextAlign::left, 0, true };
+	int new_theme_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+	if (current_theme_pos != new_theme_pos)
+	{
+		main_window->DrawTitle(true);
+		main_window->SetTitleTheme(text[new_theme_pos]);
+		main_window->DrawTitle();
+	}
+}
+void ToT::SetColor(const COORD& local_starting_point, bool main)
+{
+	int* color = main ? main_window->main_color : main_window->secondary_color;
+	int* secondary_color = main ? main_window->secondary_color : main_window->main_color;
+
+	std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
+	const int starting_color = *color;
+	local_text.erase(local_text.begin() + (*secondary_color - 1));
+	unsigned int pos = static_cast<unsigned int>(*color - 1 - (*color > *secondary_color));
+	Text::TextInfo text_info = { local_text, pos, local_starting_point, TextAlign::left, 0, true };
+	(*color) = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1;
+	if (*color >= *secondary_color)
+	{
+		(*color) = (*color) + 1;
+	}
+	if (starting_color != *color)
+	{
+		main_window->DrawTitle();
+	}
+}
+void ToT::SetMusic(const COORD& local_starting_point)
+{
+	std::vector<std::string> text = { LanguagePack::text[LanguagePack::on_off][1] };
+	for (int i = 1; i < 11; ++i)
+	{
+		text.push_back(std::to_string(i));
+	}
+	const float starting_volume = main_window->GetMusicVolume();
+	Text::TextInfo text_info = { text, static_cast<size_t>(main_window->GetMusicVolume() * 10), local_starting_point, TextAlign::left, 0, true };
+	const float current_volume = static_cast<float>(Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo())) / 10.0f;
+	if (starting_volume != current_volume)
+	{
+		main_window->SetMusic(current_volume);
+	}
+}
+void ToT::SetLanguage(const COORD& local_starting_point)
+{
+	std::vector<std::string> language = GetFilesInDirectory(FolderName::language);
+	unsigned int starting_pos = 0;
+	for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
+	{
+		if (language[starting_pos] == main_window->GetLanguage())
+		{
+			break;
+		}
+	}
+	RemoveExtension(language, ExtName::language);
+	Text::TextInfo text_info = { language, starting_pos, local_starting_point, TextAlign::left, 0, true };
+	int current_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+	if (current_pos != starting_pos)
+	{
+		main_window->SetLanguage(language[current_pos] + ExtName::language);
+		system("cls");
+		main_window->DrawTitle();
+	}
+}
+void ToT::SetHamachiFlag(const COORD& local_starting_point)
+{
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, TextAlign::left, 0, true };
+	main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo())));
+}
+void ToT::SetDisplayMode(const COORD& local_starting_point)
+{
+	unsigned int current_display_mode = static_cast<int>(main_window->GetWindowMode());
+	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::display_settings], current_display_mode, local_starting_point, TextAlign::left, 0, true };
+	int new_display_mode = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+	if (new_display_mode != current_display_mode)
+	{
+		main_window->SetWindowMode(static_cast<MeridorConsoleLib::WindowMode>(new_display_mode));
+	}
+}
+void ToT::SetAIModule(const COORD& local_starting_point)
+{
+	std::vector<std::string> ai_modules = GetAINames();
+	std::string current_module_name = main_window->GetAIModule();
+	int module_pos;
+	for (int i = 0; i < ai_modules.size(); ++i)
+	{
+		if (ai_modules[i] == current_module_name)
+		{
+			module_pos = i;
+		}
+		RemoveExtension(ai_modules[i], ExtName::ai);
+	}
+	Text::TextInfo text_info = { ai_modules, module_pos, local_starting_point, TextAlign::left, 0, true };
+	module_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+	main_window->SetAIModule(ai_modules[module_pos] + ExtName::ai);
+}
 void ToT::MainMenu()
 {
 	main_window->DrawTitle();
@@ -114,7 +224,7 @@ void ToT::Options()
 {
 	unsigned int main_menu_position = 0;
 	const COORD starting_point = { game_window_center+1, 25 };
-	const short spacing = 3;
+	constexpr short spacing = 3;
 	bool loop = true;
 	Text::TextInfo text_info = { LanguagePack::text[LanguagePack::general_options], main_menu_position, starting_point, TextAlign::center, spacing, false };
 
@@ -126,139 +236,46 @@ void ToT::Options()
 		const COORD local_starting_point = { starting_point.X + submenu_horizontal_position, starting_point.Y + game_window_vertical_position };
 		switch (main_menu_position)
 		{
-			case 0: //Title theme
+			case 0:
 			{
-				std::vector<std::string> text = GetTitleThemeNames();
-				const std::string theme_name = main_window->GetTitleTheme();
-				int current_theme_pos = 0;
-				for (int i = 0; i < text.size(); ++i)
-				{
-					if (text[i] == theme_name)
-					{
-						current_theme_pos = i;
-						break;
-					}
-				}
-				Text::TextInfo text_info = { text, current_theme_pos, local_starting_point, TextAlign::left, 0, true };
-				int new_theme_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-				if (current_theme_pos != new_theme_pos)
-				{
-					main_window->DrawTitle(true);
-					main_window->SetTitleTheme(text[new_theme_pos]);
-					main_window->DrawTitle();
-				}
+				SetTheme(local_starting_point);
 				break;
 			}
-			case 1://set primary color
+			case 1:
 			{
-				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
-				const int starting_color = *main_window->main_color;
-				local_text.erase(local_text.begin() + (*main_window->secondary_color - 1));
-				unsigned int pos = static_cast<unsigned int>(*main_window->main_color - 1 - (*main_window->main_color > *main_window->secondary_color));
-				Text::TextInfo text_info = { local_text, pos, local_starting_point, TextAlign::left, 0, true};
-				(*main_window->main_color) = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1;
-				if (*main_window->main_color >= *main_window->secondary_color)
-				{
-					(*main_window->main_color) = (*main_window->main_color) + 1;
-				}
-				if (starting_color != *main_window->main_color)
-				{
-					main_window->DrawTitle();
-				}
+				SetColor(local_starting_point, true);
 				break;
 			}
-			case 2://set secondary color
+			case 2:
 			{
-				std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
-				const int starting_color = *main_window->secondary_color;
-				local_text.erase(local_text.begin() + (*main_window->main_color - 1));
-				unsigned int pos = static_cast<unsigned int>(*main_window->secondary_color - 1 - (*main_window->secondary_color > *main_window->main_color));
-				Text::TextInfo text_info = { local_text, pos, local_starting_point, TextAlign::left, 0, true };
-				(*main_window->secondary_color) = (Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1);
-				if (*main_window->secondary_color >= *main_window->main_color)
-				{
-					(*main_window->secondary_color) = (*main_window->secondary_color) + 1;
-				}
-				if (starting_color != *main_window->secondary_color)
-				{
-					main_window->DrawTitle();
-				}
+				SetColor(local_starting_point, false);
+			}
+			case 3:
+			{
+				SetMusic(local_starting_point);
 				break;
 			}
-			case 3://set music
+			case 4:
 			{
-				std::vector<std::string> text = { LanguagePack::text[LanguagePack::on_off][1] };
-				for (int i = 1; i < 11; ++i)
-				{
-					text.push_back(std::to_string(i));
-				}
-				const float starting_volume = main_window->GetMusicVolume();
-				Text::TextInfo text_info = { text, static_cast<size_t>(main_window->GetMusicVolume() * 10), local_starting_point, TextAlign::left, 0, true };
-				const float current_volume = static_cast<float>(Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo())) / 10.0f;
-				if(starting_volume != current_volume)
-				{
-					main_window->SetMusic(current_volume);
-				}
+				SetLanguage(local_starting_point);
 				break;
 			}
-			case 4://language
+			case 5:
 			{
-				std::vector<std::string> language = GetFilesInDirectory(FolderName::language);
-				unsigned int starting_pos = 0;
-				for (; starting_pos < static_cast<int>(language.size()); ++starting_pos)
-				{
-					if (language[starting_pos] == main_window->GetLanguage())
-					{
-						break;
-					}
-				}
-				RemoveExtension(language, ExtName::language);
-				Text::TextInfo text_info = { language, starting_pos, local_starting_point, TextAlign::left, 0, true };
-				int current_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-				if (current_pos != starting_pos)
-				{
-					main_window->SetLanguage(language[current_pos] + ExtName::language);
-					system("cls");
-					main_window->DrawTitle();
-				}
+				SetHamachiFlag(local_starting_point);
 				break;
 			}
-			case 5://set hamachi flag
+			case 6:
 			{
-				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::on_off], !main_window->GetHamachiConnectionFlag(), local_starting_point, TextAlign::left, 0, true };
-				main_window->SetHamachiConnectionFlag(!(Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo())));
+				SetDisplayMode(local_starting_point);
 				break;
 			}
-			case 6://display settings
+			case 7:
 			{
-				unsigned int current_display_mode = static_cast<int>(main_window->GetWindowMode());
-				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::display_settings], current_display_mode, local_starting_point, TextAlign::left, 0, true };
-				int new_display_mode = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-				if (new_display_mode != current_display_mode)
-				{
-					main_window->SetWindowMode(static_cast<MeridorConsoleLib::WindowMode>(new_display_mode));
-				}
+				SetAIModule(local_starting_point);
 				break;
 			}
-			case 7://AI module
-			{
-				std::vector<std::string> ai_modules = GetAINames();
-				std::string current_module_name = main_window->GetAIModule();
-				int module_pos;
-				for (int i = 0; i < ai_modules.size(); ++i)
-				{
-					if (ai_modules[i] == current_module_name)
-					{
-						module_pos = i;
-					}
-					RemoveExtension(ai_modules[i], ExtName::ai);
-				}
-				Text::TextInfo text_info = { ai_modules, module_pos, local_starting_point, TextAlign::left, 0, true };
-				module_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-				main_window->SetAIModule(ai_modules[module_pos] + ExtName::ai);
-				break;
-			}
-			case 8://clearing
+			case 8:
 			{
 				loop = false;
 				break;

@@ -21,6 +21,14 @@ class ToT {
 
 	void ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing = false);
 
+	void SetTheme(const COORD& local_starting_point);
+	void SetColor(const COORD& local_starting_point, bool main);
+	void SetMusic(const COORD& local_starting_point);
+	void SetLanguage(const COORD& local_starting_point);
+	void SetHamachiFlag(const COORD& local_starting_point);
+	void SetDisplayMode(const COORD& local_starting_point);
+	void SetAIModule(const COORD& local_starting_point);
+
 public:
 	ToT();
 	
