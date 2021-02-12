@@ -23,6 +23,7 @@ namespace Validation
 	constexpr COORD minimum_window_size = { 240, 77 };
 	constexpr int box_width = 84;
 
+	constexpr int volume_levels = 10;
 	constexpr int first_color = FOREGROUND_BLUE;
 	constexpr int last_color = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
 	constexpr int default_main_color = last_color;
@@ -32,4 +33,10 @@ namespace Validation
 	constexpr short maximum_title_decoration_size = 20;
 	constexpr short minimum_title_decoration_distance = 3;
 	constexpr short maximum_title_decoration_distance = 10;
+
+	constexpr short small_spacing = 2;
+	constexpr short avarage_indent = 2;
+	constexpr short avarage_spacing = 3;
+
+	constexpr COORD top_left_box_position = { 0, 23 };
 }

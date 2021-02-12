@@ -19,7 +19,8 @@ class ToT {
 
 	bool playable;
 
-	void ShowRankingDetails(std::string tour, int racer_pos, int classification_type, bool clearing = false);
+	void ShowRankingDetails(std::string tour, int racer_pos, int classification_type);
+	void ClearRankingDetails();
 
 	void SetTheme(const COORD& local_starting_point);
 	void SetColor(const COORD& local_starting_point, bool main);
