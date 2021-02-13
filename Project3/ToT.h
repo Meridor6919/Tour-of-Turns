@@ -13,7 +13,9 @@ using namespace MeridorConsoleLib;
 class ToT {
 	std::shared_ptr<ToT_Window> main_window;
 	HANDLE handle;
-	short game_window_center;
+
+	COORD centered_position;
+
 	unsigned short info_pos = 0;
 	unsigned short main_menu_position = 0;
 
