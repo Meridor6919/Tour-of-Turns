@@ -1,6 +1,6 @@
 #include "NetworkRole.h"
 
-SinglePlayer::SinglePlayer(ToT_Window &main_window)
+SinglePlayer::SinglePlayer(ToT_Window& main_window)
 {
 	this->main_window = &main_window;
 
@@ -65,7 +65,7 @@ int SinglePlayer::NumericalSelection(const COORD coords)
 		{
 			ShowChances(0, true);
 		}
-		
+
 	}
 	mutex.lock();
 	SetConsoleCursorPosition(window, coords);
@@ -144,8 +144,7 @@ std::string SinglePlayer::StringSelection(const std::string current_name, const 
 			show_name_func();
 		}
 		name_size = static_cast<int>(name.size());
-	}
-	while (button != 13);
+	} while (button != 13);
 	mutex.lock();
 	SetConsoleCursorPosition(window, coords);
 	std::cout << Spaces(name_size + 5);
@@ -187,16 +186,16 @@ void SinglePlayer::ShowTourParameters(const std::string tour_path, bool clear)
 
 	for (short i = 0; i < static_cast<short>(tour_params.size()); ++i)
 	{
-		++segment_quantity[tour_params[i][0]-48];
+		++segment_quantity[tour_params[i][0] - 48];
 		if (tour_params[i].size() > 1)
 		{
 			++turns;
 		}
 	}
-	std::vector<std::pair<std::string, std::string>> text = { {LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::length_of_tour], std::to_string(static_cast<int>(tour_params.size()))}, {LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::number_of_turns], std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(tour_params.size())*100.f)) + "%"} };
+	std::vector<std::pair<std::string, std::string>> text = { {LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::length_of_tour], std::to_string(static_cast<int>(tour_params.size()))}, {LanguagePack::text[LanguagePack::tour_information][GameLobbyInformations::number_of_turns], std::to_string(static_cast<int>(static_cast<float>(turns) / static_cast<float>(tour_params.size()) * 100.f)) + "%"} };
 	for (short i = 0; i < 6; ++i)
 	{
-		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::terrain_types][i], std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(tour_params.size())*100.f)) + '%'));
+		text.push_back(std::make_pair(LanguagePack::text[LanguagePack::terrain_types][i], std::to_string(static_cast<int>(static_cast<float>(segment_quantity[i]) / static_cast<float>(tour_params.size()) * 100.f)) + '%'));
 	}
 	ShowLobbyInformation("", text, { static_cast<short>(main_window->GetCharactersPerRow()) - static_cast<short>(Validation::box_width), 30 }, 1, 2, clear);
 }
@@ -214,23 +213,23 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 	fvar.open(FolderName::ranking + '\\' + ranking_path);
 	for (int i = 0; std::getline(fvar, temp); ++i)
 	{
-		if (i% Validation::ranking_details == 0)
+		if (i % Validation::ranking_details == 0)
 		{
 			local_name = temp;
 		}
-		else if (i% Validation::ranking_details == 1)
+		else if (i % Validation::ranking_details == 1)
 		{
 			local_games_in_total = atoi(GetSeparatedValue(temp, classification).c_str());
 		}
-		else if (i% Validation::ranking_details == 2)
+		else if (i % Validation::ranking_details == 2)
 		{
 			local_won_games = atoi(GetSeparatedValue(temp, classification).c_str());
 		}
-		else if (i% Validation::ranking_details == 3)
+		else if (i % Validation::ranking_details == 3)
 		{
 			local_place = atoi(GetSeparatedValue(temp, classification).c_str());
 		}
-		else if (i% Validation::ranking_details == 6)
+		else if (i % Validation::ranking_details == 6)
 		{
 			int number_of_finished_games = local_games_in_total - atoi(GetSeparatedValue(temp, classification).c_str());
 			if (!number_of_finished_games)
@@ -242,7 +241,7 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 				winrate = static_cast<float>(local_won_games) / static_cast<float>(local_games_in_total) * 100.0f;
 				best_name = local_name;
 				best_games_in_total = local_games_in_total;
-				best_place = local_place/ number_of_finished_games;
+				best_place = local_place / number_of_finished_games;
 			}
 		}
 	}
@@ -321,7 +320,7 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 	}
 	mutex.unlock();
 }
-void SinglePlayer::ShowLoading(std::string title, int & init, int condition, bool clear)
+void SinglePlayer::ShowLoading(std::string title, int& init, int condition, bool clear)
 {
 	const COORD loading_screen_postion = { static_cast<short>(main_window->GetCharactersPerRow()) / 2, static_cast<short>(main_window->GetCharactersPerColumn()) / 2 - 5 };
 	const HANDLE handle = main_window->GetHandle();
@@ -373,10 +372,10 @@ void SinglePlayer::ShowLoading(std::string title, int & init, int condition, boo
 }
 void SinglePlayer::ShowChances(const int value, const bool reset)
 {
-	float speed_estimation = (participants[0].current_speed + static_cast<float>(value) * (0.9f + 0.2f*participants[0].TireEffectivness(current_field)));
-	if (speed_estimation > static_cast<float>(participants[0].car_modifiers[CarAttributes::max_speed])*1.25f)
+	float speed_estimation = (participants[0].current_speed + static_cast<float>(value) * (0.9f + 0.2f * participants[0].TireEffectivness(current_field)));
+	if (speed_estimation > static_cast<float>(participants[0].car_modifiers[CarAttributes::max_speed]) * 1.25f)
 	{
-		speed_estimation = static_cast<float>(participants[0].car_modifiers[CarAttributes::max_speed])*1.25f;
+		speed_estimation = static_cast<float>(participants[0].car_modifiers[CarAttributes::max_speed]) * 1.25f;
 	}
 	else if (speed_estimation < 0)
 	{
@@ -428,7 +427,7 @@ void SinglePlayer::ShowIndicator(int participant, bool clear)
 	if (clear)
 	{
 		SetConsoleCursorPosition(main_window->GetHandle(), { coord.X, coord.Y + static_cast<short>(participants[participant].place) * 2 });
-		std::cout << ' ';	
+		std::cout << ' ';
 	}
 	else
 	{
@@ -437,15 +436,15 @@ void SinglePlayer::ShowIndicator(int participant, bool clear)
 		std::cout << '*';
 	}
 	mutex.unlock();
-	
+
 }
 void SinglePlayer::GetParticipants(const std::string name, const std::string tour, const std::string car, const std::string tire)
 {
 	const int number_of_ais = main_window->GetAIs();
-	
+
 	this->tour = tour;
-	participants[0].name = name; 
-	participants[0].car_path = car; 
+	participants[0].name = name;
+	participants[0].car_path = car;
 	participants[0].tire_path = tire;
 
 	for (int i = 0; i < number_of_ais; ++i)
@@ -543,91 +542,91 @@ bool SinglePlayer::GameLobby()
 		const COORD starting_local_pos = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options][main_menu_position].size()) / 2 + spacing, starting_point.Y + main_menu_position * spacing };
 		switch (main_menu_position)
 		{
-			case 0://choosing name
-			{
-				name = StringSelection(name, Validation::maximum_name_length, {starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options][0].size()), 25 });
-				main_window->SetName(name);
-				break;
-			}
-			case 1://Number of ais
-			{
-				std::vector<std::string> text;
+		case 0://choosing name
+		{
+			name = StringSelection(name, Validation::maximum_name_length, { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::game_options][0].size()), 25 });
+			main_window->SetName(name);
+			break;
+		}
+		case 1://Number of ais
+		{
+			std::vector<std::string> text;
 
-				for (int i = 0; i <= Possible_AIs(); ++i)
-				{
-					text.push_back(std::to_string(i));
-				}
-				Text::TextInfo text_info = { text, ais, starting_local_pos, TextAlign::left, 0, true };
-				MultithreadingData  multithreading_data = { &mutex, &timer_running };
-				ais = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
-				ShowRankingParameters(tours[tours_pos] + ExtName::ranking, true);
-				main_window->SetAIs(ais);
-				ShowRankingParameters(tours[tours_pos] + ExtName::ranking);
-				break;
-			}
-			case 2: //timer
+			for (int i = 0; i <= Possible_AIs(); ++i)
 			{
-				std::vector<std::string> timer_values = { LanguagePack::text[LanguagePack::on_off][1]};
-				for (int i = 1; i <= Validation::maximum_timer; ++i)
-				{
-					timer_values.push_back((i < 60 ? "0" : "")+std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
-				}
-				Text::TextInfo text_info = { timer_values, timer_settings, starting_local_pos, TextAlign::left, 0, true };
-				MultithreadingData  multithreading_data = { &mutex, &timer_running };
-				timer_settings = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
-				main_window->SetTimerSettings(timer_settings);
-				break;
+				text.push_back(std::to_string(i));
 			}
-			case 3://choosing tour
+			Text::TextInfo text_info = { text, ais, starting_local_pos, TextAlign::left, 0, true };
+			MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			ais = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+			ShowRankingParameters(tours[tours_pos] + ExtName::ranking, true);
+			main_window->SetAIs(ais);
+			ShowRankingParameters(tours[tours_pos] + ExtName::ranking);
+			break;
+		}
+		case 2: //timer
+		{
+			std::vector<std::string> timer_values = { LanguagePack::text[LanguagePack::on_off][1] };
+			for (int i = 1; i <= Validation::maximum_timer; ++i)
 			{
-				int i = tours_pos;
-				Text::TextInfo text_info = { tours, tours_pos, starting_local_pos, TextAlign::left, 0, true };
-				MultithreadingData  multithreading_data = { &mutex, &timer_running };
-				tours_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
-				if (i != tours_pos)
-				{
-					ShowCarParameters(cars[cars_pos] + ExtName::car, true);
-					cars = GetCarNames(tours[tours_pos] + ExtName::tour);
-					RemoveExtension(cars, ExtName::car);
-					cars_pos = 0;
-					ShowCarParameters(cars[cars_pos] + ExtName::car);
-					ShowTourParameters(tours[i] + ExtName::tour, true);
-					ShowTourParameters(tours[tours_pos] + ExtName::tour);
-				}
-				
-				break;
+				timer_values.push_back((i < 60 ? "0" : "") + std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 			}
-			case 4://choosing car
+			Text::TextInfo text_info = { timer_values, timer_settings, starting_local_pos, TextAlign::left, 0, true };
+			MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			timer_settings = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+			main_window->SetTimerSettings(timer_settings);
+			break;
+		}
+		case 3://choosing tour
+		{
+			int i = tours_pos;
+			Text::TextInfo text_info = { tours, tours_pos, starting_local_pos, TextAlign::left, 0, true };
+			MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			tours_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+			if (i != tours_pos)
 			{
-				int i = cars_pos;
-				Text::TextInfo text_info = { cars, cars_pos, starting_local_pos, TextAlign::left, 0, true };
-				MultithreadingData  multithreading_data = { &mutex, &timer_running };
-				cars_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
-				if (i != cars_pos)
-				{
-					ShowCarParameters(cars[i] + ExtName::car, true);
-					ShowCarParameters(cars[cars_pos] + ExtName::car);
-				}
-				break;
+				ShowCarParameters(cars[cars_pos] + ExtName::car, true);
+				cars = GetCarNames(tours[tours_pos] + ExtName::tour);
+				RemoveExtension(cars, ExtName::car);
+				cars_pos = 0;
+				ShowCarParameters(cars[cars_pos] + ExtName::car);
+				ShowTourParameters(tours[i] + ExtName::tour, true);
+				ShowTourParameters(tours[tours_pos] + ExtName::tour);
 			}
-			case 5://choosing tires
+
+			break;
+		}
+		case 4://choosing car
+		{
+			int i = cars_pos;
+			Text::TextInfo text_info = { cars, cars_pos, starting_local_pos, TextAlign::left, 0, true };
+			MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			cars_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+			if (i != cars_pos)
 			{
-				int i = tires_pos;
-				Text::TextInfo text_info = { tires, tires_pos, starting_local_pos, TextAlign::left, 0, true };
-				MultithreadingData  multithreading_data = { &mutex, &timer_running };
-				tires_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
-				if (i != tires_pos)
-				{
-					ShowTiresParameters(tires[i] + ExtName::tire, true);
-					ShowTiresParameters(tires[tires_pos] + ExtName::tire);
-				}
-				break;
+				ShowCarParameters(cars[i] + ExtName::car, true);
+				ShowCarParameters(cars[cars_pos] + ExtName::car);
 			}
-			case 7://Back
+			break;
+		}
+		case 5://choosing tires
+		{
+			int i = tires_pos;
+			Text::TextInfo text_info = { tires, tires_pos, starting_local_pos, TextAlign::left, 0, true };
+			MultithreadingData  multithreading_data = { &mutex, &timer_running };
+			tires_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+			if (i != tires_pos)
 			{
-				SaveGameConfig(main_window->GetToTGameConfig());
-				return false;
+				ShowTiresParameters(tires[i] + ExtName::tire, true);
+				ShowTiresParameters(tires[tires_pos] + ExtName::tire);
 			}
+			break;
+		}
+		case 7://Back
+		{
+			SaveGameConfig(main_window->GetToTGameConfig());
+			return false;
+		}
 		}
 		if (main_menu_position == 6)//Next
 		{
@@ -695,8 +694,8 @@ void SinglePlayer::ValidateAttack(int target, int participant)
 	{
 		if (target < static_cast<int>(participants.size()))
 		{
-			if (participants[target].score < participants[participant].score + GameConstants::attack_backward_distance && 
-				participants[target].score > participants[participant].score - GameConstants::attack_forward_distance && 
+			if (participants[target].score < participants[participant].score + GameConstants::attack_backward_distance &&
+				participants[target].score > participants[participant].score - GameConstants::attack_forward_distance &&
 				participants[target].IsAlive() &&
 				!participants[participant].attack_performed &&
 				target != participant)
@@ -754,7 +753,7 @@ void SinglePlayer::ValidateAction(std::pair<int, int> action, int participant)
 		participants[participant].action_performed = true;
 		ShowIndicator(participant, true);
 	}
-	
+
 }
 int SinglePlayer::PerformAttack()
 {
@@ -793,291 +792,291 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 	const std::string msg = msg_received.substr(2, msg_length - 2);
 	switch (code)
 	{
-		case ConnectionCodes::Start:
+	case ConnectionCodes::Start:
+	{
+		mutex.lock();
+		if (ai_connector)
 		{
-			mutex.lock();
-			if (ai_connector)
-			{
-				ai_connector->Write(std::to_string(code));
-			}
-			mutex.unlock();
-			break;
+			ai_connector->Write(std::to_string(code));
 		}
-		case ConnectionCodes::GetInit:
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::GetInit:
+	{
+		mutex.lock();
+		if (ai_connector)
 		{
-			mutex.lock();
-			if (ai_connector)
-			{
-				ai_connector->Write(std::to_string(main_window->GetAIs()));
-				ai_connector->Write(std::to_string(static_cast<int>(participants.size())));
-			}
-			mutex.unlock();
-			break;
+			ai_connector->Write(std::to_string(main_window->GetAIs()));
+			ai_connector->Write(std::to_string(static_cast<int>(participants.size())));
 		}
-		case ConnectionCodes::NewTurn:
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::NewTurn:
+	{
+		if (msg_length < 3)
 		{
-			if (msg_length < 3)
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			const int ai_position_start = static_cast<int>(participants.size()) - main_window->GetAIs();
-			const int id = msg_received[2] - 48 + ai_position_start;
-			if (id < ai_position_start || id >= static_cast<int>(participants.size()))
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			mutex.lock();
-			if (ai_connector)
-			{
-				ai_connector->Write(std::to_string(participants[id].action_performed));
-			}
-			mutex.unlock();
-			break;
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
 		}
-		case ConnectionCodes::GetCarNames:
+		const int ai_position_start = static_cast<int>(participants.size()) - main_window->GetAIs();
+		const int id = msg_received[2] - 48 + ai_position_start;
+		if (id < ai_position_start || id >= static_cast<int>(participants.size()))
 		{
-			const std::vector<std::string> car_names = GetCarNames(tour);
-			const int car_names_size = static_cast<int>(car_names.size());
-			mutex.lock();
-			if (ai_connector)
-			{
-				ai_connector->Write(std::to_string(car_names_size));
-				for (int i = 0; i < car_names_size; ++i)
-				{
-					ai_connector->Write(car_names[i]);
-				}
-			}
-			mutex.unlock();
-			break;
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
 		}
-		case ConnectionCodes::GetTireNames:
+		mutex.lock();
+		if (ai_connector)
 		{
-			const std::vector<std::string> tire_names = GetTireNames();
-			const int tire_names_size = static_cast<int>(tire_names.size());
-			mutex.lock();
-			if (ai_connector)
-			{
-				ai_connector->Write(std::to_string(tire_names_size));
-				for (int i = 0; i < tire_names_size; ++i)
-				{
-					ai_connector->Write(tire_names[i]);
-				}
-			}
-			mutex.unlock();
-			break;
+			ai_connector->Write(std::to_string(participants[id].action_performed));
 		}
-		case ConnectionCodes::GetCarParams:
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::GetCarNames:
+	{
+		const std::vector<std::string> car_names = GetCarNames(tour);
+		const int car_names_size = static_cast<int>(car_names.size());
+		mutex.lock();
+		if (ai_connector)
 		{
-			bool valid = false;
-			const std::vector<std::string> car_names = GetCarNames(tour);
-			for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
+			ai_connector->Write(std::to_string(car_names_size));
+			for (int i = 0; i < car_names_size; ++i)
 			{
-				if (msg == car_names[i])
-				{
-					valid = true;
-					break;
-				}
+				ai_connector->Write(car_names[i]);
 			}
-			if (!valid)
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			const std::vector<int> car_param = GetCarParameters(msg);
-			mutex.lock();
-			if (ai_connector)
-			{
-				for (int i = 0; i < static_cast<int>(car_param.size()); ++i)
-				{
-					ai_connector->Write(std::to_string(car_param[i]));
-				}
-			}
-			mutex.unlock();
-			break;
 		}
-		case ConnectionCodes::GetTireParams:
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::GetTireNames:
+	{
+		const std::vector<std::string> tire_names = GetTireNames();
+		const int tire_names_size = static_cast<int>(tire_names.size());
+		mutex.lock();
+		if (ai_connector)
 		{
-			bool valid = false;
-			const std::vector<std::string> tire_names = GetTireNames();
-			for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
+			ai_connector->Write(std::to_string(tire_names_size));
+			for (int i = 0; i < tire_names_size; ++i)
 			{
-				if (msg == tire_names[i])
-				{
-					valid = true;
-					break;
-				}
+				ai_connector->Write(tire_names[i]);
 			}
-			if (!valid)
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			const std::vector<std::string> tires_param = GetTireParameters(msg);
-			mutex.lock();
-			if (ai_connector)
-			{
-				for (int i = 0; i < static_cast<int>(tires_param.size()); ++i)
-				{
-					ai_connector->Write(tires_param[i]);
-				}
-			}
-			mutex.unlock();
-			break;
 		}
-		case ConnectionCodes::GetAllAttributes:
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::GetCarParams:
+	{
+		bool valid = false;
+		const std::vector<std::string> car_names = GetCarNames(tour);
+		for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
 		{
-			mutex.lock();
-			if (ai_connector)
+			if (msg == car_names[i])
 			{
-				for (int i = 0; i < static_cast<int>(participants.size()); ++i)
-				{
-					ai_connector->Write(std::to_string(participants[i].current_speed));
-					ai_connector->Write(std::to_string(participants[i].current_durability));
-					ai_connector->Write(std::to_string(participants[i].score));
-				}
-			}
-			mutex.unlock();
-			break;
-		}
-		case ConnectionCodes::GetTour:
-		{
-			const std::vector<std::string> tour_param = GetTourParameters(tour, 0, INT_MAX);
-			const int tour_size = static_cast<int>(tour_param.size());
-			mutex.lock();
-			if (ai_connector)
-			{
-				ai_connector->Write(std::to_string(tour_size));
-				for (int i = 0; i < tour_size; ++i)
-				{
-					ai_connector->Write(tour_param[i]);
-				}
-			}
-			mutex.unlock();
-			break;
-		}
-		case ConnectionCodes::SetName:
-		{
-			const std::string selected_name = msg.substr(1, msg.size() - 1);
-			const int ai_id = msg[0] - 48;
-			//name validation
-			const int selected_name_size = static_cast<int>(selected_name.size());
-			if (selected_name_size > Validation::maximum_name_length || selected_name_size <= 0)
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			//ai id validation
-			if (ai_id < 0 || ai_id > main_window->GetAIs())
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].name = selected_name;
-			break;
-		}
-		case ConnectionCodes::SetCar:
-		{
-			bool valid = false;
-			const std::vector<std::string> car_names = GetCarNames(tour);
-			const std::string selected_car = msg.substr(1, msg.size() - 1);
-			const int ai_id = msg[0] - 48;
-			//car validation
-			for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
-			{
-				if (selected_car == car_names[i])
-				{
-					valid = true;
-					break;
-				}
-			}
-			if (!valid)
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			//ai id validation
-			if(ai_id < 0 || ai_id > main_window->GetAIs())
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].car_path = selected_car;
-			break;
-		}
-		case ConnectionCodes::SetTires:
-		{
-			bool valid = false;
-			const std::vector<std::string> tire_names = GetTireNames();
-			const std::string selected_tires = msg.substr(1, msg.size() - 1);
-			const int ai_id = msg[0] - 48;
-			//car validation
-			for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
-			{
-				if (selected_tires == tire_names[i])
-				{
-					valid = true;
-					break;
-				}
-			}
-			if (!valid)
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			//ai id validation
-			if (ai_id < 0 || ai_id > main_window->GetAIs())
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].tire_path = selected_tires;
-			++ai_init;
-			break;
-		}
-		case ConnectionCodes::SetAction:
-		{
-			const int ai_id = msg[0] - 48;
-			const int selected_action_id = msg[1] - 48;
-			const int selected_action_value = atoi(msg.substr(2, msg.size() - 2).c_str());
-			//ai id validation
-			if (ai_id < 0 || ai_id > main_window->GetAIs())
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			//action pre-validation
-			if(selected_action_id < 0 ||selected_action_id > 4 || !participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			ValidateAction({ selected_action_id, selected_action_value }, static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id);
-			break;
-		}
-		case ConnectionCodes::SetAttack:
-		{
-			const int ai_id = msg[0] - 48;
-			const int selected_target = atoi(msg.substr(1, msg.size()-1).c_str());
-			//ai id validation
-			if (ai_id < 0 || ai_id > main_window->GetAIs() || !attack_phase)
-			{
-				MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
-				exit(0);
-			}
-			if (!participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
-			{
+				valid = true;
 				break;
 			}
-			ValidateAttack(selected_target, static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id);
-			break;
 		}
-		default:
+		if (!valid)
 		{
-			OutputDebugString((msg_received + '\n').c_str());
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		const std::vector<int> car_param = GetCarParameters(msg);
+		mutex.lock();
+		if (ai_connector)
+		{
+			for (int i = 0; i < static_cast<int>(car_param.size()); ++i)
+			{
+				ai_connector->Write(std::to_string(car_param[i]));
+			}
+		}
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::GetTireParams:
+	{
+		bool valid = false;
+		const std::vector<std::string> tire_names = GetTireNames();
+		for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
+		{
+			if (msg == tire_names[i])
+			{
+				valid = true;
+				break;
+			}
+		}
+		if (!valid)
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		const std::vector<std::string> tires_param = GetTireParameters(msg);
+		mutex.lock();
+		if (ai_connector)
+		{
+			for (int i = 0; i < static_cast<int>(tires_param.size()); ++i)
+			{
+				ai_connector->Write(tires_param[i]);
+			}
+		}
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::GetAllAttributes:
+	{
+		mutex.lock();
+		if (ai_connector)
+		{
+			for (int i = 0; i < static_cast<int>(participants.size()); ++i)
+			{
+				ai_connector->Write(std::to_string(participants[i].current_speed));
+				ai_connector->Write(std::to_string(participants[i].current_durability));
+				ai_connector->Write(std::to_string(participants[i].score));
+			}
+		}
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::GetTour:
+	{
+		const std::vector<std::string> tour_param = GetTourParameters(tour, 0, INT_MAX);
+		const int tour_size = static_cast<int>(tour_param.size());
+		mutex.lock();
+		if (ai_connector)
+		{
+			ai_connector->Write(std::to_string(tour_size));
+			for (int i = 0; i < tour_size; ++i)
+			{
+				ai_connector->Write(tour_param[i]);
+			}
+		}
+		mutex.unlock();
+		break;
+	}
+	case ConnectionCodes::SetName:
+	{
+		const std::string selected_name = msg.substr(1, msg.size() - 1);
+		const int ai_id = msg[0] - 48;
+		//name validation
+		const int selected_name_size = static_cast<int>(selected_name.size());
+		if (selected_name_size > Validation::maximum_name_length || selected_name_size <= 0)
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		//ai id validation
+		if (ai_id < 0 || ai_id > main_window->GetAIs())
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].name = selected_name;
+		break;
+	}
+	case ConnectionCodes::SetCar:
+	{
+		bool valid = false;
+		const std::vector<std::string> car_names = GetCarNames(tour);
+		const std::string selected_car = msg.substr(1, msg.size() - 1);
+		const int ai_id = msg[0] - 48;
+		//car validation
+		for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
+		{
+			if (selected_car == car_names[i])
+			{
+				valid = true;
+				break;
+			}
+		}
+		if (!valid)
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		//ai id validation
+		if (ai_id < 0 || ai_id > main_window->GetAIs())
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].car_path = selected_car;
+		break;
+	}
+	case ConnectionCodes::SetTires:
+	{
+		bool valid = false;
+		const std::vector<std::string> tire_names = GetTireNames();
+		const std::string selected_tires = msg.substr(1, msg.size() - 1);
+		const int ai_id = msg[0] - 48;
+		//car validation
+		for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
+		{
+			if (selected_tires == tire_names[i])
+			{
+				valid = true;
+				break;
+			}
+		}
+		if (!valid)
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		//ai id validation
+		if (ai_id < 0 || ai_id > main_window->GetAIs())
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].tire_path = selected_tires;
+		++ai_init;
+		break;
+	}
+	case ConnectionCodes::SetAction:
+	{
+		const int ai_id = msg[0] - 48;
+		const int selected_action_id = msg[1] - 48;
+		const int selected_action_value = atoi(msg.substr(2, msg.size() - 2).c_str());
+		//ai id validation
+		if (ai_id < 0 || ai_id > main_window->GetAIs())
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		//action pre-validation
+		if (selected_action_id < 0 || selected_action_id > 4 || !participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		ValidateAction({ selected_action_id, selected_action_value }, static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id);
+		break;
+	}
+	case ConnectionCodes::SetAttack:
+	{
+		const int ai_id = msg[0] - 48;
+		const int selected_target = atoi(msg.substr(1, msg.size() - 1).c_str());
+		//ai id validation
+		if (ai_id < 0 || ai_id > main_window->GetAIs() || !attack_phase)
+		{
+			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_connection, MB_TOPMOST);
+			exit(0);
+		}
+		if (!participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].IsAlive())
+		{
 			break;
 		}
+		ValidateAttack(selected_target, static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id);
+		break;
+	}
+	default:
+	{
+		OutputDebugString((msg_received + '\n').c_str());
+		break;
+	}
 	}
 }
 std::pair<int, int> SinglePlayer::PerformAction()
@@ -1207,7 +1206,7 @@ void SinglePlayer::Interface()
 	const std::vector<std::tuple<std::string, COORD, short>> boxes = { {LanguagePack::text[LanguagePack::race_box_names][0], {0, static_cast<short>(main_window->GetCharactersPerColumn() - 15)}, 12 },
 				{ LanguagePack::text[LanguagePack::race_box_names][1], { x, static_cast<short>(main_window->GetCharactersPerColumn() - 20) }, 17},
 				{ LanguagePack::text[LanguagePack::race_box_names][2],  { x, static_cast<short>(main_window->GetCharactersPerColumn() - 31) }, 7 } };
-	
+
 	mutex.lock();
 	SetConsoleTextAttribute(window, *main_window->secondary_color);
 	infobox->DrawBox();
@@ -1257,7 +1256,7 @@ bool SinglePlayer::VisionBox(const int turn)
 		}
 		helper = visible_tour[i];
 		SetConsoleTextAttribute(window, *main_window->main_color);
-		SetConsoleCursorPosition(window, { 1,24 + 2 *i });
+		SetConsoleCursorPosition(window, { 1,24 + 2 * i });
 		std::cout << LanguagePack::text[LanguagePack::race_distances][i];
 		SetConsoleTextAttribute(window, *main_window->secondary_color);
 		std::cout << LanguagePack::text[LanguagePack::tour_segments_descriptions][(visible_tour[i][0] - 48) * 2 + (static_cast<int>(visible_tour[i].size()) > 1 ? 0 : 1)] << helper.erase(0, 1) << "                                               ";
@@ -1269,7 +1268,7 @@ void SinglePlayer::Finish()
 {
 	for (int i = 0; i < static_cast<int>(participants.size()); ++i)
 	{
-		RacerLeaderboardInfo ranking_info = { 
+		RacerLeaderboardInfo ranking_info = {
 			tour,
 			participants[i].name,
 			participants[i].place,
@@ -1281,7 +1280,7 @@ void SinglePlayer::Finish()
 			participants[i].car_path,
 			participants[i].tire_path,
 			main_window->GetAIs(),
-			multiplayer_flag 
+			multiplayer_flag
 		};
 		RankingManagement::Save(ranking_info);
 	}
@@ -1296,7 +1295,7 @@ void SinglePlayer::Finish()
 	participants.clear();
 	participants.push_back(Participant(infobox.get()));
 	ai_init = 0;
-	infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::race_finished],"");
+	infobox->Push(LanguagePack::text[LanguagePack::other_strings][OtherStrings::race_finished], "");
 	char c = _getch();
 	if (c < 0)
 	{

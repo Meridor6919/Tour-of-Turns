@@ -23,7 +23,7 @@ struct RacerLeaderboardInfo
 	int place;
 	double score;
 	bool crash;
-	int attacks; 
+	int attacks;
 	int drifts;
 	double durability_burning;
 	std::string car;

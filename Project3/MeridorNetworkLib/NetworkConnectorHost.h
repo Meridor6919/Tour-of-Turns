@@ -8,7 +8,7 @@ TEMPLATE_NetworkConnectorHost class NetworkConnectorHost
 	struct ClientContainer;
 	class ClientConnector;
 	class ErrorHandler;
-	
+
 	T* main_object_ptr;
 	std::vector<ClientContainer> clients;
 	std::vector<sockaddr_in> disconnected_clients;
@@ -252,11 +252,11 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Clien
 {
 	thread_active = true;
 	this->max_clients = max_clients;
-	main_thread = std::thread(&NetworkConnectorHost::ClientConnector::Accepting, this);	
+	main_thread = std::thread(&NetworkConnectorHost::ClientConnector::Accepting, this);
 }
 TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::ClientConnector::Stop()
 {
-	if(thread_active)
+	if (thread_active)
 	{
 		thread_active = false;
 

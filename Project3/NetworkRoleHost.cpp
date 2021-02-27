@@ -1,6 +1,6 @@
 #include "NetworkRoleHost.h"
 
-Host::Host(ToT_Window &main_window) : SinglePlayer(main_window)
+Host::Host(ToT_Window& main_window) : SinglePlayer(main_window)
 {
 	this->main_window = &main_window;
 	SetLobbySize();
@@ -14,19 +14,19 @@ int Host::Possible_AIs()
 {
 	return SinglePlayer::Possible_AIs() - lobby_size;
 }
-void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
+void Host::ShowClientsInLobby(const COORD starting_position, bool* running)
 {
 	const HANDLE handle = main_window->GetHandle();
-	
+
 	mutex.lock();
 	const short border_size = static_cast<short>(Validation::box_width);
 	const short title_size = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby].size());
 	const short box_size = (lobby_size < 4 ? 4 : lobby_size);
 
 	SetConsoleTextAttribute(handle, *main_window->secondary_color);
-	SetConsoleCursorPosition(handle, { starting_position.X + border_size/2 - title_size/2, starting_position.Y });
+	SetConsoleCursorPosition(handle, { starting_position.X + border_size / 2 - title_size / 2, starting_position.Y });
 	std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby];
-	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y+1 });
+	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 1 });
 	std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(box_size) * 2 });
 	std::cout << GetMonoCharacterString(Validation::box_width, '_');
@@ -37,17 +37,17 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool *running)
 		mutex.lock();
 		for (short i = 0; i < lobby_size; ++i)
 		{
-			SetConsoleCursorPosition(handle, { 0,i+1 });
+			SetConsoleCursorPosition(handle, { 0,i + 1 });
 			SetConsoleTextAttribute(handle, *main_window->main_color);
 			for (short j = 0; j < NetworkConnector::Constants::max_ip_size; ++j)
 			{
-				SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2*(i+1) + 2 });
+				SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2 * (i + 1) + 2 });
 				std::cout << ' ';
 			}
 		}
 		for (short i = 0; i < static_cast<short>(clients_names.size()); ++i)
 		{
-			
+
 			SetConsoleCursorPosition(handle, { starting_position.X + 1, starting_position.Y + 2 * (i + 1) + 2 });
 			SetConsoleTextAttribute(handle, *main_window->main_color);
 			std::cout << clients_names[i];
@@ -86,7 +86,7 @@ void Host::SetLobbySize()
 	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
 	std::cout << text;
 	Text::TextInfo text_info = { horizontal_menu_text, 0, { starting_point.X + static_cast<short>(text.size()) + 2, starting_point.Y }, TextAlign::left, 0, true };
-	MultithreadingData  multithreading_data= { &mutex, &timer_running };
+	MultithreadingData  multithreading_data = { &mutex, &timer_running };
 	lobby_size = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data) + 1;
 	SetConsoleCursorPosition(main_window->GetHandle(), starting_point);
 	std::cout << Spaces(static_cast<short>(text.size()));
@@ -185,7 +185,7 @@ bool Host::GameLobby()
 
 			if (int target = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data))
 			{
-				network_connector->client_connector.BanClient(active_connections[target-1]);
+				network_connector->client_connector.BanClient(active_connections[target - 1]);
 			}
 			break;
 		}

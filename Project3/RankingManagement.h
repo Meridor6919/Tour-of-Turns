@@ -35,5 +35,5 @@ public:
 	static void Save(RacerLeaderboardInfo racer_leaderboard_info);
 	static std::vector<std::string> GetRankedRacersNames(std::string tour);
 	static std::vector<std::string> GetTextToDisplay(std::string tour, int racer_pos, int classification_type);
-	
+
 };

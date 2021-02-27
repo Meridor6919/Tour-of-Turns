@@ -5,7 +5,7 @@
 
 namespace RankingInfo
 {
-	enum 
+	enum
 	{
 		Name,
 		GamesPlayed,

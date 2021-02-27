@@ -1,6 +1,6 @@
 #include "ValidationFunctions.h"
 
-void Validation::SanitizeToTGameConfig(ToTGameConfig &game_config)
+void Validation::SanitizeToTGameConfig(ToTGameConfig& game_config)
 {
 	bool name_valid = true;
 	bool space = true;
@@ -116,7 +116,7 @@ bool Validation::ValidateTourFiles()
 		for (short j = 0; j < static_cast<short>(params.size()); ++j)
 		{
 			const short segment_lenght = static_cast<short>(params[j].size());
-			if (!MeridorConsoleLib::Between(0, TerrainTypes::last -1, params[j][0] - '0'))//terrain type validation
+			if (!MeridorConsoleLib::Between(0, TerrainTypes::last - 1, params[j][0] - '0'))//terrain type validation
 			{
 				MessageBox(0, (FolderName::tour + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST);
 				return false;

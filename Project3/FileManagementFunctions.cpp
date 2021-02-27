@@ -5,7 +5,7 @@ using namespace MeridorConsoleLib;
 
 std::vector<std::string> FileManagement::GetAINames()
 {
-    return GetFilesInDirectory(FolderName::ai);
+	return GetFilesInDirectory(FolderName::ai);
 }
 std::vector<std::string> FileManagement::GetTourNames()
 {
@@ -15,7 +15,7 @@ std::vector<std::string> FileManagement::GetTireNames()
 {
 	return GetFilesInDirectory(FolderName::tire);
 }
-std::vector<std::string> FileManagement::GetCarNames(const std::string &tour)
+std::vector<std::string> FileManagement::GetCarNames(const std::string& tour)
 {
 	return ReadFile(FolderName::tour + '\\' + tour);
 }
@@ -116,7 +116,7 @@ void FileManagement::LoadLanguagePack(std::string path)
 	int position = 0;
 
 	LanguagePack::text[position].clear();
-	
+
 	fvar.open(path.c_str());
 	while (std::getline(fvar, temp))
 	{
@@ -140,7 +140,7 @@ std::vector<std::string> FileManagement::GetTourParameters(std::string tour, int
 	std::string temp;
 
 	fvar.open((FolderName::tour + '\\' + tour).c_str());
-	
+
 	//skip "allowed cars" section
 	do
 	{
@@ -181,7 +181,7 @@ std::vector<std::string> FileManagement::GetTireParameters(const std::string pat
 	return ReadFile(FolderName::tire + '\\' + path);
 }
 
-void FileManagement::SaveGameConfig(const ToTGameConfig &game_config)
+void FileManagement::SaveGameConfig(const ToTGameConfig& game_config)
 {
 	std::string name = game_config.name;
 	std::ofstream fvar;

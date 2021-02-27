@@ -11,10 +11,10 @@ class Client : public SinglePlayer {
 	virtual void ValidateAction(std::pair<int, int> action, int participant)override;
 	virtual int Possible_AIs()override;
 public:
-	ToT_Window *main_window;
+	ToT_Window* main_window;
 
 	//General
-	Client(ToT_Window &main_window);
+	Client(ToT_Window& main_window);
 
 	//Get methods
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire)override;

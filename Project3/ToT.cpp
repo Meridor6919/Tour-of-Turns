@@ -43,7 +43,7 @@ void ToT::ClearRankingDetails()
 	SetConsoleCursorPosition(handle, { top_left_box_position.X, top_left_box_position.Y + small_spacing * static_cast<short>(Validation::ranking_details + 1) });
 	std::cout << Spaces(border_size);
 }
-void ToT::SetTheme(const COORD &local_starting_point)
+void ToT::SetTheme(const COORD& local_starting_point)
 {
 	std::vector<std::string> text = GetTitleThemeNames();
 	const std::string theme_name = main_window->GetTitleTheme();
@@ -158,7 +158,7 @@ void ToT::MainMenu()
 	main_window->DrawTitle();
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu], main_menu_position, centered_position, TextAlign::center, avarage_spacing, true};
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::main_menu], main_menu_position, centered_position, TextAlign::center, avarage_spacing, true };
 		switch (main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo()))
 		{
 		case 0://Singleplayer
@@ -228,51 +228,51 @@ void ToT::Options()
 		const COORD local_starting_point = { centered_position.X + submenu_horizontal_position, centered_position.Y + game_window_vertical_position };
 		switch (main_menu_position)
 		{
-			case 0:
-			{
-				SetTheme(local_starting_point);
-				break;
-			}
-			case 1:
-			{
-				SetColor(local_starting_point, true);
-				break;
-			}
-			case 2:
-			{
-				SetColor(local_starting_point, false);
-				break;
-			}
-			case 3:
-			{
-				SetMusic(local_starting_point);
-				break;
-			}
-			case 4:
-			{
-				SetLanguage(local_starting_point);
-				break;
-			}
-			case 5:
-			{
-				SetHamachiFlag(local_starting_point);
-				break;
-			}
-			case 6:
-			{
-				SetDisplayMode(local_starting_point);
-				break;
-			}
-			case 7:
-			{
-				SetAIModule(local_starting_point);
-				break;
-			}
-			case 8:
-			{
-				loop = false;
-				break;
-			}
+		case 0:
+		{
+			SetTheme(local_starting_point);
+			break;
+		}
+		case 1:
+		{
+			SetColor(local_starting_point, true);
+			break;
+		}
+		case 2:
+		{
+			SetColor(local_starting_point, false);
+			break;
+		}
+		case 3:
+		{
+			SetMusic(local_starting_point);
+			break;
+		}
+		case 4:
+		{
+			SetLanguage(local_starting_point);
+			break;
+		}
+		case 5:
+		{
+			SetHamachiFlag(local_starting_point);
+			break;
+		}
+		case 6:
+		{
+			SetDisplayMode(local_starting_point);
+			break;
+		}
+		case 7:
+		{
+			SetAIModule(local_starting_point);
+			break;
+		}
+		case 8:
+		{
+			loop = false;
+			break;
+		}
 		}
 	}
 	Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
@@ -299,57 +299,57 @@ void ToT::Ranking()
 		const COORD local_starting_point = { centered_position.X + submenu_horizontal_position, centered_position.Y + game_window_vertical_position };
 		switch (text_info.starting_index)
 		{
-			case 0://Map
-			{
-				const int temp = map_pos;
-				Text::TextInfo text_info = { maps, map_pos, local_starting_point, TextAlign::left, 0, true };
-				map_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-				if (map_pos != temp)
-				{
-					ClearRankingDetails();
-					racer_pos = 0;
-					ShowRankingDetails(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
-				}
-				break;
-			}
-			case 1://Player
-			{
-				const int temp = racer_pos;
-				Text::TextInfo text_info = { RankingManagement::GetRankedRacersNames(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, TextAlign::left, 0, true };
-				racer_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-				if(temp != racer_pos && racer_pos >= 0)
-				{
-					ClearRankingDetails();
-					ShowRankingDetails(starting_map_path, racer_pos, classification_type);
-				}
-				break;
-			}
-			case 2://Classification type
-			{
-				const int temp = classification_type;
-				Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_classification_types], classification_type, local_starting_point, TextAlign::left, 0, true };
-				classification_type = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
-				if (temp != classification_type)
-				{
-					ClearRankingDetails();
-					ShowRankingDetails(starting_map_path, racer_pos, classification_type);
-				}
-				break;
-			}
-			case 3://Reset map details
+		case 0://Map
+		{
+			const int temp = map_pos;
+			Text::TextInfo text_info = { maps, map_pos, local_starting_point, TextAlign::left, 0, true };
+			map_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+			if (map_pos != temp)
 			{
 				ClearRankingDetails();
-				std::fstream fvar((FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking).c_str(), std::ios::out);
+				racer_pos = 0;
+				ShowRankingDetails(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
+			}
+			break;
+		}
+		case 1://Player
+		{
+			const int temp = racer_pos;
+			Text::TextInfo text_info = { RankingManagement::GetRankedRacersNames(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking), racer_pos, local_starting_point, TextAlign::left, 0, true };
+			racer_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+			if (temp != racer_pos && racer_pos >= 0)
+			{
+				ClearRankingDetails();
 				ShowRankingDetails(starting_map_path, racer_pos, classification_type);
-				fvar.close();
-				break;
 			}
-			case 4://Back
+			break;
+		}
+		case 2://Classification type
+		{
+			const int temp = classification_type;
+			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::ranking_classification_types], classification_type, local_starting_point, TextAlign::left, 0, true };
+			classification_type = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
+			if (temp != classification_type)
 			{
 				ClearRankingDetails();
-				loop = false;
-				break;
+				ShowRankingDetails(starting_map_path, racer_pos, classification_type);
 			}
+			break;
+		}
+		case 3://Reset map details
+		{
+			ClearRankingDetails();
+			std::fstream fvar((FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking).c_str(), std::ios::out);
+			ShowRankingDetails(starting_map_path, racer_pos, classification_type);
+			fvar.close();
+			break;
+		}
+		case 4://Back
+		{
+			ClearRankingDetails();
+			loop = false;
+			break;
+		}
 		}
 		Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
 	}
@@ -385,32 +385,32 @@ void ToT::Game(const bool multiplayer)
 {
 	std::unique_ptr<SinglePlayer> network_role;
 	if (multiplayer)
-	{	
+	{
 		do
 		{
 			Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_menu], 0, centered_position, TextAlign::center, avarage_spacing, false };
 			switch (Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo()))
 			{
-				case 0:
-				{
-					network_role = std::make_unique<Host>(*main_window);
-					bool temp = false;
-					Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
-					break;
-				}
-				case 1:
-				{
-					bool temp = false;
-					Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
-					network_role = std::make_unique<Client>(*main_window);
-					break;
-				}
-				case 2:
-				{
-					bool temp = false;
-					Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
-					return;
-				}
+			case 0:
+			{
+				network_role = std::make_unique<Host>(*main_window);
+				bool temp = false;
+				Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
+				break;
+			}
+			case 1:
+			{
+				bool temp = false;
+				Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
+				network_role = std::make_unique<Client>(*main_window);
+				break;
+			}
+			case 2:
+			{
+				bool temp = false;
+				Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
+				return;
+			}
 			}
 		} while (!network_role->isInit());
 	}

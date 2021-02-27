@@ -110,13 +110,13 @@ std::vector<std::string> MeridorConsoleLib::GetFilesInDirectory(const std::strin
 	}
 	return data;
 }
-void MeridorConsoleLib::RemoveExtension(std::string& string, const std::string &extension)
+void MeridorConsoleLib::RemoveExtension(std::string& string, const std::string& extension)
 {
 	const size_t extension_size = extension.size();
 	string = string.substr(0, string.size() - extension_size);
 
 }
-void MeridorConsoleLib::RemoveExtension(std::vector<std::string>& vector, const std::string &extension)
+void MeridorConsoleLib::RemoveExtension(std::vector<std::string>& vector, const std::string& extension)
 {
 	for (size_t i = 0; i < vector.size(); ++i)
 	{

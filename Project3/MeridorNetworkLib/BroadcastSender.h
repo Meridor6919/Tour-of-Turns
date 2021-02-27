@@ -9,7 +9,7 @@ namespace NetworkConnector
 		std::thread main_thread;
 		bool hamachi = false;
 		void Broadcasting();
-		
+
 	public:
 		void Stop();
 		void Start(bool hamachi);

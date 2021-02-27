@@ -7,10 +7,10 @@
 
 class ToT_Window;
 
-class Participant 
+class Participant
 {
 private:
-	MeridorConsoleLib::InfoBox *infobox;
+	MeridorConsoleLib::InfoBox* infobox;
 	void CalculateParameters();
 
 public:

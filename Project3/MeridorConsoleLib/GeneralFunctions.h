@@ -11,7 +11,7 @@ namespace MeridorConsoleLib
 	std::string GetMonoCharacterString(const int size, const char character);
 	std::string Spaces(const int size);
 	float GetTextAlignScalar(TextAlign text_align);
-	
+
 	std::string GetSeparatedValue(const std::string& text, int index, char separator = '\t');
 	std::string SetSeparatedValue(const std::string& original_text, const std::string& text_to_put, int index, char separator = '\t');
 	std::string SetPrecision(const std::string& floating_point_number, unsigned int precision);

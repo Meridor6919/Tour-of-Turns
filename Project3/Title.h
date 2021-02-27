@@ -10,9 +10,9 @@ class Title
 	ToT_Window* main_window;
 	TitleTheme theme;
 
-	public:
+public:
 
-	void Init(ToT_Window *main_window);
+	void Init(ToT_Window* main_window);
 	void SetTheme(std::string name);
 	const TitleTheme& GetTheme();
 

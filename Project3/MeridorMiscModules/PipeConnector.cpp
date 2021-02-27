@@ -8,7 +8,7 @@ PipeConnector::PipeConnector(std::string connector_path, int buffer_size)
 bool PipeConnector::Write(std::string msg)
 {
 	unsigned long bytes_written;
-	char *buffer = new char[buffer_size];
+	char* buffer = new char[buffer_size];
 	strcpy_s(buffer, buffer_size, (msg + '\n').c_str());
 	const bool result = WriteFile(input_pipe_write, buffer, static_cast<int>(msg.size()) + 1, &bytes_written, NULL);
 	if (!result)
@@ -18,10 +18,10 @@ bool PipeConnector::Write(std::string msg)
 	delete[] buffer;
 	return result;
 }
-bool PipeConnector::Read(std::string &msg_received)
+bool PipeConnector::Read(std::string& msg_received)
 {
 	unsigned long bytes_read;
-	char *buffer = new char[buffer_size];
+	char* buffer = new char[buffer_size];
 	bool result = true;
 	DWORD bytes_available;
 	PeekNamedPipe(output_pipe_read, 0, 0, 0, &bytes_available, 0);

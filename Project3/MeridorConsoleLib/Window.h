@@ -21,7 +21,7 @@ namespace MeridorConsoleLib
 
 		int* main_color;
 		int* secondary_color;
-		
+
 		void BlockingSleep(const int miliseconds);
 
 		const WindowInfo* GetWindowInfo();

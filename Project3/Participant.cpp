@@ -1,7 +1,7 @@
 #include "Participant.h"
 #include "ToT_Window.h"
 
-Participant::Participant(InfoBox *infobox)
+Participant::Participant(InfoBox* infobox)
 {
 	this->infobox = infobox;
 }
@@ -59,8 +59,8 @@ void Participant::Test(const std::string field, const bool show)
 	float local_score;
 	float formula = EvaluateChance(field, current_speed, drift);
 
-	float dmg = 1.0f - GameConstants::speed_reduction*attacked;
-	if (static_cast<int>(attacked*10.0f) % 10)
+	float dmg = 1.0f - GameConstants::speed_reduction * attacked;
+	if (static_cast<int>(attacked * 10.0f) % 10)
 	{
 		++sum_of_performed_attacks;
 	}
@@ -212,14 +212,14 @@ float Participant::EvaluateChance(std::string field, const float speed, const bo
 }
 void Participant::CalculateParameters()
 {
-	current_speed += pending_action.first*(GameConstants::friction_scalar + GameConstants::tire_effectivness_multiplier * TireEffectivness(pending_action.second));
+	current_speed += pending_action.first * (GameConstants::friction_scalar + GameConstants::tire_effectivness_multiplier * TireEffectivness(pending_action.second));
 	if (current_speed < 0)
 	{
 		current_speed = 0;
 	}
 	else if (current_speed > static_cast<float>(car_modifiers[CarAttributes::max_speed]))
 	{
-		if (current_speed > static_cast<float>(car_modifiers[CarAttributes::max_speed])*GameConstants::maximum_speed_multiplier)
+		if (current_speed > static_cast<float>(car_modifiers[CarAttributes::max_speed]) * GameConstants::maximum_speed_multiplier)
 		{
 			current_speed = static_cast<float>(car_modifiers[CarAttributes::max_speed] * GameConstants::maximum_speed_multiplier);
 		}

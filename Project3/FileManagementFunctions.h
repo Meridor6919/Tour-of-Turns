@@ -12,7 +12,7 @@ namespace FileManagement
 	std::vector<std::string> GetAINames();
 	std::vector<std::string> GetTourNames();
 	std::vector<std::string> GetTireNames();
-	std::vector<std::string> GetCarNames(const std::string &tour);
+	std::vector<std::string> GetCarNames(const std::string& tour);
 	std::vector<std::string> GetTitleThemeNames();
 	ToTGameConfig LoadGameConfig();
 	ToTWindowConfig LoadWindowConfig();
@@ -23,7 +23,7 @@ namespace FileManagement
 	std::vector<int> GetCarParameters(std::string path);
 	std::vector<std::string> GetTireParameters(std::string path);
 
-	void SaveGameConfig(const ToTGameConfig &game_config);
+	void SaveGameConfig(const ToTGameConfig& game_config);
 	void SaveWindowConfig(const ToTWindowConfig& window_config);
 };
 

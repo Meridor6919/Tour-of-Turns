@@ -41,7 +41,7 @@ public:
 	int GetTimerSettings();
 	std::string GetLanguage();
 	float GetMusicVolume();
-	
+
 	//Set methods
 	void SetAIModule(std::string ai_module);
 	void SetHamachiConnectionFlag(const bool flag);

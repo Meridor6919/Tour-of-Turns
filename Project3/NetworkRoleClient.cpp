@@ -1,6 +1,6 @@
 #include "NetworkRoleClient.h"
 
-Client::Client(ToT_Window &main_window) : SinglePlayer(main_window)
+Client::Client(ToT_Window& main_window) : SinglePlayer(main_window)
 {
 	this->participants = participants;
 	this->main_window = &main_window;
@@ -20,12 +20,12 @@ bool Client::StartNetwork()
 	client_connector = std::make_unique<NetworkConnectorClient>();
 
 	client_connector->broadcast_receiver.Start(main_window->GetHamachiConnectionFlag());
-	
+
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_client_lobby], 0, starting_point, TextAlign::center, spacing, false};
+		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_client_lobby], 0, starting_point, TextAlign::center, spacing, false };
 		int option = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
-		if(option == Multiplayer::active_games)
+		if (option == Multiplayer::active_games)
 		{
 			std::vector<std::string>active_games = { LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::back] };
 			{
@@ -34,14 +34,14 @@ bool Client::StartNetwork()
 			}
 			const COORD submenu_position = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::active_games].size()) / 2 + 1,
 												starting_point.Y };
-			Text::TextInfo text_info = { active_games, 0, submenu_position, TextAlign::left, 0, true};
+			Text::TextInfo text_info = { active_games, 0, submenu_position, TextAlign::left, 0, true };
 			if (int target = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()))
 			{
 				selected_game = active_games[target];
 				HighlightSelectedGame(selected_game, false);
 			}
 		}
-		else if(option == Multiplayer::join)
+		else if (option == Multiplayer::join)
 		{
 			if (selected_game != "")
 			{
@@ -57,13 +57,13 @@ bool Client::StartNetwork()
 				}
 			}
 		}
-		else if(option == Multiplayer::refresh)
+		else if (option == Multiplayer::refresh)
 		{
 			client_connector->broadcast_receiver.ResetHostVector();
 			HighlightSelectedGame(selected_game, true);
 			selected_game = "";
 		}
-		else if(option == Multiplayer::back)
+		else if (option == Multiplayer::back)
 		{
 			break;
 		}
@@ -73,7 +73,7 @@ bool Client::StartNetwork()
 	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby].size()); ++i)
 	{
 		const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby][i].size());
-		SetConsoleCursorPosition(handle, { starting_point.X - text_size/2, starting_point.Y + i * spacing });
+		SetConsoleCursorPosition(handle, { starting_point.X - text_size / 2, starting_point.Y + i * spacing });
 		for (int j = 0; j < text_size; ++j)
 		{
 			std::cout << ' ';

@@ -19,30 +19,30 @@ class PipeConnector
 	bool handling_connection;
 
 	template <class T>
-	void RecvFunction(void(T::*MsgHandling)(std::string), T* object);
+	void RecvFunction(void(T::* MsgHandling)(std::string), T* object);
 
 public:
 
 	template <class T>
-	bool HandleConnection(void(T::*MsgHandling)(std::string), T* object);
+	bool HandleConnection(void(T::* MsgHandling)(std::string), T* object);
 	PipeConnector(std::string connector_path, int buffer_size);
 	bool Write(std::string msg_send);
-	bool Read(std::string &msg_received);
+	bool Read(std::string& msg_received);
 	~PipeConnector();
 };
 
 template <class T>
-bool PipeConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* object)
+bool PipeConnector::HandleConnection(void(T::* MsgHandling)(std::string), T* object)
 {
 	SECURITY_ATTRIBUTES security_atributes = { 0 };
 	security_atributes.bInheritHandle = 1;
-	
+
 	if (!CreatePipe(&output_pipe_read, &output_pipe_write, &security_atributes, 0))
 	{
 		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		return false;
 	}
-	if(!CreatePipe(&input_pipe_read, &input_pipe_write, &security_atributes, 0))
+	if (!CreatePipe(&input_pipe_read, &input_pipe_write, &security_atributes, 0))
 	{
 		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		return false;
@@ -63,7 +63,7 @@ bool PipeConnector::HandleConnection(void(T::*MsgHandling)(std::string), T* obje
 	return true;
 }
 template <class T>
-void  PipeConnector::RecvFunction(void(T::*MsgHandling)(std::string), T* object)
+void  PipeConnector::RecvFunction(void(T::* MsgHandling)(std::string), T* object)
 {
 	while (handling_connection)
 	{

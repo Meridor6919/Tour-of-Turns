@@ -14,7 +14,7 @@
 
 using namespace MeridorConsoleLib;
 
-class SinglePlayer 
+class SinglePlayer
 {
 protected:
 	//Attributes
@@ -46,7 +46,7 @@ protected:
 	void ShowRankingParameters(const std::string tire_path, bool clear = false);
 	void ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear);
 	void ShowLeaderboard(const std::vector<std::string> text, short pos, int color, const bool clear = false);
-	void ShowLoading(std::string title, int &init, int condition, bool clear = false);
+	void ShowLoading(std::string title, int& init, int condition, bool clear = false);
 	void ShowChances(int value, bool reset = false);
 	void ShowIndicator(int participant, bool clear = false);
 
@@ -59,12 +59,12 @@ protected:
 	virtual int Possible_AIs();
 
 public:
-	ToT_Window *main_window;
+	ToT_Window* main_window;
 
 	//General
-	SinglePlayer(ToT_Window &main_window);
+	SinglePlayer(ToT_Window& main_window);
 	bool isInit();
-	
+
 	//Get methods
 	virtual void GetParticipants(std::string name, std::string tour, std::string car, std::string tire);
 	void SortLeaderboard();

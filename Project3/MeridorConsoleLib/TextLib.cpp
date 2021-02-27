@@ -1,6 +1,6 @@
 #include "TextLib.h"
 
-char MeridorConsoleLib::Text::Button(const bool *loop, std::chrono::milliseconds delay)
+char MeridorConsoleLib::Text::Button(const bool* loop, std::chrono::milliseconds delay)
 {
 	if (loop == nullptr)
 	{
@@ -74,7 +74,7 @@ int MeridorConsoleLib::Text::Choose::Horizontal(const TextInfo& text_info, const
 int MeridorConsoleLib::Text::Choose::Veritcal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	char button;
-	
+
 	size_t index = text_info.starting_index;
 	size_t vector_size = text_info.text.size();
 	if (!vector_size)
@@ -118,7 +118,7 @@ int MeridorConsoleLib::Text::Choose::Veritcal(const TextInfo& text_info, const W
 		}
 		else if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == 72)
 		{
-			
+
 			if (index == 0)
 			{
 				index = vector_size - 1;
@@ -281,7 +281,7 @@ void MeridorConsoleLib::Text::TableText(const TableTextInfo& table_text_info, co
 		COORD position = { table_text_info.point_of_reference.X + general_spacing_value - static_cast<short>(GetTextAlignScalar(table_text_info.text_align) * static_cast<float>(table_text_info.text[i].size())),
 								table_text_info.point_of_reference.Y + i * table_text_info.horizontal_spacing };
 		SetConsoleCursorPosition(window_info.handle, position);
-		
+
 		std::cout << (table_text_info.clear ? Spaces(table_text_info.text[i].size()) : table_text_info.text[i]);
 	}
 	if (multithreading_data.mutex != nullptr)

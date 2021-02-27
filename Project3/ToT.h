@@ -34,7 +34,7 @@ class ToT {
 
 public:
 	ToT();
-	
+
 	void Credits();
 	void Options();
 	void Ranking();

@@ -44,5 +44,5 @@ namespace NetworkConnector
 		const std::string msg_size = "This library cannot send messages larger than pre-defined constant\n Try sending couple smaller messages";
 		const std::string ip_extraction = "Error while converting host's signature to ip address";
 	}
-	
+
 }
