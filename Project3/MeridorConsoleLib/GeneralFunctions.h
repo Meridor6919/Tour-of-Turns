@@ -21,6 +21,23 @@ namespace MeridorConsoleLib
 	void RemoveExtension(std::string& string, const std::string& extension);
 	void RemoveExtension(std::vector<std::string>& vector, const std::string& extension);
 
+	std::istream& StringGetline(std::istream& input_stream, std::string& var);
+	template<class T>
+	std::istream& IntegerGetline(std::istream& input_stream, T& var)
+	{
+		std::string temp;
+		std::istream& ret = std::getline(input_stream, temp);
+		var = static_cast<T>(atoi(temp.c_str()));
+		return ret;
+	}
+	template<class T>
+	std::istream& FloatGetline(std::istream& input_stream, T& var)
+	{
+		std::string temp;
+		std::istream& ret = std::getline(input_stream, temp);
+		var = static_cast<T>(atof(temp.c_str()));
+		return ret;
+	}
 	template<class T>
 	bool Between(T lower_bound, T higher_bound, T value)
 	{

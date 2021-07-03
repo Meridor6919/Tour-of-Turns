@@ -39,10 +39,10 @@ ToTGameConfig FileManagement::LoadGameConfig()
 	std::ifstream fvar;
 
 	fvar.open(FolderName::main + '\\' + FileName::game_config);
-	fvar >> ret.number_of_ais;
-	fvar >> ret.name;
-	fvar >> ret.lang;
-	fvar >> ret.timer_settings;
+	IntegerGetline(fvar, ret.number_of_ais);
+	StringGetline(fvar, ret.name);
+	StringGetline(fvar, ret.lang);
+	IntegerGetline(fvar, ret.timer_settings);
 	fvar.close();
 
 	return ret;
@@ -53,16 +53,16 @@ ToTWindowConfig FileManagement::LoadWindowConfig()
 	std::ifstream fvar;
 
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
-	fvar >> ret.window_info.title;
-	fvar >> ret.title_theme;
-	fvar >> ret.ai_module;
-	fvar >> ret.window_info.characters_capacity.X;
-	fvar >> ret.window_info.characters_capacity.Y;
-	fvar >> ret.window_info.main_color;
-	fvar >> ret.window_info.secondary_color;
-	fvar >> reinterpret_cast<std::underlying_type<WindowMode>::type&>(ret.window_info.window_mode);
-	fvar >> ret.music_volume;
-	fvar >> ret.hamachi_flag;
+	StringGetline(fvar, ret.window_info.title);
+	StringGetline(fvar, ret.title_theme);
+	StringGetline(fvar, ret.ai_module);
+	IntegerGetline(fvar, ret.window_info.characters_capacity.X);
+	IntegerGetline(fvar, ret.window_info.characters_capacity.Y);
+	IntegerGetline(fvar, ret.window_info.main_color);
+	IntegerGetline(fvar, ret.window_info.secondary_color);
+	IntegerGetline(fvar, reinterpret_cast<std::underlying_type<WindowMode>::type&>(ret.window_info.window_mode));
+	FloatGetline(fvar, ret.music_volume);
+	IntegerGetline(fvar, ret.hamachi_flag);
 	fvar.close();
 
 	return ret;

@@ -14,8 +14,6 @@ float MeridorConsoleLib::GetTextAlignScalar(TextAlign text_align)
 {
 	return static_cast<float>(text_align) / 2.0f;;
 }
-
-
 std::string MeridorConsoleLib::GetSeparatedValue(const std::string& text, int index, char separator)
 {
 	int start = 0;
@@ -63,7 +61,6 @@ std::string MeridorConsoleLib::SetSeparatedValue(const std::string& original_tex
 	}
 	return original_text;
 }
-
 std::string MeridorConsoleLib::SetPrecision(const std::string& floating_point_number, unsigned int precision)
 {
 	size_t number_size = floating_point_number.size();
@@ -122,4 +119,8 @@ void MeridorConsoleLib::RemoveExtension(std::vector<std::string>& vector, const 
 	{
 		RemoveExtension(vector[i], extension);
 	}
+}
+std::istream& MeridorConsoleLib::StringGetline(std::istream& input_stream, std::string& var)
+{
+	return std::getline(input_stream, var);
 }
