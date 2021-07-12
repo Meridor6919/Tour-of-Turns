@@ -15,7 +15,7 @@ using namespace Validation;
 class ToT_Window : public Window
 {
 protected:
-
+	Validation::Status status;
 	float music_volume;
 	bool hamachi_flag;
 	std::string ai_module;
@@ -41,6 +41,9 @@ public:
 	int GetTimerSettings();
 	std::string GetLanguage();
 	float GetMusicVolume();
+
+	bool IsPlayable();
+	bool IsRankingActive();
 
 	//Set methods
 	void SetAIModule(std::string ai_module);

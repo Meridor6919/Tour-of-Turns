@@ -161,7 +161,7 @@ void ToT::MainMenu()
 		case 0://Singleplayer
 		case 1://Multiplayer
 		{
-			if (playable)
+			if (main_window->IsPlayable())
 			{
 				Game(main_menu_position);
 			}
@@ -183,7 +183,14 @@ void ToT::MainMenu()
 		}
 		case 4://Ranking
 		{
-			Ranking();
+			if (main_window->IsRankingActive())
+			{
+				Ranking();
+			}
+			else
+			{
+				//error
+			}
 			break;
 		}
 		case 5://Options

@@ -3,9 +3,6 @@
 
 void ToT_Window::Init()
 {
-	
-	Validation::Status status;
-
 	ValidationCheck::FileIntegrity(status);
 
 	ToTWindowConfig tot_window_config = LoadWindowConfig();
@@ -105,6 +102,14 @@ float ToT_Window::GetMusicVolume()
 {
 	return music_volume;
 }
+bool ToT_Window::IsPlayable()
+{
+	return !status.IsFlagActive(Validation::Status::Flags::unplayable);
+}
+bool ToT_Window::IsRankingActive()
+{
+	return !status.IsFlagActive(Validation::Status::Flags::no_ranking);
+}
 void ToT_Window::SetAIModule(std::string ai_module)
 {
 	this->ai_module = ai_module;
@@ -132,7 +137,14 @@ void ToT_Window::SetLanguage(std::string lang)
 }
 void ToT_Window::SetMusic(float volume)
 {
-	music_volume = volume;
-	wav_transformer.SetFlags(SND_ASYNC | SND_LOOP);
-	wav_transformer.StartPlaying(volume);
+	if (status.IsFlagActive(Validation::Status::Flags::no_music))
+	{
+		//error
+	}
+	else
+	{
+		music_volume = volume;
+		wav_transformer.SetFlags(SND_ASYNC | SND_LOOP);
+		wav_transformer.StartPlaying(volume);
+	}
 }

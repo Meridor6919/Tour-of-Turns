@@ -101,7 +101,11 @@ void ValidationCheck::ToTWindowConfig(::ToTWindowConfig& window_config, Validati
 	{
 		Music(window_config.music_volume, status);
 	}
-	
+	if (status.IsFlagActive(Validation::Status::Flags::repaired))
+	{
+		FileManagement::SaveWindowConfig(window_config);
+		status.UnsetFlag(Validation::Status::Flags::repaired);
+	}
 }
 void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::Status &status)
 {
@@ -139,6 +143,11 @@ void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::St
 	{
 		game_config.timer_settings = 0;
 		status.SetFlag(Validation::Status::Flags::repaired);
+	}
+	if (status.IsFlagActive(Validation::Status::Flags::repaired))
+	{
+		FileManagement::SaveGameConfig(game_config);
+		status.UnsetFlag(Validation::Status::Flags::repaired);
 	}
 }
 
@@ -178,12 +187,10 @@ void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 			if (required_files[i] == FileName::title_theme)
 			{
 				ofvar << Validation::default_title_theme_file_content;
-				status.SetFlag(Validation::Status::Flags::repaired);
 			}
 			else if (required_files[i] == FileName::game_config)
 			{
 				ofvar << Validation::default_game_config_file_content;
-				status.SetFlag(Validation::Status::Flags::repaired);
 			}
 			else if (required_files[i] == FileName::window_config)
 			{
@@ -232,35 +239,37 @@ void ValidationCheck::TitleThemes(Validation::Status &status)
 	while (std::getline(ifvar, temp))
 	{
 		TitleTheme title_theme = FileManagement::GetTitleThemeFromString(temp);
+		bool good = true;
 
 		if (title_theme.main_left.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.main_left.resize(Validation::maximum_title_decoration_size);
-			status.SetFlag(Validation::Status::Flags::repaired);
+			good = false;
 		}
 		if (title_theme.main_right.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.main_right.resize(Validation::maximum_title_decoration_size);
-			status.SetFlag(Validation::Status::Flags::repaired);
+			good = false;
 		}
 		if (title_theme.secondary_left.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.secondary_left.resize(Validation::maximum_title_decoration_size);
-			status.SetFlag(Validation::Status::Flags::repaired);
+			good = false;
 		}
 		if (title_theme.secondary_right.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.secondary_right.resize(Validation::maximum_title_decoration_size);
-			status.SetFlag(Validation::Status::Flags::repaired);
+			good = false;
 		}
 		if (!MeridorConsoleLib::Between(Validation::minimum_title_decoration_distance, Validation::maximum_title_decoration_distance, title_theme.decoration_distance))
 		{
 			title_theme.decoration_distance = Validation::minimum_title_decoration_distance;
-			status.SetFlag(Validation::Status::Flags::repaired);
+			good = false;
 		}
-		if (status.IsFlagActive(Validation::Status::Flags::repaired))
+		if (!good)
 		{
 			temp = FileManagement::GetStringFromTitleTheme(title_theme);
+			status.SetFlag(Validation::Status::Flags::repaired);
 		}
 		title_theme_contents.push_back(temp);
 	}
@@ -280,6 +289,7 @@ void ValidationCheck::TitleThemes(Validation::Status &status)
 		}
 		ofvar << title_theme_contents[title_theme_contents.size()-1];
 		ofvar.close();
+		status.UnsetFlag(Validation::Status::Flags::repaired);
 	}
 	
 }

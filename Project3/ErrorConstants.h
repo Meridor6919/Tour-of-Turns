@@ -22,7 +22,6 @@ namespace ErrorMsg
 	constexpr const char* pipe_error = "Please call a plumber";
 	constexpr const char* language_error = "Game cannot find any valid language packs, please repair files or reinstall game";
 	constexpr const char* placeholder_language = " is current language. \nPreviously selected language pack has been corrupted";
-	constexpr const char* available_cars = " has no cars available";
 	constexpr const char* cheating_attempt = " has made an attempt to cheat. He is now eliminated :)";
 	constexpr const char* ai_connection = "There is an issue with your AI module, please repair files or reinstall the game";
 }
