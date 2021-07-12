@@ -124,6 +124,9 @@
     <ClCompile Include="Title.cpp">
       <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="ValidationStatus.cpp">
+      <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
@@ -214,6 +217,9 @@
       <Filter>Files\ToTFiles\MainGameFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="Title.h">
+      <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidationStatus.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>

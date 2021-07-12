@@ -133,6 +133,7 @@
     <ClCompile Include="Participant.cpp" />
     <ClCompile Include="MeridorConsoleLib\TextLib.cpp" />
     <ClCompile Include="RankingManagement.cpp" />
+    <ClCompile Include="ValidationStatus.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="ToT.cpp" />
     <ClCompile Include="ToT_Window.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Participant.h" />
     <ClInclude Include="MeridorConsoleLib\TextLib.h" />
     <ClInclude Include="RankingManagement.h" />
+    <ClInclude Include="ValidationStatus.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="ToT.h" />
     <ClInclude Include="ToT_Window.h" />

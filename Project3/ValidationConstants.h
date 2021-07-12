@@ -1,15 +1,6 @@
 #pragma once
 namespace Validation
 {
-	enum StatusFlags : char {
-		valid = 0x0,
-		repaired = 0x1,
-		unplayable = 0x2,
-		no_music = 0x4,
-		no_ranking = 0x8,
-		corrupted = 0x10,
-		last
-	};
 	constexpr int minimum_tour_lenght = 5;
 	constexpr int digits_of_max_speed = 9;
 	constexpr int max_visibility = 7;

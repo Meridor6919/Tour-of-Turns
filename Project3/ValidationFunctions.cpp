@@ -1,71 +1,50 @@
 #include "ValidationFunctions.h"
 
-void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, char& status)
+void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, Validation::Status &status)
 {
 	if (window_info.characters_capacity.Y < Validation::minimum_window_size.Y)
 	{
 		window_info.characters_capacity.Y = Validation::minimum_window_size.Y;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 	if (window_info.characters_capacity.X < Validation::minimum_window_size.X)
 	{
 		window_info.characters_capacity.X = Validation::minimum_window_size.X;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 	if (!MeridorConsoleLib::Between(Validation::first_color, Validation::last_color, window_info.main_color))
 	{
 		window_info.main_color = Validation::default_main_color;
 		window_info.secondary_color = Validation::default_secondary_color;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 	if (!MeridorConsoleLib::Between(Validation::first_color, Validation::last_color, window_info.secondary_color))
 	{
 		window_info.main_color = Validation::default_main_color;
 		window_info.secondary_color = Validation::default_secondary_color;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 	if (window_info.secondary_color == window_info.main_color)
 	{
 		window_info.main_color = Validation::default_main_color;
 		window_info.secondary_color = Validation::default_secondary_color;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 	if (window_info.window_mode > MeridorConsoleLib::WindowMode::last)
 	{
 		window_info.window_mode = MeridorConsoleLib::WindowMode::fullscreen;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 }
-void ValidationCheck::Music(float& music_volume, char& status)
+void ValidationCheck::Music(float& music_volume, Validation::Status &status)
 {
 	if (!MeridorConsoleLib::Between(0.0f, 1.0f, music_volume))
 	{
 		music_volume = 0.0f;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 }
-void ValidationCheck::AIModule(std::string& ai_module, char& status)
+void ValidationCheck::AIModule(std::string& ai_module, Validation::Status &status)
 {
 	std::vector<std::string> ai_modules = MeridorConsoleLib::GetFilesInDirectory(FolderName::ai);
 	for (size_t i = 0; i < ai_modules.size(); ++i)
@@ -76,12 +55,9 @@ void ValidationCheck::AIModule(std::string& ai_module, char& status)
 		}
 	}
 	ai_module = ai_modules[0];
-	if (!(status & Validation::StatusFlags::repaired))
-	{
-		status = status | Validation::StatusFlags::repaired;
-	}
+	status.SetFlag(Validation::Status::Flags::repaired);
 }
-void ValidationCheck::ThemeName(std::string& theme_name, char& status)
+void ValidationCheck::ThemeName(std::string& theme_name, Validation::Status &status)
 {
 	std::string temp = "";
 	std::ifstream ifvar;
@@ -99,10 +75,7 @@ void ValidationCheck::ThemeName(std::string& theme_name, char& status)
 		}
 	}
 	ifvar.close();
-	if (!(status & Validation::StatusFlags::repaired))
-	{
-		status = status | Validation::StatusFlags::repaired;
-	}
+	status.SetFlag(Validation::Status::Flags::repaired);
 	theme_name = temp;
 
 	if (temp == "")
@@ -116,20 +89,21 @@ void ValidationCheck::ThemeName(std::string& theme_name, char& status)
 		MessageBox(0, ErrorMsg::missing_file, ErrorTitle::ai_error, 0);
 	}
 }
-void ValidationCheck::ToTWindowConfig(::ToTWindowConfig& window_config, char& status)
+void ValidationCheck::ToTWindowConfig(::ToTWindowConfig& window_config, Validation::Status &status)
 {
 	WindowInfo(window_config.window_info, status);
 	ThemeName(window_config.theme_name, status);
-	if (!(status & Validation::StatusFlags::unplayable))
+	if (!(status.IsFlagActive(Validation::Status::Flags::unplayable)))
 	{
 		AIModule(window_config.ai_module, status);
 	}
-	if (!(status & Validation::StatusFlags::no_music))
+	if (!(status.IsFlagActive(Validation::Status::Flags::no_music)))
 	{
 		Music(window_config.music_volume, status);
 	}
+	
 }
-void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, char& status)
+void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::Status &status)
 {
 	bool name_valid = true;
 	bool space = true;
@@ -154,36 +128,27 @@ void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, char& status)
 	if (!MeridorConsoleLib::Between(0, GameConstants::max_ais, game_config.number_of_ais))
 	{
 		game_config.number_of_ais = GameConstants::max_ais;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 	if (!MeridorConsoleLib::Between(1, Validation::maximum_name_length, static_cast<int>(game_config.name.size())) || !name_valid)
 	{
 		game_config.name = LanguagePack::text[LanguagePack::other_strings][OtherStrings::default_name];
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 	if (!MeridorConsoleLib::Between(0, Validation::maximum_timer, game_config.timer_settings))
 	{
 		game_config.timer_settings = 0;
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 }
 
-void ValidationCheck::FileIntegrity(char& status)
+void ValidationCheck::FileIntegrity(Validation::Status &status)
 {
 	FileIntegrity::MainDirectory(status);
 	FileIntegrity::MiscFiles(status);
 	FileIntegrity::GameFiles(status);
 }
-void ValidationCheck::FileIntegrity::MainDirectory(char& status)
+void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 {
 	std::vector<std::string> files = MeridorConsoleLib::GetFilesInDirectory(FolderName::main);
 	std::vector<std::string> required_files = { FileName::window_config, FileName::game_config, FileName::title_theme, FileName::music };
@@ -205,10 +170,7 @@ void ValidationCheck::FileIntegrity::MainDirectory(char& status)
 		{
 			if (required_files[i] == FileName::music)
 			{
-				if (!(status & Validation::StatusFlags::no_music))
-				{
-					status = status | Validation::StatusFlags::no_music;
-				}
+				status.SetFlag(Validation::Status::Flags::no_music);
 				continue;
 			}
 			std::ofstream ofvar;
@@ -216,31 +178,22 @@ void ValidationCheck::FileIntegrity::MainDirectory(char& status)
 			if (required_files[i] == FileName::title_theme)
 			{
 				ofvar << Validation::default_title_theme_file_content;
-				if (!(status & Validation::StatusFlags::repaired))
-				{
-					status = status | Validation::StatusFlags::repaired;
-				}
+				status.SetFlag(Validation::Status::Flags::repaired);
 			}
 			else if (required_files[i] == FileName::game_config)
 			{
 				ofvar << Validation::default_game_config_file_content;
-				if (!(status & Validation::StatusFlags::repaired))
-				{
-					status = status | Validation::StatusFlags::repaired;
-				}
+				status.SetFlag(Validation::Status::Flags::repaired);
 			}
 			else if (required_files[i] == FileName::window_config)
 			{
-				if (!(status & Validation::StatusFlags::unplayable))
-				{
-					status = status | Validation::StatusFlags::unplayable;
-				}
+				status.SetFlag(Validation::Status::Flags::unplayable);
 			}
 			ofvar.close();
 		}
 	}
 }
-void ValidationCheck::FileIntegrity::GameFiles(char& status)
+void ValidationCheck::FileIntegrity::GameFiles(Validation::Status &status)
 {
 	std::vector<std::string> tours = MeridorConsoleLib::GetFilesInDirectory(FolderName::tour);
 	std::vector<std::string> tires = MeridorConsoleLib::GetFilesInDirectory(FolderName::tire);
@@ -248,35 +201,26 @@ void ValidationCheck::FileIntegrity::GameFiles(char& status)
 
 	if (tours.size() == 0 || tires.size() == 0 || cars.size() == 0)
 	{
-		if (!(status & Validation::StatusFlags::unplayable))
-		{
-			status = status | Validation::StatusFlags::unplayable;
-		}
+		status.SetFlag(Validation::Status::Flags::unplayable);
 	}
 }
-void ValidationCheck::FileIntegrity::MiscFiles(char& status)
+void ValidationCheck::FileIntegrity::MiscFiles(Validation::Status &status)
 {
 	std::vector<std::string> files;
 	
 	files = MeridorConsoleLib::GetFilesInDirectory(FolderName::language);
 	if (files.size() <= 0)
 	{
-		if (!(status & Validation::StatusFlags::corrupted))
-		{
-			status = status | Validation::StatusFlags::corrupted;
-		}
+		status.SetFlag(Validation::Status::Flags::corrupted);
 	}
 	files = MeridorConsoleLib::GetFilesInDirectory(FolderName::ranking);
 	if (files.size() <= 0)
 	{
-		if (!(status & Validation::StatusFlags::no_ranking))
-		{
-			status = status | Validation::StatusFlags::no_ranking;
-		}
+		status.SetFlag(Validation::Status::Flags::no_ranking);
 	}
 }
 
-void ValidationCheck::TitleThemes(char& status)
+void ValidationCheck::TitleThemes(Validation::Status &status)
 {
 	std::ifstream ifvar;
 	std::string temp;
@@ -292,44 +236,29 @@ void ValidationCheck::TitleThemes(char& status)
 		if (title_theme.main_left.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.main_left.resize(Validation::maximum_title_decoration_size);
-			if (!(status & Validation::StatusFlags::repaired))
-			{
-				status = status | Validation::StatusFlags::repaired;
-			}
+			status.SetFlag(Validation::Status::Flags::repaired);
 		}
 		if (title_theme.main_right.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.main_right.resize(Validation::maximum_title_decoration_size);
-			if (!(status & Validation::StatusFlags::repaired))
-			{
-				status = status | Validation::StatusFlags::repaired;
-			}
+			status.SetFlag(Validation::Status::Flags::repaired);
 		}
 		if (title_theme.secondary_left.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.secondary_left.resize(Validation::maximum_title_decoration_size);
-			if (!(status & Validation::StatusFlags::repaired))
-			{
-				status = status | Validation::StatusFlags::repaired;
-			}
+			status.SetFlag(Validation::Status::Flags::repaired);
 		}
 		if (title_theme.secondary_right.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.secondary_right.resize(Validation::maximum_title_decoration_size);
-			if (!(status & Validation::StatusFlags::repaired))
-			{
-				status = status | Validation::StatusFlags::repaired;
-			}
+			status.SetFlag(Validation::Status::Flags::repaired);
 		}
 		if (!MeridorConsoleLib::Between(Validation::minimum_title_decoration_distance, Validation::maximum_title_decoration_distance, title_theme.decoration_distance))
 		{
 			title_theme.decoration_distance = Validation::minimum_title_decoration_distance;
-			if (!(status & Validation::StatusFlags::repaired))
-			{
-				status = status | Validation::StatusFlags::repaired;
-			}
+			status.SetFlag(Validation::Status::Flags::repaired);
 		}
-		if (!(status & Validation::StatusFlags::repaired))
+		if (status.IsFlagActive(Validation::Status::Flags::repaired))
 		{
 			temp = FileManagement::GetStringFromTitleTheme(title_theme);
 		}
@@ -339,12 +268,9 @@ void ValidationCheck::TitleThemes(char& status)
 	if (title_theme_contents.size() < 1)
 	{
 		title_theme_contents.push_back(Validation::default_title_theme_file_content);
-		if (!(status & Validation::StatusFlags::repaired))
-		{
-			status = status | Validation::StatusFlags::repaired;
-		}
+		status.SetFlag(Validation::Status::Flags::repaired);
 	}
-	if (status & Validation::StatusFlags::repaired)
+	if (status.IsFlagActive(Validation::Status::Flags::repaired))
 	{
 		std::ofstream ofvar;
 		ofvar.open(path, std::ios::trunc);
@@ -357,7 +283,7 @@ void ValidationCheck::TitleThemes(char& status)
 	}
 	
 }
-void ValidationCheck::Rankings(char& status)
+void ValidationCheck::Rankings(Validation::Status &status)
 {
 
 	std::vector<std::string> ranking_files = MeridorConsoleLib::GetFilesInDirectory(FolderName::ranking);
@@ -385,13 +311,10 @@ void ValidationCheck::Rankings(char& status)
 	}
 	if (!good_files)
 	{
-		if (!(status & Validation::StatusFlags::no_ranking))
-		{
-			status = status | Validation::StatusFlags::no_ranking;
-		}
+		status.SetFlag(Validation::Status::Flags::no_ranking);
 	}
 }
-void ValidationCheck::LanguagePacks(char& status)
+void ValidationCheck::LanguagePacks(Validation::Status &status)
 {
 	std::vector<std::string> lang_files = MeridorConsoleLib::GetFilesInDirectory(FolderName::language);
 	bool good_files = false;
@@ -438,14 +361,11 @@ void ValidationCheck::LanguagePacks(char& status)
 	}
 	if (!good_files)
 	{
-		if (!(status & Validation::StatusFlags::corrupted))
-		{
-			status = status | Validation::StatusFlags::corrupted;
-		}
+		status.SetFlag(Validation::Status::Flags::corrupted);
 	}
 }
 
-void ValidationCheck::GameFiles(char& status)
+void ValidationCheck::GameFiles(Validation::Status &status)
 {
 	Tires(status);
 	Cars(status);
@@ -456,7 +376,7 @@ void ValidationCheck::InvalidGameFile(const std::string& directory, const std::s
 	//delete file
 	MessageBox(0, (directory + '\\' + file_name + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST);
 }
-void ValidationCheck::Tours(char& status)
+void ValidationCheck::Tours(Validation::Status &status)
 {
 	std::vector<std::string> tours = MeridorConsoleLib::GetFilesInDirectory(FolderName::tour);
 
@@ -515,13 +435,10 @@ void ValidationCheck::Tours(char& status)
 	}
 	if (!good_files)
 	{
-		if (!(status & Validation::StatusFlags::unplayable))
-		{
-			status = status | Validation::StatusFlags::unplayable;
-		}
+		status.SetFlag(Validation::Status::Flags::unplayable);
 	}
 }
-void ValidationCheck::Cars(char& status)
+void ValidationCheck::Cars(Validation::Status &status)
 {
 	const std::vector<std::string> cars = MeridorConsoleLib::GetFilesInDirectory(FolderName::car);
 	bool good_files = false;
@@ -546,13 +463,10 @@ void ValidationCheck::Cars(char& status)
 	}
 	if (!good_files)
 	{
-		if (!(status & Validation::StatusFlags::unplayable))
-		{
-			status = status | Validation::StatusFlags::unplayable;
-		}
+		status.SetFlag(Validation::Status::Flags::unplayable);
 	}
 }
-void ValidationCheck::Tires(char& status)
+void ValidationCheck::Tires(Validation::Status &status)
 {
 	const std::vector<std::string> tires = MeridorConsoleLib::GetFilesInDirectory(FolderName::tire);
 	bool good_files = false;
@@ -588,10 +502,7 @@ void ValidationCheck::Tires(char& status)
 	}
 	if (!good_files)
 	{
-		if (!(status & Validation::StatusFlags::unplayable))
-		{
-			status = status | Validation::StatusFlags::unplayable;
-		}
+		status.SetFlag(Validation::Status::Flags::unplayable);
 	}
 }
 

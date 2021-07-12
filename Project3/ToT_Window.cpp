@@ -4,8 +4,7 @@
 void ToT_Window::Init()
 {
 	
-	
-	char status = Validation::StatusFlags::valid;
+	Validation::Status status;
 
 	ValidationCheck::FileIntegrity(status);
 
@@ -32,7 +31,7 @@ void ToT_Window::Init()
 	title.SetTheme(tot_window_config.theme_name);
 	
 
-	if (status & Validation::StatusFlags::no_music)
+	if (status.IsFlagActive(Validation::Status::Flags::no_music))
 	{
 		music_volume = 0.0f;
 	}
@@ -40,7 +39,7 @@ void ToT_Window::Init()
 	{
 		wav_transformer.Init(FolderName::main + '\\' + FileName::music);
 	}
-	if (status & Validation::corrupted)
+	if (status.IsFlagActive(Validation::Status::Flags::corrupted))
 	{
 		exit(0);
 	}
