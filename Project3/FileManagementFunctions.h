@@ -16,6 +16,8 @@ namespace FileManagement
 	std::vector<std::string> GetTitleThemeNames();
 	ToTGameConfig LoadGameConfig();
 	ToTWindowConfig LoadWindowConfig();
+	TitleTheme GetTitleThemeFromString(const std::string& title_theme);
+	std::string GetStringFromTitleTheme(const TitleTheme& title_theme);
 	TitleTheme LoadTitleTheme(const std::string& theme_name);
 	void LoadLanguagePack(std::string path);
 

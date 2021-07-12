@@ -5,9 +5,6 @@ ToT::ToT()
 	main_window = std::make_shared<ToT_Window>();
 	main_window->Init();
 
-	playable = ValidateGameFiles();
-	ValidateRanking();
-
 	handle = main_window->GetHandle();
 	centered_position = { static_cast<short>(main_window->GetCharactersPerRow()) / 2, main_centered_Y };
 }

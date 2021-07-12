@@ -13,7 +13,7 @@ struct ToTWindowConfig
 	std::string ai_module;
 	float music_volume;
 	bool hamachi_flag;
-	std::string title_theme;
+	std::string theme_name;
 	MeridorConsoleLib::WindowInfoEx window_info;
 };
 struct RacerLeaderboardInfo

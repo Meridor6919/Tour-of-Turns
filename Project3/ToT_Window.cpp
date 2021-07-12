@@ -3,10 +3,16 @@
 
 void ToT_Window::Init()
 {
-	ToTWindowConfig tot_window_config = LoadWindowConfig();
-	SanitizeToTWindowConfig(tot_window_config);
-	tot_window_config.window_info.visible_cursor = false;
+	
+	
+	char status = Validation::StatusFlags::valid;
 
+	ValidationCheck::FileIntegrity(status);
+
+	ToTWindowConfig tot_window_config = LoadWindowConfig();
+	ValidationCheck::ToTWindowConfig(tot_window_config, status);
+
+	tot_window_config.window_info.visible_cursor = false;
 	window_info = tot_window_config.window_info;
 	window_info.handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	window_info.hwnd = GetConsoleWindow();
@@ -15,16 +21,33 @@ void ToT_Window::Init()
 	ai_module = tot_window_config.ai_module;
 
 	tot_game_config = LoadGameConfig();
-	SanitizeToTGameConfig(tot_game_config);
+	ValidationCheck::ToTGameConfig(tot_game_config, status);
+
+	ValidationCheck::TitleThemes(status);
+	ValidationCheck::Rankings(status);
+	ValidationCheck::LanguagePacks(status);
+	ValidationCheck::GameFiles(status);
 
 	title.Init(this);
-	title.SetTheme(tot_window_config.title_theme);
-
-	wav_transformer.Init(FolderName::main + '\\' + FileName::music);
+	title.SetTheme(tot_window_config.theme_name);
 	
+
+	if (status & Validation::StatusFlags::no_music)
+	{
+		music_volume = 0.0f;
+	}
+	else
+	{
+		wav_transformer.Init(FolderName::main + '\\' + FileName::music);
+	}
+	if (status & Validation::corrupted)
+	{
+		exit(0);
+	}
+
+
 	SetMusic(music_volume);
 	SetLanguage(tot_game_config.lang);
-
 	Window::Init(window_info);
 }
 void ToT_Window::DrawTitle(bool clear)
@@ -107,29 +130,6 @@ void ToT_Window::SetLanguage(std::string lang)
 {
 	tot_game_config.lang = lang;
 	LoadLanguagePack(FolderName::language + '\\' + lang);
-	if (!ValidateLanguagePack())
-	{
-		MessageBox(0, (lang + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST);
-
-		std::vector<std::string> languages = GetFilesInDirectory(FolderName::language);
-		bool no_valid_lang_packs = true;
-		for (int i = 0; i < static_cast<int>(languages.size()); ++i)
-		{
-			LoadLanguagePack(FolderName::language + '\\' + languages[i]);
-			if (ValidateLanguagePack())
-			{
-				no_valid_lang_packs = false;
-				tot_game_config.lang = languages[i];
-				MessageBox(0, (languages[i] + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language, MB_TOPMOST);
-				break;
-			}
-		}
-		if (no_valid_lang_packs)
-		{
-			MessageBox(0, ErrorMsg::language_error, ErrorTitle::language_error, MB_TOPMOST);
-			exit(0);
-		}
-	}
 }
 void ToT_Window::SetMusic(float volume)
 {

@@ -1,7 +1,19 @@
 #pragma once
-
 namespace Validation
 {
+	enum StatusFlags : char {
+		valid = 0x0,
+		repaired = 0x1,
+		unplayable = 0x2,
+		no_music = 0x4,
+		no_ranking = 0x8,
+		corrupted = 0x10,
+		last
+	};
+	constexpr int minimum_tour_lenght = 5;
+	constexpr int digits_of_max_speed = 9;
+	constexpr int max_visibility = 7;
+
 	constexpr int main_menu = 8;
 	constexpr int game_menu = 8;
 	constexpr int multiplayer_menu = 10;
@@ -40,4 +52,7 @@ namespace Validation
 	
 	constexpr COORD top_left_box_position = { 0, 20 };
 	constexpr short main_centered_Y = 25;
+
+	constexpr const char* default_title_theme_file_content = "Empty\t \t \t \t \t5\t0";
+	constexpr const char* default_game_config_file_content = "0\nRacer\nEnglish.lang\n0";
 }

@@ -4,13 +4,13 @@
 namespace ErrorTitle
 {
 	constexpr const char* unplayable = "Unplayable Game";
-	constexpr const char* missing_file = "Missing Files";
 	constexpr const char* corrupted_file = "Corupted Files";
 	constexpr const char* pipe_error = "Pipe error";
 	constexpr const char* language_error = "Language pack critical error";
 	constexpr const char* placeholder_language = "Used different language";
 	constexpr const char* cheating_attempt = "Cheating detected";
-	constexpr const char* ai_connection = "AI module error";
+	constexpr const char* ai_error = "AI module error";
+	constexpr const char* title_theme = "Title theme error";
 	constexpr const char* comming_soon_tm = "Feature missing";
 }
 namespace ErrorMsg

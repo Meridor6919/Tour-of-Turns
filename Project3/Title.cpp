@@ -9,7 +9,6 @@ void Title::Init(ToT_Window* main_window)
 void Title::SetTheme(std::string name)
 {
 	theme = LoadTitleTheme(name);
-	SanitizeTitleTheme(theme);
 }
 
 const TitleTheme& Title::GetTheme()
