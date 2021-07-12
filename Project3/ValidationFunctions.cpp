@@ -302,16 +302,13 @@ void ValidationCheck::Rankings(Validation::Status &status)
 
 	for (short i = 0; i < static_cast<short>(ranking_files.size()); ++i)
 	{
-		std::string path = (FolderName::ranking + '\\' + ranking_files[i]).c_str();
-
-		fvar.open(path);
+		fvar.open(FolderName::ranking + '\\' + ranking_files[i]);
 		std::string line;
 		int iterations = 0;
 		for (; std::getline(fvar, line); ++iterations);
 		if (iterations % Validation::ranking_details != 0)
 		{
-			MessageBox(0, (path + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST);
-			//delete file?
+			InvalidGameFile(FolderName::ranking, ranking_files[i]);
 		}
 		else
 		{
@@ -331,8 +328,7 @@ void ValidationCheck::LanguagePacks(Validation::Status &status)
 
 	for (int i = 0; i < lang_files.size(); ++i)
 	{
-		std::string path = (FolderName::language + '\\' + lang_files[i]).c_str();
-		FileManagement::LoadLanguagePack(path);
+		FileManagement::LoadLanguagePack(FolderName::language + '\\' + lang_files[i]);
 		if(
 			(static_cast<int>(LanguagePack::text.size()) != LanguagePack::last) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::car_attributes].size()) != CarAttributes::last) ||
@@ -361,8 +357,7 @@ void ValidationCheck::LanguagePacks(Validation::Status &status)
 			(static_cast<int>(LanguagePack::text[LanguagePack::other_strings].size()) != OtherStrings::last) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_client_lobby].size()) < Multiplayer::last))
 		{
-			//delete file?
-			MessageBox(0, (path + " " + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST);
+			InvalidGameFile(FolderName::language, lang_files[i]);
 		}
 		else
 		{
@@ -383,8 +378,12 @@ void ValidationCheck::GameFiles(Validation::Status &status)
 }
 void ValidationCheck::InvalidGameFile(const std::string& directory, const std::string& file_name)
 {
-	//delete file
-	MessageBox(0, (directory + '\\' + file_name + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST);
+	//error msg
+	int decision = MessageBox(0, (directory + '\\' + file_name + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST | MB_YESNO);
+	if (decision == IDYES)
+	{
+		remove((directory + '\\' + file_name).c_str());
+	}
 }
 void ValidationCheck::Tours(Validation::Status &status)
 {
