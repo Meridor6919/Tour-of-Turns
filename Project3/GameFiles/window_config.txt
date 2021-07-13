@@ -9,3 +9,18 @@ Default.exe
 1
 0.1
 0
+
+Only first 11 lines of this file are relevent. 
+By modifying the values here, you would affect some parameters of the application.
+
+1. Title (from 1 to 1024 characters)
+2. Title theme name (form title_theme.txt)
+3. Language (name of lang pack in Language directory)
+4. AI module name (name of AI module in AI directory)
+5. Minimum number of characters horizontally (from 240 uppwards)
+6. Minimum number of characters vertically (from 77 uppwards)
+7. Main color (from 3 to 15)
+8. Secondary color (from 3 to 15, main color and secondary color cannot be the same)
+9. Screen mode ( 0 = fullscreen, 1 = windowed)
+10. Music volume (from 0.0 to 1.0)
+11. Hamachi flag (0 = disabled, 1 = enabled)

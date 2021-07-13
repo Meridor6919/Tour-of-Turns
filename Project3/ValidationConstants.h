@@ -25,6 +25,8 @@ namespace Validation
 	constexpr int maximum_timer = 60;
 	constexpr COORD minimum_window_size = { 240, 77 };
 	constexpr int box_width = 84;
+	constexpr int max_title_size = 1024;
+	constexpr int min_title_size = 1;
 
 	constexpr int volume_levels = 10;
 	constexpr int first_color = FOREGROUND_BLUE;
@@ -44,6 +46,7 @@ namespace Validation
 	constexpr COORD top_left_box_position = { 0, 20 };
 	constexpr short main_centered_Y = 25;
 
+	constexpr const char* default_title_name = "Tour of Turns";
 	constexpr const char* default_theme_name = "Empty";
 	constexpr const char* default_title_theme_file_content = "Empty\t \t \t \t \t5\t0";
 	constexpr const char* default_game_config_file_content = "0\nRacer\nEnglish.lang\n0";

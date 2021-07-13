@@ -23,7 +23,7 @@ namespace ErrorMsg
 	constexpr const char* no_music = "Music file is missing, application won't be able to play any sounds";
 	constexpr const char* no_title_theme = "Title theme file is missing, application created new \"empty\" file to fix the problem.\nUnfortunately there won't be any fancy title themes.";
 	constexpr const char* no_game_config = "No game config was found. Application has created a new, default config";
-	constexpr const char* no_window_config = "No window config was found. Application has created an emergency placeholder.\nUnfortunately you won't be able to launch a game, until window config file is restored";
+	constexpr const char* no_window_config = "No window config was found. Application has created an emergency placeholder.";
 	constexpr const char* no_game_files = "Some crucial game files are missing. You won't be able to launch the game.";
 	constexpr const char* no_lang_pack = "Application cannot find any valid language packs, please repair files or reinstall game";
 	constexpr const char* no_ranking = "No ranking files were found. You won't be able to access ranking panel.";

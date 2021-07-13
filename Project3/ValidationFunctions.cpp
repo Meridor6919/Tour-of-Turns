@@ -2,6 +2,11 @@
 
 void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, Validation::Status &status)
 {
+	if (!MeridorConsoleLib::Between(Validation::min_title_size, Validation::max_title_size, static_cast<int>(window_info.title.size())))
+	{
+		window_info.title = Validation::default_title_name;
+		status.SetFlag(Validation::Status::Flags::repaired);
+	}
 	if (window_info.characters_capacity.Y < Validation::minimum_window_size.Y)
 	{
 		window_info.characters_capacity.Y = Validation::minimum_window_size.Y;
@@ -216,7 +221,6 @@ void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 			else if (required_files[i] == FileName::window_config)
 			{
 				MessageBox(0, ErrorMsg::no_window_config, ErrorTitle::missing_file, MB_TOPMOST);
-				status.SetFlag(Validation::Status::Flags::unplayable);
 			}
 			ofvar.close();
 		}

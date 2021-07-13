@@ -5,11 +5,12 @@
 
 namespace MeridorConsoleLib
 {
-	enum class TextAlign
+	enum class TextAlign : unsigned int
 	{
 		left,
 		center,
-		right
+		right,
+		last
 	};
 	struct MultithreadingData
 	{
@@ -17,7 +18,7 @@ namespace MeridorConsoleLib
 		bool* skip_blocking_functions = nullptr;
 		std::chrono::milliseconds delay;
 	};
-	enum class WindowMode
+	enum class WindowMode : unsigned int
 	{
 		fullscreen,
 		windowed,
