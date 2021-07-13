@@ -64,7 +64,7 @@ void ValidationCheck::ThemeName(std::string& theme_name, Validation::Status &sta
 	ifvar.open(FolderName::main + '\\' + FileName::title_theme);
 	if (theme_name == "")
 	{
-		theme_name = "Empty";
+		theme_name = Validation::default_theme_name;
 	}
 	while (std::getline(ifvar, temp))
 	{
@@ -76,7 +76,7 @@ void ValidationCheck::ThemeName(std::string& theme_name, Validation::Status &sta
 	}
 	ifvar.close();
 	status.SetFlag(Validation::Status::Flags::repaired);
-	theme_name = temp;
+	theme_name = MeridorConsoleLib::GetSeparatedValue(temp, 0, '\t');
 
 	if (temp == "")
 	{
@@ -85,14 +85,27 @@ void ValidationCheck::ThemeName(std::string& theme_name, Validation::Status &sta
 		ofvar << Validation::default_title_theme_file_content;
 		ofvar.close();
 
-		theme_name = "Empty";
-		MessageBox(0, ErrorMsg::missing_file, ErrorTitle::ai_error, 0);
+		theme_name = Validation::default_theme_name;
 	}
+}
+void ValidationCheck::Language(std::string& lang, Validation::Status& status)
+{
+	std::vector<std::string> languages = MeridorConsoleLib::GetFilesInDirectory(FolderName::language);
+	for (size_t i = 0; i < languages.size(); ++i)
+	{
+		if (languages[i] == lang)
+		{
+			return;
+		}
+	}
+	lang = languages[0];
+	MessageBox(0, (lang + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language, MB_TOPMOST);
 }
 void ValidationCheck::ToTWindowConfig(::ToTWindowConfig& window_config, Validation::Status &status)
 {
 	WindowInfo(window_config.window_info, status);
 	ThemeName(window_config.theme_name, status);
+	Language(window_config.lang, status);
 	if (!(status.IsFlagActive(Validation::Status::Flags::unplayable)))
 	{
 		AIModule(window_config.ai_module, status);
@@ -105,6 +118,7 @@ void ValidationCheck::ToTWindowConfig(::ToTWindowConfig& window_config, Validati
 	{
 		FileManagement::SaveWindowConfig(window_config);
 		status.UnsetFlag(Validation::Status::Flags::repaired);
+		MessageBox(0, ErrorMsg::repaired, ErrorTitle::repaired, MB_TOPMOST);
 	}
 }
 void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::Status &status)
@@ -148,6 +162,7 @@ void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::St
 	{
 		FileManagement::SaveGameConfig(game_config);
 		status.UnsetFlag(Validation::Status::Flags::repaired);
+		MessageBox(0, ErrorMsg::repaired, ErrorTitle::repaired, MB_TOPMOST);
 	}
 }
 
@@ -155,7 +170,10 @@ void ValidationCheck::FileIntegrity(Validation::Status &status)
 {
 	FileIntegrity::MainDirectory(status);
 	FileIntegrity::MiscFiles(status);
-	FileIntegrity::GameFiles(status);
+	if (!(status.IsFlagActive(Validation::Status::Flags::unplayable)))
+	{
+		FileIntegrity::GameFiles(status);
+	}
 }
 void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 {
@@ -179,6 +197,7 @@ void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 		{
 			if (required_files[i] == FileName::music)
 			{
+				MessageBox(0, ErrorMsg::no_music, ErrorTitle::missing_file, MB_TOPMOST);
 				status.SetFlag(Validation::Status::Flags::no_music);
 				continue;
 			}
@@ -186,14 +205,17 @@ void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 			ofvar.open(FolderName::main + '\\' + required_files[i]);
 			if (required_files[i] == FileName::title_theme)
 			{
+				MessageBox(0, ErrorMsg::no_title_theme, ErrorTitle::missing_file, MB_TOPMOST);
 				ofvar << Validation::default_title_theme_file_content;
 			}
 			else if (required_files[i] == FileName::game_config)
 			{
+				MessageBox(0, ErrorMsg::no_game_config, ErrorTitle::missing_file, MB_TOPMOST);
 				ofvar << Validation::default_game_config_file_content;
 			}
 			else if (required_files[i] == FileName::window_config)
 			{
+				MessageBox(0, ErrorMsg::no_window_config, ErrorTitle::missing_file, MB_TOPMOST);
 				status.SetFlag(Validation::Status::Flags::unplayable);
 			}
 			ofvar.close();
@@ -208,6 +230,7 @@ void ValidationCheck::FileIntegrity::GameFiles(Validation::Status &status)
 
 	if (tours.size() == 0 || tires.size() == 0 || cars.size() == 0)
 	{
+		MessageBox(0, ErrorMsg::no_game_files, ErrorTitle::missing_file, MB_TOPMOST);
 		status.SetFlag(Validation::Status::Flags::unplayable);
 	}
 }
@@ -218,11 +241,13 @@ void ValidationCheck::FileIntegrity::MiscFiles(Validation::Status &status)
 	files = MeridorConsoleLib::GetFilesInDirectory(FolderName::language);
 	if (files.size() <= 0)
 	{
+		MessageBox(0, ErrorMsg::no_lang_pack, ErrorTitle::missing_file, MB_TOPMOST);
 		status.SetFlag(Validation::Status::Flags::corrupted);
 	}
 	files = MeridorConsoleLib::GetFilesInDirectory(FolderName::ranking);
 	if (files.size() <= 0)
 	{
+		MessageBox(0, ErrorMsg::no_ranking, ErrorTitle::missing_file, MB_TOPMOST);
 		status.SetFlag(Validation::Status::Flags::no_ranking);
 	}
 }
@@ -290,12 +315,12 @@ void ValidationCheck::TitleThemes(Validation::Status &status)
 		ofvar << title_theme_contents[title_theme_contents.size()-1];
 		ofvar.close();
 		status.UnsetFlag(Validation::Status::Flags::repaired);
+		MessageBox(0, ErrorMsg::repaired, ErrorTitle::repaired, MB_TOPMOST);
 	}
 	
 }
 void ValidationCheck::Rankings(Validation::Status &status)
 {
-
 	std::vector<std::string> ranking_files = MeridorConsoleLib::GetFilesInDirectory(FolderName::ranking);
 	std::ifstream fvar;
 	bool good_files = false;
@@ -319,6 +344,7 @@ void ValidationCheck::Rankings(Validation::Status &status)
 	if (!good_files)
 	{
 		status.SetFlag(Validation::Status::Flags::no_ranking);
+		MessageBox(0, ErrorMsg::no_ranking, ErrorTitle::missing_file, MB_TOPMOST);
 	}
 }
 void ValidationCheck::LanguagePacks(Validation::Status &status)
@@ -367,6 +393,7 @@ void ValidationCheck::LanguagePacks(Validation::Status &status)
 	if (!good_files)
 	{
 		status.SetFlag(Validation::Status::Flags::corrupted);
+		MessageBox(0, ErrorMsg::no_lang_pack, ErrorTitle::missing_file, MB_TOPMOST);
 	}
 }
 
@@ -375,10 +402,13 @@ void ValidationCheck::GameFiles(Validation::Status &status)
 	Tires(status);
 	Cars(status);
 	Tours(status);
+	if (status.IsFlagActive(Validation::Status::Flags::unplayable))
+	{
+		MessageBox(0, ErrorMsg::no_game_files, ErrorTitle::missing_file, MB_TOPMOST);
+	}
 }
 void ValidationCheck::InvalidGameFile(const std::string& directory, const std::string& file_name)
 {
-	//error msg
 	int decision = MessageBox(0, (directory + '\\' + file_name + ' ' + ErrorMsg::corrupted_file).c_str(), ErrorTitle::corrupted_file, MB_TOPMOST | MB_YESNO);
 	if (decision == IDYES)
 	{

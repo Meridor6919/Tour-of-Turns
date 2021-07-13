@@ -5,7 +5,6 @@ struct ToTGameConfig
 {
 	std::string name;
 	int number_of_ais;
-	std::string lang;
 	int timer_settings;
 };
 struct ToTWindowConfig
@@ -14,6 +13,7 @@ struct ToTWindowConfig
 	float music_volume;
 	bool hamachi_flag;
 	std::string theme_name;
+	std::string lang;
 	MeridorConsoleLib::WindowInfoEx window_info;
 };
 struct RacerLeaderboardInfo

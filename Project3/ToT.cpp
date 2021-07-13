@@ -189,7 +189,7 @@ void ToT::MainMenu()
 			}
 			else
 			{
-				//error
+				MessageBox(0, ErrorMsg::ranking_absent, ErrorTitle::ranking_absent, MB_TOPMOST);
 			}
 			break;
 		}

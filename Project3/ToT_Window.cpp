@@ -15,6 +15,7 @@ void ToT_Window::Init()
 	music_volume = tot_window_config.music_volume;
 	hamachi_flag = tot_window_config.hamachi_flag;
 	ai_module = tot_window_config.ai_module;
+	lang = tot_window_config.lang;
 
 	tot_game_config = LoadGameConfig();
 	ValidationCheck::ToTGameConfig(tot_game_config, status);
@@ -43,7 +44,7 @@ void ToT_Window::Init()
 
 
 	SetMusic(music_volume);
-	SetLanguage(tot_game_config.lang);
+	SetLanguage(lang);
 	Window::Init(window_info);
 }
 void ToT_Window::DrawTitle(bool clear)
@@ -72,7 +73,7 @@ const ToTGameConfig& ToT_Window::GetToTGameConfig()
 }
 ToTWindowConfig ToT_Window::GetToTWindowConfig()
 {
-	return { ai_module, music_volume, hamachi_flag, GetTitleTheme(), window_info };
+	return { ai_module, music_volume, hamachi_flag, GetTitleTheme(), lang, window_info};
 }
 std::string ToT_Window::GetAIModule()
 {
@@ -96,7 +97,7 @@ int ToT_Window::GetTimerSettings()
 }
 std::string ToT_Window::GetLanguage()
 {
-	return tot_game_config.lang;
+	return lang;
 }
 float ToT_Window::GetMusicVolume()
 {
@@ -132,14 +133,14 @@ void ToT_Window::SetTimerSettings(int timer_settings)
 }
 void ToT_Window::SetLanguage(std::string lang)
 {
-	tot_game_config.lang = lang;
+	this->lang = lang;
 	LoadLanguagePack(FolderName::language + '\\' + lang);
 }
 void ToT_Window::SetMusic(float volume)
 {
 	if (status.IsFlagActive(Validation::Status::Flags::no_music))
 	{
-		//error
+		MessageBox(0, ErrorMsg::music_unavailable, ErrorTitle::music_unavailable, MB_TOPMOST);
 	}
 	else
 	{

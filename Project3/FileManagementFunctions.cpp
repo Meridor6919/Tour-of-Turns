@@ -41,7 +41,6 @@ ToTGameConfig FileManagement::LoadGameConfig()
 	fvar.open(FolderName::main + '\\' + FileName::game_config);
 	IntegerGetline(fvar, ret.number_of_ais);
 	StringGetline(fvar, ret.name);
-	StringGetline(fvar, ret.lang);
 	IntegerGetline(fvar, ret.timer_settings);
 	fvar.close();
 
@@ -55,6 +54,7 @@ ToTWindowConfig FileManagement::LoadWindowConfig()
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
 	StringGetline(fvar, ret.window_info.title);
 	StringGetline(fvar, ret.theme_name);
+	StringGetline(fvar, ret.lang);
 	StringGetline(fvar, ret.ai_module);
 	IntegerGetline(fvar, ret.window_info.characters_capacity.X);
 	IntegerGetline(fvar, ret.window_info.characters_capacity.Y);
@@ -212,7 +212,6 @@ void FileManagement::SaveGameConfig(const ToTGameConfig& game_config)
 	fvar.open(FolderName::main + '\\' + FileName::game_config);
 	fvar << game_config.number_of_ais << '\n';
 	fvar << name + '\n';
-	fvar << game_config.lang + '\n';
 	fvar << game_config.timer_settings << '\n';
 	fvar.close();
 }
@@ -231,6 +230,7 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 	fvar.open(FolderName::main + '\\' + FileName::window_config);
 	fvar << title << '\n';
 	fvar << window_config.theme_name << '\n';
+	fvar << window_config.lang << '\n';
 	fvar << window_config.ai_module << '\n';
 	fvar << window_config.window_info.characters_capacity.X << '\n';
 	fvar << window_config.window_info.characters_capacity.Y << '\n';

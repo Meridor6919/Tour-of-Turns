@@ -44,6 +44,7 @@ namespace Validation
 	constexpr COORD top_left_box_position = { 0, 20 };
 	constexpr short main_centered_Y = 25;
 
+	constexpr const char* default_theme_name = "Empty";
 	constexpr const char* default_title_theme_file_content = "Empty\t \t \t \t \t5\t0";
 	constexpr const char* default_game_config_file_content = "0\nRacer\nEnglish.lang\n0";
 }

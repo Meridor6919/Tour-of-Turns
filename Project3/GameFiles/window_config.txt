@@ -1,5 +1,6 @@
 Tour_of_Turns
 Progress
+English.lang
 Default.exe
 240
 81

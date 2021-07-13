@@ -1,4 +1,3 @@
 7
 Meridor
-English.lang
 1

@@ -19,6 +19,7 @@ protected:
 	float music_volume;
 	bool hamachi_flag;
 	std::string ai_module;
+	std::string lang;
 	ToTGameConfig tot_game_config;
 	Title title;
 	WavTransformer wav_transformer;

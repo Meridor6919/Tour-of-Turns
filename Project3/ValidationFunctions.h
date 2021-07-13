@@ -11,6 +11,7 @@ class ValidationCheck {
 	static void Music(float& music_volume, Validation::Status& status);
 	static void AIModule(std::string& ai_module, Validation::Status& status);
 	static void ThemeName(std::string & theme_name, Validation::Status& status);
+	static void Language(std::string& lang, Validation::Status& status);
 
 	class FileIntegrity {
 
