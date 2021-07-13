@@ -228,14 +228,18 @@ void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 }
 void ValidationCheck::FileIntegrity::GameFiles(Validation::Status &status)
 {
-	std::vector<std::string> tours = MeridorConsoleLib::GetFilesInDirectory(FolderName::tour);
-	std::vector<std::string> tires = MeridorConsoleLib::GetFilesInDirectory(FolderName::tire);
-	std::vector<std::string> cars = MeridorConsoleLib::GetFilesInDirectory(FolderName::car);
+	std::array<std::string, 4> file_names = { FolderName::tour, FolderName::tire, FolderName::car, FolderName::ai };
+	std::vector<std::string> files;
 
-	if (tours.size() == 0 || tires.size() == 0 || cars.size() == 0)
+	for (size_t i = 0; i < file_names.size(); ++i)
 	{
-		MessageBox(0, ErrorMsg::no_game_files, ErrorTitle::missing_file, MB_TOPMOST);
-		status.SetFlag(Validation::Status::Flags::unplayable);
+		files = MeridorConsoleLib::GetFilesInDirectory(file_names[i]);
+		if (files.size() == 0)
+		{
+			status.SetFlag(Validation::Status::Flags::unplayable);
+			MessageBox(0, ErrorMsg::no_game_files, ErrorTitle::missing_file, MB_TOPMOST);
+			return;
+		}
 	}
 }
 void ValidationCheck::FileIntegrity::MiscFiles(Validation::Status &status)
@@ -403,12 +407,15 @@ void ValidationCheck::LanguagePacks(Validation::Status &status)
 
 void ValidationCheck::GameFiles(Validation::Status &status)
 {
-	Tires(status);
-	Cars(status);
-	Tours(status);
-	if (status.IsFlagActive(Validation::Status::Flags::unplayable))
+	if (!(status.IsFlagActive(Validation::Status::Flags::unplayable)))
 	{
-		MessageBox(0, ErrorMsg::no_game_files, ErrorTitle::missing_file, MB_TOPMOST);
+		Tires(status);
+		Cars(status);
+		Tours(status);
+		if (status.IsFlagActive(Validation::Status::Flags::unplayable))
+		{
+			MessageBox(0, ErrorMsg::no_game_files, ErrorTitle::missing_file, MB_TOPMOST);
+		}
 	}
 }
 void ValidationCheck::InvalidGameFile(const std::string& directory, const std::string& file_name)
