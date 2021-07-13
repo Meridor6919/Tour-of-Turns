@@ -441,18 +441,18 @@ void ValidationCheck::Tours(Validation::Status &status)
 			InvalidGameFile(FolderName::tour, tours[i]);
 			continue;
 		}
-		for(size_t j = 0; j < cars_for_race.size(); ++j)
+		for(size_t j = 0; j < car_names.size(); ++j)
 		{
-			for (size_t k = 0; k < car_names.size(); ++k)
+			for (size_t k = 0; k < cars_for_race.size(); ++k)
 			{
-				if (cars_for_race[j] == car_names[k])
+				if (cars_for_race[k] == car_names[j])
 				{
-					car_names.erase(car_names.begin() + k);
+					cars_for_race.erase(cars_for_race.begin() + k);
 					break;
 				}
 			}
 		}
-		if (car_names.size() > 0)
+		if (cars_for_race.size() > 0)
 		{
 			InvalidGameFile(FolderName::tour, tours[i]);
 			continue;
@@ -495,15 +495,17 @@ void ValidationCheck::Cars(Validation::Status &status)
 
 	for (size_t i = 0; i < cars.size(); ++i)
 	{
-		std::vector<int> car_params = FileManagement::GetCarParameters(cars[i]);
-		if (car_params.size() != CarAttributes::last)//checking if car has all parameters set
+		const std::vector<std::string> car_data = MeridorConsoleLib::ReadFile(FolderName::car + '\\' + cars[i]);
+
+		if (car_data.size() != CarAttributes::last)//checking if car has all parameters set
 		{
 			InvalidGameFile(FolderName::car, cars[i]);
 			continue;
 		}
 		for (size_t j = 0; j < CarAttributes::last; ++j)
 		{
-			if (car_params[j] < 1 || (j == CarAttributes::visibility && j > Validation::max_visibility))
+			if ((!MeridorConsoleLib::Between(1, Validation::digits_of_max_speed, static_cast<int>(car_data[j].size()))) //too large param values 
+				|| (j == CarAttributes::visibility && atoi(car_data[j].c_str()) > Validation::max_visibility)) //too much visibility
 			{
 				InvalidGameFile(FolderName::car, cars[i]);
 				break;
