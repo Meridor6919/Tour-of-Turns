@@ -45,6 +45,7 @@ public:
 
 	bool IsPlayable();
 	bool IsRankingActive();
+	bool IsMusicAvailable();
 
 	//Set methods
 	void SetAIModule(std::string ai_module);

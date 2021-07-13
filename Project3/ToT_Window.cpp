@@ -19,7 +19,6 @@ void ToT_Window::Init()
 
 	tot_game_config = LoadGameConfig();
 	ValidationCheck::ToTGameConfig(tot_game_config, status);
-
 	ValidationCheck::TitleThemes(status);
 	ValidationCheck::Rankings(status);
 	ValidationCheck::LanguagePacks(status);
@@ -28,7 +27,6 @@ void ToT_Window::Init()
 	title.Init(this);
 	title.SetTheme(tot_window_config.theme_name);
 	
-
 	if (status.IsFlagActive(Validation::Status::Flags::no_music))
 	{
 		music_volume = 0.0f;
@@ -41,8 +39,6 @@ void ToT_Window::Init()
 	{
 		exit(0);
 	}
-
-
 	SetMusic(music_volume);
 	SetLanguage(lang);
 	Window::Init(window_info);
@@ -111,6 +107,10 @@ bool ToT_Window::IsRankingActive()
 {
 	return !status.IsFlagActive(Validation::Status::Flags::no_ranking);
 }
+bool ToT_Window::IsMusicAvailable()
+{
+	return !status.IsFlagActive(Validation::Status::Flags::no_music);
+}
 void ToT_Window::SetAIModule(std::string ai_module)
 {
 	this->ai_module = ai_module;
@@ -138,14 +138,7 @@ void ToT_Window::SetLanguage(std::string lang)
 }
 void ToT_Window::SetMusic(float volume)
 {
-	if (status.IsFlagActive(Validation::Status::Flags::no_music))
-	{
-		MessageBox(0, ErrorMsg::music_unavailable, ErrorTitle::music_unavailable, MB_TOPMOST);
-	}
-	else
-	{
-		music_volume = volume;
-		wav_transformer.SetFlags(SND_ASYNC | SND_LOOP);
-		wav_transformer.StartPlaying(volume);
-	}
+	music_volume = volume;
+	wav_transformer.SetFlags(SND_ASYNC | SND_LOOP);
+	wav_transformer.StartPlaying(volume);
 }

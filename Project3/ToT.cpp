@@ -249,7 +249,14 @@ void ToT::Options()
 		}
 		case 3:
 		{
-			SetMusic(local_starting_point);
+			if (main_window->IsMusicAvailable())
+			{
+				SetMusic(local_starting_point);
+			}
+			else
+			{
+				MessageBox(0, ErrorMsg::music_unavailable, ErrorTitle::music_unavailable, MB_TOPMOST);
+			}
 			break;
 		}
 		case 4:
