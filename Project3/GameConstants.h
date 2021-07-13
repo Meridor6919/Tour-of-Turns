@@ -107,4 +107,6 @@ namespace GameConstants
 	constexpr float speed_reduction = 0.125f;
 	//per attack point
 	constexpr float chance_reduction = 5.0f;
+
+	constexpr const char* default_racer_name = "Racer";
 }

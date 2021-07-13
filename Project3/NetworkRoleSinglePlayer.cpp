@@ -151,7 +151,7 @@ std::string SinglePlayer::StringSelection(const std::string current_name, const 
 	mutex.unlock();
 	if (name_size == 0)
 	{
-		name = LanguagePack::text[LanguagePack::other_strings][OtherStrings::default_name];
+		name = GameConstants::default_racer_name;
 	}
 	return name;
 }

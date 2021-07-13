@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-
 #include "GameConstants.h"
 #include "LanguagePack.h"
 #include ".\MeridorConsoleLib\Infobox.h"
@@ -16,7 +15,7 @@ private:
 public:
 	//Attributes
 	std::pair<float, std::string> pending_action;
-	std::string name = LanguagePack::text[LanguagePack::other_strings][OtherStrings::default_name];
+	std::string name = GameConstants::default_racer_name;
 	std::vector<int>car_modifiers;
 	std::vector<std::string>tire_modifiers;
 	float score = 0.0f;

@@ -150,7 +150,7 @@ void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::St
 	}
 	if (!MeridorConsoleLib::Between(1, Validation::maximum_name_length, static_cast<int>(game_config.name.size())) || !name_valid)
 	{
-		game_config.name = LanguagePack::text[LanguagePack::other_strings][OtherStrings::default_name];
+		game_config.name = GameConstants::default_racer_name;
 		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 	if (!MeridorConsoleLib::Between(0, Validation::maximum_timer, game_config.timer_settings))

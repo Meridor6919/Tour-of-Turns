@@ -51,7 +51,6 @@ namespace OtherStrings
 {
 	enum
 	{
-		default_name,
 		action_confirm,
 		infobox_RIP_title,
 		infobox_RIP_msg,
