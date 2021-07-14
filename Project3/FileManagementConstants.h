@@ -10,6 +10,7 @@ namespace FolderName
 	const std::string ranking = main + "\\Rankings";
 	const std::string language = main + "\\LangPack";
 	const std::string ai = main + "\\AI";
+	const std::string quarantine = main + "\\CorruptedFiles";
 }
 namespace FileName
 {
@@ -17,7 +18,6 @@ namespace FileName
 	const std::string window_config = "window_config.txt";
 	const std::string title_theme = "title_themes.txt";
 	const std::string music = "test.wav";
-
 }
 namespace ExtName
 {

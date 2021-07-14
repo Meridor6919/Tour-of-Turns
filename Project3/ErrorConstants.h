@@ -14,10 +14,11 @@ namespace ErrorTitle
 	constexpr const char* unplayable = "Unplayable game";
 	constexpr const char* ranking_absent = "Ranking not available";
 	constexpr const char* music_unavailable = "Ranking not available";
+	constexpr const char* coudnt_move_man = "Failed to move";
 }
 namespace ErrorMsg
 {
-	constexpr const char* corrupted_file = " cannot be read, do you want to remove it?";
+	constexpr const char* corrupted_file = " cannot be read, do you want to remove it?\nNot removing it would result in moving the file into \"CorruptedFiles\" directory inside your game files.";
 	constexpr const char* missing_file = "Files not found, please reinstall your game or repair missing files";
 	constexpr const char* repaired = "There was a problem with one of your game files, but application was able to fix it";
 	constexpr const char* no_music = "Music file is missing, application won't be able to play any sounds";
@@ -35,4 +36,5 @@ namespace ErrorMsg
 	constexpr const char* unplayable = "You cannot start new race with the current game state, please repair files or reinstall game.";
 	constexpr const char* ranking_absent = "You cannot open ranking tab with the current game state, please repair files or reinstall game.";
 	constexpr const char* music_unavailable = "You cannot access music options with the current game state, please repair files or reinstall game.";
+	constexpr const char* coudnt_move_man = "Coudn't move the file to the quarantine. Probably other file with the same name is already in there. Corrupted subject has been deleted instead.";
 }

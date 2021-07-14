@@ -425,6 +425,14 @@ void ValidationCheck::InvalidGameFile(const std::string& directory, const std::s
 	{
 		remove((directory + '\\' + file_name).c_str());
 	}
+	else
+	{
+		if (std::rename((directory + '\\' + file_name).c_str(), (FolderName::quarantine + '\\' + file_name).c_str()))
+		{
+			remove((directory + '\\' + file_name).c_str());
+			MessageBox(0, ErrorMsg::coudnt_move_man, ErrorTitle::coudnt_move_man, MB_TOPMOST);
+		}	
+	}
 }
 void ValidationCheck::Tours(Validation::Status &status)
 {
