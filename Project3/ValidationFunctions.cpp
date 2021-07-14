@@ -404,7 +404,6 @@ void ValidationCheck::LanguagePacks(Validation::Status &status)
 		MessageBox(0, ErrorMsg::no_lang_pack, ErrorTitle::missing_file, MB_TOPMOST);
 	}
 }
-
 void ValidationCheck::GameFiles(Validation::Status &status)
 {
 	if (!(status.IsFlagActive(Validation::Status::Flags::unplayable)))

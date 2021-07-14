@@ -4,6 +4,10 @@
 void ToT_Window::Init()
 {
 	ValidationCheck::FileIntegrity(status);
+	if (status.IsFlagActive(Validation::Status::Flags::corrupted))
+	{
+		exit(0);
+	}
 
 	ToTWindowConfig tot_window_config = LoadWindowConfig();
 	ValidationCheck::ToTWindowConfig(tot_window_config, status);
