@@ -543,21 +543,31 @@ void ValidationCheck::Tires(Validation::Status &status)
 		for (short j = 0; j < TerrainTypes::last; ++j)//getting tires attributes
 		{
 			short tire_param_size = static_cast<short>(params[j].size());
+			bool good = false;
 			for (short k = 0; k < tire_param_size; ++k)
 			{
 				if (params[j][k] == 'x')
 				{
 					x = atoi(params[j].substr(0, k).c_str());
 					y = atoi(params[j].substr(k + 1, tire_param_size - k - 1).c_str());
+					
+					if (x * y != 0 && MeridorConsoleLib::Between(0, y, x) && MeridorConsoleLib::Between(0, Validation::max_number_of_tests, y))
+					{
+						good = true;
+					}
+					break;
 				}
 			}
+			if (!good)
+			{
+				InvalidGameFile(FolderName::tire, tires[i]);
+				break;
+			}
+			else if (j == TerrainTypes::last - 1)
+			{
+				good_files = true;
+			}
 		}
-		if (x * y == 0 || x > y)//checking if tires attributes make sense
-		{
-			InvalidGameFile(FolderName::tire, tires[i]);
-			continue;
-		}
-		good_files = true;
 	}
 	if (!good_files)
 	{

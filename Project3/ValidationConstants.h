@@ -4,6 +4,7 @@ namespace Validation
 	constexpr int minimum_tour_lenght = 5;
 	constexpr int digits_of_max_speed = 9;
 	constexpr int max_visibility = 7;
+	constexpr int max_number_of_tests = 20;
 
 	constexpr int main_menu = 8;
 	constexpr int game_menu = 8;
