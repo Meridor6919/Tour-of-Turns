@@ -30,7 +30,7 @@ void ToT_Window::Init()
 
 	title.Init(this);
 	title.SetTheme(tot_window_config.theme_name);
-	
+
 	if (status.IsFlagActive(Validation::Status::Flags::no_music))
 	{
 		music_volume = 0.0f;
@@ -73,7 +73,7 @@ const ToTGameConfig& ToT_Window::GetToTGameConfig()
 }
 ToTWindowConfig ToT_Window::GetToTWindowConfig()
 {
-	return { ai_module, music_volume, hamachi_flag, GetTitleTheme(), lang, window_info};
+	return { ai_module, music_volume, hamachi_flag, GetTitleTheme(), lang, window_info };
 }
 std::string ToT_Window::GetAIModule()
 {

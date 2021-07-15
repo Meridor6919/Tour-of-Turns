@@ -46,12 +46,12 @@ bool RankingManagement::UpdateIntegerValue(const RacerLeaderboardInfo& racer_lea
 bool RankingManagement::UpdateDoubleValue(const RacerLeaderboardInfo& racer_leaderboard_info, int index, double& value)
 {
 
-	if( index ==  RankingInfo::Burning)
+	if (index == RankingInfo::Burning)
 	{
 		value = racer_leaderboard_info.durability_burning;
 		return true;
 	}
-	else if(index == RankingInfo::Score)
+	else if (index == RankingInfo::Score)
 	{
 		value = racer_leaderboard_info.score;
 		return true;
@@ -111,7 +111,7 @@ void RankingManagement::UpdateRecordFinished(std::vector<std::string>& ranking_d
 					double_temp += atof(GetSeparatedValue(ranking_data[index + i].c_str(), j).c_str());
 					ranking_data[index + i] = SetSeparatedValue(ranking_data[index + i], std::to_string(double_temp), j);
 				}
-				else if(i == RankingInfo::BestScore)
+				else if (i == RankingInfo::BestScore)
 				{
 					double prev = atof(GetSeparatedValue(ranking_data[index + i].c_str(), j).c_str());
 					double curr = racer_leaderboard_info.score;
@@ -185,7 +185,7 @@ void RankingManagement::AdjustStringVector(std::vector<std::string>& record_data
 
 	if (games_played)
 	{
-		record_data[RankingInfo::GamesWon] = std::to_string(atof(record_data[RankingInfo::GamesWon].c_str()) / games_played * 100.0) ;
+		record_data[RankingInfo::GamesWon] = std::to_string(atof(record_data[RankingInfo::GamesWon].c_str()) / games_played * 100.0);
 		record_data[RankingInfo::GamesWon] = SetPrecision(record_data[RankingInfo::GamesWon], 2);
 		record_data[RankingInfo::GamesWon] += '%';
 	}

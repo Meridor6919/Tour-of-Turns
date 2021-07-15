@@ -43,7 +43,7 @@ namespace Validation
 	constexpr short small_spacing = 2;
 	constexpr short avarage_indent = 3;
 	constexpr short avarage_spacing = 3;
-	
+
 	constexpr COORD top_left_box_position = { 0, 20 };
 	constexpr short main_centered_Y = 25;
 
