@@ -1,6 +1,6 @@
 #include "ValidationFunctions.h"
 
-void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, Validation::Status &status)
+void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, Validation::Status& status)
 {
 	if (!MeridorConsoleLib::Between(Validation::min_title_size, Validation::max_title_size, static_cast<int>(window_info.title.size())))
 	{
@@ -41,7 +41,7 @@ void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, V
 		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 }
-void ValidationCheck::Music(float& music_volume, Validation::Status &status)
+void ValidationCheck::Music(float& music_volume, Validation::Status& status)
 {
 	if (!MeridorConsoleLib::Between(0.0f, 1.0f, music_volume))
 	{
@@ -49,7 +49,7 @@ void ValidationCheck::Music(float& music_volume, Validation::Status &status)
 		status.SetFlag(Validation::Status::Flags::repaired);
 	}
 }
-void ValidationCheck::AIModule(std::string& ai_module, Validation::Status &status)
+void ValidationCheck::AIModule(std::string& ai_module, Validation::Status& status)
 {
 	std::vector<std::string> ai_modules = MeridorConsoleLib::GetFilesInDirectory(FolderName::ai);
 	for (size_t i = 0; i < ai_modules.size(); ++i)
@@ -62,7 +62,7 @@ void ValidationCheck::AIModule(std::string& ai_module, Validation::Status &statu
 	ai_module = ai_modules[0];
 	status.SetFlag(Validation::Status::Flags::repaired);
 }
-void ValidationCheck::ThemeName(std::string& theme_name, Validation::Status &status)
+void ValidationCheck::ThemeName(std::string& theme_name, Validation::Status& status)
 {
 	std::string temp = "";
 	std::ifstream ifvar;
@@ -106,7 +106,7 @@ void ValidationCheck::Language(std::string& lang, Validation::Status& status)
 	lang = languages[0];
 	MessageBox(0, (lang + ErrorMsg::placeholder_language).c_str(), ErrorTitle::placeholder_language, MB_TOPMOST);
 }
-void ValidationCheck::ToTWindowConfig(::ToTWindowConfig& window_config, Validation::Status &status)
+void ValidationCheck::ToTWindowConfig(::ToTWindowConfig& window_config, Validation::Status& status)
 {
 	WindowInfo(window_config.window_info, status);
 	ThemeName(window_config.theme_name, status);
@@ -126,11 +126,11 @@ void ValidationCheck::ToTWindowConfig(::ToTWindowConfig& window_config, Validati
 		MessageBox(0, ErrorMsg::repaired, ErrorTitle::repaired, MB_TOPMOST);
 	}
 }
-void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::Status &status)
+void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::Status& status)
 {
 	bool name_valid = true;
 	bool space = true;
-	for (int i = 0; i < static_cast<int>(game_config.name.size()); ++i)
+	for (size_t i = 0; i < game_config.name.size(); ++i)
 	{
 		if (game_config.name[i] == '_')
 		{
@@ -171,7 +171,7 @@ void ValidationCheck::ToTGameConfig(::ToTGameConfig& game_config, Validation::St
 	}
 }
 
-void ValidationCheck::FileIntegrity(Validation::Status &status)
+void ValidationCheck::FileIntegrity(Validation::Status& status)
 {
 	FileIntegrity::MainDirectory(status);
 	FileIntegrity::MiscFiles(status);
@@ -180,7 +180,7 @@ void ValidationCheck::FileIntegrity(Validation::Status &status)
 		FileIntegrity::GameFiles(status);
 	}
 }
-void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
+void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status& status)
 {
 	std::vector<std::string> files = MeridorConsoleLib::GetFilesInDirectory(FolderName::main);
 	std::vector<std::string> required_files = { FileName::window_config, FileName::game_config, FileName::title_theme, FileName::music };
@@ -226,7 +226,7 @@ void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 		}
 	}
 }
-void ValidationCheck::FileIntegrity::GameFiles(Validation::Status &status)
+void ValidationCheck::FileIntegrity::GameFiles(Validation::Status& status)
 {
 	std::array<std::string, 4> file_names = { FolderName::tour, FolderName::tire, FolderName::car, FolderName::ai };
 	std::array<std::string, 4> file_ext = { ExtName::tour, ExtName::tire, ExtName::car, ExtName::ai };
@@ -251,7 +251,7 @@ void ValidationCheck::FileIntegrity::GameFiles(Validation::Status &status)
 		}
 	}
 }
-void ValidationCheck::FileIntegrity::MiscFiles(Validation::Status &status)
+void ValidationCheck::FileIntegrity::MiscFiles(Validation::Status& status)
 {
 	std::array<std::string, 2> file_names = { FolderName::language, FolderName::ranking };
 	std::array<std::string, 2> file_ext = { ExtName::language, ExtName::ranking };
@@ -283,7 +283,7 @@ void ValidationCheck::FileIntegrity::MiscFiles(Validation::Status &status)
 		}
 	}
 }
-void ValidationCheck::TitleThemes(Validation::Status &status)
+void ValidationCheck::TitleThemes(Validation::Status& status)
 {
 	std::ifstream ifvar;
 	std::string temp;
@@ -348,20 +348,20 @@ void ValidationCheck::TitleThemes(Validation::Status &status)
 		{
 			ofvar << title_theme_contents[i] << '\n';
 		}
-		ofvar << title_theme_contents[title_theme_contents.size()-1];
+		ofvar << title_theme_contents[title_theme_contents.size() - 1];
 		ofvar.close();
 		status.UnsetFlag(Validation::Status::Flags::repaired);
 		MessageBox(0, ErrorMsg::repaired, ErrorTitle::repaired, MB_TOPMOST);
 	}
-	
+
 }
-void ValidationCheck::Rankings(Validation::Status &status)
+void ValidationCheck::Rankings(Validation::Status& status)
 {
 	std::vector<std::string> ranking_files = MeridorConsoleLib::GetFilesInDirectory(FolderName::ranking);
 	std::ifstream fvar;
 	bool good_files = false;
 
-	for (short i = 0; i < static_cast<short>(ranking_files.size()); ++i)
+	for (size_t i = 0; i < ranking_files.size(); ++i)
 	{
 		fvar.open(FolderName::ranking + '\\' + ranking_files[i]);
 		std::string line;
@@ -383,7 +383,7 @@ void ValidationCheck::Rankings(Validation::Status &status)
 		MessageBox(0, ErrorMsg::no_ranking, ErrorTitle::missing_file, MB_TOPMOST);
 	}
 }
-void ValidationCheck::LanguagePacks(Validation::Status &status)
+void ValidationCheck::LanguagePacks(Validation::Status& status)
 {
 	std::vector<std::string> lang_files = MeridorConsoleLib::GetFilesInDirectory(FolderName::language);
 	bool good_files = false;
@@ -391,7 +391,7 @@ void ValidationCheck::LanguagePacks(Validation::Status &status)
 	for (int i = 0; i < lang_files.size(); ++i)
 	{
 		FileManagement::LoadLanguagePack(FolderName::language + '\\' + lang_files[i]);
-		if(
+		if (
 			(static_cast<int>(LanguagePack::text.size()) != LanguagePack::last) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::car_attributes].size()) != CarAttributes::last) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::terrain_types].size()) != TerrainTypes::last) ||
@@ -432,7 +432,7 @@ void ValidationCheck::LanguagePacks(Validation::Status &status)
 		MessageBox(0, ErrorMsg::no_lang_pack, ErrorTitle::missing_file, MB_TOPMOST);
 	}
 }
-void ValidationCheck::GameFiles(Validation::Status &status)
+void ValidationCheck::GameFiles(Validation::Status& status)
 {
 	if (!(status.IsFlagActive(Validation::Status::Flags::unplayable)))
 	{
@@ -458,10 +458,10 @@ void ValidationCheck::InvalidGameFile(const std::string& directory, const std::s
 		{
 			remove((directory + '\\' + file_name).c_str());
 			MessageBox(0, ErrorMsg::coudnt_move_man, ErrorTitle::coudnt_move_man, MB_TOPMOST);
-		}	
+		}
 	}
 }
-void ValidationCheck::Tours(Validation::Status &status)
+void ValidationCheck::Tours(Validation::Status& status)
 {
 	std::vector<std::string> tours = MeridorConsoleLib::GetFilesInDirectory(FolderName::tour);
 
@@ -477,7 +477,7 @@ void ValidationCheck::Tours(Validation::Status &status)
 			InvalidGameFile(FolderName::tour, tours[i]);
 			continue;
 		}
-		for(size_t j = 0; j < car_names.size(); ++j)
+		for (size_t j = 0; j < car_names.size(); ++j)
 		{
 			for (size_t k = 0; k < cars_for_race.size(); ++k)
 			{
@@ -524,7 +524,7 @@ void ValidationCheck::Tours(Validation::Status &status)
 		status.SetFlag(Validation::Status::Flags::unplayable);
 	}
 }
-void ValidationCheck::Cars(Validation::Status &status)
+void ValidationCheck::Cars(Validation::Status& status)
 {
 	const std::vector<std::string> cars = MeridorConsoleLib::GetFilesInDirectory(FolderName::car);
 	bool good_files = false;
@@ -554,7 +554,7 @@ void ValidationCheck::Cars(Validation::Status &status)
 		status.SetFlag(Validation::Status::Flags::unplayable);
 	}
 }
-void ValidationCheck::Tires(Validation::Status &status)
+void ValidationCheck::Tires(Validation::Status& status)
 {
 	const std::vector<std::string> tires = MeridorConsoleLib::GetFilesInDirectory(FolderName::tire);
 	bool good_files = false;
@@ -579,7 +579,7 @@ void ValidationCheck::Tires(Validation::Status &status)
 				{
 					x = atoi(params[j].substr(0, k).c_str());
 					y = atoi(params[j].substr(k + 1, tire_param_size - k - 1).c_str());
-					
+
 					if (x * y != 0 && MeridorConsoleLib::Between(0, y, x) && MeridorConsoleLib::Between(0, Validation::max_number_of_tests, y))
 					{
 						good = true;
