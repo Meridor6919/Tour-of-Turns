@@ -297,6 +297,11 @@ void ValidationCheck::TitleThemes(Validation::Status &status)
 		TitleTheme title_theme = FileManagement::GetTitleThemeFromString(temp);
 		bool good = true;
 
+		if (!MeridorConsoleLib::Between(1, Validation::maximum_name_length, static_cast<int>(title_theme.name.size())))
+		{
+			title_theme.name.resize(Validation::maximum_name_length);
+			good = false;
+		}
 		if (title_theme.main_left.size() > Validation::maximum_title_decoration_size)
 		{
 			title_theme.main_left.resize(Validation::maximum_title_decoration_size);
@@ -536,7 +541,7 @@ void ValidationCheck::Cars(Validation::Status &status)
 		for (size_t j = 0; j < CarAttributes::last; ++j)
 		{
 			if ((!MeridorConsoleLib::Between(1, Validation::digits_of_max_speed, static_cast<int>(car_data[j].size()))) //too large param values 
-				|| (j == CarAttributes::visibility && atoi(car_data[j].c_str()) > Validation::max_visibility)) //too much visibility
+				|| (j == CarAttributes::visibility && (!MeridorConsoleLib::Between(1, Validation::max_visibility, atoi(car_data[j].c_str()))))) //wrong visibility
 			{
 				InvalidGameFile(FolderName::car, cars[i]);
 				break;
