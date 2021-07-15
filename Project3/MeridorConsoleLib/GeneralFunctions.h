@@ -20,6 +20,9 @@ namespace MeridorConsoleLib
 	std::vector<std::string> GetFilesInDirectory(const std::string path);
 	void RemoveExtension(std::string& string, const std::string& extension);
 	void RemoveExtension(std::vector<std::string>& vector, const std::string& extension);
+	void AddExtension(std::string& string, const std::string& extension);
+	void AddExtension(std::vector<std::string>& vector, const std::string& extension);
+	std::string GetExtension(const std::string& string);
 
 	std::istream& StringGetline(std::istream& input_stream, std::string& var);
 	template<class T>

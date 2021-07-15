@@ -128,9 +128,6 @@ bool Host::GameLobby()
 	std::vector<std::string> tours = GetTourNames();
 	std::vector<std::string> tires = GetTireNames();
 	std::vector<std::string> cars = GetCarNames(tours[0]);
-	RemoveExtension(tours, ExtName::tour);
-	RemoveExtension(tires, ExtName::tire);
-	RemoveExtension(cars, ExtName::car);
 	int ais = (main_window->GetAIs() > Possible_AIs() ? Possible_AIs() : main_window->GetAIs());
 	int tires_pos = 0;
 	int cars_pos = 0;
@@ -230,7 +227,6 @@ bool Host::GameLobby()
 			{
 				ShowCarParameters(cars[cars_pos] + ExtName::car, true, car_box_starting_pos);
 				cars = GetCarNames(tours[tours_pos] + ExtName::tour);
-				RemoveExtension(cars, ExtName::car);
 				cars_pos = 0;
 				ShowCarParameters(cars[cars_pos] + ExtName::car, false, car_box_starting_pos);
 				ShowTourParameters(tours[i] + ExtName::tour, true);

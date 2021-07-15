@@ -9,7 +9,8 @@ void Participant::Init(std::string tour_path)
 {
 	bool valid = false;
 	std::vector<std::string> car_names = GetCarNames(tour_path);
-	std::vector<std::string> tire_names = GetTireNames();
+	AddExtension(car_names, ExtName::car);
+	std::vector<std::string> tire_names = GetFilesInDirectory(FolderName::tire);
 
 	for (int i = 0; i < static_cast<int>(car_names.size()); ++i)
 	{

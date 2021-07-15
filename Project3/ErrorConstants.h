@@ -18,7 +18,7 @@ namespace ErrorTitle
 }
 namespace ErrorMsg
 {
-	constexpr const char* corrupted_file = " cannot be read, do you want to remove it?\nNot removing it would result in moving the file into \"CorruptedFiles\" directory inside your game files.";
+	constexpr const char* corrupted_file = " causes game to not launch properly, do you want to remove it?\n\nNot removing it would result in moving the file into \"CorruptedFiles\" directory inside your game files.";
 	constexpr const char* missing_file = "Files not found, please reinstall your game or repair missing files";
 	constexpr const char* repaired = "There was a problem with one of your game files, but application was able to fix it";
 	constexpr const char* no_music = "Music file is missing, application won't be able to play any sounds";

@@ -70,7 +70,7 @@ For example you can write '1x2' meaning that for terrain in the corresponding li
 
 Tours/
 Every map is saved with '.tour' extension. Consequtive parameters are saved in new line.
-First parameters are cars that are available in the map. Simply put their names with '.car' extension
+First parameters are cars that are available in the map. Simply put their names WITHOUT '.car' extension
 After listing them all there should be an empty line and after that tour segments are saved
 First character is terrain type and optionally you can add safe speed value (from 0 to 9 digit numbers) making it a turn.
 Terrain types are identified as:

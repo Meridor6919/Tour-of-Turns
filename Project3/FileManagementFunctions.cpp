@@ -5,15 +5,21 @@ using namespace MeridorConsoleLib;
 
 std::vector<std::string> FileManagement::GetAINames()
 {
-	return GetFilesInDirectory(FolderName::ai);
+	std::vector<std::string> ret = GetFilesInDirectory(FolderName::ai);
+	RemoveExtension(ret, ExtName::ai);
+	return ret;
 }
 std::vector<std::string> FileManagement::GetTourNames()
 {
-	return GetFilesInDirectory(FolderName::tour);
+	std::vector<std::string> ret = GetFilesInDirectory(FolderName::tour);
+	RemoveExtension(ret, ExtName::tour);
+	return ret;
 }
 std::vector<std::string> FileManagement::GetTireNames()
 {
-	return GetFilesInDirectory(FolderName::tire);
+	std::vector<std::string> ret = GetFilesInDirectory(FolderName::tire);
+	RemoveExtension(ret, ExtName::tire);
+	return ret;
 }
 std::vector<std::string> FileManagement::GetCarNames(const std::string& tour)
 {

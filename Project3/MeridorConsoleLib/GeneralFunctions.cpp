@@ -122,6 +122,28 @@ void MeridorConsoleLib::RemoveExtension(std::vector<std::string>& vector, const 
 		RemoveExtension(vector[i], extension);
 	}
 }
+void MeridorConsoleLib::AddExtension(std::string& string, const std::string& extension)
+{
+	string += extension;
+}
+void MeridorConsoleLib::AddExtension(std::vector<std::string>& vector, const std::string& extension)
+{
+	for (size_t i = 0; i < vector.size(); ++i)
+	{
+		AddExtension(vector[i], extension);
+	}
+}
+std::string MeridorConsoleLib::GetExtension(const std::string& string)
+{
+	for (int i = static_cast<int>(string.size()) - 1; i >= 0; --i)
+	{
+		if (string[i] == '.')
+		{
+			return string.substr(i);
+		}
+	}
+	return "";
+}
 std::istream& MeridorConsoleLib::StringGetline(std::istream& input_stream, std::string& var)
 {
 	return std::getline(input_stream, var);

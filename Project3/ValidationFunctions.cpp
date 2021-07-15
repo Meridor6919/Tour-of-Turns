@@ -229,11 +229,20 @@ void ValidationCheck::FileIntegrity::MainDirectory(Validation::Status &status)
 void ValidationCheck::FileIntegrity::GameFiles(Validation::Status &status)
 {
 	std::array<std::string, 4> file_names = { FolderName::tour, FolderName::tire, FolderName::car, FolderName::ai };
+	std::array<std::string, 4> file_ext = { ExtName::tour, ExtName::tire, ExtName::car, ExtName::ai };
 	std::vector<std::string> files;
 
-	for (size_t i = 0; i < file_names.size(); ++i)
+	for (int i = static_cast<int>(file_names.size()) - 1; i >= 0; --i)
 	{
 		files = MeridorConsoleLib::GetFilesInDirectory(file_names[i]);
+		for (size_t j = 0; j < files.size(); ++j)
+		{
+			if (MeridorConsoleLib::GetExtension(files[j]) != file_ext[i])
+			{
+				InvalidGameFile(file_names[i], files[j]);
+				files.erase(files.begin() + i);
+			}
+		}
 		if (files.size() == 0)
 		{
 			status.SetFlag(Validation::Status::Flags::unplayable);
@@ -244,22 +253,36 @@ void ValidationCheck::FileIntegrity::GameFiles(Validation::Status &status)
 }
 void ValidationCheck::FileIntegrity::MiscFiles(Validation::Status &status)
 {
+	std::array<std::string, 2> file_names = { FolderName::language, FolderName::ranking };
+	std::array<std::string, 2> file_ext = { ExtName::language, ExtName::ranking };
 	std::vector<std::string> files;
-	
-	files = MeridorConsoleLib::GetFilesInDirectory(FolderName::language);
-	if (files.size() <= 0)
+
+	for (int i = static_cast<int>(file_names.size()) - 1; i >= 0; --i)
 	{
-		MessageBox(0, ErrorMsg::no_lang_pack, ErrorTitle::missing_file, MB_TOPMOST);
-		status.SetFlag(Validation::Status::Flags::corrupted);
-	}
-	files = MeridorConsoleLib::GetFilesInDirectory(FolderName::ranking);
-	if (files.size() <= 0)
-	{
-		MessageBox(0, ErrorMsg::no_ranking, ErrorTitle::missing_file, MB_TOPMOST);
-		status.SetFlag(Validation::Status::Flags::no_ranking);
+		files = MeridorConsoleLib::GetFilesInDirectory(file_names[i]);
+		for (size_t j = 0; j < files.size(); ++j)
+		{
+			if (MeridorConsoleLib::GetExtension(files[j]) != file_ext[i])
+			{
+				InvalidGameFile(file_names[i], files[j]);
+				files.erase(files.begin() + i);
+			}
+		}
+		if (files.size() == 0)
+		{
+			if (i == 0)
+			{
+				MessageBox(0, ErrorMsg::no_lang_pack, ErrorTitle::missing_file, MB_TOPMOST);
+				status.SetFlag(Validation::Status::Flags::corrupted);
+			}
+			else
+			{
+				MessageBox(0, ErrorMsg::no_ranking, ErrorTitle::missing_file, MB_TOPMOST);
+				status.SetFlag(Validation::Status::Flags::no_ranking);
+			}
+		}
 	}
 }
-
 void ValidationCheck::TitleThemes(Validation::Status &status)
 {
 	std::ifstream ifvar;
@@ -440,8 +463,9 @@ void ValidationCheck::Tours(Validation::Status &status)
 	int good_files = false;
 	for (size_t i = 0; i < tours.size(); ++i)
 	{
-		//all cars for race exist
+		//do all cars for race exist
 		std::vector<std::string> cars_for_race = FileManagement::GetCarNames(tours[i]);
+		MeridorConsoleLib::AddExtension(cars_for_race, ExtName::car);
 		std::vector<std::string> car_names = MeridorConsoleLib::GetFilesInDirectory(FolderName::car);
 		if (car_names.size() == 0)
 		{
@@ -465,7 +489,7 @@ void ValidationCheck::Tours(Validation::Status &status)
 			continue;
 		}
 
-		//params check
+		//are params valid
 		std::vector<std::string> params = FileManagement::GetTourParameters(tours[i], 0, INT_MAX);
 		if (static_cast<short>(params.size()) < Validation::minimum_tour_lenght)
 		{

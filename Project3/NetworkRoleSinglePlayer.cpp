@@ -517,10 +517,7 @@ bool SinglePlayer::GameLobby()
 	int timer_settings = main_window->GetTimerSettings();
 	std::vector<std::string> tours = GetTourNames();
 	std::vector<std::string> tires = GetTireNames();
-	std::vector<std::string> cars = GetCarNames(tours[0]);
-	RemoveExtension(tours, ExtName::tour);
-	RemoveExtension(tires, ExtName::tire);
-	RemoveExtension(cars, ExtName::car);
+	std::vector<std::string> cars = GetCarNames(tours[0] + ExtName::tour);
 	int ais = main_window->GetAIs();
 	int tires_pos = 0;
 	int cars_pos = 0;
@@ -587,7 +584,6 @@ bool SinglePlayer::GameLobby()
 			{
 				ShowCarParameters(cars[cars_pos] + ExtName::car, true);
 				cars = GetCarNames(tours[tours_pos] + ExtName::tour);
-				RemoveExtension(cars, ExtName::car);
 				cars_pos = 0;
 				ShowCarParameters(cars[cars_pos] + ExtName::car);
 				ShowTourParameters(tours[i] + ExtName::tour, true);
@@ -853,7 +849,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 	}
 	case ConnectionCodes::GetTireNames:
 	{
-		const std::vector<std::string> tire_names = GetTireNames();
+		const std::vector<std::string> tire_names = GetFilesInDirectory(FolderName::tire);
 		const int tire_names_size = static_cast<int>(tire_names.size());
 		mutex.lock();
 		if (ai_connector)
@@ -884,7 +880,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_error, MB_TOPMOST);
 			exit(0);
 		}
-		const std::vector<int> car_param = GetCarParameters(msg);
+		const std::vector<int> car_param = GetCarParameters(msg + ExtName::car);
 		mutex.lock();
 		if (ai_connector)
 		{
@@ -899,7 +895,7 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 	case ConnectionCodes::GetTireParams:
 	{
 		bool valid = false;
-		const std::vector<std::string> tire_names = GetTireNames();
+		const std::vector<std::string> tire_names = GetFilesInDirectory(FolderName::tire);
 		for (int i = 0; i < static_cast<int>(tire_names.size()); ++i)
 		{
 			if (msg == tire_names[i])
@@ -1002,13 +998,13 @@ void SinglePlayer::HandleAIConnection(std::string msg_received)
 			MessageBox(0, ErrorMsg::ai_connection, ErrorTitle::ai_error, MB_TOPMOST);
 			exit(0);
 		}
-		participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].car_path = selected_car;
+		participants[static_cast<int>(participants.size()) - main_window->GetAIs() + ai_id].car_path = selected_car + ExtName::car;
 		break;
 	}
 	case ConnectionCodes::SetTires:
 	{
 		bool valid = false;
-		const std::vector<std::string> tire_names = GetTireNames();
+		const std::vector<std::string> tire_names = GetFilesInDirectory(FolderName::tire);
 		const std::string selected_tires = msg.substr(1, msg.size() - 1);
 		const int ai_id = msg[0] - 48;
 		//car validation

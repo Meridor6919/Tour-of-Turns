@@ -137,6 +137,8 @@ void ToT::SetAIModule(const COORD& local_starting_point)
 {
 	std::vector<std::string> ai_modules = GetAINames();
 	std::string current_module_name = main_window->GetAIModule();
+	RemoveExtension(current_module_name, ExtName::ai);
+
 	int module_pos;
 	for (int i = 0; i < ai_modules.size(); ++i)
 	{
@@ -144,7 +146,6 @@ void ToT::SetAIModule(const COORD& local_starting_point)
 		{
 			module_pos = i;
 		}
-		RemoveExtension(ai_modules[i], ExtName::ai);
 	}
 	Text::TextInfo text_info = { ai_modules, module_pos, local_starting_point, TextAlign::left, 0, true };
 	module_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo());
