@@ -1,28 +1,14 @@
 #pragma once
-#include <vector>
-#include <string>
 #include <iostream>
-#include <conio.h>
 
 #include "TextInfo.h"
+#include "TableTextInfo.h"
 #include "GeneralFunctions.h"
 
 namespace MeridorConsoleLib
 {
 	namespace Text
 	{
-		struct TableTextInfo
-		{
-			const std::vector<std::string>& text;
-			COORD point_of_reference;
-			TextAlign text_align;
-			int number_of_columns;
-			int painted_rows;
-			short vertical_spacing;
-			short horizontal_spacing;
-			bool clear;
-		};
-
 		char Button(const bool* loop, std::chrono::milliseconds delay);
 		namespace Choose
 		{
@@ -33,6 +19,6 @@ namespace MeridorConsoleLib
 			void Numeric(int* number_return_value, const int max, COORD starting_point, const WindowInfo& window_info, const MultithreadingData& multithreading_data);
 		}
 		void OrdinaryText(TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
-		void TableText(const TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
+		void TableText(TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 	}
 }

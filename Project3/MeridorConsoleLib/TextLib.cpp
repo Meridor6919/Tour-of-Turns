@@ -255,19 +255,19 @@ void MeridorConsoleLib::Text::OrdinaryText(TextInfo& text_info, const WindowInfo
 		multithreading_data.mutex->unlock();
 	}
 }
-void MeridorConsoleLib::Text::TableText(const TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+void MeridorConsoleLib::Text::TableText(TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	int column_number = 0;
 	if (multithreading_data.mutex != nullptr)
 	{
 		multithreading_data.mutex->lock();
 	}
-	for (short i = 0; i < table_text_info.text.size(); ++i)
+	for (short i = 0; i < table_text_info.GetText().size(); ++i)
 	{
-		int current_column = i % table_text_info.number_of_columns;
+		int current_column = i % table_text_info.GetNumberOfColumns();
 		if (!current_column)
 		{
-			if (column_number < table_text_info.painted_rows)
+			if (column_number < table_text_info.GetNumberOfPaintedRows())
 			{
 				SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
 			}
@@ -277,12 +277,12 @@ void MeridorConsoleLib::Text::TableText(const TableTextInfo& table_text_info, co
 			}
 			++column_number;
 		}
-		short general_spacing_value = table_text_info.vertical_spacing * current_column + table_text_info.vertical_spacing / 2;
-		COORD position = { table_text_info.point_of_reference.X + general_spacing_value - static_cast<short>(GetTextAlignScalar(table_text_info.text_align) * static_cast<float>(table_text_info.text[i].size())),
-								table_text_info.point_of_reference.Y + i * table_text_info.horizontal_spacing };
+		short general_spacing_value = table_text_info.GetVerticalSpacing() * current_column + table_text_info.GetVerticalSpacing() / 2;
+		COORD position = { table_text_info.GetPointOfReference().X + general_spacing_value - static_cast<short>(GetTextAlignScalar(table_text_info.GetTextAlign()) * static_cast<float>(table_text_info.GetText()[i].size())),
+								table_text_info.GetPointOfReference().Y + i * table_text_info.GetHorizontalSpacing()};
 		SetConsoleCursorPosition(window_info.handle, position);
 
-		std::cout << (table_text_info.clear ? Spaces(table_text_info.text[i].size()) : table_text_info.text[i]);
+		std::cout << (table_text_info.GetClearFlag() ? Spaces(table_text_info.GetText()[i].size()) : table_text_info.GetText()[i]);
 	}
 	if (multithreading_data.mutex != nullptr)
 	{

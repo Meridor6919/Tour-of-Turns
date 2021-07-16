@@ -13,7 +13,6 @@ namespace MeridorConsoleLib
 		{
 			const std::vector<std::string>& text_ref;
 			std::vector<std::string> text_val;
-			bool is_ref;
 
 			size_t starting_index;
 			COORD point_of_reference;

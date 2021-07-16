@@ -119,6 +119,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileManagementFunctions.cpp" />
+    <ClCompile Include="MeridorConsoleLib\TableTextInfo.cpp" />
     <ClCompile Include="MeridorConsoleLib\TextInfo.cpp" />
     <ClCompile Include="MeridorMiscModules\PipeConnector.cpp" />
     <ClCompile Include="MeridorNetworkLib\BroadcastReceiver.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="FileManagementConstants.h" />
     <ClInclude Include="FileManagementFunctions.h" />
     <ClInclude Include="LanguagePack.h" />
+    <ClInclude Include="MeridorConsoleLib\TableTextInfo.h" />
     <ClInclude Include="MeridorConsoleLib\TextInfo.h" />
     <ClInclude Include="MeridorMiscModules\PipeConnector.h" />
     <ClInclude Include="MeridorNetworkLib\BroadcastReceiver.h" />

@@ -130,6 +130,9 @@
     <ClCompile Include="MeridorConsoleLib\TextInfo.cpp">
       <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="MeridorConsoleLib\TableTextInfo.cpp">
+      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
@@ -226,6 +229,9 @@
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="MeridorConsoleLib\TextInfo.h">
+      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorConsoleLib\TableTextInfo.h">
       <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
