@@ -218,7 +218,7 @@ void FileManagement::SaveGameConfig(const ToTGameConfig& game_config)
 	fvar.open(FolderName::main + '\\' + FileName::game_config);
 	fvar << game_config.number_of_ais << '\n';
 	fvar << name + '\n';
-	fvar << game_config.timer_settings << '\n';
+	fvar << game_config.timer_settings;
 	fvar.close();
 }
 void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
@@ -244,7 +244,7 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 	fvar << window_config.window_info.secondary_color << '\n';
 	fvar << static_cast<int>(window_config.window_info.window_mode) << '\n';
 	fvar << window_config.music_volume << '\n';
-	fvar << window_config.hamachi_flag << '\n';
+	fvar << window_config.hamachi_flag;
 	fvar.close();
 }
 

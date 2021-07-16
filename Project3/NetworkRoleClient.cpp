@@ -23,7 +23,7 @@ bool Client::StartNetwork()
 
 	while (true)
 	{
-		Text::TextInfo text_info = { LanguagePack::text[LanguagePack::multiplayer_client_lobby], 0, starting_point, TextAlign::center, spacing, false };
+		Text::TextInfo text_info(LanguagePack::text[LanguagePack::multiplayer_client_lobby], 0, starting_point, TextAlign::center, spacing, false);
 		int option = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
 		if (option == Multiplayer::active_games)
 		{
@@ -34,7 +34,7 @@ bool Client::StartNetwork()
 			}
 			const COORD submenu_position = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::active_games].size()) / 2 + 1,
 												starting_point.Y };
-			Text::TextInfo text_info = { active_games, 0, submenu_position, TextAlign::left, 0, true };
+			Text::TextInfo text_info(active_games, 0, submenu_position, TextAlign::left, 0, true);
 			if (int target = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()))
 			{
 				selected_game = active_games[target];

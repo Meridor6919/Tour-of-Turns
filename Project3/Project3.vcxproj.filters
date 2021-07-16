@@ -127,6 +127,9 @@
     <ClCompile Include="ValidationStatus.cpp">
       <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
+    <ClCompile Include="MeridorConsoleLib\TextInfo.cpp">
+      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
@@ -221,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="ValidationStatus.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorConsoleLib\TextInfo.h">
+      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

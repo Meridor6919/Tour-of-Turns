@@ -4,22 +4,13 @@
 #include <iostream>
 #include <conio.h>
 
-#include "DataStructures.h"
+#include "TextInfo.h"
 #include "GeneralFunctions.h"
 
 namespace MeridorConsoleLib
 {
 	namespace Text
 	{
-		struct TextInfo
-		{
-			const std::vector<std::string>& text;
-			size_t starting_index;
-			COORD point_of_reference;
-			TextAlign text_align;
-			short spacing;
-			bool clear_after;
-		};
 		struct TableTextInfo
 		{
 			const std::vector<std::string>& text;
@@ -35,13 +26,13 @@ namespace MeridorConsoleLib
 		char Button(const bool* loop, std::chrono::milliseconds delay);
 		namespace Choose
 		{
-			int Horizontal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
-			int Veritcal(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
-			void VerticalShowGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
-			void VerticalClearGUI(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
+			int Horizontal(TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
+			int Veritcal(TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
+			void VerticalShowGUI(TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
+			void VerticalClearGUI(TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 			void Numeric(int* number_return_value, const int max, COORD starting_point, const WindowInfo& window_info, const MultithreadingData& multithreading_data);
 		}
-		void OrdinaryText(const TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
+		void OrdinaryText(TextInfo& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 		void TableText(const TableTextInfo& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 	}
 }
