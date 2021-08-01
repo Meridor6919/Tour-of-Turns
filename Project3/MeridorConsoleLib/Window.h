@@ -14,13 +14,15 @@ namespace MeridorConsoleLib
 
 		void AdjustFontSize();
 		void SetWindowSize();
-		COORD GetLargestConsoleWindow();
+		COORD GetMetricsWithSelectedFontSize();
+		void SetBufferSize();
 
+		Window() {};
 		void Init(const WindowInfoEx& window_info_ex);
 	public:
 
-		int* main_color;
-		int* secondary_color;
+		Color* main_color;
+		Color* secondary_color;
 
 		void BlockingSleep(const int miliseconds);
 
@@ -33,7 +35,7 @@ namespace MeridorConsoleLib
 		HWND GetHWND();
 		WindowMode GetWindowMode();
 
-		//There is a bug where edit-mode causes SetWindowPosition to crash console window - don't use with windowed fullscreen
+		//There is a bug where edit-mode causes SetWindowPosition to crash console window - don't use with windowed_fullscreen fullscreen
 		void SetConsoleEditMode(bool enable);
 		void SetCursor(const bool visible);
 		void SetWindowMode(WindowMode window_mode);

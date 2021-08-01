@@ -12,6 +12,25 @@ namespace MeridorConsoleLib
 		right,
 		last
 	};
+	enum Color : unsigned short
+	{
+		blue = 1,
+		green,
+		cyan,
+		red,
+		magenta,
+		brown,
+		light_gray,
+		dark_gray,
+		light_blue,
+		light_green,
+		light_cyan,
+		light_red,
+		light_magenta,
+		yellow,
+		white,
+		last
+	};
 	struct MultithreadingData
 	{
 		std::mutex* mutex = nullptr;
@@ -21,20 +40,21 @@ namespace MeridorConsoleLib
 	enum class WindowMode : unsigned int
 	{
 		fullscreen,
+		windowed_fullscreen,
 		windowed,
 		last
 	};
 	struct WindowInfo
 	{
 		HANDLE handle;
-		int main_color;
-		int secondary_color;
+		Color main_color;
+		Color secondary_color;
 	};
 	struct WindowInfoEx : WindowInfo
 	{
 		std::string title;
 		HWND hwnd;
-		COORD characters_capacity;
+		short characters_capacity_height;
 		COORD window_size;
 		WindowMode window_mode;
 		bool visible_cursor;

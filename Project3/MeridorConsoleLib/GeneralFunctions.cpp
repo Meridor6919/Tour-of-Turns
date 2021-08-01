@@ -39,11 +39,11 @@ std::string MeridorConsoleLib::GetSeparatedValue(const std::string& text, int in
 }
 std::string MeridorConsoleLib::SetSeparatedValue(const std::string& original_text, const std::string& text_to_place, int index, char separator)
 {
-	int start = 0;
-	int count = 0;
+	size_t start = 0;
+	size_t count = 0;
+	size_t original_text_size = original_text.size();
 	std::string ret;
-	int original_text_size = static_cast<int>(original_text.size());
-	for (int i = 0; i < original_text_size; ++i)
+	for (size_t i = 0; i < original_text_size; ++i)
 	{
 		if ((original_text[i] == separator) || (i + 1 == original_text_size))
 		{
@@ -63,9 +63,9 @@ std::string MeridorConsoleLib::SetSeparatedValue(const std::string& original_tex
 }
 std::string MeridorConsoleLib::SetPrecision(const std::string& floating_point_number, unsigned int precision)
 {
-	size_t number_size = floating_point_number.size();
+	unsigned int number_size = static_cast<unsigned int>(floating_point_number.size());
 	bool remove_decimal_point = !precision;
-	for (int i = 0; i < number_size; ++i)
+	for (unsigned int i = 0; i < number_size; ++i)
 	{
 		if (floating_point_number[i] == '.')
 		{

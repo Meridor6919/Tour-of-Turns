@@ -66,8 +66,8 @@ void MeridorConsoleLib::InfoBox::Draw()
 	const unsigned short container_size = static_cast<unsigned short>(data.size());
 
 	unsigned short max_records_to_display = (box_height - upper_border_height) / info_box_desc.vertical_spacing;
-	int main_color = window_info.main_color;
-	int secondary_color = window_info.secondary_color;
+	Color main_color = window_info.main_color;
+	Color secondary_color = window_info.secondary_color;
 
 	if (multithreading_data != nullptr)
 	{
@@ -77,8 +77,8 @@ void MeridorConsoleLib::InfoBox::Draw()
 	{
 		--index;
 		ShowLineOfText(index, main_color, secondary_color);
-		main_color = 8;
-		secondary_color = 8;
+		main_color = MeridorConsoleLib::Color::dark_gray;
+		secondary_color = MeridorConsoleLib::Color::dark_gray;
 	}
 	if (multithreading_data != nullptr)
 	{
