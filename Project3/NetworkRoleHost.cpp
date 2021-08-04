@@ -23,7 +23,7 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool* running)
 	const short title_size = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby].size());
 	const short box_size = (lobby_size < 4 ? 4 : lobby_size);
 
-	SetConsoleTextAttribute(handle, *main_window->secondary_color);
+	SetColor(handle, *main_window->secondary_color);
 	SetConsoleCursorPosition(handle, { starting_position.X + border_size / 2 - title_size / 2, starting_position.Y });
 	std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby];
 	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 1 });
@@ -38,7 +38,7 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool* running)
 		for (short i = 0; i < lobby_size; ++i)
 		{
 			SetConsoleCursorPosition(handle, { 0,i + 1 });
-			SetConsoleTextAttribute(handle, *main_window->main_color);
+			SetColor(handle, *main_window->main_color);
 			for (short j = 0; j < NetworkConnector::Constants::max_ip_size; ++j)
 			{
 				SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2 * (i + 1) + 2 });
@@ -49,7 +49,7 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool* running)
 		{
 
 			SetConsoleCursorPosition(handle, { starting_position.X + 1, starting_position.Y + 2 * (i + 1) + 2 });
-			SetConsoleTextAttribute(handle, *main_window->main_color);
+			SetColor(handle, *main_window->main_color);
 			std::cout << clients_names[i];
 		}
 		mutex.unlock();

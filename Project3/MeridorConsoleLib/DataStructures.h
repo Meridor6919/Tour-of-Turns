@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <chrono>
 #include <mutex>
+#include "Color.h"
 
 namespace MeridorConsoleLib
 {
@@ -16,25 +17,7 @@ namespace MeridorConsoleLib
 		right,
 		last
 	};
-	enum Color : unsigned short
-	{
-		blue = 1,
-		green,
-		cyan,
-		red,
-		magenta,
-		brown,
-		light_gray,
-		dark_gray,
-		light_blue,
-		light_green,
-		light_cyan,
-		light_red,
-		light_magenta,
-		yellow,
-		white,
-		last
-	};
+
 	struct MultithreadingData
 	{
 		std::mutex* mutex = nullptr;

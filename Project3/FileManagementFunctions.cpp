@@ -240,8 +240,8 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 	fvar << window_config.ai_module << '\n';
 	fvar << window_config.window_info.characters_capacity.X << '\n';
 	fvar << window_config.window_info.characters_capacity.Y << '\n';
-	fvar << window_config.window_info.main_color << '\n';
-	fvar << window_config.window_info.secondary_color << '\n';
+	fvar << static_cast<int>(window_config.window_info.main_color) << '\n';
+	fvar << static_cast<int>(window_config.window_info.secondary_color) << '\n';
 	fvar << static_cast<int>(window_config.window_info.window_mode) << '\n';
 	fvar << window_config.music_volume << '\n';
 	fvar << window_config.hamachi_flag;

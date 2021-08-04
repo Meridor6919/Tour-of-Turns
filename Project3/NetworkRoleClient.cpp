@@ -92,7 +92,7 @@ void Client::HighlightSelectedGame(std::string game, bool clear)
 		}
 	}
 	SetConsoleCursorPosition(handle, { 0,0 });
-	SetConsoleTextAttribute(handle, *main_window->main_color);
+	SetColor(handle, *main_window->main_color);
 	std::cout << game;
 }
 void Client::ValidateAttack(int target, int participant)

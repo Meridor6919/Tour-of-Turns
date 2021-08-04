@@ -146,6 +146,7 @@
     <ClCompile Include="ValidationFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MeridorConsoleLib\Color.h" />
     <ClInclude Include="DataStructures.h" />
     <ClInclude Include="ErrorConstants.h" />
     <ClInclude Include="FileManagementConstants.h" />

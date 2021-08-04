@@ -12,18 +12,18 @@ void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification
 {
 	std::vector<std::string> details = RankingManagement::GetTextToDisplay(tour, racer_pos, classification_type);
 
-	SetConsoleTextAttribute(handle, *main_window->secondary_color);
+	MeridorConsoleLib::SetColor(handle, *main_window->secondary_color);
 	SetConsoleCursorPosition(handle, top_left_box_position);
 	std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
 	{
 		SetConsoleCursorPosition(handle, { top_left_box_position.X + avarage_indent, top_left_box_position.Y + small_spacing * (i + 1) });
-		SetConsoleTextAttribute(handle, *main_window->main_color);
+		MeridorConsoleLib::SetColor(handle, *main_window->main_color);
 		std::cout << LanguagePack::text[LanguagePack::ranking_details][i] + ": ";
-		SetConsoleTextAttribute(handle, *main_window->secondary_color);
+		MeridorConsoleLib::SetColor(handle, *main_window->secondary_color);
 		std::cout << details[i];
 	}
-	SetConsoleTextAttribute(handle, *main_window->secondary_color);
+	MeridorConsoleLib::SetColor(handle, *main_window->secondary_color);
 	SetConsoleCursorPosition(handle, { top_left_box_position.X, top_left_box_position.Y + small_spacing * static_cast<short>(Validation::ranking_details + 1) });
 	std::cout << GetMonoCharacterString(Validation::box_width, '_');
 }
@@ -64,15 +64,15 @@ void ToT::SetTheme(const COORD& local_starting_point)
 }
 void ToT::SetColor(const COORD& local_starting_point, bool main)
 {
-	int* color = main ? main_window->main_color : main_window->secondary_color;
-	int* secondary_color = main ? main_window->secondary_color : main_window->main_color;
-
 	std::vector<std::string> local_text = LanguagePack::text[LanguagePack::selectable_colors];
-	const int starting_color = *color;
-	local_text.erase(local_text.begin() + (*secondary_color - 1));
-	unsigned int pos = static_cast<unsigned int>(*color - 1 - (*color > *secondary_color));
+	MeridorConsoleLib::Color* color = main ? main_window->main_color : main_window->secondary_color;
+	MeridorConsoleLib::Color* secondary_color = main ? main_window->secondary_color : main_window->main_color;
+	const MeridorConsoleLib::Color starting_color = *color;
+
+	local_text.erase(local_text.begin() + static_cast<int>(*secondary_color) - 1);
+	size_t pos = static_cast<int>(*color) - 1 - (*color > *secondary_color);
 	Text::TextInfo text_info(local_text, pos, local_starting_point, TextAlign::left, 0, true);
-	(*color) = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1;
+	(*color) = static_cast<MeridorConsoleLib::Color>(Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo()) + 1);
 	if (*color >= *secondary_color)
 	{
 		(*color) = (*color) + 1;

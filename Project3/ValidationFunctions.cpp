@@ -401,7 +401,7 @@ void ValidationCheck::LanguagePacks(Validation::Status& status)
 			(static_cast<int>(LanguagePack::text[LanguagePack::multiplayer_menu].size()) != Validation::multiplayer_before_game_lobby) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::general_options].size()) != Validation::tot_options) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::tour_information].size()) != GameLobbyInformations::last) ||
-			(static_cast<int>(LanguagePack::text[LanguagePack::selectable_colors].size()) != Validation::colors) ||
+			(static_cast<MeridorConsoleLib::Color>(LanguagePack::text[LanguagePack::selectable_colors].size()) != Validation::colors) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::race_actions].size()) != Validation::actions) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::race_chancebox].size()) != Validation::chancebox) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::race_player_informations].size()) != Validation::general_info) ||
@@ -412,7 +412,7 @@ void ValidationCheck::LanguagePacks(Validation::Status& status)
 			(static_cast<int>(LanguagePack::text[LanguagePack::tour_segments_descriptions].size()) != TerrainTypes::last * 2) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::accident_effects].size()) != Validation::accidents) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::on_off].size()) != 2) ||
-			(static_cast<int>(LanguagePack::text[LanguagePack::display_settings].size()) != static_cast<int>(MeridorConsoleLib::WindowMode::last)) ||
+			(static_cast<MeridorConsoleLib::WindowMode>(LanguagePack::text[LanguagePack::display_settings].size()) != MeridorConsoleLib::WindowMode::last) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::ranking_menu].size()) != Validation::ranking_menu) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::ranking_classification_types].size()) != Validation::ranking_classification) ||
 			(static_cast<int>(LanguagePack::text[LanguagePack::ranking_details].size()) != Validation::ranking_details) ||

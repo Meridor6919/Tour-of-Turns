@@ -25,13 +25,13 @@ void Title::ShowMainPart()
 	const HANDLE handle = main_window->GetHandle();
 
 	//Main text
-	SetConsoleTextAttribute(handle, *main_window->main_color);
+	SetColor(handle, *main_window->main_color);
 	for (short i = 0; i < main_title_size; ++i)
 	{
 		SetConsoleCursorPosition(handle, { orientation_point.X, orientation_point.Y + i });
 		std::cout << LanguagePack::text[LanguagePack::title_main][i];
 	}
-	SetConsoleTextAttribute(handle, *main_window->secondary_color);
+	SetColor(handle, *main_window->secondary_color);
 	for (short i = 0; i < additional_title_size; ++i)
 	{
 		const short main_line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
@@ -62,13 +62,13 @@ void Title::ShowDecoration(bool clear)
 	{
 		const short wobbling = (theme.decoration_wobble ? i % 2 : 0);
 		const short line_size = static_cast<short>(LanguagePack::text[LanguagePack::title_main][i].size());
-		SetConsoleTextAttribute(handle, *main_window->main_color);
+		SetColor(handle, *main_window->main_color);
 		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling, orientation_point.Y + i });
 		std::cout << main_left;
 		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + theme.decoration_distance + wobbling - 1, orientation_point.Y + i });
 		std::cout << main_right;
 
-		SetConsoleTextAttribute(handle, *main_window->secondary_color);
+		SetColor(handle, *main_window->secondary_color);
 		SetConsoleCursorPosition(handle, { orientation_point.X - decoration_left_size - wobbling + theme.secondary_pos_left, orientation_point.Y + i });
 		std::cout << secondary_left;
 		SetConsoleCursorPosition(handle, { orientation_point.X + line_size + theme.decoration_distance + wobbling - 1 + theme.secondary_pos_right, orientation_point.Y + i });

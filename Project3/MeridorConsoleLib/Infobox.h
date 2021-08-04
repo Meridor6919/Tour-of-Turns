@@ -30,7 +30,7 @@ namespace MeridorConsoleLib
 
 		void SetCursorPosition(short index);
 		std::string RegulateStringSize(const std::string& text, short max_size, bool fill_to_max_size = false);
-		void ShowLineOfText(unsigned short index, int primary_color, int secondary_color);
+		void ShowLineOfText(unsigned short index, Color primary_color, Color secondary_color);
 
 	public:
 

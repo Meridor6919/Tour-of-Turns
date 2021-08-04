@@ -37,7 +37,7 @@ std::string MeridorConsoleLib::InfoBox::RegulateStringSize(const std::string& te
 	}
 	return ret_value;
 }
-void MeridorConsoleLib::InfoBox::ShowLineOfText(unsigned short index, int primary_color, int secondary_color)
+void MeridorConsoleLib::InfoBox::ShowLineOfText(unsigned short index, Color primary_color, Color secondary_color)
 {
 	const unsigned short data_size = static_cast<unsigned short>(data.size());
 	unsigned short first_part = static_cast<unsigned short>(data[index].first.size());
@@ -47,9 +47,9 @@ void MeridorConsoleLib::InfoBox::ShowLineOfText(unsigned short index, int primar
 	std::string ordinary_text = RegulateStringSize(data[index].second, box_width - static_cast<short>(highlighted_text.size()) - 1, true);
 
 	SetCursorPosition(data_size - index - 1);
-	SetConsoleTextAttribute(window_info.handle, secondary_color);
+	SetColor(window_info.handle, secondary_color);
 	std::cout << highlighted_text << ' ';
-	SetConsoleTextAttribute(window_info.handle, primary_color);
+	SetColor(window_info.handle, primary_color);
 	std::cout << ordinary_text;
 
 }
@@ -98,7 +98,7 @@ void MeridorConsoleLib::InfoBox::DrawBox(bool clear_instead)
 		multithreading_data->mutex->lock();
 	}
 	//Top border
-	SetConsoleTextAttribute(window_info.handle, window_info.secondary_color);
+	SetColor(window_info.handle, window_info.secondary_color);
 	SetConsoleCursorPosition(window_info.handle, local_position);
 	std::cout << border;
 	//Bottom border

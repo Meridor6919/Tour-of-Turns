@@ -234,6 +234,9 @@
     <ClInclude Include="MeridorConsoleLib\TableTextInfo.h">
       <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
     </ClInclude>
+    <ClInclude Include="MeridorConsoleLib\Color.h">
+      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />
