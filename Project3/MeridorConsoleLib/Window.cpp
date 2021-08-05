@@ -10,7 +10,7 @@ void MeridorConsoleLib::Window::AdjustFontSize()
 	wcscpy_s(console_font_info.FaceName, L"Lucida Console");
 	SetCurrentConsoleFontEx(window_info.handle, NULL, &console_font_info);
 
-	if (static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio)) > window_info.characters_capacity.Y)
+	if (window_info.window_size.X / static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio)) > window_info.window_size.Y / window_info.characters_capacity.Y)
 	{
 		minimum_character_height = static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio));
 	}
@@ -45,7 +45,6 @@ void MeridorConsoleLib::Window::AdjustFontSize()
 			lower_bound = midpoint;
 		}
 	}
-	font_size = console_font_info.dwFontSize.Y;
 }
 void MeridorConsoleLib::Window::SetWindowSize()
 {
@@ -98,6 +97,17 @@ void MeridorConsoleLib::Window::SetBufferSize()
 
 	SetConsoleScreenBufferSize(window_info.handle, buffer_size);
 }
+void MeridorConsoleLib::Window::UpdateWindowInformation()
+{
+	CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
+	GetConsoleScreenBufferInfo(window_info.handle, &screen_buffer_info);
+	window_info.characters_capacity = screen_buffer_info.dwMaximumWindowSize;
+
+	CONSOLE_FONT_INFOEX font_info;
+	font_info.cbSize = sizeof(font_info);
+	GetCurrentConsoleFontEx(window_info.handle, false, &font_info);
+	font_size = font_info.dwFontSize;
+}
 void MeridorConsoleLib::Window::Init(const WindowInfoEx& window_info_ex)
 {
 	this->window_info = window_info_ex;
@@ -115,6 +125,7 @@ void MeridorConsoleLib::Window::Init(const WindowInfoEx& window_info_ex)
 	SetBufferSize();
 	SetCursor(window_info.visible_cursor);
 	SetConsoleEditMode(false);
+	UpdateWindowInformation();
 
 	if (window_info.window_mode == WindowMode::windowed_fullscreen)
 	{
@@ -150,17 +161,16 @@ void MeridorConsoleLib::Window::BlockingSleep(const int miliseconds)
 }
 int MeridorConsoleLib::Window::GetCharactersPerRow()
 {
-	CONSOLE_FONT_INFOEX console_font_info = {};
-	GetCurrentConsoleFontEx(window_info.handle, false, &console_font_info);
-	return console_font_info.dwFontSize.X;
+	CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
+	GetConsoleScreenBufferInfo(window_info.handle, &screen_buffer_info);
+
+	return window_info.characters_capacity.X;
 }
 int MeridorConsoleLib::Window::GetCharactersPerColumn()
 {
-	CONSOLE_FONT_INFOEX console_font_info = {};
-	GetCurrentConsoleFontEx(window_info.handle, false, &console_font_info);
-	return console_font_info.dwFontSize.Y;
+	return window_info.characters_capacity.Y;
 }
-int MeridorConsoleLib::Window::GetFontSize()
+COORD MeridorConsoleLib::Window::GetFontSize()
 {
 	return font_size;
 }

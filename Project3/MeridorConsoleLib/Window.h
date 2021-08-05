@@ -10,12 +10,13 @@ namespace MeridorConsoleLib
 
 		WindowInfoEx window_info;
 		WindowImmobilizer window_immobilizer;
-		int font_size;
+		COORD font_size;
 
 		void AdjustFontSize();
 		void SetWindowSize();
 		COORD GetMetricsWithSelectedFontSize();
 		void SetBufferSize();
+		void UpdateWindowInformation();
 
 		Window() {};
 		void Init(const WindowInfoEx& window_info_ex);
@@ -30,7 +31,7 @@ namespace MeridorConsoleLib
 		const WindowInfoEx* GetWindowInfoEx();
 		int GetCharactersPerRow();
 		int GetCharactersPerColumn();
-		int GetFontSize();
+		COORD GetFontSize();
 		HANDLE GetHandle();
 		HWND GetHWND();
 		WindowMode GetWindowMode();
