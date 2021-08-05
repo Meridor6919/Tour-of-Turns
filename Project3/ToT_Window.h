@@ -20,8 +20,9 @@ protected:
 	bool hamachi_flag;
 	std::string ai_module;
 	std::string lang;
-	ToTGameConfig tot_game_config;
 	Title title;
+	COORD windowed_mode_window_size;
+	ToTGameConfig tot_game_config;
 	WavTransformer wav_transformer;
 
 public:

@@ -20,6 +20,8 @@ void ToT_Window::Init()
 	hamachi_flag = tot_window_config.hamachi_flag;
 	ai_module = tot_window_config.ai_module;
 	lang = tot_window_config.lang;
+	windowed_mode_window_size = tot_window_config.windowed_mode_window_size;
+
 
 	tot_game_config = LoadGameConfig();
 	ValidationCheck::ToTGameConfig(tot_game_config, status);
@@ -73,7 +75,7 @@ const ToTGameConfig& ToT_Window::GetToTGameConfig()
 }
 ToTWindowConfig ToT_Window::GetToTWindowConfig()
 {
-	return { ai_module, music_volume, hamachi_flag, GetTitleTheme(), lang, window_info };
+	return { ai_module, music_volume, hamachi_flag, GetTitleTheme(), lang, windowed_mode_window_size, window_info };
 }
 std::string ToT_Window::GetAIModule()
 {

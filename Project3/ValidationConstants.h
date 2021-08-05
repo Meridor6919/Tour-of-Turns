@@ -26,7 +26,8 @@ namespace Validation
 
 	constexpr int maximum_name_length = 20;
 	constexpr int maximum_timer = 60;
-	constexpr COORD minimum_window_size = { 240, 77 };
+	constexpr COORD minimum_character_capacity = { 240, 77 };
+	constexpr COORD minimum_window_size = MeridorConsoleLib::minimum_window_size;
 	constexpr int box_width = 84;
 	constexpr int max_title_size = 1024;
 	constexpr int min_title_size = 1;

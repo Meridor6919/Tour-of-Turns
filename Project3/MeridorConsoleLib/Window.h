@@ -36,10 +36,10 @@ namespace MeridorConsoleLib
 		HWND GetHWND();
 		WindowMode GetWindowMode();
 
-		//There is a bug where edit-mode causes SetWindowPosition to crash console window - don't use with windowed_fullscreen fullscreen
+		//There is a bug where edit-mode causes SetWindowPosition to crash console window - don't use with windowed_fullscreen
 		void SetConsoleEditMode(bool enable);
 		void SetCursor(const bool visible);
-		void SetWindowMode(WindowMode window_mode);
+		void SetWindowMode(WindowMode window_mode, COORD window_size = MeridorConsoleLib::minimum_window_size);
 
 		friend class WindowImmobilizer;
 	};

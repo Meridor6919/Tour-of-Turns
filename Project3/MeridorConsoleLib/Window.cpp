@@ -3,7 +3,7 @@
 void MeridorConsoleLib::Window::AdjustFontSize()
 {
 	COORD window_size_with_current_font_size;
-	short minimum_character_height = window_info.characters_capacity.Y;
+	short minimum_characters_column = window_info.characters_capacity.Y;
 
 	CONSOLE_FONT_INFOEX console_font_info = {};
 	console_font_info.cbSize = sizeof(console_font_info);
@@ -12,7 +12,7 @@ void MeridorConsoleLib::Window::AdjustFontSize()
 
 	if (window_info.window_size.X / static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio)) > window_info.window_size.Y / window_info.characters_capacity.Y)
 	{
-		minimum_character_height = static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio));
+		minimum_characters_column = static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio));
 	}
 
 	short upper_bound = maximum_font_size.Y;
@@ -36,7 +36,7 @@ void MeridorConsoleLib::Window::AdjustFontSize()
 			}
 			break;
 		}
-		else if (window_size_with_current_font_size.Y < minimum_character_height)
+		else if (window_size_with_current_font_size.Y < minimum_characters_column)
 		{
 			upper_bound = midpoint;
 		}
@@ -201,9 +201,9 @@ void MeridorConsoleLib::Window::SetCursor(const bool visible)
 	console_cursor.bVisible = visible;
 	SetConsoleCursorInfo(window_info.handle, &console_cursor);
 }
-void MeridorConsoleLib::Window::SetWindowMode(WindowMode window_mode)
+void MeridorConsoleLib::Window::SetWindowMode(WindowMode window_mode, COORD window_size)
 {
-	if (window_mode == WindowMode::fullscreen)
+	if (window_mode != WindowMode::windowed_fullscreen)
 	{
 		window_immobilizer.Stop();
 	}
@@ -211,7 +211,20 @@ void MeridorConsoleLib::Window::SetWindowMode(WindowMode window_mode)
 	{
 		window_immobilizer.Start();
 	}
+
+	if (window_mode != WindowMode::windowed)
+	{
+		window_info.window_size = { static_cast<short>(GetSystemMetrics(SM_CXSCREEN)), static_cast<short>(GetSystemMetrics(SM_CYSCREEN)) };
+	}
+	else
+	{
+		window_info.window_size = window_size;
+	}
+
 	window_info.window_mode = window_mode;
+	AdjustFontSize();
 	SetWindowSize();
+	SetBufferSize();
 	SetCursor(window_info.visible_cursor);
+	UpdateWindowInformation();
 }

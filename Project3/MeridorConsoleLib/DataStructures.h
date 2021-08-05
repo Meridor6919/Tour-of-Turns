@@ -8,6 +8,7 @@ namespace MeridorConsoleLib
 {
 	constexpr COORD minimum_font_size = { 3, 5 };
 	constexpr COORD maximum_font_size = { 45, 72 };
+	constexpr COORD minimum_window_size = { 800, 600 };
 	constexpr double font_aspect_ratio = 0.6;
 
 	enum class TextAlign : unsigned int
@@ -41,9 +42,9 @@ namespace MeridorConsoleLib
 	{
 		std::string title;
 		HWND hwnd;
-		COORD characters_capacity;
-		COORD window_size;
-		WindowMode window_mode;
-		bool visible_cursor;
+		COORD characters_capacity = { 100, 50 };
+		COORD window_size = minimum_window_size;
+		WindowMode window_mode = WindowMode::windowed;
+		bool visible_cursor = false;
 	};
 }
