@@ -16,6 +16,7 @@ void ToT_Window::Init()
 	window_info = tot_window_config.window_info;
 	window_info.handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	window_info.hwnd = GetConsoleWindow();
+	window_info.characters_capacity = { 240, 78 };
 	music_volume = tot_window_config.music_volume;
 	hamachi_flag = tot_window_config.hamachi_flag;
 	ai_module = tot_window_config.ai_module;

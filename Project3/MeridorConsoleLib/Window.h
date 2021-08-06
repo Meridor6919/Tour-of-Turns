@@ -11,6 +11,7 @@ namespace MeridorConsoleLib
 		WindowInfoEx window_info;
 		WindowImmobilizer window_immobilizer;
 		COORD font_size;
+		COORD base_character_capacity;
 
 		void AdjustFontSize();
 		void SetWindowSize();

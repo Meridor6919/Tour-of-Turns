@@ -132,6 +132,9 @@ void ToT::SetDisplayMode(const COORD& local_starting_point)
 	{
 		main_window->SetWindowMode(static_cast<MeridorConsoleLib::WindowMode>(new_display_mode));
 	}
+	centered_position = { static_cast<short>(main_window->GetCharactersPerRow() / 2), main_centered_Y };
+	system("cls");
+	main_window->DrawTitle();
 }
 void ToT::SetAIModule(const COORD& local_starting_point)
 {
@@ -223,10 +226,10 @@ void ToT::Options()
 {
 	unsigned int main_menu_position = 0;
 	bool loop = true;
-	Text::TextInfo text_info(LanguagePack::text[LanguagePack::general_options], main_menu_position, centered_position, TextAlign::center, avarage_spacing, false);
 
 	while (loop)
 	{
+		Text::TextInfo text_info(LanguagePack::text[LanguagePack::general_options], main_menu_position, centered_position, TextAlign::center, avarage_spacing, false);
 		main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
 		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::general_options][main_menu_position].size()) / 2 + avarage_indent;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * avarage_spacing);
@@ -283,12 +286,12 @@ void ToT::Options()
 		case 8:
 		{
 			loop = false;
+			Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
+			SaveWindowConfig(main_window->GetToTWindowConfig());
 			break;
 		}
 		}
 	}
-	Text::Choose::VerticalClearGUI(text_info, *main_window->GetWindowInfo());
-	SaveWindowConfig(main_window->GetToTWindowConfig());
 }
 void ToT::Ranking()
 {

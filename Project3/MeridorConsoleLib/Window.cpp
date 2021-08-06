@@ -113,6 +113,7 @@ void MeridorConsoleLib::Window::Init(const WindowInfoEx& window_info_ex)
 	this->window_info = window_info_ex;
 	main_color = &window_info.main_color;
 	secondary_color = &window_info.secondary_color;
+	base_character_capacity = window_info_ex.characters_capacity;
 	if (window_info.window_mode != WindowMode::windowed)
 	{
 		window_info.window_size = { static_cast<short>(GetSystemMetrics(SM_CXSCREEN)), static_cast<short>(GetSystemMetrics(SM_CYSCREEN)) };
@@ -222,6 +223,7 @@ void MeridorConsoleLib::Window::SetWindowMode(WindowMode window_mode, COORD wind
 	}
 
 	window_info.window_mode = window_mode;
+	window_info.characters_capacity = base_character_capacity;
 	AdjustFontSize();
 	SetWindowSize();
 	SetBufferSize();

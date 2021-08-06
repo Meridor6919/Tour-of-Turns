@@ -7,16 +7,6 @@ void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, V
 		window_info.title = Validation::default_title_name;
 		status.SetFlag(Validation::Status::Flags::repaired);
 	}
-	if (window_info.characters_capacity.Y < Validation::minimum_character_capacity.Y)
-	{
-		window_info.characters_capacity.Y = Validation::minimum_character_capacity.Y;
-		status.SetFlag(Validation::Status::Flags::repaired);
-	}
-	if (window_info.characters_capacity.X < Validation::minimum_character_capacity.X)
-	{
-		window_info.characters_capacity.X = Validation::minimum_character_capacity.X;
-		status.SetFlag(Validation::Status::Flags::repaired);
-	}
 	if (window_info.window_size.X < Validation::minimum_window_size.X)
 	{
 		window_info.window_size.X = Validation::minimum_window_size.X;

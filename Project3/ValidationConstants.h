@@ -26,7 +26,6 @@ namespace Validation
 
 	constexpr int maximum_name_length = 20;
 	constexpr int maximum_timer = 60;
-	constexpr COORD minimum_character_capacity = { 240, 77 };
 	constexpr COORD minimum_window_size = MeridorConsoleLib::minimum_window_size;
 	constexpr int box_width = 84;
 	constexpr int max_title_size = 1024;
@@ -48,6 +47,7 @@ namespace Validation
 	constexpr short avarage_spacing = 3;
 
 	constexpr COORD top_left_box_position = { 0, 20 };
+	constexpr COORD character_capacity = { 240, 78 };
 	constexpr short main_centered_Y = 25;
 
 	constexpr const char* default_title_name = "Tour of Turns";

@@ -62,8 +62,6 @@ ToTWindowConfig FileManagement::LoadWindowConfig()
 	StringGetline(fvar, ret.theme_name);
 	StringGetline(fvar, ret.lang);
 	StringGetline(fvar, ret.ai_module);
-	IntegerGetline(fvar, ret.window_info.characters_capacity.X);
-	IntegerGetline(fvar, ret.window_info.characters_capacity.Y);
 	IntegerGetline(fvar, ret.windowed_mode_window_size.X);
 	IntegerGetline(fvar, ret.windowed_mode_window_size.Y);
 	IntegerGetline(fvar, ret.window_info.main_color);
@@ -240,8 +238,6 @@ void FileManagement::SaveWindowConfig(const ToTWindowConfig& window_config)
 	fvar << window_config.theme_name << '\n';
 	fvar << window_config.lang << '\n';
 	fvar << window_config.ai_module << '\n';
-	fvar << window_config.window_info.characters_capacity.X << '\n';
-	fvar << window_config.window_info.characters_capacity.Y << '\n';
 	fvar << window_config.windowed_mode_window_size.X << '\n';
 	fvar << window_config.windowed_mode_window_size.Y << '\n';
 	fvar << static_cast<int>(window_config.window_info.main_color) << '\n';
