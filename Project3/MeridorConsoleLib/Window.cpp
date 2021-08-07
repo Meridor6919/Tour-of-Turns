@@ -10,9 +10,9 @@ void MeridorConsoleLib::Window::AdjustFontSize()
 	wcscpy_s(console_font_info.FaceName, L"Lucida Console");
 	SetCurrentConsoleFontEx(window_info.handle, NULL, &console_font_info);
 
-	if (window_info.window_size.X / static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio)) > window_info.window_size.Y / window_info.characters_capacity.Y)
+	if (window_info.window_size.X / static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio)) < window_info.window_size.Y / window_info.characters_capacity.Y)
 	{
-		minimum_characters_column = static_cast<short>(round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio));
+		minimum_characters_column = static_cast<short>(static_cast<double>(window_info.window_size.Y) / static_cast<double>(window_info.window_size.X) * round(static_cast<double>(window_info.characters_capacity.X) * font_aspect_ratio));
 	}
 
 	short upper_bound = maximum_font_size.Y;

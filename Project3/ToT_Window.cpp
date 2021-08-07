@@ -22,6 +22,7 @@ void ToT_Window::Init()
 	ai_module = tot_window_config.ai_module;
 	lang = tot_window_config.lang;
 	windowed_mode_window_size = tot_window_config.windowed_mode_window_size;
+	window_info.window_size = tot_window_config.windowed_mode_window_size;
 
 
 	tot_game_config = LoadGameConfig();

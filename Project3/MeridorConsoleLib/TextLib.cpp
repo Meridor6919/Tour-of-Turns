@@ -260,7 +260,7 @@ void MeridorConsoleLib::Text::OrdinaryText(TextInfo& text_info, const WindowInfo
 		const COORD position = { static_cast<short>(text_info.GetPointOfReference().X - text_align_shift),
 			static_cast<short>(text_info.GetPointOfReference().Y + i / 2 * text_info.GetSpacing()) };
 
-		
+
 		SetConsoleCursorPosition(window_info.handle, position);
 		SetColor(window_info.handle, window_info.secondary_color);
 		std::cout << (text_info.GetClearFlag() ? Spaces(text_info.GetText()[i].size()) : text_info.GetText()[i]);
