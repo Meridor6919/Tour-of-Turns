@@ -36,9 +36,12 @@ void MeridorConsoleLib::VisibleTimer::ShowRemainingTime()
 }
 void MeridorConsoleLib::VisibleTimer::SetTimer(const std::chrono::seconds& time, bool* timer_running)
 {
-	*timer_running = true;
-	this->timer_running = timer_running;
-	this->time_goal = std::chrono::system_clock::now() + time;
+	if (time.count() > 0)
+	{
+		*timer_running = true;
+		this->timer_running = timer_running;
+		this->time_goal = std::chrono::system_clock::now() + time;
+	}
 }
 void MeridorConsoleLib::VisibleTimer::StopTimer()
 {
