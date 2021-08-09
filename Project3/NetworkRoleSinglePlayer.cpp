@@ -17,7 +17,7 @@ bool SinglePlayer::isInit()
 }
 int SinglePlayer::NumericalSelection(const COORD coords)
 {
-	const HANDLE window = main_window->GetHandle();
+	const HANDLE window = main_window->GetOutputHandle();
 	char button;
 	int value = 0;
 	short decimal_position = 0;
@@ -76,7 +76,7 @@ int SinglePlayer::NumericalSelection(const COORD coords)
 }
 int SinglePlayer::BinarySelection(const COORD coords)
 {
-	const HANDLE window = main_window->GetHandle();
+	const HANDLE window = main_window->GetOutputHandle();
 	char button;
 
 	while (true)
@@ -107,7 +107,7 @@ int SinglePlayer::BinarySelection(const COORD coords)
 }
 std::string SinglePlayer::StringSelection(const std::string current_name, const int max_name_size, const COORD coords)
 {
-	const HANDLE window = main_window->GetHandle();
+	const HANDLE window = main_window->GetOutputHandle();
 	std::string name = current_name;
 	int name_size = static_cast<int>(name.size());
 	char button;
@@ -255,47 +255,47 @@ void SinglePlayer::ShowRankingParameters(const std::string ranking_path, bool cl
 }
 void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vector<std::pair<std::string, std::string>> text, const COORD base_position, const short paragraph_size, const short spacing, const bool clear)
 {
-	const HANDLE handle = main_window->GetHandle();
+	const HANDLE output_handle = main_window->GetOutputHandle();
 	mutex.lock();
 	if (clear)
 	{
 		const int border_size = Validation::box_width;
 		if (title != "")
 		{
-			SetConsoleCursorPosition(handle, { base_position.X, base_position.Y });
+			SetConsoleCursorPosition(output_handle, { base_position.X, base_position.Y });
 			std::cout << Spaces(border_size);
 		}
-		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
+		SetConsoleCursorPosition(output_handle, { base_position.X, base_position.Y + 1 });
 		std::cout << Spaces(border_size);
 		for (short i = 0; i < static_cast<short>(text.size()); ++i)
 		{
-			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
+			SetConsoleCursorPosition(output_handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
 			std::cout << Spaces(static_cast<short>(text[i].first.size()) + static_cast<short>(text[i].second.size()) + 2);
 		}
-		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
+		SetConsoleCursorPosition(output_handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
 		std::cout << Spaces(border_size);
 	}
 	else
 	{
 		if (title != "")
 		{
-			SetColor(handle, *main_window->secondary_color);
-			SetConsoleCursorPosition(handle, { base_position.X + static_cast<short>(Validation::box_width) / 2 - static_cast<short>(title.size()) / 2, base_position.Y });
+			SetColor(output_handle, *main_window->secondary_color);
+			SetConsoleCursorPosition(output_handle, { base_position.X + static_cast<short>(Validation::box_width) / 2 - static_cast<short>(title.size()) / 2, base_position.Y });
 			std::cout << title;
 		}
-		SetColor(handle, *main_window->secondary_color);
-		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + 1 });
+		SetColor(output_handle, *main_window->secondary_color);
+		SetConsoleCursorPosition(output_handle, { base_position.X, base_position.Y + 1 });
 		std::cout << GetMonoCharacterString(Validation::box_width, '_');
 		for (short i = 0; i < static_cast<short>(text.size()); ++i)
 		{
-			SetConsoleCursorPosition(handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
-			SetColor(handle, *main_window->main_color);
+			SetConsoleCursorPosition(output_handle, { base_position.X + paragraph_size, base_position.Y + spacing * (i + 2) });
+			SetColor(output_handle, *main_window->main_color);
 			std::cout << text[i].first + ": ";
-			SetColor(handle, *main_window->secondary_color);
+			SetColor(output_handle, *main_window->secondary_color);
 			std::cout << text[i].second;
 		}
-		SetColor(handle, *main_window->secondary_color);
-		SetConsoleCursorPosition(handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
+		SetColor(output_handle, *main_window->secondary_color);
+		SetConsoleCursorPosition(output_handle, { base_position.X, base_position.Y + spacing * (static_cast<short>(text.size()) + 2) });
 		std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	}
 	mutex.unlock();
@@ -303,12 +303,12 @@ void SinglePlayer::ShowLobbyInformation(const std::string title, const std::vect
 void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short pos, Color color, const bool clear)
 {
 	mutex.lock();
-	SetColor(main_window->GetHandle(), color);
+	SetColor(main_window->GetOutputHandle(), color);
 	for (int j = 0; j < static_cast<int>(text.size()); ++j)
 	{
 		const short x_pos = static_cast<short>(main_window->GetCharactersPerRow() - (16 * static_cast<int>(text.size())) + 16 * j) - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(text[j].size()));
 		const short y_pos = 16 + pos * 2;
-		SetConsoleCursorPosition(main_window->GetHandle(), { x_pos, y_pos });
+		SetConsoleCursorPosition(main_window->GetOutputHandle(), { x_pos, y_pos });
 		if (clear)
 		{
 			std::cout << Spaces(static_cast<int>(text[j].size()));
@@ -323,19 +323,19 @@ void SinglePlayer::ShowLeaderboard(const std::vector<std::string> text, short po
 void SinglePlayer::ShowLoading(std::string title, int& init, int condition, bool clear)
 {
 	const COORD loading_screen_postion = { static_cast<short>(main_window->GetCharactersPerRow()) / 2, static_cast<short>(main_window->GetCharactersPerColumn()) / 2 - 5 };
-	const HANDLE handle = main_window->GetHandle();
+	const HANDLE output_handle = main_window->GetOutputHandle();
 	const short title_length = static_cast<short>(title.size());
 	if (clear)
 	{
 		mutex.lock();
-		SetConsoleCursorPosition(handle, { loading_screen_postion.X - title_length / 2, loading_screen_postion.Y });
+		SetConsoleCursorPosition(output_handle, { loading_screen_postion.X - title_length / 2, loading_screen_postion.Y });
 		for (int i = 0; i < title_length; ++i)
 		{
 			std::cout << ' ';
 		}
 		for (short i = 0; i < 3; ++i)
 		{
-			SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2 + i });
+			SetConsoleCursorPosition(output_handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2 + i });
 			std::cout << "   ";
 		}
 		mutex.unlock();
@@ -353,16 +353,16 @@ void SinglePlayer::ShowLoading(std::string title, int& init, int condition, bool
 				loading_wheel[(i + iteration) % 8] = ' ';
 			}
 			mutex.lock();
-			SetConsoleCursorPosition(handle, { loading_screen_postion.X - title_length / 2, loading_screen_postion.Y });
-			SetColor(handle, *main_window->main_color);
+			SetConsoleCursorPosition(output_handle, { loading_screen_postion.X - title_length / 2, loading_screen_postion.Y });
+			SetColor(output_handle, *main_window->main_color);
 			std::cout << title;
-			SetColor(handle, *main_window->secondary_color);
+			SetColor(output_handle, *main_window->secondary_color);
 			{
-				SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2 });
+				SetConsoleCursorPosition(output_handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 2 });
 				std::cout << loading_wheel.substr(0, 3);
-				SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 3 });
+				SetConsoleCursorPosition(output_handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 3 });
 				std::cout << loading_wheel[7] << ' ' << loading_wheel[3];
-				SetConsoleCursorPosition(handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 4 });
+				SetConsoleCursorPosition(output_handle, { loading_screen_postion.X - 1, loading_screen_postion.Y + 4 });
 				std::cout << loading_wheel[6] << loading_wheel[5] << loading_wheel[4];
 			}
 			mutex.unlock();
@@ -387,7 +387,7 @@ void SinglePlayer::ShowChances(const int value, const bool reset)
 	float chance_to_succeed = static_cast<float>(static_cast<int>((100.0f - participants[0].EvaluateChance(current_field, speed_estimation, drift))));
 	float estimated_time = drift ? GameConstants::drift_value : 100.0f / (1.0f + speed_estimation * 10.0f / 36.0f);
 
-	HANDLE window = main_window->GetHandle();
+	HANDLE window = main_window->GetOutputHandle();
 	std::string helper;
 	std::vector<std::pair<double, std::string>> values = { {chance_to_succeed, LanguagePack::text[LanguagePack::race_chancebox][0]},  {estimated_time, LanguagePack::text[LanguagePack::race_chancebox][1]},
 														{burned_durability, LanguagePack::text[LanguagePack::race_chancebox][2]}, {speed_estimation, LanguagePack::text[LanguagePack::race_chancebox][3]} };
@@ -426,13 +426,13 @@ void SinglePlayer::ShowIndicator(int participant, bool clear)
 	mutex.lock();
 	if (clear)
 	{
-		SetConsoleCursorPosition(main_window->GetHandle(), { coord.X, coord.Y + static_cast<short>(participants[participant].place) * 2 });
+		SetConsoleCursorPosition(main_window->GetOutputHandle(), { coord.X, coord.Y + static_cast<short>(participants[participant].place) * 2 });
 		std::cout << ' ';
 	}
 	else
 	{
-		SetConsoleCursorPosition(main_window->GetHandle(), { coord.X, coord.Y + static_cast<short>(participants[participant].place) * 2 });
-		SetColor(main_window->GetHandle(), participants[participant].action_performed ? *main_window->secondary_color : Color::dark_gray);
+		SetConsoleCursorPosition(main_window->GetOutputHandle(), { coord.X, coord.Y + static_cast<short>(participants[participant].place) * 2 });
+		SetColor(main_window->GetOutputHandle(), participants[participant].action_performed ? *main_window->secondary_color : Color::dark_gray);
 		std::cout << '*';
 	}
 	mutex.unlock();
@@ -509,7 +509,7 @@ std::string SinglePlayer::GetTour()
 }
 bool SinglePlayer::GameLobby()
 {
-	const HANDLE handle = main_window->GetHandle();
+	const HANDLE output_handle = main_window->GetOutputHandle();
 	COORD starting_point = { static_cast<short>(main_window->GetCharactersPerRow()) / 2, 25 };
 	const short spacing = 3;
 	short main_menu_position = 0;
@@ -632,7 +632,7 @@ bool SinglePlayer::GameLobby()
 	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::game_options].size()); ++i)
 	{
 		mutex.lock();
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
+		SetConsoleCursorPosition(output_handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_options][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
 		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_options][i].size()));
 		mutex.unlock();
 	}
@@ -1079,7 +1079,7 @@ std::pair<int, int> SinglePlayer::PerformAction()
 {
 	if (participants[0].IsAlive())
 	{
-		const HANDLE window = main_window->GetHandle();
+		const HANDLE window = main_window->GetOutputHandle();
 		int value;
 		while (true)
 		{
@@ -1163,7 +1163,7 @@ void SinglePlayer::Leaderboard(const bool clear)
 }
 void SinglePlayer::Interface()
 {
-	const HANDLE window = main_window->GetHandle();
+	const HANDLE window = main_window->GetOutputHandle();
 	const std::string possible_actions[5] = {
 		LanguagePack::text[LanguagePack::race_actions_descritions][0] + std::to_string(static_cast<int>(participants[0].car_modifiers[CarAttributes::max_accelerating])) + ")   ",
 		LanguagePack::text[LanguagePack::race_actions_descritions][1] + std::to_string(static_cast<int>(participants[0].car_modifiers[CarAttributes::max_braking])) + ")   ",
@@ -1224,7 +1224,7 @@ bool SinglePlayer::VisionBox(const int turn)
 {
 	const std::vector<std::string> visible_tour = GetTourParameters(GetTour(), turn, participants[0].car_modifiers[CarAttributes::visibility]);
 	int ret = true;
-	const HANDLE window = main_window->GetHandle();
+	const HANDLE window = main_window->GetOutputHandle();
 	std::string helper;
 
 	if (visible_tour.size() > 0)

@@ -34,7 +34,8 @@ namespace MeridorConsoleLib
 	};
 	struct WindowInfo
 	{
-		HANDLE handle;
+		HANDLE input_handle;
+		HANDLE output_handle;
 		Color main_color;
 		Color secondary_color;
 	};

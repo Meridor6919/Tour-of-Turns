@@ -14,7 +14,8 @@ void ToT_Window::Init()
 
 	tot_window_config.window_info.visible_cursor = false;
 	window_info = tot_window_config.window_info;
-	window_info.handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	window_info.output_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	window_info.input_handle = GetStdHandle(STD_INPUT_HANDLE);
 	window_info.hwnd = GetConsoleWindow();
 	window_info.characters_capacity = { 240, 78 };
 	music_volume = tot_window_config.music_volume;

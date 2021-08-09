@@ -5,39 +5,39 @@ ToT::ToT()
 	main_window = std::make_shared<ToT_Window>();
 	main_window->Init();
 
-	handle = main_window->GetHandle();
+	output_handle = main_window->GetOutputHandle();
 	centered_position = { static_cast<short>(main_window->GetCharactersPerRow()) / 2, main_centered_Y };
 }
 void ToT::ShowRankingDetails(std::string tour, int racer_pos, int classification_type)
 {
 	std::vector<std::string> details = RankingManagement::GetTextToDisplay(tour, racer_pos, classification_type);
 
-	MeridorConsoleLib::SetColor(handle, *main_window->secondary_color);
-	SetConsoleCursorPosition(handle, top_left_box_position);
+	MeridorConsoleLib::SetColor(output_handle, *main_window->secondary_color);
+	SetConsoleCursorPosition(output_handle, top_left_box_position);
 	std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
 	{
-		SetConsoleCursorPosition(handle, { top_left_box_position.X + avarage_indent, top_left_box_position.Y + small_spacing * (i + 1) });
-		MeridorConsoleLib::SetColor(handle, *main_window->main_color);
+		SetConsoleCursorPosition(output_handle, { top_left_box_position.X + avarage_indent, top_left_box_position.Y + small_spacing * (i + 1) });
+		MeridorConsoleLib::SetColor(output_handle, *main_window->main_color);
 		std::cout << LanguagePack::text[LanguagePack::ranking_details][i] + ": ";
-		MeridorConsoleLib::SetColor(handle, *main_window->secondary_color);
+		MeridorConsoleLib::SetColor(output_handle, *main_window->secondary_color);
 		std::cout << details[i];
 	}
-	MeridorConsoleLib::SetColor(handle, *main_window->secondary_color);
-	SetConsoleCursorPosition(handle, { top_left_box_position.X, top_left_box_position.Y + small_spacing * static_cast<short>(Validation::ranking_details + 1) });
+	MeridorConsoleLib::SetColor(output_handle, *main_window->secondary_color);
+	SetConsoleCursorPosition(output_handle, { top_left_box_position.X, top_left_box_position.Y + small_spacing * static_cast<short>(Validation::ranking_details + 1) });
 	std::cout << GetMonoCharacterString(Validation::box_width, '_');
 }
 void ToT::ClearRankingDetails()
 {
 	const int border_size = Validation::box_width;
-	SetConsoleCursorPosition(handle, top_left_box_position);
+	SetConsoleCursorPosition(output_handle, top_left_box_position);
 	std::cout << Spaces(border_size);
 	for (short i = 0; i < static_cast<short>(Validation::ranking_details); ++i)
 	{
-		SetConsoleCursorPosition(handle, { top_left_box_position.X + avarage_indent, top_left_box_position.Y + small_spacing * (i + 1) });
+		SetConsoleCursorPosition(output_handle, { top_left_box_position.X + avarage_indent, top_left_box_position.Y + small_spacing * (i + 1) });
 		std::cout << Spaces(border_size);
 	}
-	SetConsoleCursorPosition(handle, { top_left_box_position.X, top_left_box_position.Y + small_spacing * static_cast<short>(Validation::ranking_details + 1) });
+	SetConsoleCursorPosition(output_handle, { top_left_box_position.X, top_left_box_position.Y + small_spacing * static_cast<short>(Validation::ranking_details + 1) });
 	std::cout << Spaces(border_size);
 }
 void ToT::SetTheme(const COORD& local_starting_point)
@@ -389,7 +389,7 @@ void ToT::Info()
 		if (temp_pos == info_pos)
 		{
 			const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::gamepedia_sections][info_pos].size());
-			SetConsoleCursorPosition(handle, { title_pos.X - static_cast<short>(static_cast<float>(text_size) * GetTextAlignScalar(TextAlign::center)), title_pos.Y });
+			SetConsoleCursorPosition(output_handle, { title_pos.X - static_cast<short>(static_cast<float>(text_size) * GetTextAlignScalar(TextAlign::center)), title_pos.Y });
 			std::cout << Spaces(text_size + bracket_size);
 			break;
 		}

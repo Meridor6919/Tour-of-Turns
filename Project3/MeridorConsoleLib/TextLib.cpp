@@ -36,12 +36,12 @@ int MeridorConsoleLib::Text::Choose::Horizontal(TextInfo& text_info, const Windo
 		{
 			multithreading_data.mutex->lock();
 		}
-		SetColor(window_info.handle, window_info.main_color);
-		SetConsoleCursorPosition(window_info.handle, position);
+		SetColor(window_info.output_handle, window_info.main_color);
+		SetConsoleCursorPosition(window_info.output_handle, position);
 		std::cout << "< ";
-		SetColor(window_info.handle, window_info.secondary_color);
+		SetColor(window_info.output_handle, window_info.secondary_color);
 		std::cout << text_info.GetText()[index];
-		SetColor(window_info.handle, window_info.main_color);
+		SetColor(window_info.output_handle, window_info.main_color);
 		std::cout << " >";
 		if (multithreading_data.mutex != nullptr)
 		{
@@ -54,7 +54,7 @@ int MeridorConsoleLib::Text::Choose::Horizontal(TextInfo& text_info, const Windo
 		}
 		if (button != 13 || text_info.GetClearFlag())
 		{
-			SetConsoleCursorPosition(window_info.handle, position);
+			SetConsoleCursorPosition(window_info.output_handle, position);
 			std::cout << Spaces(static_cast<int>(text_info.GetText()[index].size() + 4));
 		}
 		if (multithreading_data.mutex != nullptr)
@@ -95,8 +95,8 @@ int MeridorConsoleLib::Text::Choose::Veritcal(TextInfo& text_info, const WindowI
 		{
 			multithreading_data.mutex->lock();
 		}
-		SetColor(window_info.handle, window_info.secondary_color);
-		SetConsoleCursorPosition(window_info.handle, position);
+		SetColor(window_info.output_handle, window_info.secondary_color);
+		SetConsoleCursorPosition(window_info.output_handle, position);
 		std::cout << text_info.GetText()[index];
 		if (multithreading_data.mutex != nullptr)
 		{
@@ -107,8 +107,8 @@ int MeridorConsoleLib::Text::Choose::Veritcal(TextInfo& text_info, const WindowI
 		{
 			multithreading_data.mutex->lock();
 		}
-		SetColor(window_info.handle, window_info.main_color);
-		SetConsoleCursorPosition(window_info.handle, position);
+		SetColor(window_info.output_handle, window_info.main_color);
+		SetConsoleCursorPosition(window_info.output_handle, position);
 		std::cout << text_info.GetText()[index];
 		if (multithreading_data.mutex != nullptr)
 		{
@@ -146,8 +146,8 @@ int MeridorConsoleLib::Text::Choose::Veritcal(TextInfo& text_info, const WindowI
 		const COORD position = { static_cast<short>(text_info.GetPointOfReference().X - text_align_shift),
 			static_cast<short>(text_info.GetPointOfReference().Y + index * text_info.GetSpacing()) };
 
-		SetColor(window_info.handle, window_info.secondary_color);
-		SetConsoleCursorPosition(window_info.handle, position);
+		SetColor(window_info.output_handle, window_info.secondary_color);
+		SetConsoleCursorPosition(window_info.output_handle, position);
 		std::cout << text_info.GetText()[index];
 	}
 	return static_cast<int>(index);
@@ -158,14 +158,14 @@ void MeridorConsoleLib::Text::Choose::VerticalShowGUI(TextInfo& text_info, const
 	{
 		multithreading_data.mutex->lock();
 	}
-	SetColor(window_info.handle, window_info.main_color);
+	SetColor(window_info.output_handle, window_info.main_color);
 	for (short i = 0; i < static_cast<short>(text_info.GetText().size()); ++i)
 	{
 		short text_align_shift = static_cast<short>(GetTextAlignScalar(text_info.GetTextAlign()) * static_cast<float>(text_info.GetText()[i].size()));
 		const COORD position = { static_cast<short>(text_info.GetPointOfReference().X - text_align_shift),
 			static_cast<short>(text_info.GetPointOfReference().Y + i * text_info.GetSpacing()) };
 
-		SetConsoleCursorPosition(window_info.handle, position);
+		SetConsoleCursorPosition(window_info.output_handle, position);
 		std::cout << text_info.GetText()[i];
 	}
 	if (multithreading_data.mutex != nullptr)
@@ -185,7 +185,7 @@ void MeridorConsoleLib::Text::Choose::VerticalClearGUI(TextInfo& text_info, cons
 		const COORD position = { static_cast<short>(text_info.GetPointOfReference().X - text_align_shift),
 			static_cast<short>(text_info.GetPointOfReference().Y + i * text_info.GetSpacing()) };
 
-		SetConsoleCursorPosition(window_info.handle, position);
+		SetConsoleCursorPosition(window_info.output_handle, position);
 		std::cout << Spaces(static_cast<int>(text_info.GetText()[i].size()));
 	}
 	if (multithreading_data.mutex != nullptr)
@@ -212,7 +212,7 @@ void MeridorConsoleLib::Text::Choose::Numeric(int* number_return_value, const in
 		{
 			multithreading_data.mutex->lock();
 		}
-		SetConsoleCursorPosition(window_info.handle, { static_cast<short>(starting_point.X + pos), starting_point.Y });
+		SetConsoleCursorPosition(window_info.output_handle, { static_cast<short>(starting_point.X + pos), starting_point.Y });
 		if (button >= '0' && button <= '9')
 		{
 			if (button == '0' && pos == 0)
@@ -234,7 +234,7 @@ void MeridorConsoleLib::Text::Choose::Numeric(int* number_return_value, const in
 			--pos;
 		}
 	} while (button != 13);
-	SetConsoleCursorPosition(window_info.handle, starting_point);
+	SetConsoleCursorPosition(window_info.output_handle, starting_point);
 	std::cout << Spaces(pos);
 	if (multithreading_data.mutex != nullptr)
 	{
@@ -261,10 +261,10 @@ void MeridorConsoleLib::Text::OrdinaryText(TextInfo& text_info, const WindowInfo
 			static_cast<short>(text_info.GetPointOfReference().Y + i / 2 * text_info.GetSpacing()) };
 
 
-		SetConsoleCursorPosition(window_info.handle, position);
-		SetColor(window_info.handle, window_info.secondary_color);
+		SetConsoleCursorPosition(window_info.output_handle, position);
+		SetColor(window_info.output_handle, window_info.secondary_color);
 		std::cout << (text_info.GetClearFlag() ? Spaces(text_info.GetText()[i].size()) : text_info.GetText()[i]);
-		SetColor(window_info.handle, window_info.main_color);
+		SetColor(window_info.output_handle, window_info.main_color);
 		if (i + 1 < vector_size)
 		{
 			std::cout << (text_info.GetClearFlag() ? Spaces(text_info.GetText()[i + 1].size()) : text_info.GetText()[i + 1]);
@@ -289,18 +289,18 @@ void MeridorConsoleLib::Text::TableText(TableTextInfo& table_text_info, const Wi
 		{
 			if (column_number < table_text_info.GetNumberOfPaintedRows())
 			{
-				SetColor(window_info.handle, window_info.secondary_color);
+				SetColor(window_info.output_handle, window_info.secondary_color);
 			}
 			else
 			{
-				SetColor(window_info.handle, window_info.main_color);
+				SetColor(window_info.output_handle, window_info.main_color);
 			}
 			++column_number;
 		}
 		short general_spacing_value = table_text_info.GetVerticalSpacing() * current_column + table_text_info.GetVerticalSpacing() / 2;
 		COORD position = { table_text_info.GetPointOfReference().X + general_spacing_value - static_cast<short>(GetTextAlignScalar(table_text_info.GetTextAlign()) * static_cast<float>(table_text_info.GetText()[i].size())),
 								table_text_info.GetPointOfReference().Y + i * table_text_info.GetHorizontalSpacing()};
-		SetConsoleCursorPosition(window_info.handle, position);
+		SetConsoleCursorPosition(window_info.output_handle, position);
 
 		std::cout << (table_text_info.GetClearFlag() ? Spaces(table_text_info.GetText()[i].size()) : table_text_info.GetText()[i]);
 	}

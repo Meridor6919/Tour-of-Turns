@@ -20,8 +20,8 @@ void MeridorConsoleLib::VisibleTimer::ShowRemainingTime()
 
 			//Draw Timer
 			multithreading_data->mutex->lock();
-			SetConsoleCursorPosition(window_info->handle, position_of_timer);
-			SetColor(window_info->handle, window_info->main_color);
+			SetConsoleCursorPosition(window_info->output_handle, position_of_timer);
+			SetColor(window_info->output_handle, window_info->main_color);
 			std::cout << (minutes_left < 10 ? "0" : "") << minutes_left << ':' << (seconds_left < 10 ? "0" : "") << seconds_left;
 			multithreading_data->mutex->unlock();
 
@@ -51,7 +51,7 @@ void MeridorConsoleLib::VisibleTimer::StopTimer()
 		thread.join();
 	}
 	multithreading_data->mutex->lock();
-	SetConsoleCursorPosition(window_info->handle, position_of_timer);
+	SetConsoleCursorPosition(window_info->output_handle, position_of_timer);
 	std::cout << "     ";
 	multithreading_data->mutex->unlock();
 }

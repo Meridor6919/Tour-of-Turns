@@ -14,9 +14,9 @@ float MeridorConsoleLib::GetTextAlignScalar(TextAlign text_align)
 {
 	return static_cast<float>(text_align) / 2.0f;;
 }
-void MeridorConsoleLib::SetColor(HANDLE handle, Color color)
+void MeridorConsoleLib::SetColor(HANDLE output_handle, Color color)
 {
-	SetConsoleTextAttribute(handle, static_cast<WORD>(color));
+	SetConsoleTextAttribute(output_handle, static_cast<WORD>(color));
 }
 std::string MeridorConsoleLib::GetSeparatedValue(const std::string& text, int index, char separator)
 {

@@ -15,7 +15,7 @@ void MeridorConsoleLib::InfoBox::SetCursorPosition(short index)
 
 	local_position.X = static_cast<short>(info_box_desc.box_size.left + static_cast<short>(static_cast<float>(box_width) * GetTextAlignScalar(info_box_desc.text_align)));
 	local_position.Y = static_cast<short>(info_box_desc.box_size.top + upper_border_height + index * info_box_desc.vertical_spacing);
-	SetConsoleCursorPosition(window_info.handle, local_position);
+	SetConsoleCursorPosition(window_info.output_handle, local_position);
 }
 std::string MeridorConsoleLib::InfoBox::RegulateStringSize(const std::string& text, short max_size, bool fill_to_max_size)
 {
@@ -47,9 +47,9 @@ void MeridorConsoleLib::InfoBox::ShowLineOfText(unsigned short index, Color prim
 	std::string ordinary_text = RegulateStringSize(data[index].second, box_width - static_cast<short>(highlighted_text.size()) - 1, true);
 
 	SetCursorPosition(data_size - index - 1);
-	SetColor(window_info.handle, secondary_color);
+	SetColor(window_info.output_handle, secondary_color);
 	std::cout << highlighted_text << ' ';
-	SetColor(window_info.handle, primary_color);
+	SetColor(window_info.output_handle, primary_color);
 	std::cout << ordinary_text;
 
 }
@@ -98,12 +98,12 @@ void MeridorConsoleLib::InfoBox::DrawBox(bool clear_instead)
 		multithreading_data->mutex->lock();
 	}
 	//Top border
-	SetColor(window_info.handle, window_info.secondary_color);
-	SetConsoleCursorPosition(window_info.handle, local_position);
+	SetColor(window_info.output_handle, window_info.secondary_color);
+	SetConsoleCursorPosition(window_info.output_handle, local_position);
 	std::cout << border;
 	//Bottom border
 	local_position.Y += box_height;
-	SetConsoleCursorPosition(window_info.handle, local_position);
+	SetConsoleCursorPosition(window_info.output_handle, local_position);
 	std::cout << border;
 	if (multithreading_data != nullptr)
 	{
@@ -121,7 +121,7 @@ void MeridorConsoleLib::InfoBox::Clear()
 	}
 	for (short i = static_cast<short>(info_box_desc.box_size.top); i < static_cast<short>(info_box_desc.box_size.bottom); ++i)
 	{
-		SetConsoleCursorPosition(window_info.handle, { x_pos, i });
+		SetConsoleCursorPosition(window_info.output_handle, { x_pos, i });
 		std::cout << empty_text;
 	}
 	if (multithreading_data != nullptr)

@@ -3,28 +3,51 @@
 
 void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
 {
-    RECT base_winpos;
-	GetWindowRect(main_window->window_info.hwnd, &base_winpos);
+    RECT base_window_pos;
+	GetWindowRect(main_window->window_info.hwnd, &base_window_pos);
+	bool last_minimized = false;
 
     while (thread_active)
     {
-        RECT current_winpos;
-        GetWindowRect(main_window->window_info.hwnd, &current_winpos);
-        
-        const bool not_starting_pos = current_winpos.top != base_winpos.top || current_winpos.left != base_winpos.left;
-        const bool not_minimized = !IsIconic(main_window->window_info.hwnd);
-		
-        if (not_starting_pos && not_minimized)
+        RECT current_window_pos;
+        GetWindowRect(main_window->window_info.hwnd, &current_window_pos);
+
+        if ((current_window_pos.top != base_window_pos.top || current_window_pos.left != base_window_pos.left) && (!IsIconic(main_window->window_info.hwnd)))
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
-            if (!IsIconic(main_window->window_info.hwnd))
-            {
-                mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                main_window->SetWindowSize();
-                main_window->SetCursor(main_window->window_info.visible_cursor);
+			if (!last_minimized)
+			{
+				WINDOWPLACEMENT window_placement = {};
+				DWORD number_of_events;
+				GetWindowPlacement(main_window->GetHWND(), &window_placement);
+
+				mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+				main_window->SetWindowSize();
+				main_window->SetCursor(main_window->window_info.visible_cursor);
+
+				GetNumberOfConsoleInputEvents(main_window->GetInputHandle(), &number_of_events);
+
+				if (number_of_events > 0)
+				{
+					INPUT_RECORD buffer[buffer_size];
+					ReadConsoleInputA(main_window->GetInputHandle(), buffer, buffer_size, &number_of_events);
+
+					for (int i = 0; i < number_of_events; ++i)
+					{
+						if (buffer[i].EventType == FOCUS_EVENT && buffer[i].Event.MenuEvent.dwCommandId == 0)
+						{
+							ShowWindow(main_window->GetHWND(), SW_MINIMIZE);
+							last_minimized = true;
+						}
+					}
+
+				}
             }
+			else
+			{
+				last_minimized = false;
+			}
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        std::this_thread::sleep_for(std::chrono::milliseconds(refresh_rate));
     }
 }
 void MeridorConsoleLib::WindowImmobilizer::Init(Window* window)
