@@ -208,15 +208,6 @@ void MeridorConsoleLib::Window::SetCursor(const bool visible)
 }
 void MeridorConsoleLib::Window::SetWindowMode(WindowMode window_mode, COORD window_size)
 {
-	if (window_mode != WindowMode::windowed_fullscreen)
-	{
-		window_immobilizer.Stop();
-	}
-	else
-	{
-		window_immobilizer.Start();
-	}
-
 	if (window_mode != WindowMode::windowed)
 	{
 		window_info.window_size = { static_cast<short>(GetSystemMetrics(SM_CXSCREEN)), static_cast<short>(GetSystemMetrics(SM_CYSCREEN)) };
@@ -233,4 +224,13 @@ void MeridorConsoleLib::Window::SetWindowMode(WindowMode window_mode, COORD wind
 	SetBufferSize();
 	SetCursor(window_info.visible_cursor);
 	UpdateWindowInformation();
+
+	if (window_mode != WindowMode::windowed_fullscreen)
+	{
+		window_immobilizer.Stop();
+	}
+	else
+	{
+		window_immobilizer.Start();
+	}
 }
