@@ -12,7 +12,7 @@ Client::Client(ToT_Window& main_window) : SinglePlayer(main_window)
 }
 bool Client::StartNetwork()
 {
-	HANDLE handle = main_window->GetHandle();
+	HANDLE output_handle = main_window->GetOutputHandle();
 	COORD starting_point = { (short)main_window->GetCharactersPerRow() / 2, 25 };
 	constexpr short spacing = 2;
 	std::string selected_game = "";
@@ -73,7 +73,7 @@ bool Client::StartNetwork()
 	for (short i = 0; i < static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby].size()); ++i)
 	{
 		const short text_size = static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby][i].size());
-		SetConsoleCursorPosition(handle, { starting_point.X - text_size / 2, starting_point.Y + i * spacing });
+		SetConsoleCursorPosition(output_handle, { starting_point.X - text_size / 2, starting_point.Y + i * spacing });
 		for (int j = 0; j < text_size; ++j)
 		{
 			std::cout << ' ';
@@ -83,7 +83,7 @@ bool Client::StartNetwork()
 }
 void Client::HighlightSelectedGame(std::string game, bool clear)
 {
-	HANDLE handle = main_window->GetHandle();
+	HANDLE output_handle = main_window->GetOutputHandle();
 	if (clear)
 	{
 		for (int i = 0; i < static_cast<int>(game.size()); ++i)
@@ -91,8 +91,8 @@ void Client::HighlightSelectedGame(std::string game, bool clear)
 			game[i] = ' ';
 		}
 	}
-	SetConsoleCursorPosition(handle, { 0,0 });
-	SetColor(handle, *main_window->main_color);
+	SetConsoleCursorPosition(output_handle, { 0,0 });
+	SetColor(output_handle, *main_window->main_color);
 	std::cout << game;
 }
 void Client::ValidateAttack(int target, int participant)

@@ -16,19 +16,19 @@ int Host::Possible_AIs()
 }
 void Host::ShowClientsInLobby(const COORD starting_position, bool* running)
 {
-	const HANDLE handle = main_window->GetHandle();
+	const HANDLE output_handle = main_window->GetOutputHandle();
 
 	mutex.lock();
 	const short border_size = static_cast<short>(Validation::box_width);
 	const short title_size = static_cast<short>(LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby].size());
 	const short box_size = (lobby_size < 4 ? 4 : lobby_size);
 
-	SetColor(handle, *main_window->secondary_color);
-	SetConsoleCursorPosition(handle, { starting_position.X + border_size / 2 - title_size / 2, starting_position.Y });
+	SetColor(output_handle, *main_window->secondary_color);
+	SetConsoleCursorPosition(output_handle, { starting_position.X + border_size / 2 - title_size / 2, starting_position.Y });
 	std::cout << LanguagePack::text[LanguagePack::other_strings][OtherStrings::players_in_lobby];
-	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 1 });
+	SetConsoleCursorPosition(output_handle, { starting_position.X, starting_position.Y + 1 });
 	std::cout << GetMonoCharacterString(Validation::box_width, '_');
-	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(box_size) * 2 });
+	SetConsoleCursorPosition(output_handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(box_size) * 2 });
 	std::cout << GetMonoCharacterString(Validation::box_width, '_');
 	mutex.unlock();
 	while (*running)
@@ -37,19 +37,19 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool* running)
 		mutex.lock();
 		for (short i = 0; i < lobby_size; ++i)
 		{
-			SetConsoleCursorPosition(handle, { 0,i + 1 });
-			SetColor(handle, *main_window->main_color);
+			SetConsoleCursorPosition(output_handle, { 0,i + 1 });
+			SetColor(output_handle, *main_window->main_color);
 			for (short j = 0; j < NetworkConnector::Constants::max_ip_size; ++j)
 			{
-				SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2 * (i + 1) + 2 });
+				SetConsoleCursorPosition(output_handle, { starting_position.X + 1 + j, starting_position.Y + 2 * (i + 1) + 2 });
 				std::cout << ' ';
 			}
 		}
 		for (short i = 0; i < static_cast<short>(clients_names.size()); ++i)
 		{
 
-			SetConsoleCursorPosition(handle, { starting_position.X + 1, starting_position.Y + 2 * (i + 1) + 2 });
-			SetColor(handle, *main_window->main_color);
+			SetConsoleCursorPosition(output_handle, { starting_position.X + 1, starting_position.Y + 2 * (i + 1) + 2 });
+			SetColor(output_handle, *main_window->main_color);
 			std::cout << clients_names[i];
 		}
 		mutex.unlock();
@@ -61,15 +61,15 @@ void Host::ShowClientsInLobby(const COORD starting_position, bool* running)
 	{
 		for (short j = 0; j < static_cast<short>(NetworkConnector::Constants::ip_loopback.size()); ++j)
 		{
-			SetConsoleCursorPosition(handle, { starting_position.X + 1 + j, starting_position.Y + 2 * (i + 1) + 2 });
+			SetConsoleCursorPosition(output_handle, { starting_position.X + 1 + j, starting_position.Y + 2 * (i + 1) + 2 });
 			std::cout << ' ';
 		}
 	}
-	SetConsoleCursorPosition(handle, { starting_position.X + border_size / 2 - title_size / 2, starting_position.Y });
+	SetConsoleCursorPosition(output_handle, { starting_position.X + border_size / 2 - title_size / 2, starting_position.Y });
 	std::cout << Spaces(title_size);
-	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 1 });
+	SetConsoleCursorPosition(output_handle, { starting_position.X, starting_position.Y + 1 });
 	std::cout << Spaces(border_size);
-	SetConsoleCursorPosition(handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(lobby_size) * 2 });
+	SetConsoleCursorPosition(output_handle, { starting_position.X, starting_position.Y + 3 + static_cast<short>(lobby_size) * 2 });
 	std::cout << Spaces(border_size);
 	mutex.unlock();
 }
@@ -82,13 +82,13 @@ void Host::SetLobbySize()
 		horizontal_menu_text.push_back(std::to_string(i));
 	}
 	COORD starting_point = { static_cast<short>(main_window->GetCharactersPerRow() + LanguagePack::text[LanguagePack::multiplayer_menu][0].size()) / 2 + 1, 25 };
-	SetConsoleCursorPosition(main_window->GetHandle(), starting_point);
+	SetConsoleCursorPosition(main_window->GetOutputHandle(), starting_point);
 	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
 	std::cout << text;
 	Text::TextInfo text_info(horizontal_menu_text, 0, { starting_point.X + static_cast<short>(text.size()) + 2, starting_point.Y }, TextAlign::left, 0, true);
 	MultithreadingData  multithreading_data = { &mutex, &timer_running };
 	lobby_size = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data) + 1;
-	SetConsoleCursorPosition(main_window->GetHandle(), starting_point);
+	SetConsoleCursorPosition(main_window->GetOutputHandle(), starting_point);
 	std::cout << Spaces(static_cast<short>(text.size()));
 }
 void Host::GetParticipants(std::string name, std::string tour, std::string car, std::string tire)
@@ -119,7 +119,7 @@ bool Host::GameLobby()
 	network_connector->client_connector.Start(lobby_size);
 
 	std::thread show_clients_in_lobby(&Host::ShowClientsInLobby, this, client_box_starting_pos, &show_clients);
-	const HANDLE handle = main_window->GetHandle();
+	const HANDLE output_handle = main_window->GetOutputHandle();
 	COORD starting_point = { static_cast<short>(main_window->GetCharactersPerRow()) / 2, 25 };
 	const short spacing = 3;
 	short main_menu_position = 0;
@@ -278,7 +278,7 @@ bool Host::GameLobby()
 	for (int i = 0; i < static_cast<int>(LanguagePack::text[LanguagePack::game_options_multiplayer].size()); ++i)
 	{
 		mutex.lock();
-		SetConsoleCursorPosition(handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_options_multiplayer][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
+		SetConsoleCursorPosition(output_handle, { starting_point.X - static_cast<short>(static_cast<float>(TextAlign::center) / 2.0f * static_cast<float>(LanguagePack::text[LanguagePack::game_options_multiplayer][i].size())), starting_point.Y + static_cast<short>(i * spacing) });
 		std::cout << Spaces(static_cast<int>(LanguagePack::text[LanguagePack::game_options_multiplayer][i].size()));
 		mutex.unlock();
 	}

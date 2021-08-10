@@ -12,7 +12,7 @@ using namespace MeridorConsoleLib;
 
 class ToT {
 	std::shared_ptr<ToT_Window> main_window;
-	HANDLE handle;
+	HANDLE output_handle;
 
 	COORD centered_position;
 
