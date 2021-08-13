@@ -141,7 +141,7 @@ bool Host::GameLobby()
 	{
 		Text::TextInfo text_info(LanguagePack::text[LanguagePack::game_options_multiplayer], main_menu_position, starting_point, TextAlign::center, spacing, false);
 		MultithreadingData  multithreading_data = { &mutex, &timer_running };
-		main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+		main_menu_position = Text::Choose::Vertical(text_info, *main_window->GetWindowInfo(), multithreading_data);
 		if (!timer_running)
 		{
 			break;

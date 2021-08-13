@@ -160,7 +160,7 @@ void ToT::MainMenu()
 	while (true)
 	{
 		Text::TextInfo text_info(LanguagePack::text[LanguagePack::main_menu], main_menu_position, centered_position, TextAlign::center, avarage_spacing, true);
-		switch (main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo()))
+		switch (main_menu_position = Text::Choose::Vertical(text_info, *main_window->GetWindowInfo()))
 		{
 		case 0://Singleplayer
 		case 1://Multiplayer
@@ -230,7 +230,7 @@ void ToT::Options()
 	while (loop)
 	{
 		Text::TextInfo text_info(LanguagePack::text[LanguagePack::general_options], main_menu_position, centered_position, TextAlign::center, avarage_spacing, false);
-		main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
+		main_menu_position = Text::Choose::Vertical(text_info, *main_window->GetWindowInfo());
 		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::general_options][main_menu_position].size()) / 2 + avarage_indent;
 		const short game_window_vertical_position = static_cast<short>(main_menu_position * avarage_spacing);
 		const COORD local_starting_point = { centered_position.X + submenu_horizontal_position, centered_position.Y + game_window_vertical_position };
@@ -308,7 +308,7 @@ void ToT::Ranking()
 	while (loop)
 	{
 		const std::string starting_map_path = FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking;
-		text_info.SetStartingIndex(Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo()));
+		text_info.SetStartingIndex(Text::Choose::Vertical(text_info, *main_window->GetWindowInfo()));
 		const short submenu_horizontal_position = static_cast<short>(LanguagePack::text[LanguagePack::ranking_menu][text_info.GetStartingIndex()].size()) / 2 + avarage_indent;
 		const short game_window_vertical_position = static_cast<short>(text_info.GetStartingIndex() * avarage_spacing);
 		const COORD local_starting_point = { centered_position.X + submenu_horizontal_position, centered_position.Y + game_window_vertical_position };
@@ -404,7 +404,7 @@ void ToT::Game(const bool multiplayer)
 		do
 		{
 			Text::TextInfo text_info(LanguagePack::text[LanguagePack::multiplayer_menu], 0, centered_position, TextAlign::center, avarage_spacing, false);
-			switch (Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo()))
+			switch (Text::Choose::Vertical(text_info, *main_window->GetWindowInfo()))
 			{
 			case 0:
 			{

@@ -24,7 +24,7 @@ bool Client::StartNetwork()
 	while (true)
 	{
 		Text::TextInfo text_info(LanguagePack::text[LanguagePack::multiplayer_client_lobby], 0, starting_point, TextAlign::center, spacing, false);
-		int option = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo());
+		int option = Text::Choose::Vertical(text_info, *main_window->GetWindowInfo());
 		if (option == Multiplayer::active_games)
 		{
 			std::vector<std::string>active_games = { LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::back] };

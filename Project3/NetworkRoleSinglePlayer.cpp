@@ -531,7 +531,7 @@ bool SinglePlayer::GameLobby()
 	{
 		Text::TextInfo text_info(LanguagePack::text[LanguagePack::game_options], main_menu_position, starting_point, TextAlign::center, spacing, false);
 		MultithreadingData  multithreading_data = { &mutex, &timer_running };
-		main_menu_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+		main_menu_position = Text::Choose::Vertical(text_info, *main_window->GetWindowInfo(), multithreading_data);
 		if (!timer_running)
 		{
 			break;
@@ -771,7 +771,7 @@ int SinglePlayer::PerformAttack()
 		{
 			Text::TextInfo text_info(rival_name, 0, { static_cast<short>(main_window->GetCharactersPerRow() - 28), static_cast<short>(main_window->GetCharactersPerColumn() - 17) }, TextAlign::center, 2, true);
 			MultithreadingData  multithreading_data = { &mutex, &timer_running };
-			short i = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+			short i = Text::Choose::Vertical(text_info, *main_window->GetWindowInfo(), multithreading_data);
 			return rival_id[i];
 		}
 	}
@@ -1085,7 +1085,7 @@ std::pair<int, int> SinglePlayer::PerformAction()
 		{
 			Text::TextInfo text_info(LanguagePack::text[LanguagePack::race_actions], take_action_position, { 1,39 }, TextAlign::left, 2, false);
 			MultithreadingData  multithreading_data = { &mutex, &timer_running };
-			take_action_position = Text::Choose::Veritcal(text_info, *main_window->GetWindowInfo(), multithreading_data);
+			take_action_position = Text::Choose::Vertical(text_info, *main_window->GetWindowInfo(), multithreading_data);
 			if (!timer_running)
 			{
 				if (participants[0].current_speed == 0)

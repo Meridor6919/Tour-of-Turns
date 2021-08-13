@@ -76,7 +76,7 @@ int MeridorConsoleLib::Text::Choose::Horizontal(TextInfo<ContainerType>& text_in
 	return static_cast<int>(index);
 }
 template<template<typename> class ContainerType>
-int MeridorConsoleLib::Text::Choose::Veritcal(TextInfo<ContainerType>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+int MeridorConsoleLib::Text::Choose::Vertical(TextInfo<ContainerType>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	char button;
 

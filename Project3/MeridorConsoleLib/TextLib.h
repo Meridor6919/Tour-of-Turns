@@ -17,7 +17,7 @@ namespace MeridorConsoleLib
 			extern int Horizontal(TextInfo<ContainerType>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 
 			template<template<typename> class ContainerType>
-			extern int Veritcal(TextInfo<ContainerType>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
+			extern int Vertical(TextInfo<ContainerType>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});
 
 			template<template<typename> class ContainerType>
 			extern void VerticalShowGUI(TextInfo<ContainerType>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {});

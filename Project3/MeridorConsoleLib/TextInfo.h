@@ -9,66 +9,66 @@ namespace MeridorConsoleLib
 {
 	namespace Text
 	{
-		template<class T>
-		class RefTextContainer
+		template<class DataType>
+		class RefContainer
 		{
-			std::vector<T>* text_ref;
-			std::vector<T> text_val;
+			std::vector<DataType>* text_ref;
+			std::vector<DataType> text_val;
 
 		public:
-			RefTextContainer() {};
-			RefTextContainer(std::vector<T>&& v)
+			RefContainer() {};
+			RefContainer(std::vector<DataType>&& v)
 			{
 				*this = v;
 			}
-			RefTextContainer(std::vector<T>& v)
+			RefContainer(std::vector<DataType>& v)
 			{
 				*this = v;
 			}
-			RefTextContainer(std::initializer_list<T> il) 
+			RefContainer(std::initializer_list<DataType> il)
 			{
 				text_val = il;
 				text_ref = &text_val;
 			};
-			RefTextContainer(const RefTextContainer& tc)
+			RefContainer(const RefContainer& tc)
 			{
 				this->text_val = std::move(tc.text_val);
 				this->text_ref = &(this->text_val);
 			}
 
-			std::vector<T>& Get() {
+			std::vector<DataType>& Get() {
 				return *text_ref;
 			}
 			size_t size()
 			{
 				return text_val.size();
 			}
-			RefTextContainer& operator=(std::vector<T>&& v)
+			RefContainer& operator=(std::vector<DataType>&& v)
 			{
 				text_val = v;
 				text_ref = &text_val;
 				return *this;
 			}
-			RefTextContainer& operator=(std::vector<T>& v)
+			RefContainer& operator=(std::vector<DataType>& v)
 			{
 				text_ref = &v;
 				return *this;
 			}
-			RefTextContainer& operator=(RefTextContainer& tc)
+			RefContainer& operator=(RefContainer& tc)
 			{
 				text_ref = tc.text_ref;
 				return *this;
 			}
-			T& operator[](size_t index)
+			DataType& operator[](size_t index)
 			{
 				return text_val[index];
 			};
 		};
 
-		template < template< typename > class T>
+		template < template< typename > class DataType>
 		struct TextInfo
 		{
-			T<std::string> text = {};
+			DataType<std::string> text = {};
 			size_t starting_index = 0;
 			COORD point_of_reference = { 0,0 };
 			TextAlign text_align = TextAlign::left;
@@ -76,10 +76,10 @@ namespace MeridorConsoleLib
 			bool clear_after = false;
 		};
 
-		template < template< typename > class T>
+		template < template< typename > class DataType>
 		struct TableTextInfo
 		{
-			T<std::string> text = {};
+			DataType<std::string> text = {};
 			COORD point_of_reference = { 0,0 };
 			TextAlign table_alignment = TextAlign::left;
 			TextAlign column_alignment = TextAlign::left;
