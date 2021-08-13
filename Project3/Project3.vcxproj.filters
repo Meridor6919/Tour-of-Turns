@@ -127,10 +127,7 @@
     <ClCompile Include="ValidationStatus.cpp">
       <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\TextInfo.cpp">
-      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\TableTextInfo.cpp">
+    <ClCompile Include="MeridorConsoleLib\TextLib-Impl.cpp">
       <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
     </ClCompile>
   </ItemGroup>
@@ -229,9 +226,6 @@
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="MeridorConsoleLib\TextInfo.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\TableTextInfo.h">
       <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="MeridorConsoleLib\Color.h">
