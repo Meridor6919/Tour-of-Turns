@@ -85,7 +85,16 @@ void Host::SetLobbySize()
 	SetConsoleCursorPosition(main_window->GetOutputHandle(), starting_point);
 	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
 	std::cout << text;
-	Text::TextInfo text_info(horizontal_menu_text, 0, { starting_point.X + static_cast<short>(text.size()) + 2, starting_point.Y }, TextAlign::left, 0, true);
+
+	Text::TextInfo<Text::RefContainer> text_info;
+	text_info.text = horizontal_menu_text;
+	text_info.text_align = TextAlign::left;
+	text_info.starting_index = 0;
+	text_info.spacing = 0;
+	text_info.point_of_reference = { static_cast<short>(starting_point.X + text.size() + 2), starting_point.Y };
+	text_info.clear_after = true;
+
+
 	MultithreadingData  multithreading_data = { &mutex, &timer_running };
 	lobby_size = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data) + 1;
 	SetConsoleCursorPosition(main_window->GetOutputHandle(), starting_point);
@@ -139,7 +148,14 @@ bool Host::GameLobby()
 
 	while (true)
 	{
-		Text::TextInfo text_info(LanguagePack::text[LanguagePack::game_options_multiplayer], main_menu_position, starting_point, TextAlign::center, spacing, false);
+		Text::TextInfo<Text::RefContainer> text_info;
+		text_info.text = LanguagePack::text[LanguagePack::game_options_multiplayer];
+		text_info.text_align = TextAlign::left;
+		text_info.starting_index = main_menu_position;
+		text_info.spacing = spacing;
+		text_info.point_of_reference = starting_point;
+		text_info.clear_after = false;
+
 		MultithreadingData  multithreading_data = { &mutex, &timer_running };
 		main_menu_position = Text::Choose::Vertical(text_info, *main_window->GetWindowInfo(), multithreading_data);
 		if (!timer_running)
@@ -163,7 +179,15 @@ bool Host::GameLobby()
 			{
 				text.push_back(std::to_string(i));
 			}
-			Text::TextInfo text_info(text, ais, starting_local_pos, TextAlign::left, 0, true);
+
+			Text::TextInfo<Text::RefContainer> text_info;
+			text_info.text = text;
+			text_info.text_align = TextAlign::left;
+			text_info.starting_index = ais;
+			text_info.spacing = 0;
+			text_info.point_of_reference = starting_local_pos;
+			text_info.clear_after = true;
+
 			MultithreadingData  multithreading_data = { &mutex, &timer_running };
 			ais = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
 			ShowRankingParameters(tours[tours_pos] + ExtName::ranking, true);
@@ -177,7 +201,14 @@ bool Host::GameLobby()
 			std::vector<std::string> text = network_connector->GetClientNames();
 			text.insert(text.begin(), LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::back]);
 
-			Text::TextInfo text_info(text, 0, starting_local_pos, TextAlign::left, 0, true);
+			Text::TextInfo<Text::RefContainer> text_info;
+			text_info.text = text;
+			text_info.text_align = TextAlign::left;
+			text_info.starting_index = 0;
+			text_info.spacing = 0;
+			text_info.point_of_reference = starting_local_pos;
+			text_info.clear_after = true;
+			
 			MultithreadingData  multithreading_data = { &mutex, &timer_running };
 
 			if (int target = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data))
@@ -195,7 +226,14 @@ bool Host::GameLobby()
 				unban_options.push_back(network_connector->GetIP(banned_addresses[i]));
 			}
 
-			Text::TextInfo text_info(unban_options, 0, starting_local_pos, TextAlign::center, 0, true);
+			Text::TextInfo<Text::RefContainer> text_info;
+			text_info.text = unban_options;
+			text_info.text_align = TextAlign::center;
+			text_info.starting_index = ais;
+			text_info.spacing = 0;
+			text_info.point_of_reference = starting_local_pos;
+			text_info.clear_after = true;
+
 			MultithreadingData  multithreading_data = { &mutex, &timer_running };
 			if (int target = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data))
 			{
@@ -210,8 +248,14 @@ bool Host::GameLobby()
 			{
 				timer_values.push_back((i < 60 ? "0" : "") + std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 			}
+			Text::TextInfo<Text::RefContainer> text_info;
+			text_info.text = timer_values;
+			text_info.text_align = TextAlign::left;
+			text_info.starting_index = timer_settings;
+			text_info.spacing = 0;
+			text_info.point_of_reference = starting_local_pos;
+			text_info.clear_after = true;
 
-			Text::TextInfo text_info(timer_values, timer_settings, starting_local_pos, TextAlign::left, 0, true);
 			MultithreadingData  multithreading_data = { &mutex, &timer_running };
 			timer_settings = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
 			main_window->SetTimerSettings(timer_settings);
@@ -220,7 +264,15 @@ bool Host::GameLobby()
 		case 5://choosing tour
 		{
 			int i = tours_pos;
-			Text::TextInfo text_info(tours, tours_pos, starting_local_pos, TextAlign::left, 0, true);
+
+			Text::TextInfo<Text::RefContainer> text_info;
+			text_info.text = tours;
+			text_info.text_align = TextAlign::left;
+			text_info.starting_index = tours_pos;
+			text_info.spacing = 0;
+			text_info.point_of_reference = starting_local_pos;
+			text_info.clear_after = true;
+
 			MultithreadingData multithreading_data = { &mutex, &timer_running };
 			tours_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
 			if (i != tours_pos)
@@ -238,7 +290,15 @@ bool Host::GameLobby()
 		case 6://choosing car
 		{
 			int i = cars_pos;
-			Text::TextInfo text_info(cars, cars_pos, starting_local_pos, TextAlign::left, 0, true);
+
+			Text::TextInfo<Text::RefContainer> text_info;
+			text_info.text = cars;
+			text_info.text_align = TextAlign::left;
+			text_info.starting_index = cars_pos;
+			text_info.spacing = 0;
+			text_info.point_of_reference = starting_local_pos;
+			text_info.clear_after = true;
+
 			MultithreadingData multithreading_data = { &mutex, &timer_running };
 			cars_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
 			if (i != cars_pos)
@@ -251,7 +311,15 @@ bool Host::GameLobby()
 		case 7://choosing tires
 		{
 			int i = tires_pos;
-			Text::TextInfo text_info(tires, tires_pos, starting_local_pos, TextAlign::left, 0, true);
+
+			Text::TextInfo<Text::RefContainer> text_info;
+			text_info.text = tires;
+			text_info.text_align = TextAlign::left;
+			text_info.starting_index = tires_pos;
+			text_info.spacing = 0;
+			text_info.point_of_reference = starting_local_pos;
+			text_info.clear_after = true;
+
 			MultithreadingData multithreading_data = { &mutex, &timer_running };
 			tires_pos = Text::Choose::Horizontal(text_info, *main_window->GetWindowInfo(), multithreading_data);
 			if (i != tires_pos)
