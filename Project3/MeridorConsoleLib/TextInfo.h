@@ -41,7 +41,7 @@ namespace MeridorConsoleLib
 			}
 			size_t size()
 			{
-				return text_val.size();
+				return text_ref->size();
 			}
 			RefContainer& operator=(std::vector<DataType>&& v)
 			{
@@ -61,7 +61,7 @@ namespace MeridorConsoleLib
 			}
 			DataType& operator[](size_t index)
 			{
-				return text_val[index];
+				return (*text_ref)[index];
 			};
 		};
 
