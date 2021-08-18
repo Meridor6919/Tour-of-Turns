@@ -529,8 +529,7 @@ bool SinglePlayer::GameLobby()
 
 	while (true)
 	{
-		Text::TextInfo<Text::RefContainer> text_info;
-		text_info.text = LanguagePack::text[LanguagePack::game_options];
+		Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::game_options]);
 		text_info.text_align = TextAlign::center;
 		text_info.starting_index = main_menu_position;
 		text_info.spacing = spacing;
@@ -561,8 +560,7 @@ bool SinglePlayer::GameLobby()
 				text.push_back(std::to_string(i));
 			}
 
-			Text::TextInfo<Text::RefContainer> text_info;
-			text_info.text = text;
+			Text::TextInfo<Text::RefVector> text_info(text);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = ais;
 			text_info.spacing = 0;
@@ -584,8 +582,7 @@ bool SinglePlayer::GameLobby()
 				timer_values.push_back((i < 60 ? "0" : "") + std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 			}
 
-			Text::TextInfo<Text::RefContainer> text_info;
-			text_info.text = timer_values;
+			Text::TextInfo<Text::RefVector> text_info(timer_values);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = timer_settings;
 			text_info.spacing = 0;
@@ -601,8 +598,7 @@ bool SinglePlayer::GameLobby()
 		{
 			int i = tours_pos;
 
-			Text::TextInfo<Text::RefContainer> text_info;
-			text_info.text = tours;
+			Text::TextInfo<Text::RefVector> text_info(tours);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = tours_pos;
 			text_info.spacing = 0;
@@ -627,8 +623,7 @@ bool SinglePlayer::GameLobby()
 		{
 			int i = cars_pos;
 
-			Text::TextInfo<Text::RefContainer> text_info;
-			text_info.text = cars;
+			Text::TextInfo<Text::RefVector> text_info(cars);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = cars_pos;
 			text_info.spacing = 0;
@@ -648,8 +643,7 @@ bool SinglePlayer::GameLobby()
 		{
 			int i = tires_pos;
 
-			Text::TextInfo<Text::RefContainer> text_info;
-			text_info.text = tires;
+			Text::TextInfo<Text::RefVector> text_info(tires);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = tires_pos;
 			text_info.spacing = 0;
@@ -816,8 +810,7 @@ int SinglePlayer::PerformAttack()
 		}
 		if (static_cast<int>(rival_id.size()) != 1)
 		{
-			Text::TextInfo<Text::RefContainer> text_info;
-			text_info.text = rival_name;
+			Text::TextInfo<Text::RefVector> text_info(rival_name);
 			text_info.text_align = TextAlign::center;
 			text_info.starting_index = 0;
 			text_info.spacing = 2;
@@ -1137,8 +1130,7 @@ std::pair<int, int> SinglePlayer::PerformAction()
 		int value;
 		while (true)
 		{
-			Text::TextInfo<Text::RefContainer> text_info;
-			text_info.text = LanguagePack::text[LanguagePack::race_actions];
+			Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::race_actions]);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = take_action_position;
 			text_info.spacing = 2;

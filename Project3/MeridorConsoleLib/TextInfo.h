@@ -9,66 +9,18 @@ namespace MeridorConsoleLib
 {
 	namespace Text
 	{
-		template<class DataType>
-		class RefContainer
-		{
-			std::vector<DataType>* text_ref;
-			std::vector<DataType> text_val;
+		template<class T> using RefVector = std::vector<T>&;
+		template<class T> using Vector = std::vector<T>;
+		template<class T, size_t size> using Array = std::array<T, size>;
+		template<class T, size_t size> using RefArray = std::array<T, size>&;
 
-		public:
-			RefContainer() {};
-			RefContainer(std::vector<DataType>&& v)
-			{
-				*this = v;
-			}
-			RefContainer(std::vector<DataType>& v)
-			{
-				*this = v;
-			}
-			RefContainer(std::initializer_list<DataType> il)
-			{
-				text_val = il;
-				text_ref = &text_val;
-			};
-			RefContainer(const RefContainer& tc)
-			{
-				this->text_val = std::move(tc.text_val);
-				this->text_ref = &(this->text_val);
-			}
-
-			std::vector<DataType>& Get() {
-				return *text_ref;
-			}
-			size_t size()
-			{
-				return text_ref->size();
-			}
-			RefContainer& operator=(std::vector<DataType>&& v)
-			{
-				text_val = v;
-				text_ref = &text_val;
-				return *this;
-			}
-			RefContainer& operator=(std::vector<DataType>& v)
-			{
-				text_ref = &v;
-				return *this;
-			}
-			RefContainer& operator=(RefContainer& tc)
-			{
-				text_ref = tc.text_ref;
-				return *this;
-			}
-			DataType& operator[](size_t index)
-			{
-				return (*text_ref)[index];
-			};
-		};
-
-		template < template< typename > class DataType>
+		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
 		struct TextInfo
 		{
-			DataType<std::string> text = {};
+			TextInfo(TextContainer<std::string, Args...> text) : text(text) {}
+			TextInfo(std::initializer_list<std::string> init_list) : text(init_list) {}
+
+			TextContainer<std::string, Args...> text;
 			size_t starting_index = 0;
 			COORD point_of_reference = { 0,0 };
 			TextAlign text_align = TextAlign::left;
@@ -76,10 +28,12 @@ namespace MeridorConsoleLib
 			bool clear_after = false;
 		};
 
-		template < template< typename > class DataType>
+		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
 		struct TableTextInfo
 		{
-			DataType<std::string> text = {};
+			TableTextInfo(TextContainer<std::string, Args...>& text) : text(text) {}
+
+			TextContainer<std::string, Args...> text;
 			COORD point_of_reference = { 0,0 };
 			TextAlign table_alignment = TextAlign::left;
 			TextAlign column_alignment = TextAlign::left;

@@ -23,8 +23,7 @@ bool Client::StartNetwork()
 
 	while (true)
 	{
-		Text::TextInfo<Text::RefContainer> text_info;
-		text_info.text = LanguagePack::text[LanguagePack::multiplayer_client_lobby];
+		Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::multiplayer_client_lobby]);
 		text_info.text_align = TextAlign::center;
 		text_info.starting_index = 0;
 		text_info.spacing = spacing;
@@ -42,8 +41,7 @@ bool Client::StartNetwork()
 			const COORD submenu_position = { starting_point.X + static_cast<short>(LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::active_games].size()) / 2 + 1,
 												starting_point.Y };
 			
-			Text::TextInfo<Text::RefContainer> text_info;
-			text_info.text = active_games;
+			Text::TextInfo<Text::RefVector> text_info(active_games);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = 0;
 			text_info.spacing = 0;

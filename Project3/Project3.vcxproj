@@ -131,9 +131,7 @@
     <ClCompile Include="NetworkRoleHost.cpp" />
     <ClCompile Include="NetworkRoleSinglePlayer.cpp" />
     <ClCompile Include="Participant.cpp" />
-    <ClCompile Include="MeridorConsoleLib\TextLib.cpp" />
     <ClCompile Include="RankingManagement.cpp" />
-    <ClCompile Include="MeridorConsoleLib\TextLib-Impl.cpp" />
     <ClCompile Include="ValidationStatus.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="ToT.cpp" />
