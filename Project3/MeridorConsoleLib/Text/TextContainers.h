@@ -1,12 +1,35 @@
 #pragma once
+#include <Windows.h>
 #include <string>
 #include <vector>
 #include <list>
+#include <mutex>
+#include <thread>
 
-#include "DataStructures.h"
+#include "Color.h"
 
 namespace MeridorConsoleLib
 {
+	enum class TextAlign : unsigned int
+	{
+		left,
+		center,
+		right,
+		last
+	};
+	struct TextInfo
+	{
+		HANDLE output_handle = INVALID_HANDLE_VALUE;
+		Color main_color = Color::white;
+		Color secondary_color = Color::light_green;
+	};
+	struct MultithreadingData
+	{
+		std::mutex* mutex = nullptr;
+		bool* skip_blocking_functions = nullptr;
+		std::chrono::milliseconds delay = std::chrono::milliseconds(50);
+	};
+
 	namespace Text
 	{
 		template<class T> using RefVector = std::vector<T>&;
@@ -15,10 +38,10 @@ namespace MeridorConsoleLib
 		template<class T, size_t size> using RefArray = std::array<T, size>&;
 
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		struct TextInfo
+		struct ChooseDesc
 		{
-			TextInfo(TextContainer<std::string, Args...> text) : text(text) {}
-			TextInfo(std::initializer_list<std::string> init_list) : text(init_list) {}
+			ChooseDesc(TextContainer<std::string, Args...> text) : text(text) {};
+			ChooseDesc(std::initializer_list<std::string> init_list) : text(init_list) {};
 
 			TextContainer<std::string, Args...> text;
 			size_t starting_index = 0;
@@ -29,9 +52,10 @@ namespace MeridorConsoleLib
 		};
 
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		struct TableTextInfo
+		struct TableTextDesc
 		{
-			TableTextInfo(TextContainer<std::string, Args...>& text) : text(text) {}
+			TableTextDesc(TextContainer<std::string, Args...>& text) : text(text) {};
+			TableTextDesc(std::initializer_list<std::string> init_list) : text(init_list) {};
 
 			TextContainer<std::string, Args...> text;
 			COORD point_of_reference = { 0,0 };

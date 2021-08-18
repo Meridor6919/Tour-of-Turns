@@ -15,7 +15,7 @@ struct ToTWindowConfig
 	std::string theme_name;
 	std::string lang;
 	COORD windowed_mode_window_size;
-	MeridorConsoleLib::WindowInfoEx window_info;
+	MeridorConsoleLib::WindowInfo window_info;
 };
 struct RacerLeaderboardInfo
 {

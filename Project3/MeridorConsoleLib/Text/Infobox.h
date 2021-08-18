@@ -5,7 +5,6 @@
 #include <string>
 
 #include "GeneralFunctions.h"
-#include "DataStructures.h"
 
 namespace MeridorConsoleLib
 {
@@ -24,7 +23,7 @@ namespace MeridorConsoleLib
 		unsigned short box_height;
 
 		InfoBoxDesc info_box_desc;
-		WindowInfo window_info;
+		TextInfo window_info;
 		const MultithreadingData* multithreading_data;
 		std::vector<std::pair<std::string, std::string>> data;
 
@@ -34,7 +33,7 @@ namespace MeridorConsoleLib
 
 	public:
 
-		InfoBox(const InfoBoxDesc& info_box_desc, const MeridorConsoleLib::WindowInfo& window_info, const MultithreadingData* multithreading_data = nullptr);
+		InfoBox(const InfoBoxDesc& info_box_desc, const MeridorConsoleLib::TextInfo& window_info, const MultithreadingData* multithreading_data = nullptr);
 		void Push(const std::string secondary_color_text, const std::string main_color_text);
 		void Draw();
 		void DrawBox(bool clear_instead = false);

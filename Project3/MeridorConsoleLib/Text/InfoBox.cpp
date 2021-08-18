@@ -1,6 +1,6 @@
 #include "Infobox.h"
 
-MeridorConsoleLib::InfoBox::InfoBox(const InfoBoxDesc& info_box_desc, const WindowInfo& window_info, const MultithreadingData *multithreading_data)
+MeridorConsoleLib::InfoBox::InfoBox(const InfoBoxDesc& info_box_desc, const TextInfo& window_info, const MultithreadingData *multithreading_data)
 {
 	this->info_box_desc = info_box_desc;
 	this->window_info = window_info;

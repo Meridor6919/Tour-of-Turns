@@ -2,7 +2,7 @@
 #include <iostream>
 #include <conio.h>
 
-#include "TextInfo.h"
+#include "TextContainers.h"
 #include "GeneralFunctions.h"
 
 namespace MeridorConsoleLib
@@ -29,7 +29,7 @@ namespace MeridorConsoleLib
 		namespace Choose
 		{
 			template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-			int Horizontal(TextInfo<TextContainer, Args...>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {})
+			int Horizontal(ChooseDesc<TextContainer, Args...>& text_info, const TextInfo& window_info, const MultithreadingData& multithreading_data = {})
 			{
 				char button;
 				size_t index = text_info.starting_index;
@@ -89,7 +89,7 @@ namespace MeridorConsoleLib
 			}
 
 			template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-			void VerticalShowGUI(TextInfo<TextContainer, Args...>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {})
+			void VerticalShowGUI(ChooseDesc<TextContainer, Args...>& text_info, const TextInfo& window_info, const MultithreadingData& multithreading_data = {})
 			{
 				if (multithreading_data.mutex != nullptr)
 				{
@@ -112,7 +112,7 @@ namespace MeridorConsoleLib
 			}
 
 			template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-			void VerticalClearGUI(TextInfo<TextContainer, Args...>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {})
+			void VerticalClearGUI(ChooseDesc<TextContainer, Args...>& text_info, const TextInfo& window_info, const MultithreadingData& multithreading_data = {})
 			{
 				if (multithreading_data.mutex != nullptr)
 				{
@@ -134,7 +134,7 @@ namespace MeridorConsoleLib
 			}
 
 			template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-			int Vertical(TextInfo<TextContainer, Args...>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {})
+			int Vertical(ChooseDesc<TextContainer, Args...>& text_info, const TextInfo& window_info, const MultithreadingData& multithreading_data = {})
 			{
 				char button;
 
@@ -213,7 +213,7 @@ namespace MeridorConsoleLib
 				return static_cast<int>(index);
 			}
 
-			inline void Numeric(int* number_return_value, const int max, COORD starting_point, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+			inline void Numeric(int* number_return_value, const int max, COORD starting_point, const TextInfo& window_info, const MultithreadingData& multithreading_data)
 			{
 				short pos = 0;
 				char button;
@@ -263,7 +263,7 @@ namespace MeridorConsoleLib
 			}
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		void OrdinaryText(TextInfo<TextContainer, Args...>& text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {})
+		void OrdinaryText(ChooseDesc<TextContainer, Args...>& text_info, const TextInfo& window_info, const MultithreadingData& multithreading_data = {})
 		{
 			size_t vector_size = text_info.text.size();
 			if (multithreading_data.mutex != nullptr)
@@ -299,7 +299,7 @@ namespace MeridorConsoleLib
 		}
 
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		void TableText(TableTextInfo<TextContainer, Args...>& table_text_info, const WindowInfo& window_info, const MultithreadingData& multithreading_data = {})
+		void TableText(TableTextDesc<TextContainer, Args...>& table_text_info, const TextInfo& window_info, const MultithreadingData& multithreading_data = {})
 		{
 
 		}

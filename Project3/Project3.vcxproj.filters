@@ -14,12 +14,6 @@
     <Filter Include="Files\MeridorConsoleLib">
       <UniqueIdentifier>{240ab065-8ab7-457b-a9e7-7bba9aecf818}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Files\MeridorConsoleLib\HeaderFiles">
-      <UniqueIdentifier>{90144b6c-54fc-45a7-8cfa-2264a5b26447}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Files\MeridorConsoleLib\SourceFiles">
-      <UniqueIdentifier>{fabfdfd1-4608-4667-bb63-f5c73e6bf3d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Files\MeridorNetworkLib\HeaderFiles">
       <UniqueIdentifier>{f7ac20f0-dc7b-48d2-ac64-45bcf20a3b1e}</UniqueIdentifier>
     </Filter>
@@ -53,6 +47,24 @@
     <Filter Include="Files\ToTFiles\MainGameFiles\SourceFiles">
       <UniqueIdentifier>{7effde4b-4157-4221-9724-9eb31aa51060}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Files\MeridorConsoleLib\Text">
+      <UniqueIdentifier>{98e43e03-8651-40b4-9b9d-6a1bcc1e39d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MeridorConsoleLib\Text\SourceFiles">
+      <UniqueIdentifier>{98131798-d4f4-4f7f-aa2f-8fffe671f979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MeridorConsoleLib\Text\HeaderFiles">
+      <UniqueIdentifier>{8ee0bcc2-48df-4a2f-b62b-bd64a40a40a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MeridorConsoleLib\Window">
+      <UniqueIdentifier>{9c6568d3-2aa8-453a-b94b-d29c1ac9b31f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MeridorConsoleLib\Window\HeaderFiles">
+      <UniqueIdentifier>{90144b6c-54fc-45a7-8cfa-2264a5b26447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MeridorConsoleLib\Window\SourceFiles">
+      <UniqueIdentifier>{fabfdfd1-4608-4667-bb63-f5c73e6bf3d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Participant.cpp">
@@ -76,17 +88,8 @@
     <ClCompile Include="NetworkRoleClient.cpp">
       <Filter>Files\ToTFiles\MainGameFiles\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\GeneralFunctions.cpp">
-      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\InfoBox.cpp">
-      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\VisibleTimer.cpp">
-      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\Window.cpp">
-      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
+    <ClCompile Include="MeridorConsoleLib\Window\Window.cpp">
+      <Filter>Files\MeridorConsoleLib\Window\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="MeridorNetworkLib\BroadcastReceiver.cpp">
       <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
@@ -106,8 +109,8 @@
     <ClCompile Include="MeridorMiscModules\PipeConnector.cpp">
       <Filter>Files\MeridorMiscModules\Source</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\WindowImmobilizer.cpp">
-      <Filter>Files\MeridorConsoleLib\SourceFiles</Filter>
+    <ClCompile Include="MeridorConsoleLib\Window\WindowImmobilizer.cpp">
+      <Filter>Files\MeridorConsoleLib\Window\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="FileManagementFunctions.cpp">
       <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
@@ -123,6 +126,15 @@
     </ClCompile>
     <ClCompile Include="ValidationStatus.cpp">
       <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorConsoleLib\Text\GeneralFunctions.cpp">
+      <Filter>Files\MeridorConsoleLib\Text\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorConsoleLib\Text\InfoBox.cpp">
+      <Filter>Files\MeridorConsoleLib\Text\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorMiscModules\VisibleTimer.cpp">
+      <Filter>Files\MeridorMiscModules\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,23 +156,11 @@
     <ClInclude Include="ToT.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\DataStructures.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
+    <ClInclude Include="MeridorConsoleLib\Window\WindowUtility.h">
+      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\GeneralFunctions.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Infobox.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\VisibleTimer.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\TextLib.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Window.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
+    <ClInclude Include="MeridorConsoleLib\Window\Window.h">
+      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="MeridorNetworkLib\BroadcastReceiver.h">
       <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
@@ -183,8 +183,8 @@
     <ClInclude Include="MeridorMiscModules\PipeConnector.h">
       <Filter>Files\MeridorMiscModules\Header</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\WindowImmobilizer.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
+    <ClInclude Include="MeridorConsoleLib\Window\WindowImmobilizer.h">
+      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="FileManagementFunctions.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
@@ -219,11 +219,23 @@
     <ClInclude Include="ValidationStatus.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\TextInfo.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
+    <ClInclude Include="MeridorConsoleLib\Text\GeneralFunctions.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Color.h">
-      <Filter>Files\MeridorConsoleLib\HeaderFiles</Filter>
+    <ClInclude Include="MeridorConsoleLib\Text\Color.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorConsoleLib\Text\Infobox.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorConsoleLib\Text\TextContainers.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorConsoleLib\Text\TextLib.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorMiscModules\VisibleTimer.h">
+      <Filter>Files\MeridorMiscModules\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

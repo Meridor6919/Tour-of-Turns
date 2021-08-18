@@ -7,7 +7,7 @@
 class ValidationCheck {
 
 	ValidationCheck() {};
-	static void WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, Validation::Status& status);
+	static void WindowInfo(MeridorConsoleLib::WindowInfo& window_info, Validation::Status& status);
 	static void Music(float& music_volume, Validation::Status& status);
 	static void AIModule(std::string& ai_module, Validation::Status& status);
 	static void ThemeName(std::string& theme_name, Validation::Status& status);

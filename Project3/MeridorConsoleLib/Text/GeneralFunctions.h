@@ -4,7 +4,7 @@
 #include <fstream>
 #include <filesystem>
 
-#include "DataStructures.h"
+#include "TextContainers.h"
 
 namespace MeridorConsoleLib
 {

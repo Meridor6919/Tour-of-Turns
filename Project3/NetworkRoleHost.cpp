@@ -86,7 +86,7 @@ void Host::SetLobbySize()
 	std::string text = " : " + LanguagePack::text[LanguagePack::other_strings][OtherStrings::lobby_size];
 	std::cout << text;
 
-	Text::TextInfo<Text::RefVector> text_info(horizontal_menu_text);
+	Text::ChooseDesc<Text::RefVector> text_info(horizontal_menu_text);
 	text_info.text_align = TextAlign::left;
 	text_info.starting_index = 0;
 	text_info.spacing = 0;
@@ -147,7 +147,7 @@ bool Host::GameLobby()
 
 	while (true)
 	{
-		Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::game_options_multiplayer]);
+		Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::game_options_multiplayer]);
 		text_info.text_align = TextAlign::left;
 		text_info.starting_index = main_menu_position;
 		text_info.spacing = spacing;
@@ -178,7 +178,7 @@ bool Host::GameLobby()
 				text.push_back(std::to_string(i));
 			}
 
-			Text::TextInfo<Text::RefVector> text_info(text);
+			Text::ChooseDesc<Text::RefVector> text_info(text);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = ais;
 			text_info.spacing = 0;
@@ -198,7 +198,7 @@ bool Host::GameLobby()
 			std::vector<std::string> text = network_connector->GetClientNames();
 			text.insert(text.begin(), LanguagePack::text[LanguagePack::multiplayer_client_lobby][Multiplayer::back]);
 
-			Text::TextInfo<Text::RefVector> text_info(text);
+			Text::ChooseDesc<Text::RefVector> text_info(text);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = 0;
 			text_info.spacing = 0;
@@ -222,7 +222,7 @@ bool Host::GameLobby()
 				unban_options.push_back(network_connector->GetIP(banned_addresses[i]));
 			}
 
-			Text::TextInfo<Text::RefVector> text_info(unban_options);
+			Text::ChooseDesc<Text::RefVector> text_info(unban_options);
 			text_info.text_align = TextAlign::center;
 			text_info.starting_index = ais;
 			text_info.spacing = 0;
@@ -243,7 +243,7 @@ bool Host::GameLobby()
 			{
 				timer_values.push_back((i < 60 ? "0" : "") + std::to_string(i / 6) + ':' + std::to_string(i % 6) + '0');
 			}
-			Text::TextInfo<Text::RefVector> text_info(timer_values);
+			Text::ChooseDesc<Text::RefVector> text_info(timer_values);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = timer_settings;
 			text_info.spacing = 0;
@@ -259,7 +259,7 @@ bool Host::GameLobby()
 		{
 			int i = tours_pos;
 
-			Text::TextInfo<Text::RefVector> text_info(tours);
+			Text::ChooseDesc<Text::RefVector> text_info(tours);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = tours_pos;
 			text_info.spacing = 0;
@@ -284,7 +284,7 @@ bool Host::GameLobby()
 		{
 			int i = cars_pos;
 
-			Text::TextInfo<Text::RefVector> text_info(cars);
+			Text::ChooseDesc<Text::RefVector> text_info(cars);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = cars_pos;
 			text_info.spacing = 0;
@@ -304,7 +304,7 @@ bool Host::GameLobby()
 		{
 			int i = tires_pos;
 
-			Text::TextInfo<Text::RefVector> text_info(tires);
+			Text::ChooseDesc<Text::RefVector> text_info(tires);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = tires_pos;
 			text_info.spacing = 0;

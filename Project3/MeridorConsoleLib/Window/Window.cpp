@@ -108,11 +108,9 @@ void MeridorConsoleLib::Window::UpdateWindowInformation()
 	GetCurrentConsoleFontEx(window_info.output_handle, false, &font_info);
 	font_size = font_info.dwFontSize;
 }
-void MeridorConsoleLib::Window::Init(const WindowInfoEx& window_info_ex)
+void MeridorConsoleLib::Window::Init(const WindowInfo& window_info_ex)
 {
 	this->window_info = window_info_ex;
-	main_color = &window_info.main_color;
-	secondary_color = &window_info.secondary_color;
 	base_character_capacity = window_info_ex.characters_capacity;
 	if (window_info.window_mode != WindowMode::windowed)
 	{
@@ -192,10 +190,6 @@ MeridorConsoleLib::WindowMode MeridorConsoleLib::Window::GetWindowMode()
 	return window_info.window_mode;
 }
 const MeridorConsoleLib::WindowInfo* MeridorConsoleLib::Window::GetWindowInfo()
-{
-	return &window_info;
-}
-const MeridorConsoleLib::WindowInfoEx* MeridorConsoleLib::Window::GetWindowInfoEx()
 {
 	return &window_info;
 }

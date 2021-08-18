@@ -1,6 +1,6 @@
 #include "ValidationFunctions.h"
 
-void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfoEx& window_info, Validation::Status& status)
+void ValidationCheck::WindowInfo(MeridorConsoleLib::WindowInfo& window_info, Validation::Status& status)
 {
 	if (!MeridorConsoleLib::Between(Validation::min_title_size, Validation::max_title_size, static_cast<int>(window_info.title.size())))
 	{

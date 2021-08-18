@@ -54,7 +54,7 @@ void ToT::SetTheme(const COORD& local_starting_point)
 		}
 	}
 
-	Text::TextInfo<Text::RefVector> text_info(text);
+	Text::ChooseDesc<Text::RefVector> text_info(text);
 	text_info.text_align = TextAlign::left;
 	text_info.starting_index = current_theme_pos;
 	text_info.spacing = 0;
@@ -79,7 +79,7 @@ void ToT::SetColor(const COORD& local_starting_point, bool main)
 	local_text.erase(local_text.begin() + static_cast<int>(*secondary_color) - 1);
 	size_t pos = static_cast<int>(*color) - 1 - (*color > *secondary_color);
 
-	Text::TextInfo<Text::RefVector> text_info(local_text);
+	Text::ChooseDesc<Text::RefVector> text_info(local_text);
 	text_info.text_align = TextAlign::left;
 	text_info.starting_index = pos;
 	text_info.spacing = 0;
@@ -105,7 +105,7 @@ void ToT::SetMusic(const COORD& local_starting_point)
 	}
 	const float starting_volume = main_window->GetMusicVolume();
 
-	Text::TextInfo<Text::RefVector> text_info(text);
+	Text::ChooseDesc<Text::RefVector> text_info(text);
 	text_info.text_align = TextAlign::left;
 	text_info.starting_index = static_cast<size_t>(main_window->GetMusicVolume() * volume_levels);
 	text_info.spacing = 0;
@@ -131,7 +131,7 @@ void ToT::SetLanguage(const COORD& local_starting_point)
 	}
 	RemoveExtension(language, ExtName::language);
 
-	Text::TextInfo<Text::RefVector> text_info(language);
+	Text::ChooseDesc<Text::RefVector> text_info(language);
 	text_info.text_align = TextAlign::left;
 	text_info.starting_index = starting_pos;
 	text_info.spacing = 0;
@@ -148,7 +148,7 @@ void ToT::SetLanguage(const COORD& local_starting_point)
 }
 void ToT::SetHamachiFlag(const COORD& local_starting_point)
 {
-	Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::on_off]);
+	Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::on_off]);
 	text_info.text_align = TextAlign::left;
 	text_info.starting_index = !main_window->GetHamachiConnectionFlag();
 	text_info.spacing = 0;
@@ -161,7 +161,7 @@ void ToT::SetDisplayMode(const COORD& local_starting_point)
 {
 	unsigned int current_display_mode = static_cast<int>(main_window->GetWindowMode());
 	
-	Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::display_settings]);
+	Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::display_settings]);
 	text_info.text_align = TextAlign::left;
 	text_info.starting_index = current_display_mode;
 	text_info.spacing = 0;
@@ -191,7 +191,7 @@ void ToT::SetAIModule(const COORD& local_starting_point)
 			module_pos = i;
 		}
 	}
-	Text::TextInfo<Text::RefVector> text_info(ai_modules);
+	Text::ChooseDesc<Text::RefVector> text_info(ai_modules);
 	text_info.text_align = TextAlign::left;
 	text_info.starting_index = module_pos;
 	text_info.spacing = 0;
@@ -206,7 +206,7 @@ void ToT::MainMenu()
 	main_window->DrawTitle();
 	while (true)
 	{
-		Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::main_menu]);
+		Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::main_menu]);
 		text_info.text_align = TextAlign::center;
 		text_info.starting_index = main_menu_position;
 		text_info.spacing = avarage_spacing;
@@ -269,7 +269,7 @@ void ToT::MainMenu()
 }
 void ToT::Credits()
 {
-	Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::credits]);
+	Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::credits]);
 	text_info.text_align = TextAlign::center;
 	text_info.starting_index = 0;
 	text_info.spacing = avarage_spacing;
@@ -288,7 +288,7 @@ void ToT::Options()
 
 	while (loop)
 	{
-		Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::general_options]);
+		Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::general_options]);
 		text_info.text_align = TextAlign::center;
 		text_info.starting_index = main_menu_position;
 		text_info.spacing = avarage_spacing;
@@ -370,7 +370,7 @@ void ToT::Ranking()
 
 	ShowRankingDetails(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking, racer_pos, classification_type);
 	
-	Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::ranking_menu]);
+	Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::ranking_menu]);
 	text_info.text_align = TextAlign::center;
 	text_info.starting_index = 0;
 	text_info.spacing = avarage_spacing;
@@ -390,7 +390,7 @@ void ToT::Ranking()
 		{
 			const int temp = map_pos;
 
-			Text::TextInfo<Text::RefVector> text_info(maps);
+			Text::ChooseDesc<Text::RefVector> text_info(maps);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = map_pos;
 			text_info.spacing = 0;
@@ -410,7 +410,7 @@ void ToT::Ranking()
 		{
 			const int temp = racer_pos;
 
-			Text::TextInfo<Text::Vector> text_info(RankingManagement::GetRankedRacersNames(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking));
+			Text::ChooseDesc<Text::Vector> text_info(RankingManagement::GetRankedRacersNames(FolderName::ranking + '\\' + maps[map_pos] + ExtName::ranking));
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = racer_pos;
 			text_info.spacing = 0;
@@ -429,7 +429,7 @@ void ToT::Ranking()
 		{
 			const int temp = classification_type;
 
-			Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::ranking_classification_types]);
+			Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::ranking_classification_types]);
 			text_info.text_align = TextAlign::left;
 			text_info.starting_index = classification_type;
 			text_info.spacing = 0;
@@ -470,7 +470,7 @@ void ToT::Info()
 
 	while (true)
 	{
-		Text::TextInfo<Text::RefVector> ordinary_text_info(LanguagePack::text[LanguagePack::gamepedia_introduction + info_pos]);
+		Text::ChooseDesc<Text::RefVector> ordinary_text_info(LanguagePack::text[LanguagePack::gamepedia_introduction + info_pos]);
 		ordinary_text_info.text_align = TextAlign::center;
 		ordinary_text_info.starting_index = 0;
 		ordinary_text_info.spacing = avarage_spacing;
@@ -479,7 +479,7 @@ void ToT::Info()
 
 		OrdinaryText(ordinary_text_info, *main_window->GetWindowInfo());
 
-		Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::gamepedia_sections]);
+		Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::gamepedia_sections]);
 		text_info.text_align = TextAlign::center;
 		text_info.starting_index = info_pos;
 		text_info.spacing = 0;
@@ -508,7 +508,7 @@ void ToT::Game(const bool multiplayer)
 	{
 		do
 		{
-			Text::TextInfo<Text::RefVector> text_info(LanguagePack::text[LanguagePack::multiplayer_menu]);
+			Text::ChooseDesc<Text::RefVector> text_info(LanguagePack::text[LanguagePack::multiplayer_menu]);
 			text_info.text_align = TextAlign::center;
 			text_info.starting_index = 0;
 			text_info.spacing = avarage_spacing;

@@ -1,13 +1,9 @@
 #pragma once
-#include <thread>
-#include <Windows.h>
+#include "WindowUtility.h"
 
 namespace MeridorConsoleLib
 {
 	class Window;
-	constexpr int refresh_rate = 50;
-	constexpr int buffer_size = 30;
-
 
 	class WindowImmobilizer
 	{

@@ -28,8 +28,8 @@ void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
 
 				if (number_of_events > 0)
 				{
-					INPUT_RECORD buffer[buffer_size];
-					ReadConsoleInputA(main_window->GetInputHandle(), buffer, buffer_size, &number_of_events);
+					INPUT_RECORD buffer[window_immobilizer_buffer_size];
+					ReadConsoleInputA(main_window->GetInputHandle(), buffer, window_immobilizer_buffer_size, &number_of_events);
 
 					for (int i = 0; i < number_of_events; ++i)
 					{
@@ -39,7 +39,6 @@ void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
 							last_minimized = true;
 						}
 					}
-
 				}
             }
 			else
@@ -47,7 +46,7 @@ void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
 				last_minimized = false;
 			}
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(refresh_rate));
+        std::this_thread::sleep_for(std::chrono::milliseconds(window_immobilizer_refresh_rate));
     }
 }
 void MeridorConsoleLib::WindowImmobilizer::Init(Window* window)

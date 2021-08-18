@@ -1,30 +1,17 @@
 #pragma once
 #include <Windows.h>
-#include <chrono>
-#include <mutex>
-#include "Color.h"
+#include <thread>
 
 namespace MeridorConsoleLib
 {
 	constexpr COORD minimum_font_size = { 3, 5 };
 	constexpr COORD maximum_font_size = { 45, 72 };
 	constexpr COORD minimum_window_size = { 800, 600 };
+	constexpr COORD default_character_capacity = { 100, 60 };
 	constexpr double font_aspect_ratio = 0.6;
+	constexpr int window_immobilizer_refresh_rate = 50;
+	constexpr int window_immobilizer_buffer_size = 30;
 
-	enum class TextAlign : unsigned int
-	{
-		left,
-		center,
-		right,
-		last
-	};
-
-	struct MultithreadingData
-	{
-		std::mutex* mutex = nullptr;
-		bool* skip_blocking_functions = nullptr;
-		std::chrono::milliseconds delay;
-	};
 	enum class WindowMode : unsigned int
 	{
 		fullscreen,
@@ -34,16 +21,11 @@ namespace MeridorConsoleLib
 	};
 	struct WindowInfo
 	{
-		HANDLE input_handle;
-		HANDLE output_handle;
-		Color main_color;
-		Color secondary_color;
-	};
-	struct WindowInfoEx : WindowInfo
-	{
-		std::string title;
-		HWND hwnd;
-		COORD characters_capacity = { 100, 50 };
+		HANDLE input_handle = INVALID_HANDLE_VALUE;
+		HANDLE output_handle = INVALID_HANDLE_VALUE;
+		std::string title = "";
+		HWND hwnd = NULL;
+		COORD characters_capacity = default_character_capacity;
 		COORD window_size = minimum_window_size;
 		WindowMode window_mode = WindowMode::windowed;
 		bool visible_cursor = false;
