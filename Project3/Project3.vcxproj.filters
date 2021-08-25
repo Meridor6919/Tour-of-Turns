@@ -88,7 +88,7 @@
     <ClCompile Include="NetworkRoleClient.cpp">
       <Filter>Files\ToTFiles\MainGameFiles\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\Window\Window.cpp">
+    <ClCompile Include="MeridorConsoleLib\Window\BaseWindow.cpp">
       <Filter>Files\MeridorConsoleLib\Window\SourceFiles</Filter>
     </ClCompile>
     <ClCompile Include="MeridorNetworkLib\BroadcastReceiver.cpp">
@@ -136,6 +136,9 @@
     <ClCompile Include="MeridorMiscModules\VisibleTimer.cpp">
       <Filter>Files\MeridorMiscModules\Source</Filter>
     </ClCompile>
+    <ClCompile Include="MeridorConsoleLib\Window\Functions.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Participant.h">
@@ -156,10 +159,10 @@
     <ClInclude Include="ToT.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Window\WindowUtility.h">
+    <ClInclude Include="MeridorConsoleLib\Window\DataStructures.h">
       <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Window\Window.h">
+    <ClInclude Include="MeridorConsoleLib\Window\BaseWindow.h">
       <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="MeridorNetworkLib\BroadcastReceiver.h">
@@ -183,7 +186,7 @@
     <ClInclude Include="MeridorMiscModules\PipeConnector.h">
       <Filter>Files\MeridorMiscModules\Header</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Window\WindowImmobilizer.h">
+    <ClInclude Include="MeridorConsoleLib\Window\Immobilizer.h">
       <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="FileManagementFunctions.h">
@@ -237,6 +240,7 @@
     <ClInclude Include="MeridorMiscModules\VisibleTimer.h">
       <Filter>Files\MeridorMiscModules\Header</Filter>
     </ClInclude>
+    <ClInclude Include="MeridorConsoleLib\Window\Functions.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />
