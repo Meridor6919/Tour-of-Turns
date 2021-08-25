@@ -1,7 +1,6 @@
-#include "WindowImmobilizer.h"
-#include "Window.h"
+#include "BaseWindow.h"
 
-void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
+void MeridorConsoleLib::Window::BaseWindow::Immobilizer::ImmobilizingWindow()
 {
     RECT base_window_pos;
 	GetWindowRect(main_window->window_info.hwnd, &base_window_pos);
@@ -12,33 +11,21 @@ void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
         RECT current_window_pos;
         GetWindowRect(main_window->window_info.hwnd, &current_window_pos);
 
-        if ((current_window_pos.top != base_window_pos.top || current_window_pos.left != base_window_pos.left) && (!IsIconic(main_window->window_info.hwnd)))
+		const bool window_moved = (current_window_pos.top != base_window_pos.top || current_window_pos.left != base_window_pos.left);
+		const bool window_minimized = IsIconic(main_window->window_info.hwnd) != 0;
+
+        if ( window_moved && !window_minimized)
         {
 			if (!last_minimized)
 			{
-				WINDOWPLACEMENT window_placement = {};
-				DWORD number_of_events;
-				GetWindowPlacement(main_window->GetHWND(), &window_placement);
-
 				mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 				main_window->SetWindowSize();
-				main_window->SetCursor(main_window->window_info.visible_cursor);
+				main_window->SetCursor(static_cast<BOOL>(main_window->window_info.visible_cursor));
 
-				GetNumberOfConsoleInputEvents(main_window->GetInputHandle(), &number_of_events);
-
-				if (number_of_events > 0)
+				if (IsMinimizeButtonPressed(main_window->GetInputHandle()))
 				{
-					INPUT_RECORD buffer[window_immobilizer_buffer_size];
-					ReadConsoleInputA(main_window->GetInputHandle(), buffer, window_immobilizer_buffer_size, &number_of_events);
-
-					for (int i = 0; i < number_of_events; ++i)
-					{
-						if (buffer[i].EventType == FOCUS_EVENT && buffer[i].Event.MenuEvent.dwCommandId == 0)
-						{
-							ShowWindow(main_window->GetHWND(), SW_MINIMIZE);
-							last_minimized = true;
-						}
-					}
+					ShowWindow(main_window->GetHWND(), SW_MINIMIZE);
+					last_minimized = true;
 				}
             }
 			else
@@ -49,19 +36,19 @@ void MeridorConsoleLib::WindowImmobilizer::ImmobilizingWindow()
         std::this_thread::sleep_for(std::chrono::milliseconds(window_immobilizer_refresh_rate));
     }
 }
-void MeridorConsoleLib::WindowImmobilizer::Init(Window* window)
+void MeridorConsoleLib::Window::BaseWindow::Immobilizer::Init(BaseWindow* window)
 {
     this->main_window = window;
 }
-void MeridorConsoleLib::WindowImmobilizer::Start()
+void MeridorConsoleLib::Window::BaseWindow::Immobilizer::Start()
 {
     if (!thread_active)
     {
         thread_active = true;
-        main_thread = std::thread(&WindowImmobilizer::ImmobilizingWindow, this);
+        main_thread = std::thread(&BaseWindow::Immobilizer::ImmobilizingWindow, this);
     }
 }
-void MeridorConsoleLib::WindowImmobilizer::Stop()
+void MeridorConsoleLib::Window::BaseWindow::Immobilizer::Stop()
 {
     thread_active = false;
     if (main_thread.joinable())
@@ -69,7 +56,7 @@ void MeridorConsoleLib::WindowImmobilizer::Stop()
         main_thread.join();
     }
 }
-MeridorConsoleLib::WindowImmobilizer::~WindowImmobilizer()
+MeridorConsoleLib::Window::BaseWindow::Immobilizer::~Immobilizer()
 {
     Stop();
 }
