@@ -39,14 +39,17 @@ bool MeridorConsoleLib::Window::IsMinimizeButtonPressed(HANDLE input_handle)
 	DWORD number_of_events;
 
 	GetNumberOfConsoleInputEvents(input_handle, &number_of_events);
-	INPUT_RECORD buffer[window_immobilizer_buffer_size];
-	ReadConsoleInputA(input_handle, buffer, window_immobilizer_buffer_size, &number_of_events);
-
-	for (DWORD i = 0; i < number_of_events; ++i)
+	if (number_of_events > 0)
 	{
-		if (buffer[i].EventType == FOCUS_EVENT && buffer[i].Event.MenuEvent.dwCommandId == 0)
+		INPUT_RECORD buffer[window_immobilizer_buffer_size];
+		ReadConsoleInputA(input_handle, buffer, window_immobilizer_buffer_size, &number_of_events);
+
+		for (DWORD i = 0; i < number_of_events; ++i)
 		{
-			return true;
+			if (buffer[i].EventType == FOCUS_EVENT && buffer[i].Event.MenuEvent.dwCommandId == 0)
+			{
+				return true;
+			}
 		}
 	}
 	return false;
