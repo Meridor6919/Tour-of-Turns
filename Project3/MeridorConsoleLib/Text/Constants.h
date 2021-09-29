@@ -33,12 +33,7 @@ namespace MeridorConsoleLib
 			decimal = 10,
 			hexadecimal = 16
 		};
-
-		constexpr int failed = -1;
-
 		constexpr short default_spacing = 1;
-		constexpr short default_number_of_painted_rows = 1;
-		constexpr short default_number_of_columns = 1;
 		constexpr std::chrono::milliseconds default_delay = std::chrono::milliseconds(50);
 	}
 }

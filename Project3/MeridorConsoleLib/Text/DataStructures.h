@@ -84,8 +84,8 @@ namespace MeridorConsoleLib
 			COORD point_of_reference{};
 			Align table_alignment = Align::left;
 			Align column_alignment = Align::left;
-			int number_of_columns = default_number_of_columns;
-			int number_of_painted_rows = default_number_of_painted_rows;
+			int number_of_columns = 1;
+			int number_of_painted_rows = 1;
 			short vertical_spacing = default_spacing;
 			short horizontal_spacing = default_spacing;
 			bool clear_after = false;
