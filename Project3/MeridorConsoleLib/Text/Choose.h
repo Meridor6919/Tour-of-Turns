@@ -1,4 +1,5 @@
 #pragma once
-#include "HorizontalChoose.h"
-#include "VerticalChoose.h"
-#include "NumericChoose.h"
+#include "ChooseHorizontal.h"
+#include "ChooseVertical.h"
+#include "ChooseNumeric.h"
+#include "ChooseText.h"

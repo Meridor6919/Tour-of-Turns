@@ -36,9 +36,10 @@ namespace MeridorConsoleLib
 		struct GenericChooseDesc
 		{
 			T value{};
+			T error_value{};
 			COORD point_of_reference{};
 			Align text_align = Align::left;
-			bool clear_after = false;
+			bool clear_after = true;
 			bool exit_on_processed_input = false;
 			bool dont_show_interface = false;
 		};
@@ -68,8 +69,9 @@ namespace MeridorConsoleLib
 		};
 		struct TextChooseDesc : GenericChooseDesc<std::string>
 		{
-			std::string dictionary{ "abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWXYZ" };
+			std::string dictionary{ "abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWXYZ " };
 			int maximum_size = 100;
+			bool special_space_rules = true;
 		};
 
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>

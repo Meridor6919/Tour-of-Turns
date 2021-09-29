@@ -1,4 +1,4 @@
-#include "NumericChoose.h"
+#include "ChooseNumeric.h"
 
 int MeridorConsoleLib::Text::Internal::ChooseNumeric::CalculateLenght(long long value)
 {
@@ -105,7 +105,7 @@ void MeridorConsoleLib::Text::Internal::ChooseNumeric::UpdateInterface()
 void MeridorConsoleLib::Text::Internal::ChooseNumeric::Clear()
 {
 	SetConsoleCursorPosition(window_info->output_handle, CalculatePosition(lenght));
-	Spaces(lenght);
+	std::cout << Spaces(lenght);
 }
 
 long long MeridorConsoleLib::Text::ChooseNumeric(NumericChooseDesc& choose_desc, const TextInfo& window_info)

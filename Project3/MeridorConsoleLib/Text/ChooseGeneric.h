@@ -28,13 +28,17 @@ namespace MeridorConsoleLib
 				virtual void UpdateInterface() = 0;
 				virtual void Clear() = 0;
 				
+				T GetErrorValue()
+				{
+					return choose_desc->error_value;
+				}
 				T GetValue()
 				{
 					return choose_desc->value;
 				}
 			};
 			template<class T>
-			long long GenericChoose(ChooseInterface<T>& choose)
+			T GenericChoose(ChooseInterface<T>& choose)
 			{
 				int input;
 				if (choose.Valid())
@@ -62,10 +66,10 @@ namespace MeridorConsoleLib
 					}
 					return choose.GetValue();
 				}
-				return failed;
+				return choose.GetErrorValue();
 			}
 			template<class T>
-			long long GenericChoose(ChooseInterface<T>& choose, const MultithreadingData& multithreading_data)
+			T GenericChoose(ChooseInterface<T>& choose, const MultithreadingData& multithreading_data)
 			{
 				int input;
 				if (choose.Valid())
@@ -98,7 +102,7 @@ namespace MeridorConsoleLib
 
 					return choose.GetValue();
 				}
-				return failed;
+				return choose.GetErrorValue();
 			}
 		}
 	}

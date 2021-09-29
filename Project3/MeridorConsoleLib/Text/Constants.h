@@ -20,6 +20,7 @@ namespace MeridorConsoleLib
 		{
 			backspace = 8,
 			enter = 13,
+			space = 32,
 			up_arrow = 72,
 			left_arrow = 75,
 			right_arrow = 77,

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <conio.h>
 
-#include "GenericChoose.h"
+#include "ChooseGeneric.h"
 #include "GeneralFunctions.h"
 
 namespace MeridorConsoleLib
