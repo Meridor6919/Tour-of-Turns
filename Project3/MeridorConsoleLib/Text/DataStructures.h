@@ -73,6 +73,23 @@ namespace MeridorConsoleLib
 			int maximum_size = 100;
 			bool special_space_rules = true;
 		};
+		template<class T1, class T2>
+		struct MyPair
+		{
+			T1 first;
+			T2 second;
+		};
+		struct InfoboxDesc
+		{
+			std::vector<MyPair<std::string, std::string>> data{};
+			COORD position{};
+			COORD box_size{};
+			short vertical_spacing = default_spacing;
+			Align text_align = Align::left;
+			Color fading_color = Color::dark_gray;
+			char border_building_character = '-';
+		};
+		
 
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
 		struct TableTextDesc

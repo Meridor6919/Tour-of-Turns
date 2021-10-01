@@ -1,43 +1,34 @@
 #pragma once
-#include <fstream>
 #include <iostream>
 #include <vector>
 #include <string>
 
 #include "GeneralFunctions.h"
+#include "DataStructures.h"
 
 namespace MeridorConsoleLib
 {
-	struct InfoBoxDesc
+	namespace Text
 	{
-		size_t history_size;
-		RECT box_size;
-		short vertical_spacing;
-		TextAlign text_align;
-	};
+		class Infobox
+		{
+			InfoboxDesc* infobox_desc = nullptr;
+			const TextInfo* window_info = nullptr;
+			const MultithreadingData* multithreading_data = nullptr;
 
-	class InfoBox
-	{
-		const short upper_border_height = 2;
-		unsigned short box_width;
-		unsigned short box_height;
+			COORD GetPositionAbsolute(size_t lenght, short y_value);
+			short GetYPositionFromIndex(short index);
+			int GetPossibleSlots();
 
-		InfoBoxDesc info_box_desc;
-		TextInfo window_info;
-		const MultithreadingData* multithreading_data;
-		std::vector<std::pair<std::string, std::string>> data;
+		public:
 
-		void SetCursorPosition(short index);
-		std::string RegulateStringSize(const std::string& text, short max_size, bool fill_to_max_size = false);
-		void ShowLineOfText(unsigned short index, Color primary_color, Color secondary_color);
-
-	public:
-
-		InfoBox(const InfoBoxDesc& info_box_desc, const MeridorConsoleLib::TextInfo& window_info, const MultithreadingData* multithreading_data = nullptr);
-		void Push(const std::string secondary_color_text, const std::string main_color_text);
-		void Draw();
-		void DrawBox(bool clear_instead = false);
-		void Clear();
-		void Reset();
-	};
+			Infobox(InfoboxDesc& infobox_desc, const MeridorConsoleLib::Text::TextInfo& window_info, const MultithreadingData& multithreading_data);
+			Infobox(InfoboxDesc& infobox_desc, const MeridorConsoleLib::Text::TextInfo& window_info);
+			void Push(std::string secondary_color_text, std::string main_color_text);
+			void Draw();
+			void DrawBox();
+			void ClearBox();
+			void Reset();
+		};
+	}
 }
