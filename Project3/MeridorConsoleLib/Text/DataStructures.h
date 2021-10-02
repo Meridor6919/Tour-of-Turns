@@ -90,16 +90,16 @@ namespace MeridorConsoleLib
 			char border_building_character = '-';
 		};
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		struct TableTextDesc
+		struct TableDesc
 		{
-			explicit TableTextDesc(TextContainer<std::string, Args...>& text) : text(text) {};
-			TableTextDesc(std::initializer_list<std::string> init_list) : text(init_list) {};
+			explicit TableDesc(TextContainer<std::vector<std::string>, Args...>& text) : text(text) {};
+			TableDesc(std::initializer_list< std::vector<std::string>> init_list) : text(init_list) {};
 
-			TextContainer<std::string, Args...> text;
-			COORD point_of_reference{};
-			Align table_alignment = Align::left;
-			Align column_alignment = Align::left;
-			int number_of_columns = 1;
+			TextContainer<std::vector<std::string>, Args...> text;
+			COORD position{};
+			COORD box_size{};
+			Align column_align = Align::left;
+			Align text_align = Align::left;
 			int number_of_painted_rows = 1;
 			short vertical_spacing = default_spacing;
 			short horizontal_spacing = default_spacing;
