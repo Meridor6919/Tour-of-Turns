@@ -14,7 +14,7 @@ int MeridorConsoleLib::Text::Internal::ChooseNumeric::CalculateLenght(long long 
 	return lenght;
 }
 
-COORD MeridorConsoleLib::Text::Internal::ChooseNumeric::CalculatePosition(int lenght)
+COORD MeridorConsoleLib::Text::Internal::ChooseNumeric::GetPosition(int lenght)
 {
 	const short text_align_shift = static_cast<short>(GetTextAlignScalar(choose_desc->text_align) * static_cast<float>(lenght));
 	return {
@@ -30,7 +30,7 @@ long long MeridorConsoleLib::Text::Internal::ChooseNumeric::InBounds(const long 
 
 void MeridorConsoleLib::Text::Internal::ChooseNumeric::ClearInterface(int lenght)
 {
-	SetConsoleCursorPosition(window_info->output_handle, CalculatePosition(lenght));
+	SetConsoleCursorPosition(window_info->output_handle, GetPosition(lenght));
 	std::cout << Spaces(lenght);
 }
 
@@ -49,7 +49,7 @@ bool MeridorConsoleLib::Text::Internal::ChooseNumeric::Valid()
 void MeridorConsoleLib::Text::Internal::ChooseNumeric::ShowInterface()
 {
 	SetColor(window_info->output_handle, window_info->main_color);
-	SetConsoleCursorPosition(window_info->output_handle, CalculatePosition(lenght));
+	SetConsoleCursorPosition(window_info->output_handle, GetPosition(lenght));
 	if (choose_desc->value)
 	{
 		std::cout << choose_desc->value;
@@ -104,7 +104,7 @@ void MeridorConsoleLib::Text::Internal::ChooseNumeric::UpdateInterface()
 
 void MeridorConsoleLib::Text::Internal::ChooseNumeric::Clear()
 {
-	SetConsoleCursorPosition(window_info->output_handle, CalculatePosition(lenght));
+	SetConsoleCursorPosition(window_info->output_handle, GetPosition(lenght));
 	std::cout << Spaces(lenght);
 }
 

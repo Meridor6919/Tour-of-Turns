@@ -19,7 +19,7 @@ namespace MeridorConsoleLib
 				int prev_lenght;
 
 				int CalculateLenght(long long value);
-				COORD CalculatePosition(int lenght);
+				COORD GetPosition(int lenght);
 				long long InBounds(long long value);
 				void ClearInterface(int lenght);
 

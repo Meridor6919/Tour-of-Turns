@@ -18,7 +18,7 @@ namespace MeridorConsoleLib
 				VerticalChooseDesc<TextContainer, Args...>* choose_desc;
 				long long prev_value;
 
-				COORD CalculatePosition(const long long& value)
+				COORD GetPosition(const long long& value)
 				{
 					const short text_align_shift = static_cast<short>(GetTextAlignScalar(choose_desc->text_align) * static_cast<float>(choose_desc->text[value].size()));
 					return {
@@ -28,12 +28,12 @@ namespace MeridorConsoleLib
 				}
 				void ClearOption(const long long& value)
 				{
-					SetConsoleCursorPosition(window_info->output_handle, CalculatePosition(value));
+					SetConsoleCursorPosition(window_info->output_handle, GetPosition(value));
 					std::cout << Spaces(choose_desc->text[value].size());
 				}
 				void ShowOption(const long long& value)
 				{
-					SetConsoleCursorPosition(window_info->output_handle, CalculatePosition(value));
+					SetConsoleCursorPosition(window_info->output_handle, GetPosition(value));
 					std::cout << choose_desc->text[value];
 				}
 

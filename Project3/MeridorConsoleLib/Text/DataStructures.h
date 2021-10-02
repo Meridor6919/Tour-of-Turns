@@ -89,8 +89,6 @@ namespace MeridorConsoleLib
 			Color fading_color = Color::dark_gray;
 			char border_building_character = '-';
 		};
-		
-
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
 		struct TableTextDesc
 		{
