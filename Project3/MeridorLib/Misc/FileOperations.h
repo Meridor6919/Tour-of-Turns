@@ -8,7 +8,7 @@ namespace MeridorFileOperations
 {
 	std::string GetSeparatedValue(const std::string& text, int index, char separator = '\t');
 	std::string SetSeparatedValue(const std::string& original_text, const std::string& text_to_put, int index, char separator = '\t');
-	std::string SetPrecision(const std::string& floating_point_number, unsigned int precision);
+	std::string SetFloatingPointPrecision(const std::string& number, unsigned int precision);
 
 	std::vector<std::string> ReadFile(std::string path);
 	std::vector<std::string> GetFilesInDirectory(std::string path);

@@ -2,10 +2,10 @@
 
 std::string MeridorFileOperations::GetSeparatedValue(const std::string& text, int index, char separator)
 {
-	int start = 0;
-	int count = 0;
-	int text_size = static_cast<int>(text.size());
-	for (int i = 0; i < text_size; ++i)
+	size_t start = 0;
+	size_t count = 0;
+	size_t text_size = text.size();
+	for (size_t i = 0; i < text_size; ++i)
 	{
 		if ((text[i] == separator) || (i + 1 == text_size))
 		{
@@ -47,22 +47,9 @@ std::string MeridorFileOperations::SetSeparatedValue(const std::string& original
 	}
 	return original_text;
 }
-std::string MeridorFileOperations::SetPrecision(const std::string& floating_point_number, unsigned int precision)
+std::string MeridorFileOperations::SetFloatingPointPrecision(const std::string& number, unsigned int precision)
 {
-	unsigned int number_size = static_cast<unsigned int>(floating_point_number.size());
-	bool remove_decimal_point = !precision;
-	for (unsigned int i = 0; i < number_size; ++i)
-	{
-		if (floating_point_number[i] == '.')
-		{
-			if (number_size - 1 - i < precision)
-			{
-				precision = number_size - 1 - i;
-			}
-			return floating_point_number.substr(0, i + precision + 1 - remove_decimal_point);
-		}
-	}
-	return floating_point_number;
+	return std::string(number.begin(), std::find(number.begin(), number.end(), '.') + precision);
 }
 std::vector<std::string> MeridorFileOperations::ReadFile(const std::string path)
 {
@@ -96,27 +83,11 @@ std::vector<std::string> MeridorFileOperations::GetFilesInDirectory(const std::s
 }
 void MeridorFileOperations::RemoveExtension(std::string& string, const std::string& extension)
 {
-	const size_t extension_size = extension.size();
-	string = string.substr(0, string.size() - extension_size);
-
-}
-void MeridorFileOperations::RemoveExtension(std::vector<std::string>& vector, const std::string& extension)
-{
-	for (size_t i = 0; i < vector.size(); ++i)
-	{
-		RemoveExtension(vector[i], extension);
-	}
+	string = string.substr(0, string.size() - extension.size());
 }
 void MeridorFileOperations::AddExtension(std::string& string, const std::string& extension)
 {
 	string += extension;
-}
-void MeridorFileOperations::AddExtension(std::vector<std::string>& vector, const std::string& extension)
-{
-	for (size_t i = 0; i < vector.size(); ++i)
-	{
-		AddExtension(vector[i], extension);
-	}
 }
 std::string MeridorFileOperations::GetExtension(const std::string& string)
 {
