@@ -61,12 +61,12 @@ void WavTransformer::StartPlaying(float volume)
 			++widened_byte_ptr;
 		}
 		current_volume *= volume;
-		PlaySound(reinterpret_cast<LPCSTR>(bytes), 0, SND_MEMORY | flags);
+		PlaySoundA(reinterpret_cast<LPCSTR>(bytes), 0, SND_MEMORY | flags);
 	}
 }
 void WavTransformer::StopPlaying()
 {
-	PlaySound(0, 0, 0);
+	PlaySoundA(0, 0, 0);
 }
 WavTransformer::~WavTransformer()
 {

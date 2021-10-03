@@ -1,4 +1,5 @@
 #pragma once
+#define WINDOWS_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdio.h>
 #include <iostream>
@@ -39,23 +40,23 @@ bool PipeConnector::HandleConnection(void(T::* MsgHandling)(std::string), T* obj
 
 	if (!CreatePipe(&output_pipe_read, &output_pipe_write, &security_atributes, 0))
 	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
+		MessageBoxA(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		return false;
 	}
 	if (!CreatePipe(&input_pipe_read, &input_pipe_write, &security_atributes, 0))
 	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
+		MessageBoxA(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		return false;
 	}
 
-	STARTUPINFO startup_info = { 0 };
+	STARTUPINFOA startup_info{};
 	startup_info.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 	startup_info.hStdInput = input_pipe_read;
 	startup_info.hStdOutput = output_pipe_write;
 
 	if (!CreateProcessA(NULL, (LPSTR)connector_path.c_str(), NULL, NULL, TRUE, 0, NULL, NULL, &startup_info, &process_info))
 	{
-		MessageBox(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
+		MessageBoxA(0, ("Error  code: " + std::to_string(GetLastError())).c_str(), "Pipe Error", MB_TOPMOST);
 		return false;
 	}
 	handling_connection = true;
