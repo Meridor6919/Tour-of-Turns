@@ -88,30 +88,6 @@
     <ClCompile Include="NetworkRoleClient.cpp">
       <Filter>Files\ToTFiles\MainGameFiles\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\Window\BaseWindow.cpp">
-      <Filter>Files\MeridorConsoleLib\Window\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorNetworkLib\BroadcastReceiver.cpp">
-      <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorNetworkLib\BroadcastSender.cpp">
-      <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorNetworkLib\NetworkConnectorClient.cpp">
-      <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorNetworkLib\NetworkConnectorGeneral.cpp">
-      <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorMiscModules\WavTransformer.cpp">
-      <Filter>Files\MeridorMiscModules\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorMiscModules\PipeConnector.cpp">
-      <Filter>Files\MeridorMiscModules\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\Window\WindowImmobilizer.cpp">
-      <Filter>Files\MeridorConsoleLib\Window\SourceFiles</Filter>
-    </ClCompile>
     <ClCompile Include="FileManagementFunctions.cpp">
       <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
@@ -127,17 +103,50 @@
     <ClCompile Include="ValidationStatus.cpp">
       <Filter>Files\ToTFiles\ApplicationFiles\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\Text\GeneralFunctions.cpp">
+    <ClCompile Include="MeridorLib\Console\Window\BaseWindow.cpp">
+      <Filter>Files\MeridorConsoleLib\Window\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Network\BroadcastReceiver.cpp">
+      <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Network\BroadcastSender.cpp">
+      <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Console\Text\ChooseNumeric.cpp">
       <Filter>Files\MeridorConsoleLib\Text\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\Text\InfoBox.cpp">
+    <ClCompile Include="MeridorLib\Console\Text\ChooseText.cpp">
       <Filter>Files\MeridorConsoleLib\Text\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorMiscModules\VisibleTimer.cpp">
+    <ClCompile Include="MeridorLib\Console\Window\Functions.cpp">
+      <Filter>Files\MeridorConsoleLib\Window\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Misc\FileOperations.cpp">
       <Filter>Files\MeridorMiscModules\Source</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorConsoleLib\Window\Functions.cpp">
-      <Filter>Files</Filter>
+    <ClCompile Include="MeridorLib\Console\Text\GeneralFunctions.cpp">
+      <Filter>Files\MeridorConsoleLib\Text\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Console\Text\Infobox.cpp">
+      <Filter>Files\MeridorConsoleLib\Text\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Network\NetworkConnectorClient.cpp">
+      <Filter>Files\MeridorMiscModules\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Network\NetworkConnectorGeneral.cpp">
+      <Filter>Files\MeridorMiscModules\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Misc\WavTransformer.cpp">
+      <Filter>Files\MeridorMiscModules\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Misc\PipeConnector.cpp">
+      <Filter>Files\MeridorMiscModules\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Misc\Timer.cpp">
+      <Filter>Files\MeridorMiscModules\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Console\Window\WindowImmobilizer.cpp">
+      <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,33 +167,6 @@
     </ClInclude>
     <ClInclude Include="ToT.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Window\DataStructures.h">
-      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Window\BaseWindow.h">
-      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorNetworkLib\BroadcastReceiver.h">
-      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorNetworkLib\BroadcastSender.h">
-      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorNetworkLib\NetworkConnectorClient.h">
-      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorNetworkLib\NetworkConnectorGeneral.h">
-      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorNetworkLib\NetworkConnectorHost.h">
-      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorMiscModules\WavTransformer.h">
-      <Filter>Files\MeridorMiscModules\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorMiscModules\PipeConnector.h">
-      <Filter>Files\MeridorMiscModules\Header</Filter>
     </ClInclude>
     <ClInclude Include="MeridorConsoleLib\Window\Immobilizer.h">
       <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
@@ -222,25 +204,81 @@
     <ClInclude Include="ValidationStatus.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Text\GeneralFunctions.h">
+    <ClInclude Include="MeridorLib\Console\Window\BaseWindow.h">
+      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Network\BroadcastReceiver.h">
+      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Network\BroadcastSender.h">
+      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Text\Choose.h">
       <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Text\Color.h">
+    <ClInclude Include="MeridorLib\Console\Text\ChooseGeneric.h">
       <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Text\Infobox.h">
+    <ClInclude Include="MeridorLib\Console\Text\ChooseHorizontal.h">
       <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Text\TextContainers.h">
+    <ClInclude Include="MeridorLib\Console\Text\ChooseNumeric.h">
       <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Text\TextLib.h">
+    <ClInclude Include="MeridorLib\Console\Text\ChooseText.h">
       <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorMiscModules\VisibleTimer.h">
+    <ClInclude Include="MeridorLib\Console\Text\ChooseVertical.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Text\Color.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Window\Constants.h">
+      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Text\Constants.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Text\DataStructures.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Window\DataStructures.h">
+      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Misc\FileOperations.h">
       <Filter>Files\MeridorMiscModules\Header</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Window\Functions.h" />
+    <ClInclude Include="MeridorLib\Console\Window\Functions.h">
+      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Text\GeneralFunctions.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Text\Infobox.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Network\NetworkConnectorClient.h">
+      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Network\NetworkConnectorGeneral.h">
+      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Network\NetworkConnectorHost.h">
+      <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Misc\PipeConnector.h">
+      <Filter>Files\MeridorMiscModules\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Console\Text\Table.h">
+      <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Misc\Timer.h">
+      <Filter>Files\MeridorMiscModules\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Misc\WavTransformer.h">
+      <Filter>Files\MeridorMiscModules\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Icon.rc" />
