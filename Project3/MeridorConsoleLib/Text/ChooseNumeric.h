@@ -24,7 +24,7 @@ namespace MeridorConsoleLib
 				void ClearInterface(int lenght);
 
 			public:
-				ChooseNumeric(NumericChooseDesc& choose_desc, const TextInfo& window_info);
+				ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info);
 				bool Valid() override;
 				void ShowInterface() override;
 				bool ProcessInput(int button) override;
@@ -32,7 +32,7 @@ namespace MeridorConsoleLib
 				void Clear() override;
 			};
 		}
-		long long ChooseNumeric(NumericChooseDesc& choose_desc, const TextInfo& window_info);
-		long long ChooseNumeric(NumericChooseDesc& choose_desc, const TextInfo& window_info, const MultithreadingData& multithreading_data);
+		long long ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info);
+		long long ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data);
 	}
 }

@@ -10,28 +10,37 @@ namespace MeridorConsoleLib
 			template <template<typename, size_t...> typename TextContainer, size_t ...Args>
 			class TableClass
 			{
-
 				TableDesc<TextContainer, Args...>* table_desc;
-				const TextInfo* window_info;
-
+				const WindowInfo* window_info;
 				short column_width;
 
 				short GetColumnWidth()
 				{
-					return (table_desc->box_size.X - (table_desc->text.size() - 1) * table_desc->horizontal_spacing) / table_desc->text.size();
+					return static_cast<short>((table_desc->box_size.X - (table_desc->text.size() - 1) * table_desc->horizontal_spacing) / table_desc->text.size());
 				}
 				short GetAlignShift(short lenght)
 				{
-					return static_cast<float>((column_width - lenght) * GetTextAlignScalar(table_desc->text_align));
+					return static_cast<short>(static_cast<float>(column_width - lenght) * GetTextAlignScalar(table_desc->text_align));
 				}
+				void SelectCorrectColor(int index)
+				{
+					if (table_desc->number_of_painted_rows > index)
+					{
+						SetColor(window_info->output_handle, window_info->secondary_color);
+					}
+					else
+					{
+						SetColor(window_info->output_handle, window_info->main_color);
+					}
+				}
+
 			public:
-				TableClass(TableDesc<TextContainer, Args...>& table_desc, const TextInfo& window_info) :
+				TableClass(TableDesc<TextContainer, Args...>& table_desc, const WindowInfo& window_info) :
 					table_desc(&table_desc),
 					window_info(&window_info) 
 				{
 					column_width = GetColumnWidth();
 				}
-
 				void Draw()
 				{
 					COORD position = { table_desc->position.X, table_desc->position.Y };
@@ -39,14 +48,7 @@ namespace MeridorConsoleLib
 					for (int j = 0; iterate; ++j)
 					{
 						iterate = false;
-						if (table_desc->number_of_painted_rows > j)
-						{
-							SetColor(window_info->output_handle, window_info->secondary_color);
-						}
-						else
-						{
-							SetColor(window_info->output_handle, window_info->main_color);
-						}
+						SelectCorrectColor(j);
 
 						for (int i = 0; i < table_desc->text.size(); ++i)
 						{
@@ -71,41 +73,47 @@ namespace MeridorConsoleLib
 						std::cout << spaces;
 					}
 				}
-				bool ClearAfter()
+				bool ClearInstead()
 				{
-					return table_desc->clear_after;
+					return table_desc->clear_instead;
 				}
 			};
 
 			template <class T>
 			void Table(T& table_class)
 			{
-				table_class.Draw();
-				if (table_class.ClearAfter())
+				if (table_class.ClearInstead())
 				{
 					table_class.Clear();
+				}
+				else
+				{
+					table_class.Draw();
 				}
 			}
 			template <class T>
 			void Table(T& table_class, const MultithreadingData& multithreading_data)
 			{
 				multithreading_data.mutex->lock();
-				table_class.Draw();
-				if (table_class.ClearAfter())
+				if (table_class.ClearInstead())
 				{
 					table_class.Clear();
+				}
+				else
+				{
+					table_class.Draw();
 				}
 				multithreading_data.mutex->unlock();
 			}
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		void Table(TableDesc<TextContainer, Args...>& choose_desc, const TextInfo& window_info)
+		void Table(TableDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info)
 		{
 			Internal::TableClass<TextContainer, Args...> table_impl(choose_desc, window_info);
 			return Internal::Table(table_impl);
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		void Table(TableDesc<TextContainer, Args...>& choose_desc, const TextInfo& window_info, const MultithreadingData& multithreading_data)
+		void Table(TableDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 		{
 			Internal::TableClass<TextContainer, Args...> table_impl(choose_desc, window_info);
 			return Internal::Table(table_impl, multithreading_data);

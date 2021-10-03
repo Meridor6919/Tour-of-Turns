@@ -19,7 +19,7 @@ namespace MeridorConsoleLib
 				COORD GetPosition();
 
 			public:
-				ChooseText(TextChooseDesc& choose_desc, const TextInfo& window_info);
+				ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info);
 				bool Valid() override;
 				void ShowInterface() override;
 				bool ProcessInput(int button) override;
@@ -27,7 +27,7 @@ namespace MeridorConsoleLib
 				void Clear() override;
 			};
 		}
-		std::string ChooseText(TextChooseDesc& choose_desc, const TextInfo& window_info);
-		std::string ChooseText(TextChooseDesc& choose_desc, const TextInfo& window_info, const MultithreadingData& multithreading_data);
+		std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info);
+		std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data);
 	}
 }

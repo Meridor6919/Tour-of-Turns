@@ -38,7 +38,7 @@ namespace MeridorConsoleLib
 				}
 
 			public:
-				ChooseVertical(VerticalChooseDesc<TextContainer, Args...>& choose_desc, const TextInfo& window_info) :
+				ChooseVertical(VerticalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info) :
 					ChooseInterface(choose_desc, window_info),
 					prev_value(choose_desc.value),
 					choose_desc(&choose_desc) {}
@@ -106,13 +106,13 @@ namespace MeridorConsoleLib
 			};
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		long long ChooseVertical(VerticalChooseDesc<TextContainer, Args...>& choose_desc, const TextInfo& window_info)
+		long long ChooseVertical(VerticalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info)
 		{
 			Internal::ChooseVertical<TextContainer, Args...> choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl);
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		long long ChooseVertical(VerticalChooseDesc<TextContainer, Args...>& choose_desc, const TextInfo& window_info, const MultithreadingData& multithreading_data)
+		long long ChooseVertical(VerticalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 		{
 			Internal::ChooseVertical<TextContainer, Args...> choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl, multithreading_data);

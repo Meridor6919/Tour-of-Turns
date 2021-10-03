@@ -15,7 +15,6 @@ namespace MeridorConsoleLib
 			right,
 			last
 		};
-
 		enum KeyCodes : int
 		{
 			backspace = 8,

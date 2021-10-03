@@ -15,12 +15,20 @@ namespace MeridorConsoleLib
 {
 	namespace Text
 	{
+		//Type aliases
 		template<class T> using RefVector = std::vector<T>&;
 		template<class T> using Vector = std::vector<T>;
 		template<class T, size_t size> using Array = std::array<T, size>;
 		template<class T, size_t size> using RefArray = std::array<T, size>&;
 
-		struct TextInfo
+		//General Data Structures
+		template<class T1, class T2>
+		struct MyPair
+		{
+			T1 first;
+			T2 second;
+		};
+		struct WindowInfo
 		{
 			HANDLE output_handle = INVALID_HANDLE_VALUE;
 			Color main_color = Color::white;
@@ -29,9 +37,11 @@ namespace MeridorConsoleLib
 		struct MultithreadingData
 		{
 			std::mutex* mutex = nullptr;
-			bool* skip_blocking_functions = nullptr;
+			bool* force_break = nullptr;
 			std::chrono::milliseconds delay = default_delay;
 		};
+
+		//Choose Data structures
 		template<class T>
 		struct GenericChooseDesc
 		{
@@ -73,21 +83,19 @@ namespace MeridorConsoleLib
 			int maximum_size = 100;
 			bool special_space_rules = true;
 		};
-		template<class T1, class T2>
-		struct MyPair
-		{
-			T1 first;
-			T2 second;
-		};
+
+		//Other Data Structures
 		struct InfoboxDesc
 		{
 			std::vector<MyPair<std::string, std::string>> data{};
 			COORD position{};
 			COORD box_size{};
 			short vertical_spacing = default_spacing;
+			short horizontal_spacing = default_spacing;
 			Align text_align = Align::left;
 			Color fading_color = Color::dark_gray;
 			char border_building_character = '-';
+			std::string text_to_long_sign = "...";
 		};
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
 		struct TableDesc
@@ -103,7 +111,7 @@ namespace MeridorConsoleLib
 			int number_of_painted_rows = 1;
 			short vertical_spacing = default_spacing;
 			short horizontal_spacing = default_spacing;
-			bool clear_after = false;
+			bool clear_instead = false;
 		};
 	}
 }

@@ -31,8 +31,7 @@ namespace MeridorConsoleLib
 				}
 
 			public:
-
-				ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const TextInfo& window_info) :
+				ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info) :
 					ChooseInterface(choose_desc, window_info),
 					choose_desc(&choose_desc) {}
 				bool Valid() override
@@ -96,13 +95,13 @@ namespace MeridorConsoleLib
 			};
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		long long ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const TextInfo& window_info)
+		long long ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info)
 		{
 			Internal::ChooseHorizontal<TextContainer, Args...> choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl);
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		long long ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const TextInfo& window_info, const MultithreadingData& multithreading_data)
+		long long ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 		{
 			Internal::ChooseHorizontal<TextContainer, Args...> choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl, multithreading_data);

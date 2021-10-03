@@ -13,7 +13,6 @@ int MeridorConsoleLib::Text::Internal::ChooseNumeric::CalculateLenght(long long 
 	}
 	return lenght;
 }
-
 COORD MeridorConsoleLib::Text::Internal::ChooseNumeric::GetPosition(int lenght)
 {
 	const short text_align_shift = static_cast<short>(GetTextAlignScalar(choose_desc->text_align) * static_cast<float>(lenght));
@@ -22,30 +21,25 @@ COORD MeridorConsoleLib::Text::Internal::ChooseNumeric::GetPosition(int lenght)
 		static_cast<short>(choose_desc->point_of_reference.Y)
 	};
 }
-
 long long MeridorConsoleLib::Text::Internal::ChooseNumeric::InBounds(const long long value)
 {
 	return value >= choose_desc->lower_bound && value <= choose_desc->upper_bound;
 }
-
 void MeridorConsoleLib::Text::Internal::ChooseNumeric::ClearInterface(int lenght)
 {
 	SetConsoleCursorPosition(window_info->output_handle, GetPosition(lenght));
 	std::cout << Spaces(lenght);
 }
-
-MeridorConsoleLib::Text::Internal::ChooseNumeric::ChooseNumeric(NumericChooseDesc& choose_desc, const TextInfo& window_info) : ChooseInterface(choose_desc, window_info)
+MeridorConsoleLib::Text::Internal::ChooseNumeric::ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info) : ChooseInterface(choose_desc, window_info)
 {
 	this->choose_desc = &choose_desc;
 	lenght = CalculateLenght(choose_desc.value);
 	prev_lenght = lenght;
 }
-
 bool MeridorConsoleLib::Text::Internal::ChooseNumeric::Valid()
 {
 	return InBounds(choose_desc->value);
 }
-
 void MeridorConsoleLib::Text::Internal::ChooseNumeric::ShowInterface()
 {
 	SetColor(window_info->output_handle, window_info->main_color);
@@ -55,7 +49,6 @@ void MeridorConsoleLib::Text::Internal::ChooseNumeric::ShowInterface()
 		std::cout << choose_desc->value;
 	}
 }
-
 bool MeridorConsoleLib::Text::Internal::ChooseNumeric::ProcessInput(int button)
 {
 	if (button >= '0' && button <= '9')
@@ -94,27 +87,23 @@ bool MeridorConsoleLib::Text::Internal::ChooseNumeric::ProcessInput(int button)
 	}
 	return false;
 }
-
 void MeridorConsoleLib::Text::Internal::ChooseNumeric::UpdateInterface()
 {
 	ClearInterface(prev_lenght);
 	ShowInterface();
 	prev_lenght = lenght;
 }
-
 void MeridorConsoleLib::Text::Internal::ChooseNumeric::Clear()
 {
 	SetConsoleCursorPosition(window_info->output_handle, GetPosition(lenght));
 	std::cout << Spaces(lenght);
 }
-
-long long MeridorConsoleLib::Text::ChooseNumeric(NumericChooseDesc& choose_desc, const TextInfo& window_info)
+long long MeridorConsoleLib::Text::ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info)
 {
 	Internal::ChooseNumeric choose_impl(choose_desc, window_info);
 	return Internal::GenericChoose(choose_impl);
 }
-
-long long MeridorConsoleLib::Text::ChooseNumeric(NumericChooseDesc& choose_desc, const TextInfo& window_info, const MultithreadingData& multithreading_data)
+long long MeridorConsoleLib::Text::ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
 {
 	Internal::ChooseNumeric choose_impl(choose_desc, window_info);
 	return Internal::GenericChoose(choose_impl, multithreading_data);

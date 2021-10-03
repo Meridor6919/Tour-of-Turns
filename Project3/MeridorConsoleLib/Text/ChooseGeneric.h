@@ -14,9 +14,10 @@ namespace MeridorConsoleLib
 			class ChooseInterface
 			{
 			protected:
-				const TextInfo* window_info;
+				const WindowInfo* window_info;
 				GenericChooseDesc<T>* choose_desc;
-				ChooseInterface(GenericChooseDesc<T> &choose_desc, const TextInfo& window_info) : choose_desc(&choose_desc), window_info(&window_info) {};
+				ChooseInterface(GenericChooseDesc<T> &choose_desc, const WindowInfo& window_info) : choose_desc(&choose_desc), window_info(&window_info) {};
+
 			public:
 				bool ClearAfter() { return choose_desc->clear_after; }
 				bool ExitOnProcessedInput() { return choose_desc->exit_on_processed_input; }
@@ -82,7 +83,7 @@ namespace MeridorConsoleLib
 					do
 					{
 						multithreading_data.mutex->unlock();
-						input = Button(multithreading_data.skip_blocking_functions, KeyCodes::enter, multithreading_data.delay);
+						input = Button(multithreading_data.force_break, KeyCodes::enter, multithreading_data.delay);
 						bool index_change = choose.ProcessInput(input);
 						multithreading_data.mutex->lock();
 						if (index_change)
