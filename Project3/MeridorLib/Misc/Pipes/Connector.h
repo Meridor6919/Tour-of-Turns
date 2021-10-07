@@ -9,12 +9,12 @@ namespace MeridorPipes
 {
 	class Connector
 	{
+		PROCESS_INFORMATION process_info;
 		HANDLE output_pipe_write;
 		HANDLE output_pipe_read;
 		HANDLE input_pipe_write;
 		HANDLE input_pipe_read;
-
-		PROCESS_INFORMATION process_info;
+		bool is_closed = true;
 
 		bool SetPipes();
 		bool SetProcess(const char* path);

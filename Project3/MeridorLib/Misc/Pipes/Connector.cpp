@@ -4,15 +4,14 @@ namespace MeridorPipes
 {
 	bool Connector::SetPipes()
 	{
-		bool good = true;
 		SECURITY_ATTRIBUTES sats{};
 		sats.nLength = sizeof(SECURITY_ATTRIBUTES);
 		sats.bInheritHandle = 1;
 		sats.lpSecurityDescriptor = 0;
 
-		good = CreatePipe(&output_pipe_read, &output_pipe_write, &sats, 0);
-		good = good && CreatePipe(&input_pipe_read, &input_pipe_write, &sats, 0);
-		return good;
+		return 
+			CreatePipe(&output_pipe_read, &output_pipe_write, &sats, 0) &&
+			CreatePipe(&input_pipe_read, &input_pipe_write, &sats, 0);
 	}
 	bool Connector::SetProcess(const char* path)
 	{
@@ -46,21 +45,22 @@ namespace MeridorPipes
 
 		return ret;
 	}
-
 	void Connector::Write(std::string msg)
 	{
-		BYTE buffer[buffer_size];
-		msg = msg + "\n";
-		WriteFile(input_pipe_write, msg.c_str(), msg.size(), 0, 0);
+		WriteFile(input_pipe_write, (msg + '\n').c_str(), msg.size() + 1, 0, 0);
 	}
 	void Connector::CloseConnection()
 	{
-		output_pipe_read && CloseHandle(output_pipe_read);
-		output_pipe_write && CloseHandle(output_pipe_write);
-		input_pipe_write && CloseHandle(input_pipe_write);
-		input_pipe_read && CloseHandle(input_pipe_read);
-		TerminateProcess(process_info.hProcess, 0);
-		process_info.hProcess && CloseHandle(process_info.hProcess);
-		process_info.hThread && CloseHandle(process_info.hThread);
+		if (!is_closed)
+		{
+			output_pipe_read&& CloseHandle(output_pipe_read);
+			output_pipe_write&& CloseHandle(output_pipe_write);
+			input_pipe_write&& CloseHandle(input_pipe_write);
+			input_pipe_read&& CloseHandle(input_pipe_read);
+			TerminateProcess(process_info.hProcess, 0);
+			process_info.hProcess&& CloseHandle(process_info.hProcess);
+			process_info.hThread&& CloseHandle(process_info.hThread);
+			is_closed = false;
+		}
 	}
 }
