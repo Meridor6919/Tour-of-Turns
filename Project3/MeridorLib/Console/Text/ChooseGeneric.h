@@ -16,30 +16,40 @@ namespace MeridorConsoleLib
 			protected:
 				const WindowInfo* window_info;
 				GenericChooseDesc<T>* choose_desc;
-				ChooseInterface(GenericChooseDesc<T> &choose_desc, const WindowInfo& window_info) : choose_desc(&choose_desc), window_info(&window_info) {};
+
+				ChooseInterface(GenericChooseDesc<T> &choose_desc, const WindowInfo& window_info) noexcept : choose_desc(&choose_desc), window_info(&window_info) {};
 
 			public:
-				bool ClearAfter() { return choose_desc->clear_after; }
-				bool ExitOnProcessedInput() { return choose_desc->exit_on_processed_input; }
-				bool DontShowInterface() { return choose_desc->dont_show_interface; }
+				[[nodiscard]] bool ClearAfter() const noexcept 
+				{ 
+					return choose_desc->clear_after; 
+				}
+				[[nodiscard]] bool ExitOnProcessedInput() const noexcept 
+				{ 
+					return choose_desc->exit_on_processed_input; 
+				}
+				[[nodiscard]] bool DontShowInterface() const noexcept 
+				{ 
+					return choose_desc->dont_show_interface; 
+				}
 
-				virtual bool Valid() = 0;
-				virtual void ShowInterface() = 0;
-				virtual bool ProcessInput(int button) = 0;
-				virtual void UpdateInterface() = 0;
-				virtual void Clear() = 0;
+				virtual bool Valid() noexcept = 0;
+				virtual void ShowInterface() const noexcept = 0;
+				virtual bool ProcessInput(int button) noexcept = 0;
+				virtual void UpdateInterface() noexcept = 0;
+				virtual void Clear() const noexcept = 0;
 				
-				T GetErrorValue()
+				[[nodiscard]] T GetErrorValue() const noexcept
 				{
 					return choose_desc->error_value;
 				}
-				T GetValue()
+				[[nodiscard]] T GetValue() const noexcept
 				{
 					return choose_desc->value;
 				}
 			};
 			template<class T>
-			T GenericChoose(ChooseInterface<T>& choose)
+			[[nodiscard]] T GenericChoose(ChooseInterface<T>& choose) noexcept
 			{
 				int input;
 				if (choose.Valid())
@@ -70,7 +80,7 @@ namespace MeridorConsoleLib
 				return choose.GetErrorValue();
 			}
 			template<class T>
-			T GenericChoose(ChooseInterface<T>& choose, const MultithreadingData& multithreading_data)
+			[[nodiscard]] T GenericChoose(ChooseInterface<T>& choose, const MultithreadingData& multithreading_data) noexcept
 			{
 				int input;
 				if (choose.Valid())

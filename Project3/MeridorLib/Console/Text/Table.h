@@ -14,15 +14,15 @@ namespace MeridorConsoleLib
 				const WindowInfo* window_info;
 				short column_width;
 
-				short GetColumnWidth()
+				[[nodiscard]] short GetColumnWidth() const noexcept
 				{
 					return static_cast<short>((table_desc->box_size.X - (table_desc->text.size() - 1) * table_desc->horizontal_spacing) / table_desc->text.size());
 				}
-				short GetAlignShift(short lenght)
+				[[nodiscard]] short GetAlignShift(short lenght) const noexcept
 				{
 					return static_cast<short>(static_cast<float>(column_width - lenght) * GetTextAlignScalar(table_desc->text_align));
 				}
-				void SelectCorrectColor(int index)
+				void SelectCorrectColor(int index) const noexcept
 				{
 					if (table_desc->number_of_painted_rows > index)
 					{

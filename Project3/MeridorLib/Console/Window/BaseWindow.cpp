@@ -3,7 +3,7 @@ namespace MeridorConsoleLib
 {
 	namespace Window
 	{
-		void BaseWindow::SetFontSize()
+		void BaseWindow::SetFontSize() noexcept
 		{
 			const double minimal_font_size1 = static_cast<double>(window_info.window_size.X) / (round(static_cast<double>(window_info.characters_capacity.X) + 1.0) * font_aspect_ratio);
 			const double minimal_font_size2 = static_cast<double>(window_info.window_size.Y) / (static_cast<double>(window_info.characters_capacity.Y) + 1.0);
@@ -16,7 +16,7 @@ namespace MeridorConsoleLib
 
 			SetCurrentConsoleFontEx(window_info.output_handle, FALSE, &console_font_info);
 		}
-		void BaseWindow::SetWindowSize()
+		void BaseWindow::SetWindowSize() noexcept
 		{
 			SetWindowLong(window_info.hwnd, GWL_STYLE, GetWindowFlags(window_info.window_mode));
 			if (window_info.window_mode != WindowMode::windowed)
@@ -42,7 +42,7 @@ namespace MeridorConsoleLib
 				ShowWindow(window_info.hwnd, SW_NORMAL);
 			}
 		}
-		void BaseWindow::UpdateBufferSize()
+		void BaseWindow::UpdateBufferSize() noexcept
 		{
 			CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
 			GetConsoleScreenBufferInfo(window_info.output_handle, &screen_buffer_info);
@@ -52,20 +52,20 @@ namespace MeridorConsoleLib
 			};
 			SetConsoleScreenBufferSize(window_info.output_handle, buffer_size);
 		}
-		void BaseWindow::UpdateFontInformation()
+		void BaseWindow::UpdateFontInformation() noexcept
 		{
 			CONSOLE_FONT_INFOEX font_info;
 			font_info.cbSize = sizeof(font_info);
 			GetCurrentConsoleFontEx(window_info.output_handle, FALSE, &font_info);
 			font_size = font_info.dwFontSize;
 		}
-		void BaseWindow::UpdateCharacterCapacity()
+		void BaseWindow::UpdateCharacterCapacity() noexcept
 		{
 			CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
 			GetConsoleScreenBufferInfo(window_info.output_handle, &screen_buffer_info);
 			window_info.characters_capacity = screen_buffer_info.dwSize;
 		}
-		void BaseWindow::UpdateWindowInformation()
+		void BaseWindow::UpdateWindowInformation() noexcept
 		{
 			SetFontSize();
 			SetWindowSize();
@@ -74,7 +74,7 @@ namespace MeridorConsoleLib
 			UpdateFontInformation();
 			SetCursor(static_cast<BOOL>(window_info.visible_cursor));
 		}
-		void BaseWindow::Init(const WindowInfo& window_info)
+		void BaseWindow::Init(const WindowInfo& window_info) noexcept
 		{
 			this->window_info = window_info;
 			this->base_character_capacity = window_info.characters_capacity;
@@ -119,11 +119,11 @@ namespace MeridorConsoleLib
 		{
 			return &window_info;
 		}
-		void BaseWindow::SetCursor(BOOL visible)
+		void BaseWindow::SetCursor(BOOL visible) noexcept
 		{
 			MeridorConsoleLib::Window::SetCursor(window_info.output_handle, visible);
 		}
-		void BaseWindow::SetWindowMode(WindowMode window_mode, COORD window_size)
+		void BaseWindow::SetWindowMode(WindowMode window_mode, COORD window_size) noexcept
 		{
 			if (window_mode != WindowMode::windowed)
 			{

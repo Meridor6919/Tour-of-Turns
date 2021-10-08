@@ -5,7 +5,7 @@ namespace MeridorConsoleLib
 	{
 		namespace Internal
 		{
-			COORD ChooseText::GetPosition()
+			COORD ChooseText::GetPosition() const noexcept
 			{
 				const short text_align_shift = static_cast<short>(GetTextAlignScalar(choose_desc->text_align) * static_cast<float>(choose_desc->value.size()));
 				return {
@@ -13,22 +13,22 @@ namespace MeridorConsoleLib
 					static_cast<short>(choose_desc->point_of_reference.Y)
 				};
 			}
-			ChooseText::ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info) : ChooseInterface(choose_desc, window_info)
+			ChooseText::ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info) noexcept : ChooseInterface(choose_desc, window_info)
 			{
 				this->choose_desc = &choose_desc;
 				std::sort(choose_desc.dictionary.begin(), choose_desc.dictionary.end());
 			}
-			bool ChooseText::Valid()
+			bool ChooseText::Valid() noexcept
 			{
 				return choose_desc->value.size() <= choose_desc->maximum_size;
 			}
-			void ChooseText::ShowInterface()
+			void ChooseText::ShowInterface() const noexcept
 			{
 				SetColor(window_info->output_handle, window_info->main_color);
 				SetConsoleCursorPosition(window_info->output_handle, GetPosition());
 				std::cout << choose_desc->value + ' ';
 			}
-			bool ChooseText::ProcessInput(int button)
+			bool ChooseText::ProcessInput(int button) noexcept
 			{
 				if (choose_desc->value.size() < choose_desc->maximum_size && std::binary_search(choose_desc->dictionary.begin(), choose_desc->dictionary.end(), static_cast<char>(button)))
 				{
@@ -48,22 +48,22 @@ namespace MeridorConsoleLib
 				}
 				return true;
 			}
-			void ChooseText::UpdateInterface()
+			void ChooseText::UpdateInterface() noexcept
 			{
 				ShowInterface();
 			}
-			void ChooseText::Clear()
+			void ChooseText::Clear() const noexcept
 			{
 				SetConsoleCursorPosition(window_info->output_handle, GetPosition());
 				std::cout << Spaces(choose_desc->value.size());
 			}
 		}
-		std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info)
+		std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info) noexcept
 		{
 			Internal::ChooseText choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl);
 		}
-		std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+		std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data) noexcept
 		{
 			Internal::ChooseText choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl, multithreading_data);

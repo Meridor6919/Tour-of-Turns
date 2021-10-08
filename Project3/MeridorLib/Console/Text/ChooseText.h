@@ -16,18 +16,18 @@ namespace MeridorConsoleLib
 			{
 			protected:
 				TextChooseDesc* choose_desc;
-				COORD GetPosition();
+				[[nodiscard]] COORD GetPosition() const noexcept;
 
 			public:
-				ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info);
-				bool Valid() override;
-				void ShowInterface() override;
-				bool ProcessInput(int button) override;
-				void UpdateInterface() override;
-				void Clear() override;
+				ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info) noexcept;
+				[[nodiscard]] bool Valid() noexcept override;
+				void ShowInterface() const noexcept override;
+				bool ProcessInput(int button) noexcept override;
+				void UpdateInterface() noexcept override;
+				void Clear() const noexcept override;
 			};
 		}
-		std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info);
-		std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data);
+		[[nodiscard]] std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info) noexcept;
+		[[nodiscard]] std::string ChooseText(TextChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data) noexcept;
 	}
 }

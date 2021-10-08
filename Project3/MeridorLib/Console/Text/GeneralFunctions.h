@@ -9,20 +9,20 @@ namespace MeridorConsoleLib
 {
 	namespace Text
 	{
-		int Button();
-		int Button(const bool* loop, int out_of_loop_return_value, std::chrono::nanoseconds delay = default_delay);
-		float GetTextAlignScalar(Align text_align);
-		void SetColor(HANDLE output_handle, Color color);
+		int Button() noexcept;
+		int Button(const bool* loop, int out_of_loop_return_value, std::chrono::nanoseconds delay = default_delay) noexcept;
+		[[nodiscard]] float GetTextAlignScalar(Align text_align) noexcept;
+		void SetColor(HANDLE output_handle, Color color) noexcept;
 
 		template<class T>
-		std::string GetMonoCharacterString(T size, char character)
+		[[nodiscard]] std::string GetMonoCharacterString(T size, char character) noexcept
 		{
 			std::string ret{};
 			ret.resize(size, character);
 			return ret;
 		}
 		template<class T>
-		std::string Spaces(T size)
+		[[nodiscard]] std::string Spaces(T size) noexcept
 		{
 			return GetMonoCharacterString(size, ' ');
 		}

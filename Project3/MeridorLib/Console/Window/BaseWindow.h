@@ -18,20 +18,20 @@ namespace MeridorConsoleLib
 				BaseWindow* main_window = nullptr;
 				std::thread main_thread;
 
-				void ImmobilizingWindow();
+				void ImmobilizingWindow() noexcept;
 
 			public:
 
-				void Init(BaseWindow* window);
-				void Start();
-				void Stop();
+				void Init(BaseWindow* window) noexcept;
+				void Start() noexcept;
+				void Stop() noexcept;
 
 				Immobilizer(const Immobilizer&) = delete;
 				Immobilizer& operator=(const Immobilizer&) = delete;
 
-				Immobilizer() = default;
-				Immobilizer(Immobilizer&&) = default;
-				Immobilizer& operator=(Immobilizer&&) = default;
+				Immobilizer() noexcept = default;
+				Immobilizer(Immobilizer&&) noexcept = default;
+				Immobilizer& operator=(Immobilizer&&) noexcept = default;
 				~Immobilizer();
 			};
 
@@ -40,24 +40,24 @@ namespace MeridorConsoleLib
 			COORD font_size = minimum_font_size;
 			COORD base_character_capacity = default_character_capacity;
 
-			virtual void SetFontSize() final;
-			virtual void SetWindowSize() final;
-			virtual void UpdateBufferSize() final;
-			virtual void UpdateFontInformation() final;
-			virtual void UpdateCharacterCapacity() final;
-			virtual void UpdateWindowInformation() final;
+			virtual void SetFontSize() noexcept final;
+			virtual void SetWindowSize() noexcept final;
+			virtual void UpdateBufferSize() noexcept final;
+			virtual void UpdateFontInformation() noexcept final;
+			virtual void UpdateCharacterCapacity() noexcept final;
+			virtual void UpdateWindowInformation() noexcept final;
 
 		protected:
-			void Init(const WindowInfo& window_info_ex);
+			void Init(const WindowInfo& window_info_ex) noexcept;
 
 		public:
 
 			BaseWindow(const BaseWindow&) = delete;
 			BaseWindow& operator=(const BaseWindow&) = delete;
 
-			BaseWindow() = default;
-			BaseWindow(BaseWindow&&) = default;
-			BaseWindow& operator=(BaseWindow&&) = default;
+			BaseWindow() noexcept = default;
+			BaseWindow(BaseWindow&&) noexcept = default;
+			BaseWindow& operator=(BaseWindow&&) noexcept = default;
 			~BaseWindow() = default;
 
 			[[nodiscard]] virtual const WindowInfo* GetWindowInfo() const noexcept final;
@@ -69,8 +69,8 @@ namespace MeridorConsoleLib
 			[[nodiscard]] virtual HWND GetHWND()const noexcept final;
 			[[nodiscard]] virtual WindowMode GetWindowMode()const noexcept final;
 
-			virtual void SetCursor(BOOL visible) final;
-			virtual void SetWindowMode(WindowMode window_mode, COORD window_size = minimum_window_size) final;
+			virtual void SetCursor(BOOL visible) noexcept final;
+			virtual void SetWindowMode(WindowMode window_mode, COORD window_size = minimum_window_size) noexcept final;
 		};
 	}
 }

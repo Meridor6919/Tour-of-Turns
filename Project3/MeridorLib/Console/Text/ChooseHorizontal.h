@@ -19,7 +19,7 @@ namespace MeridorConsoleLib
 				COORD position{};
 				size_t lenght;
 
-				void Update(const long long& value)
+				void Update(const long long& value) noexcept
 				{
 					lenght = choose_desc->text[value].size() + choose_desc->decoration_left.size() + choose_desc->decoration_right.size();
 
@@ -33,8 +33,8 @@ namespace MeridorConsoleLib
 			public:
 				ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info) :
 					ChooseInterface(choose_desc, window_info),
-					choose_desc(&choose_desc) {}
-				bool Valid() override
+					choose_desc(&choose_desc) noexcept {}
+				[[nodiscard]] bool Valid() noexcept override
 				{
 					if (choose_desc->text.size() < choose_desc->value + 1)
 					{
@@ -46,7 +46,7 @@ namespace MeridorConsoleLib
 						return true;
 					}
 				}
-				void ShowInterface() override
+				void ShowInterface() const noexcept override
 				{
 					SetConsoleCursorPosition(window_info->output_handle, position);
 					SetColor(window_info->output_handle, window_info->secondary_color);
@@ -58,7 +58,7 @@ namespace MeridorConsoleLib
 					SetColor(window_info->output_handle, window_info->secondary_color);
 					std::cout << choose_desc->decoration_right;
 				}
-				bool ProcessInput(int button) override
+				bool ProcessInput(int button) noexcept override
 				{
 					const size_t vector_size = choose_desc->text.size();
 					if ((GetKeyState(VK_SHIFT) == 1 || GetKeyState(VK_SHIFT) == 0) && button == KeyCodes::right_arrow)
@@ -81,13 +81,13 @@ namespace MeridorConsoleLib
 					}
 					return false;
 				}
-				void UpdateInterface() override
+				void UpdateInterface() noexcept override
 				{
 					Clear();
 					Update(choose_desc->value);
 					ShowInterface();
 				}
-				void Clear() override
+				void Clear() const noexcept override
 				{
 					SetConsoleCursorPosition(window_info->output_handle, position);
 					std::cout << Spaces(lenght);
@@ -95,13 +95,13 @@ namespace MeridorConsoleLib
 			};
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		long long ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info)
+		[[nodiscard]] long long ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info) noexcept
 		{
 			Internal::ChooseHorizontal<TextContainer, Args...> choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl);
 		}
 		template <template<typename, size_t...> typename TextContainer, size_t ...Args>
-		long long ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+		[[nodiscard]] long long ChooseHorizontal(HorizontalChooseDesc<TextContainer, Args...>& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data) noexcept
 		{
 			Internal::ChooseHorizontal<TextContainer, Args...> choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl, multithreading_data);

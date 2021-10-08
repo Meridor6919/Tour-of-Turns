@@ -4,7 +4,7 @@ namespace MeridorConsoleLib
 {
 	namespace Window
 	{
-		void BaseWindow::Immobilizer::ImmobilizingWindow()
+		void BaseWindow::Immobilizer::ImmobilizingWindow() noexcept
 		{
 			RECT base_window_pos;
 			GetWindowRect(main_window->window_info.hwnd, &base_window_pos);
@@ -40,11 +40,11 @@ namespace MeridorConsoleLib
 				std::this_thread::sleep_for(std::chrono::milliseconds(window_immobilizer_refresh_rate));
 			}
 		}
-		void BaseWindow::Immobilizer::Init(BaseWindow* window)
+		void BaseWindow::Immobilizer::Init(BaseWindow* window) noexcept
 		{
 			this->main_window = window;
 		}
-		void BaseWindow::Immobilizer::Start()
+		void BaseWindow::Immobilizer::Start() noexcept
 		{
 			if (!thread_active)
 			{
@@ -52,7 +52,7 @@ namespace MeridorConsoleLib
 				main_thread = std::thread(&BaseWindow::Immobilizer::ImmobilizingWindow, this);
 			}
 		}
-		void BaseWindow::Immobilizer::Stop()
+		void BaseWindow::Immobilizer::Stop() noexcept
 		{
 			thread_active = false;
 			if (main_thread.joinable())

@@ -5,7 +5,7 @@ namespace MeridorConsoleLib
 	namespace Text
 	{
 
-		COORD Infobox::GetPositionAbsolute(size_t lenght, short y_value)
+		COORD Infobox::GetPositionAbsolute(size_t lenght, short y_value) const noexcept
 		{
 			const short text_align_shift = static_cast<short>(GetTextAlignScalar(infobox_desc->text_align) * static_cast<float>(lenght));
 			return {
@@ -13,22 +13,22 @@ namespace MeridorConsoleLib
 				static_cast<short>(infobox_desc->position.Y + y_value)
 			};
 		}
-		short Infobox::GetYPositionFromIndex(short index)
+		short Infobox::GetYPositionFromIndex(short index) const noexcept
 		{
 			return static_cast<short>(infobox_desc->box_size.Y - 1 - infobox_desc->vertical_spacing * index);
 		}
-		int Infobox::GetMaxRecords()
+		int Infobox::GetMaxRecords() const noexcept
 		{
 			return (infobox_desc->box_size.Y - 1) / infobox_desc->vertical_spacing;
 		}
-		void Infobox::CorrectContainerSize()
+		void Infobox::CorrectContainerSize() noexcept
 		{
 			if (infobox_desc->data.size() + 1 >= GetMaxRecords())
 			{
 				infobox_desc->data.erase(infobox_desc->data.begin());
 			}
 		}
-		void Infobox::CorrectTextSize(std::string& text, short& remaining_space)
+		void Infobox::CorrectTextSize(std::string& text, short& remaining_space) const noexcept
 		{
 			const size_t text_to_long_size = infobox_desc->text_to_long_sign.size();
 			if (text.size() > remaining_space)
@@ -45,7 +45,7 @@ namespace MeridorConsoleLib
 			}
 			remaining_space -= static_cast<short>(text.size() + infobox_desc->horizontal_spacing);
 		}
-		void Infobox::ShowDataRecord(Color main_color, Color secondary_color, short index)
+		void Infobox::ShowDataRecord(Color main_color, Color secondary_color, short index) const noexcept
 		{
 			COORD pos = GetPositionAbsolute(
 				infobox_desc->data[index].first.size() + infobox_desc->data[index].second.size() + infobox_desc->horizontal_spacing,
@@ -60,12 +60,12 @@ namespace MeridorConsoleLib
 			SetColor(window_info->output_handle, main_color);
 			std::cout << Spaces(infobox_desc->horizontal_spacing) + infobox_desc->data[index].second;
 		}
-		Infobox::Infobox(InfoboxDesc& infobox_desc, const MeridorConsoleLib::Text::WindowInfo& window_info)
+		Infobox::Infobox(InfoboxDesc& infobox_desc, const MeridorConsoleLib::Text::WindowInfo& window_info) noexcept
 		{
 			this->infobox_desc = &infobox_desc;
 			this->window_info = &window_info;
 		}
-		void Infobox::Push(std::string secondary_color_text, std::string main_color_text)
+		void Infobox::Push(std::string secondary_color_text, std::string main_color_text) noexcept
 		{
 			CorrectContainerSize();
 
@@ -74,9 +74,9 @@ namespace MeridorConsoleLib
 			CorrectTextSize(main_color_text, remaining_space);
 
 			Text::MyPair<std::string, std::string> text = { secondary_color_text, main_color_text };
-			infobox_desc->data.emplace_back(std::move(text));
+			infobox_desc->data.push_back(std::move(text));
 		}
-		void Infobox::Draw()
+		void Infobox::Draw() const noexcept
 		{
 			Color current_main = window_info->main_color;
 			Color current_secondary = window_info->secondary_color;
@@ -88,7 +88,7 @@ namespace MeridorConsoleLib
 				current_secondary = infobox_desc->fading_color;
 			}
 		}
-		void Infobox::DrawBox()
+		void Infobox::DrawBox() const noexcept
 		{
 			const std::string border = GetMonoCharacterString(infobox_desc->box_size.X, infobox_desc->border_building_character);
 
@@ -99,7 +99,7 @@ namespace MeridorConsoleLib
 			std::cout << border;
 			Draw();
 		}
-		void Infobox::ClearBox()
+		void Infobox::ClearBox() const noexcept
 		{
 			const std::string spaces = Spaces(infobox_desc->box_size.X);
 			COORD position{};
@@ -113,25 +113,25 @@ namespace MeridorConsoleLib
 			++position.Y;
 			std::cout << spaces;
 		}
-		void Infobox::Draw(const MultithreadingData& multithreading_data)
+		void Infobox::Draw(const MultithreadingData& multithreading_data) const noexcept
 		{
 			multithreading_data.mutex->lock();
 			Draw();
 			multithreading_data.mutex->unlock();
 		}
-		void Infobox::DrawBox(const MultithreadingData& multithreading_data)
+		void Infobox::DrawBox(const MultithreadingData& multithreading_data) const noexcept
 		{
 			multithreading_data.mutex->lock();
 			DrawBox();
 			multithreading_data.mutex->unlock();
 		}
-		void Infobox::ClearBox(const MultithreadingData& multithreading_data)
+		void Infobox::ClearBox(const MultithreadingData& multithreading_data) const noexcept
 		{
 			multithreading_data.mutex->lock();
 			ClearBox();
 			multithreading_data.mutex->unlock();
 		}
-		void Infobox::Reset()
+		void Infobox::Reset() noexcept
 		{
 			infobox_desc->data.clear();
 		}

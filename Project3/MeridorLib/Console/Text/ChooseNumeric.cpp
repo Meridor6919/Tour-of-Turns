@@ -6,7 +6,7 @@ namespace MeridorConsoleLib
 	{
 		namespace Internal
 		{
-			int ChooseNumeric::CalculateLenght(long long value)
+			int ChooseNumeric::CalculateLenght(long long value) const noexcept
 			{
 				int lenght = 0;
 				if (value < 0)
@@ -19,7 +19,7 @@ namespace MeridorConsoleLib
 				}
 				return lenght;
 			}
-			COORD ChooseNumeric::GetPosition(int lenght)
+			COORD ChooseNumeric::GetPosition(int lenght) const noexcept
 			{
 				const short text_align_shift = static_cast<short>(GetTextAlignScalar(choose_desc->text_align) * static_cast<float>(lenght));
 				return {
@@ -27,26 +27,26 @@ namespace MeridorConsoleLib
 					static_cast<short>(choose_desc->point_of_reference.Y)
 				};
 			}
-			long long ChooseNumeric::InBounds(const long long value)
+			bool ChooseNumeric::InBounds(const long long value) const noexcept
 			{
 				return value >= choose_desc->lower_bound && value <= choose_desc->upper_bound;
 			}
-			void ChooseNumeric::ClearInterface(int lenght)
+			void ChooseNumeric::ClearInterface(int lenght) const noexcept
 			{
 				SetConsoleCursorPosition(window_info->output_handle, GetPosition(lenght));
 				std::cout << Spaces(lenght);
 			}
-			ChooseNumeric::ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info) : ChooseInterface(choose_desc, window_info)
+			ChooseNumeric::ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info) noexcept : ChooseInterface(choose_desc, window_info)
 			{
 				this->choose_desc = &choose_desc;
 				lenght = CalculateLenght(choose_desc.value);
 				prev_lenght = lenght;
 			}
-			bool ChooseNumeric::Valid()
+			bool ChooseNumeric::Valid() noexcept
 			{
 				return InBounds(choose_desc->value);
 			}
-			void ChooseNumeric::ShowInterface()
+			void ChooseNumeric::ShowInterface() const noexcept
 			{
 				SetColor(window_info->output_handle, window_info->main_color);
 				SetConsoleCursorPosition(window_info->output_handle, GetPosition(lenght));
@@ -55,7 +55,7 @@ namespace MeridorConsoleLib
 					std::cout << choose_desc->value;
 				}
 			}
-			bool ChooseNumeric::ProcessInput(int button)
+			bool ChooseNumeric::ProcessInput(int button) noexcept
 			{
 				if (button >= '0' && button <= '9')
 				{
@@ -93,24 +93,24 @@ namespace MeridorConsoleLib
 				}
 				return false;
 			}
-			void ChooseNumeric::UpdateInterface()
+			void ChooseNumeric::UpdateInterface() noexcept
 			{
 				ClearInterface(prev_lenght);
 				ShowInterface();
 				prev_lenght = lenght;
 			}
-			void ChooseNumeric::Clear()
+			void ChooseNumeric::Clear() const noexcept
 			{
 				SetConsoleCursorPosition(window_info->output_handle, GetPosition(lenght));
 				std::cout << Spaces(lenght);
 			}
 		}
-		long long ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info)
+		long long ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info) noexcept
 		{
 			Internal::ChooseNumeric choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl);
 		}
-		long long ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data)
+		long long ChooseNumeric(NumericChooseDesc& choose_desc, const WindowInfo& window_info, const MultithreadingData& multithreading_data) noexcept
 		{
 			Internal::ChooseNumeric choose_impl(choose_desc, window_info);
 			return Internal::GenericChoose(choose_impl, multithreading_data);

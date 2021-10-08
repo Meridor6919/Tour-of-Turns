@@ -15,26 +15,26 @@ namespace MeridorConsoleLib
 			InfoboxDesc* infobox_desc = nullptr;
 			const WindowInfo* window_info = nullptr;
 
-			COORD GetPositionAbsolute(size_t lenght, short y_value);
-			short GetYPositionFromIndex(short index);
-			int GetMaxRecords();
+			[[nodiscard]] COORD GetPositionAbsolute(size_t lenght, short y_value) const noexcept;
+			[[nodiscard]] short GetYPositionFromIndex(short index) const noexcept;
+			[[nodiscard]] int GetMaxRecords() const noexcept;
 
-			void CorrectContainerSize();
-			void CorrectTextSize(std::string& text, short& remaining_space);
-			void ShowDataRecord(Color main_color, Color secondary_color, short index);
+			void CorrectContainerSize() noexcept;
+			void CorrectTextSize(std::string& text, short& remaining_space) const noexcept;
+			void ShowDataRecord(Color main_color, Color secondary_color, short index) const noexcept;
 
 		public:
-			Infobox(InfoboxDesc& infobox_desc, const MeridorConsoleLib::Text::WindowInfo& window_info);
+			Infobox(InfoboxDesc& infobox_desc, const MeridorConsoleLib::Text::WindowInfo& window_info) noexcept;
 			
-			void Push(std::string secondary_color_text, std::string main_color_text);
-			void Reset();
+			void Push(std::string secondary_color_text, std::string main_color_text) noexcept;
+			void Reset() noexcept;
 			
-			void Draw();
-			void DrawBox();
-			void ClearBox();
-			void Draw(const MultithreadingData& multithreading_data);
-			void DrawBox(const MultithreadingData& multithreading_data);
-			void ClearBox(const MultithreadingData& multithreading_data);
+			void Draw() const noexcept;
+			void DrawBox() const noexcept;
+			void ClearBox() const noexcept;
+			void Draw(const MultithreadingData& multithreading_data) const noexcept;
+			void DrawBox(const MultithreadingData& multithreading_data) const noexcept;
+			void ClearBox(const MultithreadingData& multithreading_data) const noexcept;
 		};
 	}
 }

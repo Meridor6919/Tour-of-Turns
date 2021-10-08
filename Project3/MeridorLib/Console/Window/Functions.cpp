@@ -3,7 +3,7 @@ namespace MeridorConsoleLib
 {
 	namespace Window
 	{
-		void BlockingSleep(int miliseconds)
+		void BlockingSleep(int miliseconds) noexcept
 		{
 			DWORD console_settings;
 			HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
@@ -16,7 +16,7 @@ namespace MeridorConsoleLib
 			FlushConsoleInputBuffer(input_handle);
 			SetConsoleMode(input_handle, console_settings);
 		}
-		void SetConsoleEditMode(BOOL enable)
+		void SetConsoleEditMode(BOOL enable) noexcept
 		{
 			DWORD prev_mode;
 			HANDLE input_handle = GetStdHandle(STD_INPUT_HANDLE);
@@ -30,14 +30,14 @@ namespace MeridorConsoleLib
 				SetConsoleMode(input_handle, (prev_mode & ~ENABLE_QUICK_EDIT_MODE) | ENABLE_EXTENDED_FLAGS);
 			}
 		}
-		void SetCursor(HANDLE output_handle, BOOL visible)
+		void SetCursor(HANDLE output_handle, BOOL visible) noexcept
 		{
 			CONSOLE_CURSOR_INFO console_cursor;
 			GetConsoleCursorInfo(output_handle, &console_cursor);
 			console_cursor.bVisible = visible;
 			SetConsoleCursorInfo(output_handle, &console_cursor);
 		}
-		bool IsMinimizeButtonPressed(HANDLE input_handle)
+		bool IsMinimizeButtonPressed(HANDLE input_handle) noexcept
 		{
 			DWORD number_of_events;
 
@@ -54,7 +54,7 @@ namespace MeridorConsoleLib
 			}
 			return false;
 		}
-		LONG GetWindowFlags(WindowMode window_mode)
+		LONG GetWindowFlags(WindowMode window_mode) noexcept
 		{
 			switch (window_mode)
 			{
