@@ -118,13 +118,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MeridorLib\Misc\Pipes\Connector.cpp" />
     <ClCompile Include="FileManagementFunctions.cpp" />
     <ClCompile Include="MeridorLib\Console\Text\ChooseText.cpp" />
     <ClCompile Include="MeridorLib\Console\Text\ChooseNumeric.cpp" />
     <ClCompile Include="MeridorLib\Console\Window\BaseWindow.cpp" />
     <ClCompile Include="MeridorLib\Console\Window\Functions.cpp" />
     <ClCompile Include="MeridorLib\Misc\FileOperations.cpp" />
-    <ClCompile Include="MeridorLib\Misc\PipeConnector.cpp" />
+    <ClCompile Include="MeridorLib\Misc\Pipes\MsgHandler.cpp" />
     <ClCompile Include="MeridorLib\Misc\Timer.cpp" />
     <ClCompile Include="MeridorLib\Network\BroadcastReceiver.cpp" />
     <ClCompile Include="MeridorLib\Network\BroadcastSender.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="ValidationFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MeridorLib\Misc\Pipes\Connector.h" />
     <ClInclude Include="MeridorLib\Console\Text\Choose.h" />
     <ClInclude Include="MeridorLib\Console\Text\ChooseGeneric.h" />
     <ClInclude Include="MeridorLib\Console\Text\Color.h" />
@@ -166,7 +168,6 @@
     <ClInclude Include="MeridorLib\Console\Window\Constants.h" />
     <ClInclude Include="MeridorLib\Console\Window\Functions.h" />
     <ClInclude Include="MeridorLib\Misc\FileOperations.h" />
-    <ClInclude Include="MeridorLib\Misc\PipeConnector.h" />
     <ClInclude Include="MeridorLib\Misc\Timer.h" />
     <ClInclude Include="MeridorLib\Network\BroadcastReceiver.h" />
     <ClInclude Include="MeridorLib\Network\BroadcastSender.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="MeridorLib\Network\NetworkConnectorGeneral.h" />
     <ClInclude Include="MeridorLib\Network\NetworkConnectorClient.h" />
     <ClInclude Include="MeridorLib\Network\NetworkConnectorHost.h" />
+    <ClInclude Include="MeridorLib\Misc\Pipes\MsgHandler.h" />
     <ClInclude Include="NetworkRoleClient.h" />
     <ClInclude Include="NetworkRoleHost.h" />
     <ClInclude Include="MeridorLib\Misc\WavTransformer.h" />
@@ -187,7 +189,6 @@
     <ClInclude Include="Title.h" />
     <ClInclude Include="ToT.h" />
     <ClInclude Include="ToT_Window.h" />
-    <ClInclude Include="MeridorConsoleLib\Window\Immobilizer.h" />
     <ClInclude Include="ValidationConstants.h" />
     <ClInclude Include="ValidationFunctions.h" />
   </ItemGroup>

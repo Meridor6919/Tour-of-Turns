@@ -65,6 +65,15 @@
     <Filter Include="Files\MeridorConsoleLib\Window\SourceFiles">
       <UniqueIdentifier>{fabfdfd1-4608-4667-bb63-f5c73e6bf3d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Files\MeridorMiscModules\MeridorPipes">
+      <UniqueIdentifier>{9c3c6301-eacd-4f37-8d1f-05a264fdc264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MeridorMiscModules\MeridorPipes\SourceFiles">
+      <UniqueIdentifier>{f9d109b0-d8c0-4571-b5b8-6002a6de18e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Files\MeridorMiscModules\MeridorPipes\HeaderFiles">
+      <UniqueIdentifier>{4b2ba8db-5639-434b-a83c-b7ded7ca0f7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Participant.cpp">
@@ -130,23 +139,26 @@
     <ClCompile Include="MeridorLib\Console\Text\Infobox.cpp">
       <Filter>Files\MeridorConsoleLib\Text\SourceFiles</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorLib\Network\NetworkConnectorClient.cpp">
-      <Filter>Files\MeridorMiscModules\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorLib\Network\NetworkConnectorGeneral.cpp">
-      <Filter>Files\MeridorMiscModules\Source</Filter>
-    </ClCompile>
     <ClCompile Include="MeridorLib\Misc\WavTransformer.cpp">
-      <Filter>Files\MeridorMiscModules\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MeridorLib\Misc\PipeConnector.cpp">
       <Filter>Files\MeridorMiscModules\Source</Filter>
     </ClCompile>
     <ClCompile Include="MeridorLib\Misc\Timer.cpp">
       <Filter>Files\MeridorMiscModules\Source</Filter>
     </ClCompile>
-    <ClCompile Include="MeridorLib\Console\Window\WindowImmobilizer.cpp">
+    <ClCompile Include="MeridorLib\Misc\Pipes\Connector.cpp">
+      <Filter>Files\MeridorMiscModules\MeridorPipes\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Network\NetworkConnectorGeneral.cpp">
       <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Network\NetworkConnectorClient.cpp">
+      <Filter>Files\MeridorNetworkLib\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Misc\Pipes\MsgHandler.cpp">
+      <Filter>Files\MeridorMiscModules\MeridorPipes\SourceFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MeridorLib\Console\Window\WindowImmobilizer.cpp">
+      <Filter>Files\MeridorConsoleLib\Window\SourceFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,9 +179,6 @@
     </ClInclude>
     <ClInclude Include="ToT.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
-    </ClInclude>
-    <ClInclude Include="MeridorConsoleLib\Window\Immobilizer.h">
-      <Filter>Files\MeridorConsoleLib\Window\HeaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="FileManagementFunctions.h">
       <Filter>Files\ToTFiles\ApplicationFiles\HeaderFiles</Filter>
@@ -267,9 +276,6 @@
     <ClInclude Include="MeridorLib\Network\NetworkConnectorHost.h">
       <Filter>Files\MeridorNetworkLib\HeaderFiles</Filter>
     </ClInclude>
-    <ClInclude Include="MeridorLib\Misc\PipeConnector.h">
-      <Filter>Files\MeridorMiscModules\Header</Filter>
-    </ClInclude>
     <ClInclude Include="MeridorLib\Console\Text\Table.h">
       <Filter>Files\MeridorConsoleLib\Text\HeaderFiles</Filter>
     </ClInclude>
@@ -278,6 +284,12 @@
     </ClInclude>
     <ClInclude Include="MeridorLib\Misc\WavTransformer.h">
       <Filter>Files\MeridorMiscModules\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Misc\Pipes\Connector.h">
+      <Filter>Files\MeridorMiscModules\MeridorPipes\HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MeridorLib\Misc\Pipes\MsgHandler.h">
+      <Filter>Files\MeridorMiscModules\MeridorPipes\HeaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
