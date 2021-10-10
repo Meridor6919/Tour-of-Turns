@@ -11,25 +11,22 @@ namespace MeridorPipes
 		bool handling_connection = true;
 
 		template<class T>
-		void HandlingFunction(void(T::* MsgHandling)(std::string), T* object)
+		void HandlingFunction(void(T::* MsgHandling)(std::string), T* object) const noexcept
 		{
 			while (handling_connection)
 			{
 				std::string msg = connector.Read();
-				if (msg.size() >= 2)
-				{
-					std::invoke(MsgHandling, object, msg);
-				}
+				std::invoke(MsgHandling, object, msg);
 			}
 		}
 
 	public:
-		MsgHandler(const char* path);
-		void Send(std::string msg);
-		void CloseConnection();
+		MsgHandler(const char* path) noexcept;
+		void Send(std::string msg) const noexcept;
+		void CloseConnection() noexcept;
 
 		template<class T>
-		void Init(void(T::* MsgHandling)(std::string), T* object)
+		void Init(void(T::* MsgHandling)(std::string), T* object) noexcept
 		{
 			handling_thread = std::thread(&MsgHandler::HandlingFunction<T>, this, MsgHandling, object);
 		}

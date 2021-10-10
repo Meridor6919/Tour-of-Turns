@@ -2,7 +2,7 @@
 
 namespace MeridorPipes
 {
-	bool Connector::SetPipes()
+	bool Connector::SetPipes() noexcept
 	{
 		SECURITY_ATTRIBUTES sats{};
 		sats.nLength = sizeof(SECURITY_ATTRIBUTES);
@@ -13,7 +13,7 @@ namespace MeridorPipes
 			CreatePipe(&output_pipe_read, &output_pipe_write, &sats, 0) &&
 			CreatePipe(&input_pipe_read, &input_pipe_write, &sats, 0);
 	}
-	bool Connector::SetProcess(const char* path)
+	bool Connector::SetProcess(const char* path) noexcept
 	{
 		STARTUPINFOA sti{};
 		sti.dwFlags = STARTF_USESTDHANDLES;
@@ -23,11 +23,11 @@ namespace MeridorPipes
 
 		return CreateProcessA(0, (CHAR*)path, 0, 0, 1, 0, 0, 0, &sti, &process_info);
 	}
-	bool Connector::Connect(const char* path)
+	bool Connector::Connect(const char* path) noexcept
 	{
 		return SetPipes() * SetProcess(path);
 	}
-	std::string Connector::Read()
+	std::string Connector::Read() const noexcept
 	{
 		char buffer[buffer_size]{};
 		DWORD read;
@@ -45,11 +45,11 @@ namespace MeridorPipes
 
 		return ret;
 	}
-	void Connector::Write(std::string msg)
+	void Connector::Write(std::string msg) const noexcept
 	{
-		WriteFile(input_pipe_write, (msg + '\n').c_str(), msg.size() + 1, 0, 0);
+		WriteFile(input_pipe_write, (msg + '\n').c_str(), static_cast<DWORD>(msg.size() + 1), 0, 0);
 	}
-	void Connector::CloseConnection()
+	void Connector::CloseConnection() noexcept
 	{
 		if (!is_closed)
 		{

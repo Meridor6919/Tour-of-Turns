@@ -3,10 +3,10 @@
 #include <Windows.h>
 #include <string>
 
-#include "Constants.h"
-
 namespace MeridorPipes
 {
+	constexpr size_t buffer_size = 4096;
+
 	class Connector
 	{
 		PROCESS_INFORMATION process_info;
@@ -16,13 +16,13 @@ namespace MeridorPipes
 		HANDLE input_pipe_read;
 		bool is_closed = true;
 
-		bool SetPipes();
-		bool SetProcess(const char* path);
+		bool SetPipes() noexcept;
+		bool SetProcess(const char* path) noexcept;
 
 	public:
-		bool Connect(const char* path);
-		std::string Read();
-		void Write(std::string msg);
-		void CloseConnection();
+		bool Connect(const char* path) noexcept;
+		[[nodiscard]] std::string Read() const noexcept;
+		void Write(std::string msg) const noexcept;
+		void CloseConnection() noexcept;
 	};
 }

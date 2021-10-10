@@ -6,18 +6,18 @@
 
 namespace MeridorFileOperations
 {
-	std::string GetSeparatedValue(const std::string& text, int index, char separator = '\t');
-	std::string SetSeparatedValue(const std::string& original_text, const std::string& text_to_put, int index, char separator = '\t');
-	std::string SetFloatingPointPrecision(const std::string& number, unsigned int precision);
+	[[nodiscard]] std::string_view GetSeparatedValue(std::string_view text, int index, char separator = '\t') noexcept;
+	void SetSeparatedValue(std::string& original_text, std::string_view text_to_put, int index, char separator = '\t') noexcept;
+	[[nodiscard]] std::string_view SetFloatingPointPrecision(std::string_view number, unsigned int precision) noexcept;
 
-	std::vector<std::string> ReadFile(std::string path);
-	std::vector<std::string> GetFilesInDirectory(std::string path);
-	void RemoveExtension(std::string& string, const std::string& extension);
-	void AddExtension(std::string& string, const std::string& extension);
-	std::string GetExtension(const std::string& string);
+	[[nodiscard]] std::vector<std::string> ReadFile(std::string path) noexcept;
+	[[nodiscard]] std::vector<std::string> GetFilesInDirectory(std::string_view path) noexcept;
+	[[nodiscard]] std::string_view GetExtension(std::string_view string) noexcept;
+	void RemoveExtension(std::string& string, std::string_view extension) noexcept;
+	void AddExtension(std::string& string, std::string_view extension) noexcept;
 
 	template<class T>
-	std::istream& GetlineToInteger(std::istream& input_stream, T& var)
+	[[nodiscard]] std::istream& GetlineToInteger(std::istream& input_stream, T& var) noexcept
 	{
 		std::string temp;
 		std::istream& ret = std::getline(input_stream, temp);
@@ -25,7 +25,7 @@ namespace MeridorFileOperations
 		return ret;
 	}
 	template<class T>
-	std::istream& GetlineToFloatingPoint(std::istream& input_stream, T& var)
+	[[nodiscard]] std::istream& GetlineToFloatingPoint(std::istream& input_stream, T& var) noexcept
 	{
 		std::string temp;
 		std::istream& ret = std::getline(input_stream, temp);

@@ -2,15 +2,15 @@
 
 namespace MeridorPipes
 {
-	MsgHandler::MsgHandler(const char* path)
+	MsgHandler::MsgHandler(const char* path) noexcept
 	{
 		connector.Connect(path);
 	}
-	void MsgHandler::Send(std::string msg)
+	void MsgHandler::Send(std::string msg) const noexcept
 	{
 		connector.Write(msg);
 	}
-	void MsgHandler::CloseConnection()
+	void MsgHandler::CloseConnection() noexcept
 	{
 		connector.CloseConnection();
 		handling_connection = false;

@@ -20,10 +20,10 @@ namespace MeridorTimer
 	}
 	std::string Timer::GetText()
 	{
-		int time_left = GetRemainingTime().count();
+		auto time_left = GetRemainingTime().count();
 
-		int seconds_left = time_left % 60;
-		int minutes_left = time_left / 60;
+		auto seconds_left = time_left % 60;
+		auto minutes_left = time_left / 60;
 		if (time_left > 0)
 		{
 			return (minutes_left < 10 ? "0" : "") + std::to_string(minutes_left) + ':' + (seconds_left < 10 ? "0" : "") + std::to_string(seconds_left);
