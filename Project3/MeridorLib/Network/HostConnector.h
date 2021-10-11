@@ -1,5 +1,5 @@
 #pragma once
-#include "NetworkConnectorGeneral.h"
+#include "GeneralConnector.h"
 #include "BroadcastSender.h"
 #define TEMPLATE_NetworkConnectorHost template<class T, void (T::* Method)(std::string, int)>
 //Singleton class that uses template to pass any class method to handle connection between host and client
@@ -20,7 +20,7 @@ TEMPLATE_NetworkConnectorHost class NetworkConnectorHost
 	void ProcessingMessages(sockaddr_in address);
 
 public:
-	NetworkConnector::BroadcastSender broadcast_sender;
+	MeridorNetwork::BroadcastSender broadcast_sender;
 	ClientConnector client_connector;
 
 	NetworkConnectorHost(T* main_object_ptr);
@@ -75,7 +75,7 @@ public:
 //----------------------------------------------------------------------------------------------------------------------
 TEMPLATE_NetworkConnectorHost inline NetworkConnectorHost<T, Method>::NetworkConnectorHost(T* main_object_ptr)
 {
-	NetworkConnector::Initialize();
+	MeridorNetwork::Initialize();
 	this->main_object_ptr = main_object_ptr;
 	client_connector.Initialize(this);
 	error_handler.Initialize(this);
@@ -106,15 +106,15 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Proce
 	while (*handling)
 	{
 		std::string msg;
-		if (NetworkConnector::Recv(client_socket, &msg))
+		if (MeridorNetwork::Recv(client_socket, &msg))
 		{
 			std::invoke(Method, main_object_ptr, msg, 0);
 		}
 		else
 		{
 			network_mutex.lock();
-			disconnected_clients.emplace_back(address);
-			disconnected_clients_error_handling.emplace_back(address);
+			disconnected_clients.push_back(address);
+			disconnected_clients_error_handling.push_back(address);
 			network_mutex.unlock();
 		}
 	}
@@ -125,7 +125,7 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Remov
 	unsigned int target = GetClientContainerIndexFromAddress(address);
 	if (target < 0)
 	{
-		MessageBox(0, NetworkConnector::ErrorMsg::address_missing.c_str(), NetworkConnector::ErrorTitle::address_missing.c_str(), MB_TOPMOST);
+		MessageBoxA(0, MeridorNetwork::ErrorMsg::address_missing.c_str(), MeridorNetwork::ErrorTitle::address_missing.c_str(), MB_TOPMOST);
 	}
 	else
 	{
@@ -189,12 +189,12 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Clien
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	sockaddr_in sock_addr = {};
 	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(NetworkConnector::Constants::port_number);
+	sock_addr.sin_port = htons(MeridorNetwork::Constants::port_number);
 	sock_addr.sin_addr.s_addr = INADDR_ANY;
 	int addr_size = sizeof(sockaddr_in);
 
-	NetworkConnector::Validate(sock < 0);
-	NetworkConnector::Validate(bind(sock, reinterpret_cast<sockaddr*>(&sock_addr), sizeof(sockaddr)) < 0);
+	MeridorNetwork::Validate(sock < 0);
+	MeridorNetwork::Validate(bind(sock, reinterpret_cast<sockaddr*>(&sock_addr), sizeof(sockaddr)) < 0);
 	listen(sock, max_clients);
 
 	while (thread_active)
@@ -264,8 +264,8 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Clien
 		SOCKET temp_socket = socket(AF_INET, SOCK_STREAM, 0);
 		sockaddr_in temp_addr = {};
 		temp_addr.sin_family = AF_INET;
-		temp_addr.sin_port = htons(NetworkConnector::Constants::port_number);
-		temp_addr.sin_addr.s_addr = inet_addr(NetworkConnector::Constants::ip_loopback.c_str());
+		temp_addr.sin_port = htons(MeridorNetwork::Constants::port_number);
+		temp_addr.sin_addr.s_addr = inet_addr(MeridorNetwork::Constants::ip_loopback.c_str());
 		connect(temp_socket, reinterpret_cast<sockaddr*>(&temp_addr), sizeof(temp_addr));
 		closesocket(temp_socket);
 
@@ -294,7 +294,7 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Clien
 			return;
 		}
 	}
-	MessageBox(0, NetworkConnector::ErrorMsg::address_missing.c_str(), NetworkConnector::ErrorTitle::address_missing.c_str(), MB_TOPMOST);
+	MessageBoxA(0, MeridorNetwork::ErrorMsg::address_missing.c_str(), MeridorNetwork::ErrorTitle::address_missing.c_str(), MB_TOPMOST);
 	network_connector_host_ptr->network_mutex.unlock();
 
 }
@@ -320,7 +320,7 @@ TEMPLATE_NetworkConnectorHost inline void NetworkConnectorHost<T, Method>::Error
 		}
 		network_connector_host_ptr->disconnected_clients_error_handling.clear();
 		network_connector_host_ptr->network_mutex.unlock();
-		std::chrono::milliseconds ms(NetworkConnector::Constants::ms_delay);
+		std::chrono::milliseconds ms(MeridorNetwork::Constants::ms_delay);
 		std::this_thread::sleep_for(ms);
 	}
 }

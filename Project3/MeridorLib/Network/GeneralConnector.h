@@ -10,7 +10,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-namespace NetworkConnector
+namespace MeridorNetwork
 {
 	void Initialize();
 	void Validate(bool error);
@@ -38,7 +38,7 @@ namespace NetworkConnector
 	}
 	namespace ErrorMsg
 	{
-		const std::string connection = "Player probably finished hosting";
+		const std::string connection("Player probably finished hosting");
 		const std::string initialization = "Only one network instance allowed";
 		const std::string address_missing = "Strangly selected target vanished before any action was performed";
 		const std::string msg_size = "This library cannot send messages larger than pre-defined constant\n Try sending couple smaller messages";

@@ -1,7 +1,7 @@
 #pragma once
-#include "NetworkConnectorGeneral.h"
+#include "GeneralConnector.h"
 
-namespace NetworkConnector
+namespace MeridorNetwork
 {
 	class BroadcastReceiver
 	{

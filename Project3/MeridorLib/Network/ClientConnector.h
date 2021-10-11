@@ -1,5 +1,5 @@
 #pragma once
-#include "NetworkConnectorGeneral.h"
+#include "GeneralConnector.h"
 #include "BroadcastReceiver.h"
 
 class NetworkConnectorClient
@@ -9,7 +9,7 @@ class NetworkConnectorClient
 	std::string GetIPFromHostID(std::string host_id);
 
 public:
-	NetworkConnector::BroadcastReceiver broadcast_receiver;
+	MeridorNetwork::BroadcastReceiver broadcast_receiver;
 
 	NetworkConnectorClient();
 	bool Connect(const std::string host_id);
